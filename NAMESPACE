@@ -3,3 +3,5 @@
 export(FigAndeler)
 export(FigOpInd)
 export(LibUtvalg)
+export(NGERHentRegData)
+export(NGERPreprosess)
