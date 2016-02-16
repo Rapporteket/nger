@@ -3,19 +3,9 @@
 #' Denne funksjonen lager en figur over de 20 vanligste operasjonsindikatorene.
 #' I tellingen slås variablene OpInd1, OpInd2 og OpInd3 sammen.
 #'
-#' @param RegData uhih
-#' @param datoFra okpok
-#' @param datoTil fdgd
-#' @param minald dg
-#' @param maxald dfg
-#' @param outfile dfg
-#' @param reshID dfgdf
-#' @param enhetsUtvalg dfg
-#' @param MCEType dfg
-#' @param preprosess dgd
-#' @param hentData fgg
+#' @inheritParams FigAndeler
 #'
-#' @return Søyleplot med de 20 vanligste operasjonsindikatorene
+#' @return Tabell med de 20 vanligste operasjonsindikatorene
 #'
 #' @export
 #'
