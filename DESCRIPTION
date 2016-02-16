@@ -1,0 +1,21 @@
+Package: nger
+Type: Package
+Title: Resultatrapporter for NGER
+Version: 0.1
+Date: 2016-02-15
+Author: Authors@R: c(person("Thon", "Kevin", email = "kevin.thon@skde.no", role = c("cre", "aut")),
+  person("Kamaleri", "Yusman", email = "yuskam@ous-hf.no", role = "aut"),
+  person("Edvardsen", "Are", email = "are.edvardsen@helse-nord.no", role = "aut"),
+  person("Olsen", "Lena", email = "Lena.Ringstad.Olsen@unn.no", role = "aut"))
+Maintainer: Kevin Thon <kevin.thon@skde.no>
+Description: Pakke for generering av resultatrapporter for NGER
+License: GPL2
+LazyData: TRUE
+Depends: R (>= 3.0.2), rapbase
+Imports:
+  xtable,
+  plotrix
+RoxygenNote: 5.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr

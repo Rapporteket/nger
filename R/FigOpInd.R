@@ -1,0 +1,53 @@
+#' Genererer figur over de 20 vanligste operasjonsindikatorene.
+#'
+#' Denne funksjonen lager en figur over de 20 vanligste operasjonsindikatorene.
+#' I tellingen slås variablene OpInd1, OpInd2 og OpInd3 sammen.
+#'
+#' @param RegData uhih
+#' @param datoFra okpok
+#' @param datoTil fdgd
+#' @param minald dg
+#' @param maxald dfg
+#' @param outfile dfg
+#' @param reshID dfgdf
+#' @param enhetsUtvalg dfg
+#' @param MCEType dfg
+#' @param preprosess dgd
+#' @param hentData fgg
+#'
+#' @return Søyleplot med de 20 vanligste operasjonsindikatorene
+#'
+#' @export
+#'
+FigOpInd <- function(RegData=0, datoFra='2000-04-01', datoTil='2050-12-31', minald=0, maxald=130, outfile='',
+                     reshID, enhetsUtvalg=1, MCEType=99, preprosess=TRUE, hentData=TRUE)
+{
+  ## Hvis spørring skjer fra R på server. ######################
+  if(hentData){
+    RegData <- NGERHentRegData(datoFra = datoFra, datoTil = datoTil)
+  }
+
+  # Hvis RegData ikke har blitt preprosessert
+  if (preprosess){
+    Data <- NGERPreprosess(RegData=RegData, reshID=reshID)
+    RegData <- Data$RegData
+    rm(Data)
+  }
+
+  RegData$Variabel <- RegData$OpInd1
+  NGERUtvalg <- LibUtvalg(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra, datoTil = datoTil, MCEType = MCEType)
+  RegData <- NGERUtvalg$RegData
+  utvalgTxt <- NGERUtvalg$utvalgTxt
+
+
+  AlleOpInd <- unique(c(unique(toupper(as.character(RegData$OpInd1))),
+                        unique(toupper(as.character(RegData$OpInd2))),
+                        unique(toupper(as.character(RegData$OpInd3)))))
+
+  aux <- apply(apply(RegData[, c('OpInd1', 'OpInd2', 'OpInd3')], 2, function(x){
+    return(as.character(toupper(x)))}), 2, factor, levels = sort(AlleOpInd))
+  Tabell <- table(aux)
+  Tabell <- sort(Tabell[-which(names(Tabell)=='')], decreasing = TRUE)[1:20]
+
+  return(invisible(Tabell))
+}
