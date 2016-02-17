@@ -47,10 +47,10 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2000-04-01', datoTil='2050-1
     rm(Data)
   }
 
-    shtxt <- switch(as.character(enhetsUtvalg),
-                    '0' = 'Hele landet',
-                    '1' = as.character(RegData$Avdeling[match(reshID, RegData$ReshId)]),
-                    '2' = as.character(RegData$Avdeling[match(reshID, RegData$ReshId)]))
+  shtxt <- switch(as.character(enhetsUtvalg),
+                  '0' = 'Hele landet',
+                  '1' = as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)]),
+                  '2' = as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)]))
 
 ###############
 ### Variable
@@ -67,14 +67,6 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2000-04-01', datoTil='2050-1
     RegData <- NGERUtvalg$RegData
     utvalgTxt <- NGERUtvalg$utvalgTxt
 
-    ## Per individer
-#     if (valgtVar %in% c("Education", "MaritalStatus", "Alder", "OpEarlierVaginal", "OpEarlierLaparoscopy",
-#                         "OpEarlierLaparatomy", 'PatientNorwegian', 'OpBMICategory')) {
-#       RegData <- RegData[match(unique(RegData$PatientID), RegData$PatientID), ] #exclude duplikate PatientID
-#     }
-
-    ##Hvis man ikke skal sammenligne, får man ut resultat for eget sykehus
-    ##if ((sml == 0) & (egenavd == 1)) {RegData <- RegData[which(RegData$ReshId == reshID), ]}	#{indShUt <- which(RegData$ReshId != reshID)}
     if (enhetsUtvalg == 2) {RegData <- RegData[which(RegData$ReshId == reshID), ]}
 
 ###----------- Figurparametre ------------------------------
@@ -87,18 +79,18 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2000-04-01', datoTil='2050-1
 
 
     ##Hvis for få observasjoner..
-    ##if (dim(RegData)[1] < 10 | (length(which(RegData$ReshId == reshID))<5 & egenavd==1)) {
     if (dim(RegData)[1] < 10 | (length(which(RegData$ReshId == reshID))<5 & enhetsUtvalg == 1)) {
 
-###-----------Figur---------------------------------------
-        FigTypUt <- figtype(outfile)
-        farger <- FigTypUt$farger
-        plot.new()
-        title(main=paste('variabel: ', valgtVar, sep=''))	#, line=-6)
-        legend('topleft',utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
-        text(0.5, 0.6, 'Færre enn 5 egne registreringer eller færre 10 totalt', cex=1.2)
-        if ( outfile != '') {dev.off()}
-    } else {
+  ###-----------Figur---------------------------------------
+      FigTypUt <- figtype(outfile)
+      farger <- FigTypUt$farger
+      plot.new()
+      title(main=paste('variabel: ', valgtVar, sep=''))	#, line=-6)
+      legend('topleft',utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
+      text(0.5, 0.6, 'Færre enn 5 egne registreringer eller færre 10 totalt', cex=1.2)
+      if ( outfile != '') {dev.off()}
+      }
+    else {
 
 
 ###--------------- Gjøre beregninger ------------------------------
@@ -197,7 +189,7 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2000-04-01', datoTil='2050-1
 
             if (valgtVar == 'MCEType') {
                 tittel <- 'Operasjonsmetode'
-                grtxt <- c('Laparoskopi', 'Hyseroskopi', 'Begge')
+                grtxt <- c('Laparoskopi', 'Hysteroskopi', 'Begge')
                 RegData$VariabelGr <- factor(RegData$Variabel, levels = 1:3, labels = grtxt)
                 retn <- 'H'
             }
