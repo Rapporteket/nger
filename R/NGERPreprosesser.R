@@ -14,6 +14,7 @@ NGERPreprosess <- function(RegData=RegData, reshID=reshID)
   RegData$OpEarlierLaparatomy <- RegData$OpEarlierPaparotomy
   RegData$BirthDate <- as.POSIXlt(RegData$BirthDate, format="%Y-%m-%d")
   RegData$InnDato <- as.POSIXlt(RegData$OpDate, format="%Y-%m-%d")
+  RegData$HovedDato <- as.POSIXlt(RegData$HovedDato, format="%Y-%m-%d")
   # RegData$Variabel <- 0	#Fordi LibUtvalg trenger denne variabelen uansett
   names(RegData)[which(names(RegData)=='AVD_RESH')] <- 'ReshId' #Change var name
   RegData$Alder <- as.numeric(floor(difftime(RegData$InnDato, RegData$BirthDate, units='days')/365.25))

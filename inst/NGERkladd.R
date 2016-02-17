@@ -32,7 +32,7 @@ nger::FigAndeler(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra, datoTil=da
 
 
 
-
+tmp <- NGERAntallRegPrAvd(RegData = RegData)
 
 
 
