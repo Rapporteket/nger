@@ -8,7 +8,7 @@
 #'
 #' @export
 #'
-NGERPreprosess <- function(RegData=RegData, reshID=reshID)
+NGERPreprosess <- function(RegData=RegData)
 {
   RegData <- RegData[RegData$BasisRegStatus==1, ]
   RegData$OpEarlierLaparatomy <- RegData$OpEarlierPaparotomy
@@ -18,9 +18,9 @@ NGERPreprosess <- function(RegData=RegData, reshID=reshID)
   # RegData$Variabel <- 0	#Fordi LibUtvalg trenger denne variabelen uansett
   names(RegData)[which(names(RegData)=='AVD_RESH')] <- 'ReshId' #Change var name
   RegData$Alder <- as.numeric(floor(difftime(RegData$InnDato, RegData$BirthDate, units='days')/365.25))
-  shtxt <- as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)])  # Må sjekkes !!!!!!!!!!!!!!!!!!!
+  # shtxt <- as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)])  # Må sjekkes !!!!!!!!!!!!!!!!!!!
 
-  Data <- list(RegData=RegData, shtxt=shtxt)
+  # Data <- list(RegData=RegData, shtxt=shtxt)
 
-  return(invisible(Data))
+  return(invisible(RegData))
 }

@@ -13,18 +13,17 @@ NGERAntallRegPrAvd  <- function(RegData=RegData, datoFra='2014-01-01', datoTil='
 
 {
 
-  Data <- NGERPreprosess(RegData=RegData, reshID=110734)
-  RegData <- Data$RegData
-  rm(Data)
+  RegData <- NGERPreprosess(RegData=RegData)
 
   RegData <- RegData[which(RegData$HovedDato >= as.POSIXlt(datoFra) & RegData$HovedDato <= as.POSIXlt(datoTil)),]
 
   RegData <- RegData[RegData$BasisRegStatus==1, ]
   RegData$OpAar <- as.factor(format(RegData$HovedDato, '%Y'))
 
-  Tabell <- plyr::ddply(RegData[,c('Organisasjon', 'OpAar')], c('Organisasjon', 'OpAar'), nrow)
+#   Tabell <- plyr::ddply(RegData[,c('Organisasjon', 'OpAar')], c('Organisasjon', 'OpAar'), nrow)
+#   Tabell <- reshape2::dcast(Tabell, Organisasjon~OpAar, fill=0, value.var = 'V1')
 
-  Tabell <- reshape2::dcast(Tabell, Organisasjon~OpAar, fill=0)
+  Tabell <- table(RegData[,c('Organisasjon', 'OpAar')])
 
   return(invisible(Tabell))
 }

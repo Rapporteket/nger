@@ -42,9 +42,7 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2000-04-01', datoTil='2050-1
 
   # Hvis RegData ikke har blitt preprosessert
   if (preprosess){
-    Data <- NGERPreprosess(RegData=RegData, reshID=reshID)
-    RegData <- Data$RegData
-    rm(Data)
+    RegData <- NGERPreprosess(RegData=RegData)
   }
 
   shtxt <- switch(as.character(enhetsUtvalg),
@@ -82,7 +80,7 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2000-04-01', datoTil='2050-1
     if (dim(RegData)[1] < 10 | (length(which(RegData$ReshId == reshID))<5 & enhetsUtvalg == 1)) {
 
   ###-----------Figur---------------------------------------
-      FigTypUt <- figtype(outfile)
+      FigTypUt <- rapbase::figtype(outfile)
       farger <- FigTypUt$farger
       plot.new()
       title(main=paste('variabel: ', valgtVar, sep=''))	#, line=-6)
@@ -210,7 +208,7 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2000-04-01', datoTil='2050-1
 
 
     ##Plottspesifikke parametre:
-    FigTypUt <- figtype(outfile, fargepalett=NGERUtvalg$fargepalett)
+    FigTypUt <- rapbase::figtype(outfile, fargepalett=NGERUtvalg$fargepalett)
     ##Tilpasse marger for å kunne skrive utvalgsteksten
     NutvTxt <- length(utvalgTxt)
     grtxtpst <- paste(rev(grtxt), ' (', rev(sprintf('%.1f',Andeler$Sh)), '%)', sep='')
