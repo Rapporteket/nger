@@ -44,7 +44,7 @@ NGERtabXXI <- function(datoFra = '2014-01-01', datoTil = '2014-04-01') {
     Komplikasjon <- c(Komplikasjon, s)
     Nk <- sum(mydf[ , s], na.rm = TRUE)
     Frekvens <- c(Frekvens, Nk)
-    Andel <- Nk/N
+    Andel <- c(Andel, Nk/N)
   }
 
   tabXXI <- data.frame(Komplikasjon, Frekvens, Andel)
