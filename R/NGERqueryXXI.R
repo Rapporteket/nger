@@ -65,7 +65,7 @@ SELECT
   v.ComplEquipSuture
 FROM
   AlleVarNum v
-INNER JOIN ForlopsOversikt f ON AlleVarNum.MCEID = ForlopsOversikt.ForlopsID
+INNER JOIN ForlopsOversikt f ON v.MCEID = f.ForlopsID
 WHERE
   v.MCEType = 1 AND
   f.HovedDato >= \'', datoFra, '\' AND
