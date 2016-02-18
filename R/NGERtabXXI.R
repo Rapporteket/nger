@@ -8,7 +8,7 @@
 
 NGERtabXXI <- function(datoFra = '2014-01-01', datoTil = '2014-04-01') {
 
-  RegData <- NGERqueryXXI(datoFra, datoTil)
+  RegData <- NGERHentRegDataXXI(datoFra, datoTil)
   N <- dim(RegData)[1]
   mydf <- RegData[ , c("ComplAfterBleed",
                        "ComplAfterBleedAbdom",
