@@ -22,10 +22,6 @@ hentData<-F
 preprosess=T
 MCEType<-99
 
-# source('/GIT/nger/R/NGERFigAndeler.R')
-# source('/GIT/nger/R/NGERHentData.R')
-# source('/GIT/nger/R/NGERLibUtvalg.R')
-# source('/GIT/nger/R/NGERPreprosesser.R')
 
 if (outfile=='') {
   x11() #figure new window
@@ -36,7 +32,7 @@ nger::FigAndeler(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra, datoTil=da
 
 
 
-
+tmp <- NGERAntallRegPrAvd(RegData = RegData)
 
 
 

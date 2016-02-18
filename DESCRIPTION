@@ -14,7 +14,8 @@ LazyData: TRUE
 Depends: R (>= 3.0.2), rapbase
 Imports:
   xtable,
-  plotrix
+  plyr,
+  reshape2
 RoxygenNote: 5.0.1
 Suggests: knitr,
     rmarkdown
