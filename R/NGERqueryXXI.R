@@ -42,11 +42,11 @@ SELECT
   v.ComplReop,
   v.ComplReopLaparoscopy,
   v.ComplReopHysteroscopy,
-  v.ComplReopLaparotomy
+  v.ComplReopLaparotomy,
   v.ComplInfection,
   v.ComplInfSurg,
   v.ComplInfIntra,
-  v.ComplInfEndoSalpin
+  v.ComplInfEndoSalpin,
   v.ComplInfUVI,
   v.ComplInfOther,
   v.ComplAfterBleed,
