@@ -12,8 +12,6 @@ LibUtvalg <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', minald, 
     # Definer intersect-operator
     "%i%" <- intersect
 
-    ## Hvis "Variabel" ikke definert
-    if (length(which(names(RegData) == 'Variabel')) == 0 ) {RegData$Variabel <- 0}
     Ninn <- dim(RegData)[1]
 
     indVarMed <- which(RegData$Variabel !='NA') %i% which(RegData$Variabel != 'NaN') %i%
@@ -27,7 +25,7 @@ LibUtvalg <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', minald, 
 
     ##index to be included
 
-    indMed <- indAld %i% indDato %i% indMCE %i% indVarMed
+    indMed <- indAld %i% indDato %i% indMCE
 
     RegData <- RegData[indMed,]
 
