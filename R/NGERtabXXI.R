@@ -36,18 +36,10 @@ NGERtabXXI <- function(datoFra = '2014-01-01', datoTil = '2014-04-01') {
                        "ComplReopLaparotomy"
                        )
                    ]
-  vars <- names(mydf)
-  Komplikasjon <- vector()
-  Frekvens <- vector()
-  Andel <- vector()
-  for (s in vars) {
-    Komplikasjon <- c(Komplikasjon, s)
-    Nk <- sum(mydf[ , s], na.rm = TRUE)
-    Frekvens <- c(Frekvens, Nk)
-    Andel <- c(Andel, Nk/N)
-  }
 
-  tabXXI <- data.frame(Komplikasjon, Frekvens, Andel)
+  tabXXI <- data.frame(Frekvens=apply(mydf, 2, sum, na.rm = TRUE),
+                       Andel=apply(mydf, 2, sum, na.rm = TRUE)/N)
+
 
   return(tabXXI)
 
