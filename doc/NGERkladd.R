@@ -36,7 +36,7 @@ tmp <- NGERAntallRegPrAvd(RegData = RegData)
 
 
 
-
+tabXXI <- data.frame(Frekvens=apply(mydf, 2, sum, na.rm = TRUE), Andel=apply(mydf, 2, sum, na.rm = TRUE)/N)
 
 
 

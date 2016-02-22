@@ -49,8 +49,20 @@
 \listoftables
 
 \clearpage
+%'
+%' <<setup, include=FALSE, cache=FALSE>>=
+%' opts_chunk$set(fig.path='figurer/nger-', fig.align='center', fig.show='hold', out.width='.7\\textwidth', cache=FALSE)
+%' 	#out.heigth='.45\\pageheight', #
+%'
+%' #opts_chunk$set(par=TRUE)
+%' 		 #, dev='pdf')	#comments=NA,
+%' #options(replace.assign=TRUE,width=90)
+%' #options(continue=" ")	#?% supress the '+' continuation prompt
+%' @
+
 
 <<LastData, include=FALSE, cache=FALSE>>=
+library(nger)
 hentData <- FALSE
 reshID <- 110734 # (Tønsberg)  	#Må sendes med til funksjon
 datoFra <- '2014-01-01' 	 # min og max dato i utvalget vises alltid i figuren.
@@ -92,7 +104,7 @@ Tabell <- nger::NGERAntallRegPrAvd(RegData=RegData, datoFra = datoFra, datoTil =
 #     hline.after=NULL)
 
 print(xtable::xtable(Tabell, digits=0, align=c('l', rep('r', ncol(Tabell))),
-                     caption='Liste over avdelinger som registrerer pasienter i NoRGast.',
+                     caption='Liste over avdelinger som registrerer pasienter i NGER.',
                      label='tab:RegistrenrendeAvd'),
       include.rownames=TRUE,
       include.colnames=TRUE)
@@ -101,7 +113,6 @@ print(xtable::xtable(Tabell, digits=0, align=c('l', rep('r', ncol(Tabell))),
 
 
 <<'testfig', include=FALSE, echo=FALSE, eval=T, cache=FALSE>>=
-
 valgtVar<-'Alder'
 enhetsUtvalg <- 1
 minald <- 0
@@ -111,9 +122,10 @@ MCEType<-99
 outfile= 'test.pdf'
 figstr <- 0.58
 
-nger::FigAndeler(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil,
+FigAndeler(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil,
            minald=minald, maxald=maxald, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg,
            MCEType=MCEType, hentData=hentData, preprosess=preprosess)
+
 @
 
 \begin{figure}[ht]
