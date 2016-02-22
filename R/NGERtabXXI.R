@@ -1,9 +1,10 @@
 #' Generate tab XXI
 #'
-#' Yes, generate tab XXI, uhuu
+#' Yes, generate tab XXI
 #'
 #' @inheritParams FigAndeler
-#' @return dataframe tabXXI
+#' @return list $tabXXI data frame of table data
+#' @return list $personsWithMultipleCompl number of persons
 #' @export
 
 NGERtabXXI <- function(datoFra = '2014-01-01', datoTil = '2014-04-01') {
@@ -46,8 +47,11 @@ NGERtabXXI <- function(datoFra = '2014-01-01', datoTil = '2014-04-01') {
   indCompl <- union(indCompl, which(mydf$ComplInfection==1))
   indCompl <- union(indCompl, which(mydf$ComplOrgan==1))
 
+  tab <- table(mydf[indCompl])
+  personsWithMultipleCompl <- length(tab[tab > 1])
 
 
-  return(tabXXI)
+
+  list(tabXXI=tabXXI, personsWithMultipleCompl=personsWithMultipleCompl)
 
 }
