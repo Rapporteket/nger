@@ -71,7 +71,17 @@ if (valgtVar=='KomplinfekDyp3mnd') {
   	VarTxt <- 'dype infeksjoner'
 	Tittel <- 'Pasientrapportert dyp infeksjon, 3 mnd.'
 }
-if (valgtVar=='Andel alvorlige hendelser') {
+
+if (valgtVar=='Reop') {
+	#Andel OpType==2 (1:primær, 2: reop)
+  #ComplReop
+	#RegData <- RegData[which(RegData$OpType %in% 1:2), ]
+	#RegData$Variabel[which(RegData$OpType == 2)] <- 1
+  RegData$Variabel[which(RegData$ComplReop == 1)] <- 1
+  VarTxt <- 'reoperasjoner'
+	Tittel <- 'Reoperasjoner (basert på [ComplReop])'
+}
+if (valgtVar=='AlvorligeHendelser') {
 	#3MndSkjema. Andel med KomplinfekOverfl3mnd=1
 	#Kode 0,1: Nei, Ja +tomme
 	RegData <- RegData[intersect(which(RegData$OppFolgStatus3mnd == 1), which(RegData$KomplinfekOverfl3mnd %in% 0:1)), ]
