@@ -1,2 +1,0 @@
-\select@language {norsk}
-\contentsline {section}{\numberline {1}Registrerende avdelinger}{3}
