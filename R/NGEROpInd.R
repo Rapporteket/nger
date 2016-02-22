@@ -23,7 +23,7 @@ NGEROpInd <- function(RegData=0, datoFra='2000-04-01', datoTil='2050-12-31', min
   }
 
   RegData$Variabel <- RegData$OpInd1
-  NGERUtvalg <- LibUtvalg(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra, datoTil = datoTil, MCEType = MCEType)
+  NGERUtvalg <- NGERLibUtvalg(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra, datoTil = datoTil, MCEType = MCEType)
   RegData <- NGERUtvalg$RegData
   utvalgTxt <- NGERUtvalg$utvalgTxt
 
