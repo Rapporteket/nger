@@ -56,9 +56,7 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-1
 
      # Hvis RegData ikke har blitt preprosessert
      if (preprosess){
-          Data <- NGERPreprosess(RegData=RegData, reshID=reshID)
-          RegData <- Data
-          rm(Data)
+       RegData <- NGERPreprosess(RegData=RegData, reshID=reshID)
      }
 
      ###----------- Figurparametre ------------------------------
