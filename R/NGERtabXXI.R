@@ -46,7 +46,7 @@ NGERtabXXI <- function(RegData) {
   indCompl <- union(indCompl, which(mydf$ComplInfection==1))
   indCompl <- union(indCompl, which(mydf$ComplOrgan==1))
 
-  tab <- table(mydf[indCompl])
+  tab <- table(RegData$PatientID[indCompl])
   personsWithMultipleCompl <- length(tab[tab > 1])
 
 
