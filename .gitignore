@@ -6,3 +6,14 @@ ngerNy.Rproj
 testing
 =======
 >>>>>>> 3daea34c1dee6c226c4801529d7d70d79cf50cac
+*.lof
+*.log
+*NGERSamledok.pdf
+*.lot
+*.synctex.gz
+*NGERSamledok.tex
+*.toc
+*.sty
+*test.pdf
+*.gitignore
+*NGERSamledok-concordance.tex

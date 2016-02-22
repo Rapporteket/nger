@@ -18,7 +18,7 @@ valgtVar <- 'Education'
 #Må velge... Alder, Education, Alvorlighetsgrad, MaritalStatus, OpAnesthetic, OpASA, HypCompleteness, PatientNorwegian, OpBMICategory,
 #             Opcat, OpType
 outfile <- ""
-hentData<-F
+hentData<-0
 preprosess=T
 MCEType<-99
 
