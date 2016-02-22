@@ -305,7 +305,8 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-1
 
        if (valgtVar=='LapEkstrautstyr') {
 				#MCEType=1 el 3 (Laparoskopi eller begge)
-				Var <- c('LapAdheanseprofylakse',
+        retn <- 'H'
+         Var <- c('LapAdheanseprofylakse',
 					'LapBipolarDiatermi',
 					'LapClips',
 					'LapHarmonicS',
