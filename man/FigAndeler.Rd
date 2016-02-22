@@ -19,6 +19,7 @@ LapNumHjelpeinnstikk: Antall hjelpeinnstikk
 MaritalStatus: Sivilstand
 MCEType: Operasjonsmetode
 PatientNorwegian: Pasientens norskkunnskaper
+OpAnesthetic: Anestesitype
 OpBMICategory: BMI-kategori
 Opcat: Hastegrad av operasjon
 OpEarlierVaginal: Tidligere vaginale inngrep

@@ -11,6 +11,7 @@
 #'     MaritalStatus: Sivilstand
 #'     MCEType: Operasjonsmetode
 #'     PatientNorwegian: Pasientens norskkunnskaper
+#'     OpAnesthetic: Anestesitype
 #'     OpBMICategory: BMI-kategori
 #'     Opcat: Hastegrad av operasjon
 #'     OpEarlierVaginal: Tidligere vaginale inngrep
@@ -83,6 +84,7 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-1
      grtxt <- ''
      koder <- ''
 
+
      if (valgtVar == 'Education') {
           # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
           Tittel <- 'Utdanningsnivå'
@@ -94,7 +96,6 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-1
           #		RegData$VariabelGr <- factor(RegData$Variabel, levels=c(koder,99), labels = grtxt) #levels=c(nivaa,9)
           retn <- 'H'
      }
-
      if (valgtVar == 'MaritalStatus') {
           # 1:Enslig, 2:Særboer, 3:Samboer, 4:Gift, 5:Skilt, 6:Enke, 9:Ukjent
           Tittel <- 'Sivilstatus'
@@ -129,6 +130,19 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-1
           #RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
           #RegData$VariabelGr <- factor(RegData$Variabel, levels = c(0:2,9), labels = grtxt)
           retn <- 'H'
+     }
+     if (valgtVar == 'OpAnesthetic') {
+       # 1-Ingen, 2-Lokal, 3-Generell, 4-Spinal, 5-Annet
+       Tittel <- 'Anestesitype ved endoskopiske inngrep'
+       grtxt <- c('Ingen', 'Lokal', 'Generell', 'Spinal', 'Annet', 'Ukjent')
+       koder <- 1:5
+       retn <- 'H'
+     }
+     if (valgtVar == 'OpASA') {
+       koder <- 1:5
+       grtxt <- c('I:Ingen','II:Moderat', 'III:Alvorlig', 'IV:Livstruende', 'V:Døende', 'Ukjent')
+       subtxt <- 'Sykdomsgrad'
+       Tittel <-  'ASA-gruppe'
      }
 
      if (valgtVar == 'OpBMICategory') {
@@ -194,12 +208,14 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-1
           #RegData$VariabelGr <- factor(RegData$Variabel, levels = c(1:2,9), labels = grtxt)
      }
 
-     #Likt for alle kategoriske variable TEST ut!!!
-     RegData$Variabel <- 99
-     indVar <- which(RegData[ ,valgtVar] %in% koder)	#Må definere koder <- 1:5 i variabeldef.
-     RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
-     RegData$VariabelGr <- factor(RegData$Variabel, levels=c(koder,99), labels = grtxt) #levels=c(nivaa,9)
 
+     #Likt for alle kategoriske variable TEST ut!!!
+	if (koder != '') {
+		 RegData$Variabel <- 99
+		 indVar <- which(RegData[ ,valgtVar] %in% koder)	#Må definere koder <- 1:5 i variabeldef.
+		 RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
+		 RegData$VariabelGr <- factor(RegData$Variabel, levels=c(koder,99), labels = grtxt) #levels=c(nivaa,9)
+		}
      ### Numeriske variable:
 
      if (valgtVar == 'Alder') {
@@ -234,20 +250,6 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-1
      if (enhetsUtvalg == 2) {RegData <- RegData[which(RegData$ReshId == reshID), ]}
 
 
-     ###--------------- Gjøre beregninger ------------------------------
-     #       medSml <- 0
-     #       utvalg <- c('Sh', 'Rest')	#Sh vil angi enhet, evt. hele landet hvis ikke gjøre sml, 'Rest' utgjør sammenligningsgruppa
-     #       Andeler <- list(Sh = 0, Rest =0)#
-
-     ##Hvis det skal gjøres sammenligning:
-     #        if (enhetsUtvalg == 1) {
-     #            indSh <-which(RegData$ReshId == reshID)
-     #            indRest <- which(RegData$ReshId != reshID)
-     #            RegDataLand <- RegData
-     #            ind <- list(Sh=indSh, Rest=indRest)
-     #            medSml <- 1
-     #        }
-
      #Generere hovedgruppe og sammenlikningsgruppe
      #Trenger indeksene før genererer tall for figurer med flere variable med ulike utvalg
      if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet
@@ -269,19 +271,6 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-1
 
 
 
-
-     #	for (teller in 1:(medSml+1)) {
-     #		if (medSml == 1) {
-     #			RegData <- RegDataLand[switch(utvalg[teller], Sh = ind$Sh, Rest=ind$Rest), ]
-     #           }
-     #        if (teller == 1) {
-     #			Andeler$Sh <- 100*table(RegData$VariabelGr)/length(RegData$VariabelGr)
-     #           Nsh <- dim(RegData)[1]}
-     #      if (teller == 2) {
-     #			Andeler$Rest <- 100*table(RegData$VariabelGr)/length(RegData$VariabelGr)
-     #           Nrest <- dim(RegData)[1]}
-     #    }	#for-løkke
-
      #Gjør beregninger selv om det evt ikke skal vise figur ut. Trenger utdata.
      Andeler <- list(Hoved = 0, Rest =0)
      NRest <- 0
@@ -302,8 +291,7 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-1
 
 
      #FIGURER SATT SAMMEN AV FLERE VARIABLE, ULIKT TOTALUTVALG
-     if (valgtVar %in% c('Komorbiditet', 'KomplOpr', 'Kompl3mnd', 'OprIndik', 'OprIndikSmerter',
-                         'OprIndikMyelopati', 'Radiologi')){
+     if (valgtVar %in% c('LapEkstrautstyr')){
           flerevar <-  1
           utvalg <- c('Hoved', 'Rest')	#Hoved vil angi enhet, evt. hele landet hvis ikke gjøre sml, 'Rest' utgjør sammenligningsgruppa
           RegDataLand <- RegData
@@ -315,12 +303,29 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-1
                RegData <- RegDataLand[switch(utvalg[teller], Hoved = indHoved, Rest=indRest), ]
 
 
-               if (valgtVar=='OprIndik') {
-                    #Fyll inn...
-               }
-
-               #Fyll inn
-
+       if (valgtVar=='LapEkstrautstyr') {
+				#MCEType=1 el 3 (Laparoskopi eller begge)
+				Var <- c('LapAdheanseprofylakse',
+					'LapBipolarDiatermi',
+					'LapClips',
+					'LapHarmonicS',
+					'LapMorcellator',
+					'LapNett',
+					'LapPlasmajet',
+					'LapPreparatopose',
+					'LapProtoadapter',
+					'LapRobotKirurgi',
+					'LapSingelPort',
+					'LapStaplerEndogia',
+					'LapSutur',
+					'LapThunderbeat',
+					'LapUnipolarDiatermi')
+				grtxt <- Var
+				Tittel <- 'Operasjonsårsak'
+				indMed <- which(RegData$MCEType %in% c(1,3))
+ 				AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
+				NVar <- length(indMed)
+				}
 
                #Generell beregning for alle figurer med sammensatte variable:
                if (teller == 1) {
