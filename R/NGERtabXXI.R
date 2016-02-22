@@ -1,6 +1,6 @@
 #' Generate tab XXI
 #'
-#' Yes, generate tab XXI
+#' Yes, generate tab XXI, uhu
 #'
 #' @inheritParams FigAndeler
 #' @return dataframe tabXXI
@@ -39,6 +39,13 @@ NGERtabXXI <- function(datoFra = '2014-01-01', datoTil = '2014-04-01') {
 
   tabXXI <- data.frame(Frekvens=apply(mydf, 2, sum, na.rm = TRUE),
                        Andel=apply(mydf, 2, sum, na.rm = TRUE)/N)
+
+  # how many persons have more than one compl?
+  indCompl <- union(which(mydf$ComplAfterBleed==1),
+                    which(mydf$ComplEquipment==1))
+  indCompl <- union(indCompl, which(mydf$ComplInfection==1))
+  indCompl <- union(indCompl, which(mydf$ComplOrgan==1))
+
 
 
   return(tabXXI)
