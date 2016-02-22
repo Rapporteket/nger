@@ -7,6 +7,8 @@
 #' @param valgtVar Hvilken variabel skal visualiseres
 #'     Alder: Pasientens alder, 5-årige aldersgrupper
 #'     Education: Pasientens utdanning
+#'     Komplikasjoner
+#'     LapAccessMethod: Teknikk for laparaskopisk tilgang
 #'     LapNumHjelpeinnstikk: Antall hjelpeinnstikk
 #'     MaritalStatus: Sivilstand
 #'     MCEType: Operasjonsmetode
@@ -82,7 +84,7 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-1
      ############
      ### Kategoriske variable:
      grtxt <- ''
-     koder <- ''
+     koder <- NULL
 
 
      if (valgtVar == 'Education') {
@@ -90,21 +92,24 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-1
           Tittel <- 'Utdanningsnivå'
           grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år', 'Ukjent')
           koder <- 1:5
-          #		RegData$Variabel <- 99
-          #		indVar <- which(RegData[ ,valgtVar] %in% koder)	#Må definere koder <- 1:5 i variabeldef.
-          #		RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
-          #		RegData$VariabelGr <- factor(RegData$Variabel, levels=c(koder,99), labels = grtxt) #levels=c(nivaa,9)
           retn <- 'H'
      }
+
+    if (valgtVar == 'LapAccessMethod') {
+          # 0: Åpent, 1: Veress-nål, 2: Annet
+		      #Bare laparoskopi og begge
+		      RegData <- RegData[which(RegData$MCEType %in% c(1,3)), ]
+          Tittel <- 'Teknikk for laparaskopisk tilgang'
+          grtxt <- c('Åpent', 'Veress-nål', 'Annet', 'Ukjent')
+          koder <- 0:2
+		      retn <- 'H'
+     }
+
      if (valgtVar == 'MaritalStatus') {
           # 1:Enslig, 2:Særboer, 3:Samboer, 4:Gift, 5:Skilt, 6:Enke, 9:Ukjent
           Tittel <- 'Sivilstatus'
           grtxt <- c('Enslig', 'Særboer', 'Samboer', 'Gift', 'Skilt', 'Enke', 'Ukjent')
           koder <- 1:6
-          #		RegData$Variabel <- 9	#For å ta med manglende registreringer i "Ukjent"
-          #		indVar <- which(RegData[ ,valgtVar] %in% 1:6)
-          #		RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
-          #		RegData$VariabelGr <- factor(RegData$Variabel, levels=c(1:6,9), labels=grtxt)
           retn <- 'H'
      }
 
@@ -113,10 +118,6 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-1
           Tittel <- 'Operasjonsmetode'
           koder <- 1:3
           grtxt <- c('Laparoskopi', 'Hysteroskopi', 'Begge', 'Ukjent')
-          #RegData$Variabel <- 9	#0 og NA blir "Ukjent"
-          #indVar <- which(RegData[ ,valgtVar] %in% 1:3)
-          #RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
-          #RegData$VariabelGr <- factor(RegData$Variabel, levels = 1:3, labels = grtxt)
           retn <- 'H'
      }
 
@@ -125,10 +126,6 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-1
           Tittel <- 'Patient forstår og gjør seg forstått på norsk'
           grtxt <- c('Nei', 'Ja', 'Delvis', 'Ukjent')
           koder <- 0:2
-          #RegData$Variabel <- 9	#For å ta med manglende registreringer i "Ukjent"
-          #indVar <- which(RegData[ ,valgtVar] %in% 0:2)
-          #RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
-          #RegData$VariabelGr <- factor(RegData$Variabel, levels = c(0:2,9), labels = grtxt)
           retn <- 'H'
      }
      if (valgtVar == 'OpAnesthetic') {
@@ -152,10 +149,6 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-1
           grtxt <- c('Alvorlig undervekt','moderat undervekt', 'mild undervekt', 'normal vekt', 'overvekt',
                      'fedme kl.I', 'fedme kl.II', 'fedme kl.III', 'Ukjent')
           koder <- 1:8
-          #RegData$Variabel <- 9	#For å ta med manglende registreringer i "Ukjent"
-          #indVar <- which(RegData[ ,valgtVar] %in% 1:8)
-          #RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
-          #RegData$VariabelGr <- factor(RegData$Variabel, levels = 1:8, labels = grtxt)
           retn <- 'H'
      }
 
@@ -164,10 +157,6 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-1
           Tittel <- 'Operasjonskategori'
           grtxt <- c('Elektiv', 'Akutt', 'Ø-hjelp', 'Ukjent')
           koder <- 1:3
-          #RegData$Variabel <- 9	#For å ta med manglende registreringer i "Ukjent"
-          #indVar <- which(RegData[ ,valgtVar] %in% 1:3)
-          #RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
-          #RegData$VariabelGr <- factor(RegData$Variabel, levels = c(1:3,9), labels = grtxt)
      }
      if (valgtVar %in% c('OpEarlierVaginal', 'OpEarlierLaparoscopy', 'OpEarlierLaparatomy')) {
           # 0: Nei, 1: Ja, 9: Vet ikke
@@ -177,10 +166,6 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-1
                                                    'OpEarlierLaparatomy' = 'laparatomi'))
           grtxt <- c('Nei', 'Ja', 'Vet ikke')
           koder <- 0:1
-          #RegData$Variabel <- 9	#For å ta med manglende registreringer i "Vet ikke"
-          #indVar <- which(RegData[ ,valgtVar] %in% 0:1)
-          #RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
-          #RegData$VariabelGr <- factor(RegData$Variabel, levels = c(0,1,9), labels = grtxt)
      }
 
 
@@ -191,10 +176,6 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-1
                                          'OpDaySurgery' = 'Dagkirurgiske Inngrep'))
           grtxt <- c('Nei', 'Ja', 'Ukjent')
           koder <- 0:1
-          #RegData$Variabel <- 9	#For å ta med manglende som "Ukjent"
-          #indVar <- which(RegData[ ,valgtVar] %in% 0:1)
-          #RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
-          #RegData$VariabelGr <- factor(RegData$Variabel, levels = c(0:1,9), labels = grtxt)
      }
 
      if (valgtVar == 'OpType') {
@@ -202,15 +183,11 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-1
           Tittel <- 'Operasjonstype'
           grtxt <- c('Primærinngrep', 'Reoperasjon', 'Ukjent')
           koder <- 1:2
-          #RegData$Variabel <- 9	#For å ta med manglende som "Ukjent"
-          #indVar <- which(RegData[ ,valgtVar] %in% 1:2)
-          #RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
-          #RegData$VariabelGr <- factor(RegData$Variabel, levels = c(1:2,9), labels = grtxt)
      }
 
 
-     #Likt for alle kategoriske variable TEST ut!!!
-	if (koder != '') {
+     #Likt for alle kategoriske variable
+	if (length(koder)>0) {
 		 RegData$Variabel <- 99
 		 indVar <- which(RegData[ ,valgtVar] %in% koder)	#Må definere koder <- 1:5 i variabeldef.
 		 RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
@@ -291,7 +268,7 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-1
 
 
      #FIGURER SATT SAMMEN AV FLERE VARIABLE, ULIKT TOTALUTVALG
-     if (valgtVar %in% c('LapEkstrautstyr')){
+     if (valgtVar %in% c('Komplikasjoner', 'LapEkstrautstyr')){
           flerevar <-  1
           utvalg <- c('Hoved', 'Rest')	#Hoved vil angi enhet, evt. hele landet hvis ikke gjøre sml, 'Rest' utgjør sammenligningsgruppa
           RegDataLand <- RegData
@@ -302,6 +279,20 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-1
                #  Variablene kjøres for angitt indeks, dvs. to ganger hvis vi skal ha sammenligning med Resten.
                RegData <- RegDataLand[switch(utvalg[teller], Hoved = indHoved, Rest=indRest), ]
 
+
+       if (valgtVar=='Komplikasjoner') {
+         #Bare registreringer hvor ComplExist er 0 el. 1
+         retn <- 'H'
+         Var <- c('ComplAfterBleed', #Postoperativ blødning?
+					        'ComplEquipment', #Komplikasjoner med ustyr
+					        'ComplInfection', #Postoperativ infeksjon
+					        'ComplOrgan') #Organskade
+				grtxt <- Var
+				Tittel <- 'Endoskopiske komplikasjoner'
+				indMed <- which(RegData$ComplExist %in% 0:1)
+ 				AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
+				NVar <- length(indMed)
+       }
 
        if (valgtVar=='LapEkstrautstyr') {
 				#MCEType=1 el 3 (Laparoskopi eller begge)
@@ -327,6 +318,7 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-1
  				AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
 				NVar <- length(indMed)
 				}
+
 
                #Generell beregning for alle figurer med sammensatte variable:
                if (teller == 1) {
