@@ -1,6 +1,6 @@
 #' Generate tab XXI
 #'
-#' Yes, generate tab XXI, uhu
+#' Yes, generate tab XXI, uhuu
 #'
 #' @inheritParams FigAndeler
 #' @return dataframe tabXXI
