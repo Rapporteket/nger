@@ -15,6 +15,6 @@ NGERtabXXI(datoFra = "2014-01-01", datoTil = "2014-04-01")
 dataframe tabXXI
 }
 \description{
-Yes, generate tab XXI
+Yes, generate tab XXI, uhu
 }
 
