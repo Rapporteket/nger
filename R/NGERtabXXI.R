@@ -3,12 +3,12 @@
 #' Yes, generate tab XXI
 #'
 #' @inheritParams FigAndeler
-#' @return dataframe tabXXI
+#' @return list $tabXXI data frame of table data
+#' @return list $personsWithMultipleCompl number of persons
 #' @export
 
-NGERtabXXI <- function(datoFra = '2014-01-01', datoTil = '2014-04-01') {
+NGERtabXXI <- function(RegData) {
 
-  RegData <- NGERHentRegDataXXI(datoFra, datoTil)
   N <- dim(RegData)[1]
   mydf <- RegData[ , c("ComplAfterBleed",
                        "ComplAfterBleedAbdom",
@@ -36,19 +36,21 @@ NGERtabXXI <- function(datoFra = '2014-01-01', datoTil = '2014-04-01') {
                        "ComplReopLaparotomy"
                        )
                    ]
-  vars <- names(mydf)
-  Komplikasjon <- vector()
-  Frekvens <- vector()
-  Andel <- vector()
-  for (s in vars) {
-    Komplikasjon <- c(Komplikasjon, s)
-    Nk <- sum(mydf[ , s], na.rm = TRUE)
-    Frekvens <- c(Frekvens, Nk)
-    Andel <- c(Andel, Nk/N)
-  }
 
-  tabXXI <- data.frame(Komplikasjon, Frekvens, Andel)
+  tabXXI <- data.frame(Frekvens=apply(mydf, 2, sum, na.rm = TRUE),
+                       Andel=apply(mydf, 2, sum, na.rm = TRUE)/N)
 
-  return(tabXXI)
+  # how many persons have more than one compl?
+  indCompl <- union(which(mydf$ComplAfterBleed==1),
+                    which(mydf$ComplEquipment==1))
+  indCompl <- union(indCompl, which(mydf$ComplInfection==1))
+  indCompl <- union(indCompl, which(mydf$ComplOrgan==1))
+
+  tab <- table(mydf[indCompl])
+  personsWithMultipleCompl <- length(tab[tab > 1])
+
+
+
+  list(tabXXI=tabXXI, personsWithMultipleCompl=personsWithMultipleCompl)
 
 }

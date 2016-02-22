@@ -2,10 +2,10 @@
 
 export(FigAndelTid)
 export(FigAndeler)
-export(FigOpInd)
 export(NGERAntallRegPrAvd)
 export(NGERHentRegData)
 export(NGERHentRegDataXXI)
 export(NGERLibUtvalg)
+export(NGEROpInd)
 export(NGERPreprosess)
 export(NGERtabXXI)
