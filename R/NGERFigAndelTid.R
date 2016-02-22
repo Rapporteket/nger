@@ -45,6 +45,16 @@ if (valgtVar=='Alder') {
   	VarTxt <- 'pasienter >=70år'
 	Tittel <- 'Andel pasienter over 70 år'
 }
+
+if (valgtVar=='OpAntibioticProphylaxis') {
+	#Andel som får antibiotika
+	#Kode 0,1: Nei, Ja (ingen tomme per 22.feb.2016)
+	RegData <- RegData[which(RegData$OpAntibioticProphylaxis %in% 0:1), ]
+	RegData$Variabel <- RegData[ ,valgtVar]
+  	VarTxt <- 'profylakser'
+	Tittel <- 'Andel som får antibiotika'
+}
+
 if (valgtVar=='OpBMI') {
 	#Pasientskjema. Andel med BMI>30
 	indMed <- which(RegData[ ,valgtVar] >30)

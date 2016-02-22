@@ -14,17 +14,15 @@ NGERLibUtvalg <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', mina
 
     Ninn <- dim(RegData)[1]
 
-    indVarMed <- which(RegData$Variabel !='NA') %i% which(RegData$Variabel != 'NaN') %i%
-      which(RegData$Variabel != '') %i% which(!is.na(RegData$Variabel))
-
+    #Utvalg på alder:
     indAld <- which(RegData$Alder >= minald & RegData$Alder <= maxald)
+    #Utvalg på dato:
     indDato <- which(RegData$InnDato >= as.POSIXlt(datoFra) & RegData$InnDato <= as.POSIXlt(datoTil))
-
+    #Operasjonstype:
     indMCE <- if (MCEType %in% c(1:3)){which(RegData$MCEType == MCEType)
               } else {indMCE <- 1:Ninn}
 
-    ##index to be included
-
+    #utvalg:
     indMed <- indAld %i% indDato %i% indMCE
 
     RegData <- RegData[indMed,]
