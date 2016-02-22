@@ -4,9 +4,10 @@
 \alias{FigAndeler}
 \title{Lag søylediagram eller stabelplott som viser andeler av ulike variabler}
 \usage{
-FigAndeler(RegData, valgtVar, datoFra = "2000-04-01",
+FigAndeler(RegData, valgtVar, datoFra = "2013-01-01",
   datoTil = "2050-12-31", minald = 0, maxald = 130, outfile = "",
-  reshID, enhetsUtvalg = 1, MCEType = 99, hentData = 0, preprosess = T)
+  reshID, enhetsUtvalg = 1, MCEType = 99, hentData = 0,
+  preprosess = TRUE)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -14,6 +15,7 @@ FigAndeler(RegData, valgtVar, datoFra = "2000-04-01",
 \item{valgtVar}{Hvilken variabel skal visualiseres
 Alder: Pasientens alder, 5-årige aldersgrupper
 Education: Pasientens utdanning
+LapNumHjelpeinnstikk: Antall hjelpeinnstikk
 MaritalStatus: Sivilstand
 MCEType: Operasjonsmetode
 PatientNorwegian: Pasientens norskkunnskaper

@@ -7,7 +7,7 @@
 #'
 #' @export
 #'
-LibUtvalg <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', minald, maxald, MCEType)
+NGERLibUtvalg <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', minald, maxald, MCEType)
 {
     # Definer intersect-operator
     "%i%" <- intersect

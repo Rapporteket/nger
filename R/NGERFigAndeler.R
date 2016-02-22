@@ -7,6 +7,7 @@
 #' @param valgtVar Hvilken variabel skal visualiseres
 #'     Alder: Pasientens alder, 5-årige aldersgrupper
 #'     Education: Pasientens utdanning
+#'     LapNumHjelpeinnstikk: Antall hjelpeinnstikk
 #'     MaritalStatus: Sivilstand
 #'     MCEType: Operasjonsmetode
 #'     PatientNorwegian: Pasientens norskkunnskaper
@@ -45,8 +46,8 @@
 #'
 #' @export
 #'
-FigAndeler  <- function(RegData, valgtVar, datoFra='2000-04-01', datoTil='2050-12-31', minald=0, maxald=130,
-                        outfile='', reshID, enhetsUtvalg=1, MCEType=99, hentData=0, preprosess=T)
+FigAndeler  <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='2050-12-31', minald=0, maxald=130,
+                        outfile='', reshID, enhetsUtvalg=1, MCEType=99, hentData=0, preprosess=TRUE)
 {
      ## Hvis spørring skjer fra R på server. ######################
      if(hentData == 1){
@@ -211,11 +212,17 @@ FigAndeler  <- function(RegData, valgtVar, datoFra='2000-04-01', datoTil='2050-1
           subtxt <- 'Aldersgrupper'
           retn <- 'H'
      }
+     if (valgtVar == 'LapNumHjelpeinnstikk') {
+       # Velge antall fra 0 til 6
+       Tittel <- 'Antall hjelpeinnstikk'
+       grtxt <- 0:6
+       RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = grtxt)
+     }
 
 
      ###Gjør utvalg (LibUtvalg)
      ###Kjører denne etter variabeldefinisjon for at utvalgTxt skal bli riktig
-     NGERUtvalg <- LibUtvalg(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra,
+     NGERUtvalg <- NGERLibUtvalg(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra,
                              datoTil = datoTil, MCEType = MCEType)
      RegData <- NGERUtvalg$RegData
      utvalgTxt <- NGERUtvalg$utvalgTxt
