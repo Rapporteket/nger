@@ -15,6 +15,8 @@ FigAndeler(RegData, valgtVar, datoFra = "2013-01-01",
 \item{valgtVar}{Hvilken variabel skal visualiseres
 Alder: Pasientens alder, 5-årige aldersgrupper
 Education: Pasientens utdanning
+Komplikasjoner
+LapAccessMethod: Teknikk for laparaskopisk tilgang
 LapNumHjelpeinnstikk: Antall hjelpeinnstikk
 MaritalStatus: Sivilstand
 MCEType: Operasjonsmetode
