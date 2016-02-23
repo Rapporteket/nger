@@ -16,3 +16,4 @@ testing
 *test.pdf
 *.gitignore
 *NGERSamledok-concordance.tex
+inst/doc
