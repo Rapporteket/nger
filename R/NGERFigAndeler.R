@@ -75,13 +75,6 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
      ### Variable
      ###############
 
-     ### Kommentar:
-     #Hvis vi definerer kategoriske variable først, kan følgende linjer flyttes ut av def. for kategoriske:
-     #		RegData$Variabel <- 99
-     #		indVar <- which(RegData[ ,valgtVar] %in% 1:5)	#Må da definere koder <- 1:5 i variabeldef.
-     #		RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
-     #		RegData$VariabelGr <- factor(RegData$Variabel, levels=c(1:5,9), labels = grtxt) #levels=c(nivaa,9)
-     ############
      ### Kategoriske variable:
      grtxt <- ''
      koder <- NULL
@@ -95,14 +88,23 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
           retn <- 'H'
      }
 
+	if (valgtVar=='FollowupSeriousness') {
+		#Postoperative komplikasjoner
+		#Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
+		RegData <- RegData[which(RegData$ComplExist == 1), ]
+		grtxt <- c('Lite alvorlig', 'Middels alvorlig', 'Alvorlig', 'Dødelig', 'Ukjent')
+		Tittel <- 'Alvorlighetsgrad av komplikasjoner'
+		koder <- 1:4
+		retn <- 'H'
+	}
+
     if (valgtVar == 'LapAccessMethod') {
           # 0: Åpent, 1: Veress-nål, 2: Annet
 		      #Bare laparoskopi og begge
-		      RegData <- RegData[which(RegData$MCEType %in% c(1,3)), ]
+		  RegData <- RegData[which(RegData$MCEType %in% c(1,3)), ]
           Tittel <- 'Teknikk for laparaskopisk tilgang'
           grtxt <- c('Åpent', 'Veress-nål', 'Annet', 'Ukjent')
           koder <- 0:2
-		      retn <- 'H'
      }
 
      if (valgtVar == 'MaritalStatus') {
@@ -126,7 +128,6 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
           Tittel <- 'Patient forstår og gjør seg forstått på norsk'
           grtxt <- c('Nei', 'Ja', 'Delvis', 'Ukjent')
           koder <- 0:2
-          retn <- 'H'
      }
      if (valgtVar == 'OpAnesthetic') {
        # 1-Ingen, 2-Lokal, 3-Generell, 4-Spinal, 5-Annet
@@ -140,14 +141,15 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
        grtxt <- c('I:Ingen','II:Moderat', 'III:Alvorlig', 'IV:Livstruende', 'V:Døende', 'Ukjent')
        subtxt <- 'Sykdomsgrad'
        Tittel <-  'ASA-gruppe'
+	   retn <- 'H'
      }
 
      if (valgtVar == 'OpBMICategory') {
           # 1:Alvorlig undervekt,2:moderat undervekt, 3:mild undervekt, 4:normal vekt, 5:overvekt,
           # 6:fedme kl.I, 7:fedme kl.II, 8:fedme kl.III
           Tittel <- 'BMI-kategorier, slå sammen noen???'
-          grtxt <- c('Alvorlig undervekt','moderat undervekt', 'mild undervekt', 'normal vekt', 'overvekt',
-                     'fedme kl.I', 'fedme kl.II', 'fedme kl.III', 'Ukjent')
+          grtxt <- c('Alvorlig undervekt','Moderat undervekt', 'Mild undervekt', 'Normal vekt', 'Overvekt',
+                     'Fedme kl.I', 'Fedme kl.II', 'Fedme kl.III', 'Ukjent')
           koder <- 1:8
           retn <- 'H'
      }
@@ -268,7 +270,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 
 
      #FIGURER SATT SAMMEN AV FLERE VARIABLE, ULIKT TOTALUTVALG
-     if (valgtVar %in% c('Komplikasjoner', 'LapEkstrautstyr')){
+     if (valgtVar %in% c('KomplPost', 'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr')){
           flerevar <-  1
           utvalg <- c('Hoved', 'Rest')	#Hoved vil angi enhet, evt. hele landet hvis ikke gjøre sml, 'Rest' utgjør sammenligningsgruppa
           RegDataLand <- RegData
@@ -280,7 +282,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
                RegData <- RegDataLand[switch(utvalg[teller], Hoved = indHoved, Rest=indRest), ]
 
 
-       if (valgtVar=='Komplikasjoner') {
+       if (valgtVar=='KomplPost') {
          #Bare registreringer hvor ComplExist er 0 el. 1
          retn <- 'H'
          Var <- c('ComplAfterBleed', #Postoperativ blødning?
@@ -288,8 +290,8 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 					        'ComplInfection', #Postoperativ infeksjon
 					        'ComplOrgan') #Organskade
 				grtxt <- Var
-				Tittel <- 'Endoskopiske komplikasjoner'
-				indMed <- which(RegData$ComplExist %in% 0:1)
+				Tittel <- 'Postoperative(?) komplikasjoner'
+				indMed <- which(RegData$ComplExist %in% 0:1)	#Fjern denne hvis likevel ikke postop.
  				AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
 				NVar <- length(indMed)
        }
@@ -319,6 +321,35 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 				NVar <- length(indMed)
 				}
 
+		  if (valgtVar == 'KomplReopUtd') {		#Evt. ReopUtd
+		    #Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper.
+			####!!!Usikker på hvilke variable som skal inngå. Eks ComplReop=1, OpType=2, tomme?
+			  # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
+			  Tittel <- 'Reoperasjon (komplikasjon) i utdanningsgrupper'
+			  grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år')
+			  RegData <- RegData[which(RegData$Education %in% 1:5), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
+			  #RegData <- RegData[intersect(which(RegData$Education %in% 1:5), which(RegData$ComplExist %in% 0:1)), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
+			  RegData$Education <- factor(RegData$Education, levels=1:5)
+			  AntVar <- table(RegData$Education[which(RegData$ComplReop ==1)])
+    		  #AntVar <- table(RegData$Education[which(RegData$OpType ==2)])
+    		  NVar <- table(RegData$Education)
+    		  #100*AntVar/NVar
+    		  retn <- 'H'
+    			}
+		  if (valgtVar == 'KomplPostUtd') {		#Evt. ReopUtd
+		    #Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper.
+			####!!!Usikker på hvilke variable som skal inngå. Eks ComplReop=1, OpType=2, tomme?
+			  # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
+			  Tittel <- 'Postop. komplikasjon i utdanningsgrupper'
+			  grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år')
+			  #RegData <- RegData[which(RegData$Education %in% 1:5), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
+			  RegData <- RegData[intersect(which(RegData$Education %in% 1:5), which(RegData$ComplExist %in% 0:1)), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
+			  RegData$Education <- factor(RegData$Education, levels=1:5)
+			  AntVar <- table(RegData$Education[which(RegData$ComplExist ==1)])
+    		  NVar <- table(RegData$Education)
+    		  #100*AntVar/NVar
+    		  retn <- 'H'
+    			}
 
                #Generell beregning for alle figurer med sammensatte variable:
                if (teller == 1) {
