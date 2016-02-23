@@ -52,6 +52,7 @@
 FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050-12-31', minald=0, maxald=130,
                         outfile='', reshID, enhetsUtvalg=1, MCEType=99, hentData=0, preprosess=TRUE)
 {
+  print(hentData)
      ## Hvis spørring skjer fra R på server. ######################
      if(hentData == 1){
           RegData <- NGERHentRegData(datoFra = datoFra, datoTil = datoTil)
