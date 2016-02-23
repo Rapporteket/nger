@@ -11,7 +11,7 @@
 #' @export
 
 
-FigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
+FigAndelTid <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
                         minald=0, maxald=130, MCEType=99, reshID, outfile='',
                         enhetsUtvalg=1, preprosess=TRUE, hentData=0) {
 
@@ -63,13 +63,14 @@ if (valgtVar=='OpBMI') {
 	Tittel <- 'Pasienter med fedme'
 }
 
-if (valgtVar=='KomplinfekDyp3mnd') {
-	#3MndSkjema. Andel med KomplinfekDyp3mnd=1
-	#Kode 0,1: Nei, Ja +tomme
-	RegData <- RegData[intersect(which(RegData$OppFolgStatus3mnd == 1), which(RegData$KomplinfekDyp3mnd %in% 0:1)), ]
-	RegData$Variabel <- RegData[ ,valgtVar]
-  	VarTxt <- 'dype infeksjoner'
-	Tittel <- 'Pasientrapportert dyp infeksjon, 3 mnd.'
+if (valgtVar=='ComplExist') {
+	# Andel med Komplikasjoner
+	#Kode 0: Nei, 1:Ja, tomme
+	#RegData <- RegData[which(RegData$ComplExist %in% 0:1), ]
+	#RegData$Variabel <- RegData[ ,valgtVar]
+  	RegData$Variabel[which(RegData$ComplExist==1)] <- 1
+  	VarTxt <- 'komplikasjoner'
+	Tittel <- 'Intraoperative komplikasjoner'	# [uten ukjente]'
 }
 
 if (valgtVar=='Reop') {
