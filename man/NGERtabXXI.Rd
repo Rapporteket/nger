@@ -4,17 +4,17 @@
 \alias{NGERtabXXI}
 \title{Generate tab XXI}
 \usage{
-NGERtabXXI(datoFra = "2014-01-01", datoTil = "2014-04-01")
+NGERtabXXI(RegData)
 }
 \arguments{
-\item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}
-
-\item{datoTil}{Seneste dato i utvalget (vises alltid i figuren).}
+\item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
 }
 \value{
-dataframe tabXXI
+list $tabXXI data frame of table data
+
+list $personsWithMultipleCompl number of persons
 }
 \description{
-Yes, generate tab XXI, uhuu
+Yes, generate tab XXI
 }
 

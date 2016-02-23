@@ -14,7 +14,7 @@ datoFra <- '2014-01-01' 	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2099-12-31'
 enhetsUtvalg <- 1 #0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet, (3-egen enhet mot egen region)
 libkat <- 'C:/SVN/jasper/Rlib/trunk/'		#del av sti til bibliotekkatalog, før /lib/r/<funksjon.R>
-valgtVar <- 'Education'
+valgtVar <- 'Alder'
 #Må velge... Alder, Education, Alvorlighetsgrad, MaritalStatus, OpAnesthetic, OpASA, HypCompleteness, PatientNorwegian, OpBMICategory,
 #             Opcat, OpType
 outfile <- ""
@@ -34,9 +34,12 @@ nger::FigAndeler(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra, datoTil=da
 
 tmp <- NGERAntallRegPrAvd(RegData = RegData)
 
+OpInd <- NGEROpInd(RegData=RegData, datoFra='2000-04-01', datoTil='2050-12-31', minald=0, maxald=130, outfile='',
+                   reshID=reshID, enhetsUtvalg=1, MCEType=99, preprosess=TRUE, hentData=F)
 
 
-tabXXI <- data.frame(Frekvens=apply(mydf, 2, sum, na.rm = TRUE), Andel=apply(mydf, 2, sum, na.rm = TRUE)/N)
+## For Are:
+## tabXXI <- data.frame(Frekvens=apply(mydf, 2, sum, na.rm = TRUE), Andel=apply(mydf, 2, sum, na.rm = TRUE)/N)
 
 
 
