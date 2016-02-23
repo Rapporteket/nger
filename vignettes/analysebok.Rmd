@@ -15,8 +15,9 @@ Beskrivelse av hva vi gjør fra rådata til ferdige resultater...
 Figurer og tabeller relatert til registrerte komplikasjoner
 
 ### Tabell med fordeling (%) av laparoskopiske postoperative komplikasjoner
-Tallene hentes fra Oppfølgingsskjema hvor det først registreres om det finnes komplikasjoner (_ComplExist_) og hvis så er tilfelle registreres i fem ulike
-komplikasjonskategorier:
+Tallene hentes fra Oppfølgingsskjema og filtreres på _MCEType = 1_
+(laparoskopiske inngrep/hendelse). Det første
+som registreres er om det finnes komplikasjoner (_ComplExist_) og hvis så er tilfelle registreres det i fem ulike komplikasjonskategorier:
 
 - Reoperasjon
 - Infeksjon
@@ -25,7 +26,7 @@ komplikasjonskategorier:
 
 Hver av disse har flere underkategorier. Hierarkiet blir da slik:
 
-_ComplExist_ -> kategori -> underkategori
+_MCEType_ -> _ComplExist_ -> kategori -> underkategori
 
 Ved en komplikasjon er det på samme person mulig å
 velge flere kategorier og underkategorier. Det er også mulig å velge kategori
@@ -33,5 +34,7 @@ uten å spesifisere underkatergori. Til sammen gir dette litt begrenset mulighet
 for å kontrollregne på antall...
 
 I skjema registreres alt i avkryssingsbokser. Hver variable tar da verdiene
-0, 1 eller NULL/NA
+0, 1 eller NULL/NA der 1 er kryss og 0 ikke kryss. Det er antatt at NULL/NA
+er standard verdi som fylles ut for alle forløp og denne verdien representerer
+tilfelle der kategorien i nivået over har verdien 0 eller NULL/NA.
 
