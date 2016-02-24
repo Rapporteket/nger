@@ -289,13 +289,19 @@ konsesjon, angi eventuell tidsbegrensning for denne.}
 \chapter{Resultater}\label{cha:res}
 \guide{Tekst, tabeller og figurer der resultater fra registeret presenteres.}
 
+<<'getData', echo=TRUE, eval=TRUE>>=
+year <- as.character(reportYear)
+datoFra <- paste0(year, "01-01")
+datoTil <- paste0(year, "12-31")
+RegData <- NGERHentRegDataXXI(datoFra, datoTil)
+@
 
 \section{Komplikasjoner}
 Her kan det sikkert bli ganske mange figurer og tabeller... Her er en
 pilottabell:
 
 <<'testtabell', results='asis', echo=FALSE, eval=TRUE>>=
-RegData <- NGERHentRegDataXXI(datoFra, datoTil)
+
 tabData <- NGERtabXXI(RegData)
 xtable::xtable(tabData$tabXXI)
 @
