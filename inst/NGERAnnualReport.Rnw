@@ -303,7 +303,7 @@ pilottabell:
 <<'testtabell', results='asis', echo=FALSE, eval=TRUE>>=
 
 tabData <- NGERtabXXI(RegData)
-xtable::xtable(tabData$tabXXI)
+print(xtable::xtable(tabData$tabXXI))
 @
 
 
