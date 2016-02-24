@@ -69,7 +69,7 @@ INNER JOIN ForlopsOversikt f ON v.MCEID = f.ForlopsID
 WHERE
   v.MCEType = 1 AND
   f.HovedDato >= \'', datoFra, '\' AND
-  f.HovedDato <= \'', datoTil, '\'
+  f.HovedDato < \'', datoTil, '\'
 '
   )
 
