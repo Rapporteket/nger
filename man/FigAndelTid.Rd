@@ -4,7 +4,7 @@
 \alias{FigAndelTid}
 \title{Tidstrend (år) av andel for en gitt variabel.}
 \usage{
-FigAndelTid(RegData, valgtVar, datoFra = "2013-01-01",
+FigAndelTid(RegData = 0, valgtVar, datoFra = "2013-01-01",
   datoTil = "3000-12-31", minald = 0, maxald = 130, MCEType = 99,
   reshID, outfile = "", enhetsUtvalg = 1, preprosess = TRUE,
   hentData = 0)

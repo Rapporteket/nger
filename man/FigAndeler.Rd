@@ -4,7 +4,7 @@
 \alias{FigAndeler}
 \title{Lag søylediagram eller stabelplott som viser andeler av ulike variabler}
 \usage{
-FigAndeler(RegData, valgtVar, datoFra = "2013-01-01",
+FigAndeler(RegData = 0, valgtVar, datoFra = "2013-01-01",
   datoTil = "2050-12-31", minald = 0, maxald = 130, outfile = "",
   reshID, enhetsUtvalg = 1, MCEType = 99, hentData = 0,
   preprosess = TRUE)

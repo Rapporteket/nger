@@ -23,9 +23,7 @@ FigAndelTid <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000
 
   # Hvis RegData ikke har blitt preprosessert
   if (preprosess){
-    Data <- NGERPreprosess(RegData=RegData, reshID=reshID)
-    RegData <- Data
-    rm(Data)
+    RegData <- NGERPreprosess(RegData=RegData, reshID=reshID)
   }
 
 
@@ -63,16 +61,47 @@ if (valgtVar=='OpBMI') {
 	Tittel <- 'Pasienter med fedme'
 }
 
+### Komplikasjoner
 if (valgtVar=='ComplExist') {
 	# Andel med Komplikasjoner
 	#Kode 0: Nei, 1:Ja, tomme
-	#RegData <- RegData[which(RegData$ComplExist %in% 0:1), ]
-	#RegData$Variabel <- RegData[ ,valgtVar]
-  	RegData$Variabel[which(RegData$ComplExist==1)] <- 1
+	RegData <- RegData[which(RegData$ComplExist %in% 0:1), ]
+	RegData$Variabel <- RegData[ ,valgtVar]
+  	#RegData$Variabel[which(RegData$ComplExist==1)] <- 1
   	VarTxt <- 'komplikasjoner'
-	Tittel <- 'Intraoperative komplikasjoner'	# [uten ukjente]'
+	Tittel <- 'Komplikasjoner, postop.?[ComplExist], uten ukjente'
+}
+if (valgtVar=='FollowupSeriousness') {
+	#PostoperativeAlvorlige hendelser
+	#Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
+	RegData <- RegData[which(RegData$FollowupSeriousness %in% 1:4), ]
+	RegData$Variabel[which(RegData$FollowupSeriousness %in% 3:4)] <- 1
+  	VarTxt <- 'alvorlige komplikasjoner'
+	Tittel <- 'Andel av komplikasjonene som var alvorlige (3 og 4)'
 }
 
+if (valgtVar=='KomplIntra') {
+	# Andel med komplikasjoner ved operasjon. Må kombinere HypComplications og LapComplications
+	#Kode 0: Nei, 1:Ja, tomme
+	RegData$KomplIntra <- with(RegData, HypComplications + LapComplications) #Får mange tomme!!!
+  	indMed <- switch(as.character(MCEType),
+					'1' = which(RegData$LapComplications %in% 0:1),
+					'2' = which(RegData$HypComplications %in% 0:1),
+					'3' = which(RegData$KomplIntra %in% 0:1),	#Få tomme for dette valget
+					'99' = union(which(is.finite(RegData$HypComplications)), which(is.finite(RegData$LapComplications))))
+	RegData <- RegData[indMed, ]
+  	indVar <- switch(as.character(MCEType),
+					'1' = which(RegData$LapComplications == 1),
+					'2' = which(RegData$HypComplications == 1),
+					'3' = which(RegData$KomplIntra == 1),
+					'99' = union(which(RegData$HypComplications == 1), which(RegData$LapComplications==1)))
+	RegData$Variabel[indVar] <- 1
+	VarTxt <- 'komplikasjoner'
+	Tittel <- 'Komplikasjoner, intraoperativt (?)[HypCompl og LapCompl], uten tomme'
+}
+
+
+#########
 if (valgtVar=='Reop') {
 	#Andel OpType==2 (1:primær, 2: reop)
   #ComplReop
@@ -81,14 +110,6 @@ if (valgtVar=='Reop') {
   RegData$Variabel[which(RegData$ComplReop == 1)] <- 1
   VarTxt <- 'reoperasjoner'
 	Tittel <- 'Reoperasjoner (basert på [ComplReop])'
-}
-if (valgtVar=='AlvorligeHendelser') {
-	#3MndSkjema. Andel med KomplinfekOverfl3mnd=1
-	#Kode 0,1: Nei, Ja +tomme
-	RegData <- RegData[intersect(which(RegData$OppFolgStatus3mnd == 1), which(RegData$KomplinfekOverfl3mnd %in% 0:1)), ]
-	RegData$Variabel <- RegData[ ,valgtVar]
-  	VarTxt <- 'overfladiske infeksjoner'
-	Tittel <- 'Overfladisk infeksjon, 3 mnd.'
 }
 
 if (valgtVar=='StatusFollowup') {
