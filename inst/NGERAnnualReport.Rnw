@@ -296,6 +296,11 @@ datoTil <- paste0(year, "12-31")
 RegData <- NGERHentRegDataXXI(datoFra, datoTil)
 @
 
+<<'prepareAttachments', eval=TRUE, echo=TRUE>>=
+attachFiles <- ""
+@
+
+
 \section{Komplikasjoner}
 Her kan det sikkert bli ganske mange figurer og tabeller... Her er en
 pilottabell:
@@ -604,6 +609,21 @@ hjelp til registeret og ekspertgruppen i vurdering av registeret.}
   \label{tab:sta}
 \end{longtable}
 
+
+\part{Vedlegg}
+
+\section{Kildedokument og figurer}
+Utganspunktet for årsrapporten er automatisk fremstilling fra Rapporteket.
+Vedlegg her kan brukes til videre mauelt arbeid med årsrapporten.
+
+<<'prepareAnnotations, echo=TRUE, eval=TRUE, results=tex>>=
+texSourceFile <- "NGERAnnualReport.tex"
+attachFiles <- c(attachFiles, texSourceFile)
+childFile <- system.file("nowebChildAddAnnotation.Rnw", package = "rapbase")
+@
+
+<<'addAnnotations', child=childFile>>=
+@
 
 %\listoffigures
 %\listoftables
