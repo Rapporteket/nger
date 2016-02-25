@@ -616,7 +616,7 @@ hjelp til registeret og ekspertgruppen i vurdering av registeret.}
 Utganspunktet for årsrapporten er automatisk fremstilling fra Rapporteket.
 Vedlegg her kan brukes til videre mauelt arbeid med årsrapporten.
 
-<<'prepareAnnotations, echo=TRUE, eval=TRUE, results=tex>>=
+<<'prepareAnnotations', echo=TRUE, eval=TRUE, results=tex>>=
 texSourceFile <- "NGERAnnualReport.tex"
 attachFiles <- c(attachFiles, texSourceFile)
 childFile <- system.file("nowebChildAddAnnotation.Rnw", package = "rapbase")
