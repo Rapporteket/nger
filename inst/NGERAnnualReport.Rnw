@@ -289,6 +289,8 @@ konsesjon, angi eventuell tidsbegrensning for denne.}
 \chapter{Resultater}\label{cha:res}
 \guide{Tekst, tabeller og figurer der resultater fra registeret presenteres.}
 
+\onecolumn
+
 <<'getData', echo=TRUE, eval=TRUE>>=
 year <- as.character(reportYear)
 datoFra <- paste0(year, "-01-01")
@@ -311,6 +313,7 @@ tabData <- NGERtabXXI(RegData)
 print(xtable::xtable(tabData$tabXXI))
 @
 
+\twocolumn
 
 \chapter{Metoder for fangst av data}\label{cha:metoder}
 \guide{Beskriv hva/hvem som registrerer (eksempelvis sykehusenes egne
