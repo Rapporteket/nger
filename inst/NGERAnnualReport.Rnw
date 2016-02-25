@@ -291,8 +291,8 @@ konsesjon, angi eventuell tidsbegrensning for denne.}
 
 <<'getData', echo=TRUE, eval=TRUE>>=
 year <- as.character(reportYear)
-datoFra <- paste0(year, "01-01")
-datoTil <- paste0(year, "12-31")
+datoFra <- paste0(year, "-01-01")
+datoTil <- paste0(year, "-12-31")
 RegData <- NGERHentRegDataXXI(datoFra, datoTil)
 @
 
