@@ -299,7 +299,7 @@ RegData <- NGERHentRegDataXXI(datoFra, datoTil)
 @
 
 <<'prepareAttachments', eval=TRUE, echo=TRUE>>=
-attachFiles <- ""
+attachFiles <- vector()
 @
 
 
