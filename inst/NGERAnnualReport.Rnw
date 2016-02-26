@@ -311,6 +311,9 @@ pilottabell:
 <<'testtabell', results='asis', echo=FALSE, eval=TRUE>>=
 
 tabData <- NGERtabXXI(RegData)
+cap <- "Prosentvis fordeling av laparoskopiske postoperative komplikasjoner
+basert på data i NGER i perioden"
+cap <- paste(cap, )
 print(xtable::xtable(tabData$tabXXI))
 @
 
