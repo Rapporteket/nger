@@ -45,6 +45,7 @@
 \usepackage{wasysym}
 \usepackage[raggedright]{titlesec}
 \usepackage{color,hyperref}
+\usepackage{attachfile}
 
 % Gjør alle lenker mørkeblå
 \definecolor{darkblue}{rgb}{0.0,0.0,0.3}
@@ -289,12 +290,19 @@ konsesjon, angi eventuell tidsbegrensning for denne.}
 \chapter{Resultater}\label{cha:res}
 \guide{Tekst, tabeller og figurer der resultater fra registeret presenteres.}
 
+\onecolumn
+
 <<'getData', echo=TRUE, eval=TRUE>>=
 year <- as.character(reportYear)
-datoFra <- paste0(year, "01-01")
-datoTil <- paste0(year, "12-31")
+datoFra <- paste0(year, "-01-01")
+datoTil <- paste0(year, "-12-31")
 RegData <- NGERHentRegDataXXI(datoFra, datoTil)
 @
+
+<<'prepareAttachments', eval=TRUE, echo=TRUE>>=
+attachFiles <- vector()
+@
+
 
 \section{Komplikasjoner}
 Her kan det sikkert bli ganske mange figurer og tabeller... Her er en
@@ -306,6 +314,7 @@ tabData <- NGERtabXXI(RegData)
 print(xtable::xtable(tabData$tabXXI))
 @
 
+\twocolumn
 
 \chapter{Metoder for fangst av data}\label{cha:metoder}
 \guide{Beskriv hva/hvem som registrerer (eksempelvis sykehusenes egne
@@ -604,6 +613,21 @@ hjelp til registeret og ekspertgruppen i vurdering av registeret.}
   \label{tab:sta}
 \end{longtable}
 
+
+\part{Vedlegg}
+
+\section{Kildedokument og figurer}
+Utganspunktet for årsrapporten er automatisk fremstilling fra Rapporteket.
+Vedlegg her kan brukes til videre mauelt arbeid med årsrapporten.
+
+<<'prepareAnnotations', echo=TRUE, eval=TRUE>>=
+texSourceFile <- "NGERAnnualReport.tex"
+attachFiles <- c(attachFiles, texSourceFile)
+childFile <- system.file("nowebChildAddAnnotation.Rnw", package = "rapbase")
+@
+
+<<'addAnnotations', child=childFile>>=
+@
 
 %\listoffigures
 %\listoftables
