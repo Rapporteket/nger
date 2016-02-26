@@ -272,7 +272,8 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 
 
      #FIGURER SATT SAMMEN AV FLERE VARIABLE, ULIKT TOTALUTVALG
-     if (valgtVar %in% c('KomplPost', 'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr')){
+     if (valgtVar %in% c('KomplPost', 'KomplHyp', 'KomplLap', 'KomplPostUtd', 'KomplReopUtd', 
+				'LapEkstrautstyr')){
           flerevar <-  1
           utvalg <- c('Hoved', 'Rest')	#Hoved vil angi enhet, evt. hele landet hvis ikke gjøre sml, 'Rest' utgjør sammenligningsgruppa
           RegDataLand <- RegData
@@ -282,7 +283,37 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
           for (teller in 1:(medSml+1)) {
                #  Variablene kjøres for angitt indeks, dvs. to ganger hvis vi skal ha sammenligning med Resten.
                RegData <- RegDataLand[switch(utvalg[teller], Hoved = indHoved, Rest=indRest), ]
-
+			   
+       if (valgtVar=='KomplLap') {
+	#Laparoskopiske intrapoerative komplikasjoner:		   
+         retn <- 'H'
+         Var <- c('LapProtoadapter',
+			   'LapTilgang',
+			   'LapHjelpeinnstikk',
+			   'LapIntraAbdominal',
+			   'LapTekniskUtstyr',
+			   'LapPostoperativ',
+			   'LapConverted')
+				grtxt <- Var
+				Tittel <- 'Laparoskopiske intraoperative komplikasjoner'
+				indMed <- which(RegData$LapComplications %in% 0:1)	#
+ 				AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
+				NVar <- length(indMed)
+       }
+       if (valgtVar=='KomplHyp') {
+	#Hysteroskopi intrapoerative komplikasjoner:		   
+         retn <- 'H'
+         Var <- c('HypAccess',
+					'HypPerforation',
+					'HypTechnical',
+					'HypFluidOverload',
+					'HypBleeding')
+				grtxt <- Var
+				Tittel <- 'Hysteroskopiske intraoperative komplikasjoner'
+				indMed <- which(RegData$HypComplications %in% 0:1)	#
+ 				AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
+				NVar <- length(indMed)
+       }
 
        if (valgtVar=='KomplPost') {
          #Bare registreringer hvor ComplExist er 0 el. 1
