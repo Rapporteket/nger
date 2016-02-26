@@ -6,21 +6,34 @@
 #' @param RegData En dataramme med alle nødvendige variabler fra registeret
 #' @param valgtVar Hvilken variabel skal visualiseres
 #'     Alder: Pasientens alder, 5-årige aldersgrupper
-#'     Education: Pasientens utdanning
+#'     Education: Pasientens utdanning (1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent)
+#'     FollowupSeriousness: Postoperative komplikasjoner
+#'			Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
+#'     HypCompleteness: Gjennomføringsgrad av hysteroskopi
+#'    		Koder:	1-Fullstendig, 2-Ufullstendig, 3-Mislykket
 #'     Komplikasjoner
+#'     KomplHyp
+#'     KomplLap
+#'     KomplPost
+#'     KomplPostUtd
+#'     KomplReopUtd
 #'     LapAccessMethod: Teknikk for laparaskopisk tilgang
+#'     LapEkstrautstyr
+#'     LapIntraAbdominal
 #'     LapNumHjelpeinnstikk: Antall hjelpeinnstikk
 #'     MaritalStatus: Sivilstand
 #'     MCEType: Operasjonsmetode
+#'     MCETypeOpAnesthetic
 #'     PatientNorwegian: Pasientens norskkunnskaper
 #'     OpAnesthetic: Anestesitype
+#'     OpASA: ASA-grad
 #'     OpBMICategory: BMI-kategori
 #'     Opcat: Hastegrad av operasjon
+#'     OpDaySurgery: Dagkirurgiske inngrep
 #'     OpEarlierVaginal: Tidligere vaginale inngrep
 #'     OpEarlierLaparoscopy: Tidligere laparoskopi
 #'     OpEarlierLaparatomy: Tidligere laparatomi
-#'     OpOpcatOutsideDaytime: Operasjon i legens vakttid
-#'     OpDaySurgery: Dagkirurgiske inngrep
+#'     OpOutsideDaytime: Operasjon i legens vakttid
 #'     OpType: Primæroperasjon eller reoperasjon
 #' @param datoFra Tidligste dato i utvalget (vises alltid i figuren).
 #' @param datoTil Seneste dato i utvalget (vises alltid i figuren).
@@ -100,6 +113,14 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 		retn <- 'H'
 	}
 
+	if (valgtVar=='HypCompleteness') {
+		#Gjennomføringsgrad av hysteroskopi
+		#Kode •	1-Fullstendig, 2-Ufullstendig, 3-Mislykket
+		RegData <- RegData[which(RegData$MCEType == 2), ]
+		grtxt <- c('Fullstendig', 'Ufullstendig', 'Mislykket', 'Ukjent')
+		Tittel <- 'Gjennomføringsgrad av hysteroskopi'
+		koder <- 1:3
+	}
     if (valgtVar == 'LapAccessMethod') {
           # 0: Åpent, 1: Veress-nål, 2: Annet
 		      #Bare laparoskopi og begge
@@ -272,8 +293,8 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 
 
      #FIGURER SATT SAMMEN AV FLERE VARIABLE, ULIKT TOTALUTVALG
-     if (valgtVar %in% c('KomplPost', 'KomplHyp', 'KomplLap', 'KomplPostUtd', 'KomplReopUtd', 
-				'LapEkstrautstyr')){
+     if (valgtVar %in% c('KomplPost', 'KomplHyp', 'KomplLap', 'KomplPostUtd', 'KomplReopUtd',
+				'LapEkstrautstyr', 'LapIntraAbdominal')){
           flerevar <-  1
           utvalg <- c('Hoved', 'Rest')	#Hoved vil angi enhet, evt. hele landet hvis ikke gjøre sml, 'Rest' utgjør sammenligningsgruppa
           RegDataLand <- RegData
@@ -283,9 +304,9 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
           for (teller in 1:(medSml+1)) {
                #  Variablene kjøres for angitt indeks, dvs. to ganger hvis vi skal ha sammenligning med Resten.
                RegData <- RegDataLand[switch(utvalg[teller], Hoved = indHoved, Rest=indRest), ]
-			   
+
        if (valgtVar=='KomplLap') {
-	#Laparoskopiske intrapoerative komplikasjoner:		   
+	#Laparoskopiske intrapoerative komplikasjoner:
          retn <- 'H'
          Var <- c('LapProtoadapter',
 			   'LapTilgang',
@@ -300,8 +321,24 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
  				AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
 				NVar <- length(indMed)
        }
+
+      if (valgtVar=='LapIntraAbdominal') {
+	#Laparoskopiske intraabdominale komplikasjoner:
+         retn <- 'H'
+         Var <- c('LapNerv',
+					'LapUreter',
+					'LapTarm',
+					'LapBlaere',
+					'LapKarBleed')
+			grtxt <- Var
+			Tittel <- 'Laparoskopiske intraoperative komplikasjoner'
+			indMed <- which(RegData$LapIntraAbdominal %in% 0:1)	#
+			AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
+			NVar <- length(indMed)
+       }
+
        if (valgtVar=='KomplHyp') {
-	#Hysteroskopi intrapoerative komplikasjoner:		   
+	#Hysteroskopi intrapoerative komplikasjoner:
          retn <- 'H'
          Var <- c('HypAccess',
 					'HypPerforation',

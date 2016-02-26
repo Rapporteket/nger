@@ -8,6 +8,7 @@
 #' @param valgtVar
 #'	Alder: Pasienter over 70 år
 #'	OpBMI: Pasienter med fedme (BMI>30)
+#' 	KomplPostop
 #' @export
 
 
@@ -62,17 +63,17 @@ if (valgtVar=='OpBMI') {
 }
 
 ### Komplikasjoner
-if (valgtVar=='ComplExist') {
-	# Andel med Komplikasjoner
+if (valgtVar=='KomplPostop') {
+	# Andel postoperative komplikasjoner
 	#Kode 0: Nei, 1:Ja, tomme
 	RegData <- RegData[which(RegData$ComplExist %in% 0:1), ]
 	RegData$Variabel <- RegData[ ,valgtVar]
   	#RegData$Variabel[which(RegData$ComplExist==1)] <- 1
   	VarTxt <- 'komplikasjoner'
-	Tittel <- 'Komplikasjoner, postop.?[ComplExist], uten ukjente'
+	Tittel <- 'Komplikasjoner, postoperativt[ComplExist], uten ukjente'
 }
 if (valgtVar=='FollowupSeriousness') {
-	#PostoperativeAlvorlige hendelser
+	#Postoperative alvorlige hendelser
 	#Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
 	RegData <- RegData[which(RegData$FollowupSeriousness %in% 1:4), ]
 	RegData$Variabel[which(RegData$FollowupSeriousness %in% 3:4)] <- 1
@@ -116,7 +117,7 @@ if (valgtVar=='StatusFollowup') {
 	#Andel med StatusFollowup=1 (av samtlige, også tomme reg.)
 	#Kode: tomme, -1,0,1
   #Tar ut hendelser siste 6 uker:
-  datoTil <- min(datoTil, as.POSIXlt(Sys.Date() - 6*7))
+  datoTil <- min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 6*7))
   RegData$Variabel[RegData$StatusFollowup==1] <- 1
   VarTxt <- 'av postoperativ oppfølging'
 	Tittel <- 'Pasienter som har fått postoperativ oppfølging'
