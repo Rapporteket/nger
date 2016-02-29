@@ -1,10 +1,10 @@
-#' Lag søylediagram eller stabelplott som viser andeler av ulike variabler
+#' Søylediagram som viser andeler av ulike variabler
 #'
-#' Denne funksjonen lager et søylediagram ellersom viser andeler av valgt variabel
+#' Denne funksjonen lager et søylediagram som viser andeler (fordeling) av valgt variabel
 #' filtrert på de utvalg som er gjort.
 #'
 #' @param RegData En dataramme med alle nødvendige variabler fra registeret
-#' @param valgtVar Hvilken variabel skal visualiseres
+#' @param valgtVar Hvilken variabel som skal visualiseres
 #'     Alder: Pasientens alder, 5-årige aldersgrupper
 #'     Education: Pasientens utdanning (1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent)
 #'     FollowupSeriousness: Postoperative komplikasjoner
@@ -39,7 +39,7 @@
 #' @param datoTil Seneste dato i utvalget (vises alltid i figuren).
 #' @param minald Alder, fra og med (Standardverdi: 0)
 #' @param maxald Alder, til og med (Standardverdi: 130)
-#' @param outfile Navn på fil figuren skrives til. Default: '' (Figur skrives
+#' @param outfile Navn på fil figuren skrives til. Standard: '' (Figur skrives
 #'    til systemets standard utdataenhet (som regel skjerm))
 #' @param reshID Parameter følger fra innlogging helseregister.no og angir
 #'    hvilken enhet i spesialisthelsetjenesten brukeren tilhører
@@ -47,7 +47,7 @@
 #'                 0: Hele landet
 #'                 1: Egen enhet mot resten av landet (Standard)
 #'                 2: Egen enhet
-#' @param preprosess Preprosesser data - foreslår vi alltid gjør dette. Ellers må vi ta høyde for det i funksjonen også
+#' @param preprosess Preprosesser data
 #'                 FALSE: Nei
 #'                 TRUE: Ja (Standard)
 #' @param hentData Gjør spørring mot database
@@ -58,17 +58,18 @@
 #'                 3: Begge
 #'                 99: Alle
 #'
-#' @return En figur med søylediagram (eller et stabelplot) av ønsket variabel
+#' @return En figur med søylediagram (fordeling) av ønsket variabel
 #'
 #' @export
 #'
 FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050-12-31', minald=0, maxald=130,
                         outfile='', reshID, enhetsUtvalg=1, MCEType=99, hentData=0, preprosess=TRUE)
 {
-
+  print(hentData)
      ## Hvis spørring skjer fra R på server. ######################
      if(hentData == 1){
           RegData <- NGERHentRegData(datoFra = datoFra, datoTil = datoTil)
+          print(dim(RegData))
      }
 
      # Hvis RegData ikke har blitt preprosessert
@@ -191,7 +192,6 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
           grtxt <- c('Nei', 'Ja', 'Vet ikke')
           koder <- 0:1
      }
-
 
      if (valgtVar %in% c('OpOpcatOutsideDaytime', 'OpDaySurgery')) {
           #0: Nei, 1: Ja

@@ -67,7 +67,7 @@ if (valgtVar=='KomplPostop') {
 	# Andel postoperative komplikasjoner
 	#Kode 0: Nei, 1:Ja, tomme
 	RegData <- RegData[which(RegData$ComplExist %in% 0:1), ]
-	RegData$Variabel <- RegData[ ,valgtVar]
+	RegData$Variabel <- RegData$ComplExist
   	#RegData$Variabel[which(RegData$ComplExist==1)] <- 1
   	VarTxt <- 'komplikasjoner'
 	Tittel <- 'Komplikasjoner, postoperativt[ComplExist], uten ukjente'
@@ -139,7 +139,8 @@ NGERUtvalg <- NGERLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, m
 RegData <- NGERUtvalg$RegData
 utvalgTxt <- NGERUtvalg$utvalgTxt
 
-RegData$Aar <- 1900 + strptime(RegData$InnDato, format="%Y")$year
+RegData$Aar <- strftime(RegData$InnDato, format="%Y") #as.numeric(
+#RegData$Aar <- 1900 + strptime(RegData$InnDato, format="%Y")$year
 
 
 #Generere hovedgruppe og sammenlikningsgruppe
