@@ -7,8 +7,14 @@
 #' @inheritParams FigAndeler
 #' @param valgtVar
 #'	Alder: Pasienter over 70 år
+#'	FollowupSeriousness: Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
+#'	KomplIntra: Komplikasjoner ved operasjon. (kombinerer variablene HypComplications og LapComplications)
+#'	KomplPostop: Andel postoperative komplikasjoner
+#'	OpAntibioticProphylaxis: Andel som får antibiotika
 #'	OpBMI: Pasienter med fedme (BMI>30)
-#' 	KomplPostop
+#'	Reop: Andel reoperasjon som følge av komplikasjon
+#'	StatusFollowup: Pasienter som har fått postoperativ oppfølging
+#'
 #' @export
 
 
@@ -55,7 +61,7 @@ if (valgtVar=='OpAntibioticProphylaxis') {
 }
 
 if (valgtVar=='OpBMI') {
-	#Pasientskjema. Andel med BMI>30
+	#Andel pasienter med fedme (BMI over 30)
 	indMed <- which(RegData[ ,valgtVar] >30)
 	RegData$Variabel[which(RegData[ ,valgtVar] >30)] <- 1
   	VarTxt <- 'med BMI>30'
@@ -73,7 +79,7 @@ if (valgtVar=='KomplPostop') {
 	Tittel <- 'Komplikasjoner, postoperativt[ComplExist], uten ukjente'
 }
 if (valgtVar=='FollowupSeriousness') {
-	#Postoperative alvorlige hendelser
+	#Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
 	#Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
 	RegData <- RegData[which(RegData$FollowupSeriousness %in% 1:4), ]
 	RegData$Variabel[which(RegData$FollowupSeriousness %in% 3:4)] <- 1
@@ -82,7 +88,7 @@ if (valgtVar=='FollowupSeriousness') {
 }
 
 if (valgtVar=='KomplIntra') {
-	# Andel med komplikasjoner ved operasjon. Må kombinere HypComplications og LapComplications
+	# Komplikasjoner ved operasjon. Må kombinere HypComplications og LapComplications
 	#Kode 0: Nei, 1:Ja, tomme
 	RegData$KomplIntra <- with(RegData, HypComplications + LapComplications) #Får mange tomme!!!
   	indMed <- switch(as.character(MCEType),
@@ -104,8 +110,8 @@ if (valgtVar=='KomplIntra') {
 
 #########
 if (valgtVar=='Reop') {
+  #Andel reoperasjon som følge av komplikasjon
 	#Andel OpType==2 (1:primær, 2: reop)
-  #ComplReop
 	#RegData <- RegData[which(RegData$OpType %in% 1:2), ]
 	#RegData$Variabel[which(RegData$OpType == 2)] <- 1
   RegData$Variabel[which(RegData$ComplReop == 1)] <- 1
