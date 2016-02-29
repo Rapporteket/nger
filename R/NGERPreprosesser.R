@@ -15,9 +15,9 @@ NGERPreprosess <- function(RegData=RegData, reshID=reshID)
   #For bedre lesbarhet:
   RegData$OpEarlierLaparatomy <- RegData$OpEarlierPaparotomy
   #Riktig format på datovariable:
-  RegData$BirthDate <- as.POSIXlt(RegData$BirthDate, format="%Y-%m-%d")
-  RegData$InnDato <- as.POSIXlt(RegData$OpDate, format="%Y-%m-%d")
-  RegData$HovedDato <- as.POSIXlt(RegData$HovedDato, format="%Y-%m-%d")
+  RegData$BirthDate <- as.Date(RegData$BirthDate, format="%Y-%m-%d")
+  RegData$InnDato <- as.Date(RegData$OpDate, format="%Y-%m-%d")
+  RegData$HovedDato <- as.Date(RegData$HovedDato, format="%Y-%m-%d")
   #Riktig navn på resh-variabel:
   names(RegData)[which(names(RegData)=='AVD_RESH')] <- 'ReshId' #Change var name
   #Beregner alder:

@@ -17,7 +17,7 @@ NGERLibUtvalg <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', mina
     #Utvalg på alder:
     indAld <- which(RegData$Alder >= minald & RegData$Alder <= maxald)
     #Utvalg på dato:
-    indDato <- which(RegData$InnDato >= as.POSIXlt(datoFra) & RegData$InnDato <= as.POSIXlt(datoTil))
+    indDato <- which(RegData$InnDato >= as.Date(datoFra) & RegData$InnDato <= as.Date(datoTil))
     #Operasjonstype:
     indMCE <- if (MCEType %in% c(1:3)){which(RegData$MCEType == MCEType)
               } else {indMCE <- 1:Ninn}

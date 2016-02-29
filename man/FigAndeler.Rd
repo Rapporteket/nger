@@ -2,7 +2,7 @@
 % Please edit documentation in R/NGERFigAndeler.R
 \name{FigAndeler}
 \alias{FigAndeler}
-\title{Lag søylediagram eller stabelplott som viser andeler av ulike variabler}
+\title{Søylediagram som viser andeler av ulike variabler}
 \usage{
 FigAndeler(RegData = 0, valgtVar, datoFra = "2013-01-01",
   datoTil = "2050-12-31", minald = 0, maxald = 130, outfile = "",
@@ -12,23 +12,36 @@ FigAndeler(RegData = 0, valgtVar, datoFra = "2013-01-01",
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
 
-\item{valgtVar}{Hvilken variabel skal visualiseres
+\item{valgtVar}{Hvilken variabel som skal visualiseres
 Alder: Pasientens alder, 5-årige aldersgrupper
-Education: Pasientens utdanning
+Education: Pasientens utdanning (1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent)
+FollowupSeriousness: Postoperative komplikasjoner
+    Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
+HypCompleteness: Gjennomføringsgrad av hysteroskopi
+       Koder:    1-Fullstendig, 2-Ufullstendig, 3-Mislykket
 Komplikasjoner
+KomplHyp
+KomplLap
+KomplPost
+KomplPostUtd
+KomplReopUtd
 LapAccessMethod: Teknikk for laparaskopisk tilgang
+LapEkstrautstyr
+LapIntraAbdominal
 LapNumHjelpeinnstikk: Antall hjelpeinnstikk
 MaritalStatus: Sivilstand
 MCEType: Operasjonsmetode
+MCETypeOpAnesthetic
 PatientNorwegian: Pasientens norskkunnskaper
 OpAnesthetic: Anestesitype
+OpASA: ASA-grad
 OpBMICategory: BMI-kategori
 Opcat: Hastegrad av operasjon
+OpDaySurgery: Dagkirurgiske inngrep
 OpEarlierVaginal: Tidligere vaginale inngrep
 OpEarlierLaparoscopy: Tidligere laparoskopi
 OpEarlierLaparatomy: Tidligere laparatomi
-OpOpcatOutsideDaytime: Operasjon i legens vakttid
-OpDaySurgery: Dagkirurgiske inngrep
+OpOutsideDaytime: Operasjon i legens vakttid
 OpType: Primæroperasjon eller reoperasjon}
 
 \item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}
@@ -39,7 +52,7 @@ OpType: Primæroperasjon eller reoperasjon}
 
 \item{maxald}{Alder, til og med (Standardverdi: 130)}
 
-\item{outfile}{Navn på fil figuren skrives til. Default: '' (Figur skrives
+\item{outfile}{Navn på fil figuren skrives til. Standard: '' (Figur skrives
 til systemets standard utdataenhet (som regel skjerm))}
 
 \item{reshID}{Parameter følger fra innlogging helseregister.no og angir
@@ -59,15 +72,15 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 0: Nei, RegData gis som input til funksjonen (Standard)
 1: Ja}
 
-\item{preprosess}{Preprosesser data - foreslår vi alltid gjør dette. Ellers må vi ta høyde for det i funksjonen også
+\item{preprosess}{Preprosesser data
 FALSE: Nei
 TRUE: Ja (Standard)}
 }
 \value{
-En figur med søylediagram (eller et stabelplot) av ønsket variabel
+En figur med søylediagram (fordeling) av ønsket variabel
 }
 \description{
-Denne funksjonen lager et søylediagram ellersom viser andeler av valgt variabel
+Denne funksjonen lager et søylediagram som viser andeler (fordeling) av valgt variabel
 filtrert på de utvalg som er gjort.
 }
 

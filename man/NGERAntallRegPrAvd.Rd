@@ -4,7 +4,7 @@
 \alias{NGERAntallRegPrAvd}
 \title{Lag tabell med antall registreringer per avdeling}
 \usage{
-NGERAntallRegPrAvd(RegData = RegData, datoFra = "2014-01-01",
+NGERAntallRegPrAvd(RegData = RegData, datoFra = "2000-01-01",
   datoTil = "2050-12-31")
 }
 \arguments{

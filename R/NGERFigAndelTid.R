@@ -7,7 +7,14 @@
 #' @inheritParams FigAndeler
 #' @param valgtVar
 #'	Alder: Pasienter over 70 år
+#'	FollowupSeriousness: Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
+#'	KomplIntra: Komplikasjoner ved operasjon. (kombinerer variablene HypComplications og LapComplications)
+#'	KomplPostop: Andel postoperative komplikasjoner
+#'	OpAntibioticProphylaxis: Andel som får antibiotika
 #'	OpBMI: Pasienter med fedme (BMI>30)
+#'	Reop: Andel reoperasjon som følge av komplikasjon
+#'	StatusFollowup: Pasienter som har fått postoperativ oppfølging
+#'
 #' @export
 
 
@@ -54,7 +61,7 @@ if (valgtVar=='OpAntibioticProphylaxis') {
 }
 
 if (valgtVar=='OpBMI') {
-	#Pasientskjema. Andel med BMI>30
+	#Andel pasienter med fedme (BMI over 30)
 	indMed <- which(RegData[ ,valgtVar] >30)
 	RegData$Variabel[which(RegData[ ,valgtVar] >30)] <- 1
   	VarTxt <- 'med BMI>30'
@@ -62,17 +69,17 @@ if (valgtVar=='OpBMI') {
 }
 
 ### Komplikasjoner
-if (valgtVar=='ComplExist') {
-	# Andel med Komplikasjoner
+if (valgtVar=='KomplPostop') {
+	# Andel postoperative komplikasjoner
 	#Kode 0: Nei, 1:Ja, tomme
 	RegData <- RegData[which(RegData$ComplExist %in% 0:1), ]
-	RegData$Variabel <- RegData[ ,valgtVar]
+	RegData$Variabel <- RegData$ComplExist
   	#RegData$Variabel[which(RegData$ComplExist==1)] <- 1
   	VarTxt <- 'komplikasjoner'
-	Tittel <- 'Komplikasjoner, postop.?[ComplExist], uten ukjente'
+	Tittel <- 'Komplikasjoner, postoperativt[ComplExist], uten ukjente'
 }
 if (valgtVar=='FollowupSeriousness') {
-	#PostoperativeAlvorlige hendelser
+	#Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
 	#Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
 	RegData <- RegData[which(RegData$FollowupSeriousness %in% 1:4), ]
 	RegData$Variabel[which(RegData$FollowupSeriousness %in% 3:4)] <- 1
@@ -81,7 +88,7 @@ if (valgtVar=='FollowupSeriousness') {
 }
 
 if (valgtVar=='KomplIntra') {
-	# Andel med komplikasjoner ved operasjon. Må kombinere HypComplications og LapComplications
+	# Komplikasjoner ved operasjon. Må kombinere HypComplications og LapComplications
 	#Kode 0: Nei, 1:Ja, tomme
 	RegData$KomplIntra <- with(RegData, HypComplications + LapComplications) #Får mange tomme!!!
   	indMed <- switch(as.character(MCEType),
@@ -103,8 +110,8 @@ if (valgtVar=='KomplIntra') {
 
 #########
 if (valgtVar=='Reop') {
+  #Andel reoperasjon som følge av komplikasjon
 	#Andel OpType==2 (1:primær, 2: reop)
-  #ComplReop
 	#RegData <- RegData[which(RegData$OpType %in% 1:2), ]
 	#RegData$Variabel[which(RegData$OpType == 2)] <- 1
   RegData$Variabel[which(RegData$ComplReop == 1)] <- 1
@@ -116,7 +123,7 @@ if (valgtVar=='StatusFollowup') {
 	#Andel med StatusFollowup=1 (av samtlige, også tomme reg.)
 	#Kode: tomme, -1,0,1
   #Tar ut hendelser siste 6 uker:
-  datoTil <- min(datoTil, as.POSIXlt(Sys.Date() - 6*7))
+  datoTil <- min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 6*7))
   RegData$Variabel[RegData$StatusFollowup==1] <- 1
   VarTxt <- 'av postoperativ oppfølging'
 	Tittel <- 'Pasienter som har fått postoperativ oppfølging'
@@ -138,7 +145,8 @@ NGERUtvalg <- NGERLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, m
 RegData <- NGERUtvalg$RegData
 utvalgTxt <- NGERUtvalg$utvalgTxt
 
-RegData$Aar <- 1900 + strptime(RegData$InnDato, format="%Y")$year
+RegData$Aar <- strftime(RegData$InnDato, format="%Y") #as.numeric(
+#RegData$Aar <- 1900 + strptime(RegData$InnDato, format="%Y")$year
 
 
 #Generere hovedgruppe og sammenlikningsgruppe

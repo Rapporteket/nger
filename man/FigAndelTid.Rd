@@ -13,7 +13,8 @@ FigAndelTid(RegData = 0, valgtVar, datoFra = "2013-01-01",
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
 
 \item{valgtVar}{Alder: Pasienter over 70 år
-OpBMI: Pasienter med fedme (BMI>30)}
+OpBMI: Pasienter med fedme (BMI>30)
+    KomplPostop}
 
 \item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}
 
@@ -31,7 +32,7 @@ OpBMI: Pasienter med fedme (BMI>30)}
 \item{reshID}{Parameter følger fra innlogging helseregister.no og angir
 hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 
-\item{outfile}{Navn på fil figuren skrives til. Default: '' (Figur skrives
+\item{outfile}{Navn på fil figuren skrives til. Standard: '' (Figur skrives
 til systemets standard utdataenhet (som regel skjerm))}
 
 \item{enhetsUtvalg}{Lag figur for
@@ -39,7 +40,7 @@ til systemets standard utdataenhet (som regel skjerm))}
 1: Egen enhet mot resten av landet (Standard)
 2: Egen enhet}
 
-\item{preprosess}{Preprosesser data - foreslår vi alltid gjør dette. Ellers må vi ta høyde for det i funksjonen også
+\item{preprosess}{Preprosesser data
 FALSE: Nei
 TRUE: Ja (Standard)}
 

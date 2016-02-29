@@ -9,7 +9,7 @@
 #' @export
 
 
-NGERAntallRegPrAvd  <- function(RegData=RegData, datoFra='2014-01-01', datoTil='2050-12-31')
+NGERAntallRegPrAvd  <- function(RegData=RegData, datoFra='2000-01-01', datoTil='2050-12-31')
 
 {
 

@@ -19,7 +19,7 @@ NGEROpInd(RegData = 0, datoFra = "2000-04-01", datoTil = "2050-12-31",
 
 \item{maxald}{Alder, til og med (Standardverdi: 130)}
 
-\item{outfile}{Navn på fil figuren skrives til. Default: '' (Figur skrives
+\item{outfile}{Navn på fil figuren skrives til. Standard: '' (Figur skrives
 til systemets standard utdataenhet (som regel skjerm))}
 
 \item{reshID}{Parameter følger fra innlogging helseregister.no og angir
@@ -35,7 +35,7 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
                 3: Begge
                 99: Alle}
 
-\item{preprosess}{Preprosesser data - foreslår vi alltid gjør dette. Ellers må vi ta høyde for det i funksjonen også
+\item{preprosess}{Preprosesser data
 FALSE: Nei
 TRUE: Ja (Standard)}
 
