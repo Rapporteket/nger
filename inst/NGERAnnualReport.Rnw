@@ -309,12 +309,15 @@ Her kan det sikkert bli ganske mange figurer og tabeller... Her er en
 pilottabell:
 
 <<'testtabell', results='asis', echo=FALSE, eval=TRUE>>=
-
+mainDates <- as.POSIXlt(RegData$HovedDato, format="%Y-%m-%d")
+minDate <- as.character(format(min(mainDates), format="%e. %B %Y"))
+maxDate <- as.character(format(max(mainDates), format="%e. %B %Y"))
 tabData <- NGERtabXXI(RegData)
 cap <- "Prosentvis fordeling av laparoskopiske postoperative komplikasjoner
-basert på data i NGER i perioden"
-cap <- paste(cap, )
-print(xtable::xtable(tabData$tabXXI))
+basert på data i NGER i perioden "
+cap <- paste0(cap, minDate, "--", maxDate, ". ")
+print(xtable::xtable(tabData$tabXXI, align=c("l", "r", "r"),
+                     caption=cap, label="tab:postOpLapCompl"))
 @
 
 \twocolumn
