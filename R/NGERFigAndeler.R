@@ -7,18 +7,17 @@
 #' @param valgtVar Hvilken variabel som skal visualiseres
 #'     Alder: Pasientens alder, 5-årige aldersgrupper
 #'     Education: Pasientens utdanning (1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent)
-#'     FollowupSeriousness: Postoperative komplikasjoner
+#'     FollowupSeriousness: Alvorlighetsgrad, postoperative komplikasjoner
 #'			Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
 #'     HypCompleteness: Gjennomføringsgrad av hysteroskopi
 #'    		Koder:	1-Fullstendig, 2-Ufullstendig, 3-Mislykket
-#'     Komplikasjoner
-#'     KomplHyp
-#'     KomplLap
-#'     KomplPost
-#'     KomplPostUtd
-#'     KomplReopUtd
+#'     KomplHyp: Hysteroskopi intrapoerative komplikasjoner
+#'     KomplLap: Laparoskopiske intrapoerative komplikasjoner
+#'     KomplPost: Postoperative komplikasjoner
+#'     KomplPostUtd: Postoperative komplikasjoner for ulike utdanningsgrupper
+#'     KomplReopUtd: Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper
 #'     LapAccessMethod: Teknikk for laparaskopisk tilgang
-#'     LapEkstrautstyr
+#'     LapEkstrautstyr: Laparaskopisk ekstrautstyr
 #'     LapIntraAbdominal
 #'     LapNumHjelpeinnstikk: Antall hjelpeinnstikk
 #'     MaritalStatus: Sivilstand
@@ -352,7 +351,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
        }
 
        if (valgtVar=='KomplPost') {
-         #Bare registreringer hvor ComplExist er 0 el. 1
+         #Postoperative komplikasjoner. Bare registreringer hvor ComplExist er 0 el. 1
          retn <- 'H'
          Var <- c('ComplAfterBleed', #Postoperativ blødning?
 					        'ComplEquipment', #Komplikasjoner med ustyr
@@ -366,6 +365,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
        }
 
        if (valgtVar=='LapEkstrautstyr') {
+				#Laparaskopisk ekstrautstyr
 				#MCEType=1 el 3 (Laparoskopi eller begge)
         retn <- 'H'
          Var <- c('LapAdheanseprofylakse',
@@ -384,7 +384,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 					'LapThunderbeat',
 					'LapUnipolarDiatermi')
 				grtxt <- Var
-				Tittel <- 'Operasjonsårsak'
+				Tittel <- 'Laparaskopisk ekstrautstyr'
 				indMed <- which(RegData$MCEType %in% c(1,3))
  				AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
 				NVar <- length(indMed)
@@ -406,7 +406,8 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
     		  retn <- 'H'
     			}
 		  if (valgtVar == 'KomplPostUtd') {		#Evt. ReopUtd
-		    #Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper.
+		    #Postoperative komplikasjoner for ulike utdanningsgrupper
+			#Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper.
 			####!!!Usikker på hvilke variable som skal inngå. Eks ComplReop=1, OpType=2, tomme?
 			  # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
 			  Tittel <- 'Postop. komplikasjon i utdanningsgrupper'
