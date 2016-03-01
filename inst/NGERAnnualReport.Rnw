@@ -629,9 +629,9 @@ attachFiles <- c(texSourceFile, attachFiles)
 childFile <- system.file("nowebChildAddAnnotation.Rnw", package = "rapbase")
 
 if (usePdfAnnotation) {
-  cat('\\\\backmatter\\n')
-  cat('\\\\section*{Kilder for videre bearbeidelse av årsrapporten}\\n')
-  cat('Her er det satt av plass til nødvendige vedlegg.\\n\\n')
+  cat('\n\\backmatter\n')
+  cat('\\section*{Kilder for videre bearbeidelse av årsrapporten}\n')
+  cat('Her er det satt av plass til nødvendige vedlegg.\n\n')
 } else {
   attachFiles <- character(0)
 }
