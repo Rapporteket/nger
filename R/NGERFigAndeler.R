@@ -12,17 +12,16 @@
 #'     HypCompleteness: Gjennomføringsgrad av hysteroskopi
 #'    		Koder:	1-Fullstendig, 2-Ufullstendig, 3-Mislykket
 #'     KomplHyp: Hysteroskopi intrapoerative komplikasjoner
-#'     KomplLap: Laparoskopiske intrapoerative komplikasjoner
+#'     KomplLapIntraOp: Laparoskopiske intrapoerative komplikasjoner
 #'     KomplPost: Postoperative komplikasjoner
 #'     KomplPostUtd: Postoperative komplikasjoner for ulike utdanningsgrupper
 #'     KomplReopUtd: Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper
 #'     LapAccessMethod: Teknikk for laparaskopisk tilgang
 #'     LapEkstrautstyr: Laparaskopisk ekstrautstyr
-#'     LapIntraAbdominal
+#'     LapIntraAbdominal: Laparoskopiske intraabdominale komplikasjoner
 #'     LapNumHjelpeinnstikk: Antall hjelpeinnstikk
 #'     MaritalStatus: Sivilstand
 #'     MCEType: Operasjonsmetode
-#'     MCETypeOpAnesthetic
 #'     PatientNorwegian: Pasientens norskkunnskaper
 #'     OpAnesthetic: Anestesitype
 #'     OpASA: ASA-grad
@@ -32,7 +31,7 @@
 #'     OpEarlierVaginal: Tidligere vaginale inngrep
 #'     OpEarlierLaparoscopy: Tidligere laparoskopi
 #'     OpEarlierLaparatomy: Tidligere laparatomi
-#'     OpOutsideDaytime: Operasjon i legens vakttid
+#'     OpOutsideDaytime: Operasjon i legens vakttid 
 #'     OpType: Primæroperasjon eller reoperasjon
 #' @param datoFra Tidligste dato i utvalget (vises alltid i figuren).
 #' @param datoTil Seneste dato i utvalget (vises alltid i figuren).
@@ -291,7 +290,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 
 
      #FIGURER SATT SAMMEN AV FLERE VARIABLE, ULIKT TOTALUTVALG
-     if (valgtVar %in% c('KomplPost', 'KomplHyp', 'KomplLap', 'KomplPostUtd', 'KomplReopUtd',
+     if (valgtVar %in% c('KomplPost', 'KomplHyp', 'KomplLapIntraOp', 'KomplPostUtd', 'KomplReopUtd',
 				'LapEkstrautstyr', 'LapIntraAbdominal')){
           flerevar <-  1
           utvalg <- c('Hoved', 'Rest')	#Hoved vil angi enhet, evt. hele landet hvis ikke gjøre sml, 'Rest' utgjør sammenligningsgruppa
@@ -303,7 +302,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
                #  Variablene kjøres for angitt indeks, dvs. to ganger hvis vi skal ha sammenligning med Resten.
                RegData <- RegDataLand[switch(utvalg[teller], Hoved = indHoved, Rest=indRest), ]
 
-       if (valgtVar=='KomplLap') {
+       if (valgtVar=='KomplLapIntraOp') {
 	#Laparoskopiske intrapoerative komplikasjoner:
          retn <- 'H'
          Var <- c('LapProtoadapter',
