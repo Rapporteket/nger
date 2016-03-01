@@ -619,9 +619,6 @@ hjelp til registeret og ekspertgruppen i vurdering av registeret.}
 
 \part{Vedlegg}
 
-\section{Kildedokument og figurer}
-Utganspunktet for årsrapporten er automatisk fremstilling fra Rapporteket.
-Vedlegg her kan brukes til videre mauelt arbeid med årsrapporten.
 
 <<'prepareAnnotations', results='asis', echo=TRUE, eval=TRUE>>=
 texSourceFile <- "NGERAnnualReport.tex"
