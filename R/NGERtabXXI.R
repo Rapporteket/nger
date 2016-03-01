@@ -46,6 +46,9 @@ NGERtabXXI <- function(RegData) {
   tab <- table(RegData$PatientID[indCompl])
   personsWithMultipleCompl <- length(tab[tab > 1])
 
+  # rename
+  colnames(mydf)[which(names(mydf) == "ComplAfterBleed")] <- "\\quad Blødning"
+
   tabXXI <- data.frame(Frekvens=apply(mydf, 2, sum, na.rm = TRUE),
                        Andel=apply(mydf, 2, sum, na.rm = TRUE)/N)
 
