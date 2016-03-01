@@ -34,7 +34,7 @@
 
 % For print, bruk dokumentklassen 'book'. Bruk 'report' for å unngå blanke
 % sider
-\documentclass[norsk, a4paper, twocolumn]{report}
+\documentclass[norsk, a4paper, twocolumn]{book}
 
 \usepackage[utf8x]{inputenc}
 \usepackage{babel}
