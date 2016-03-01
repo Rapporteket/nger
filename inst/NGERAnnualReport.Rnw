@@ -623,15 +623,15 @@ hjelp til registeret og ekspertgruppen i vurdering av registeret.}
 Utganspunktet for årsrapporten er automatisk fremstilling fra Rapporteket.
 Vedlegg her kan brukes til videre mauelt arbeid med årsrapporten.
 
-<<'prepareAnnotations', echo=TRUE, eval=TRUE>>=
+<<'prepareAnnotations', results='asis', echo=TRUE, eval=TRUE>>=
 texSourceFile <- "NGERAnnualReport.tex"
 attachFiles <- c(texSourceFile, attachFiles)
 childFile <- system.file("nowebChildAddAnnotation.Rnw", package = "rapbase")
 
 if (usePdfAnnotation) {
-  print('\\backmatter\n')
-  print('\\section*{Kilder for videre bearbeidelse av årsrapporten}\n')
-  print('Her er det satt av plass til nødvendige vedlegg.\n\n')
+  cat('\\backmatter\n')
+  cat('\\section*{Kilder for videre bearbeidelse av årsrapporten}\n')
+  cat('Her er det satt av plass til nødvendige vedlegg.\n\n')
 } else {
   attachFiles <- character(0)
 }
