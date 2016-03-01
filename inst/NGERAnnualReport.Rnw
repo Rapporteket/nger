@@ -309,7 +309,7 @@ Her kan det sikkert bli ganske mange figurer og tabeller... Her er en
 pilottabell:
 
 <<'testtabell', results='asis', echo=FALSE, eval=TRUE>>=
-Sys.setlocale(category = "LC_ALL", locale = "nb_NO.UTF-8")
+tmp <- Sys.setlocale(category = "LC_ALL", locale = "nb_NO.UTF-8")
 mainDates <- as.POSIXlt(RegData$HovedDato, format="%Y-%m-%d")
 minDate <- as.character(format(min(mainDates), format="%e. %B %Y"))
 maxDate <- as.character(format(max(mainDates), format="%e. %B %Y"))
