@@ -75,6 +75,9 @@ NGERtabXXI <- function(RegData) {
   tabXXI <- data.frame(Frekvens=apply(mydf, 2, sum, na.rm = TRUE),
                        Andel=apply(mydf, 2, sum, na.rm = TRUE)/N)
 
+  # recode values
+  tabXXI[ , 1][tabXXI[ ,1]=="ComplAfterBleed"] <- "\\textit{Blødning}"
+
 
 
   list(tabXXI=tabXXI, personsWithMultipleCompl=personsWithMultipleCompl)
