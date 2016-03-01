@@ -19,8 +19,8 @@ NGERHentRegData <- function(datoFra = '2014-01-01', datoTil = '2099-01-01') {
 	ComplEquipment,
 	ComplExist,
 	ComplInfection,
-	ComplOrgan
-	ComplReop
+	ComplOrgan,
+	ComplReop,
 	Education,
 	FollowupSeriousness,
 	HypAccess,
@@ -41,7 +41,7 @@ NGERHentRegData <- function(datoFra = '2014-01-01', datoTil = '2099-01-01') {
 	LapBipolarDiatermi,
 	LapBlaere,
 	LapClips,
-	LapConverted
+	LapConverted,
 	LapEkstrautstyr,
 	LapHarmonicS,
 	LapHjelpeinnstikk,
