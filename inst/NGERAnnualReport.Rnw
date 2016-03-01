@@ -625,8 +625,17 @@ Vedlegg her kan brukes til videre mauelt arbeid med årsrapporten.
 
 <<'prepareAnnotations', echo=TRUE, eval=TRUE>>=
 texSourceFile <- "NGERAnnualReport.tex"
-attachFiles <- c(attachFiles, texSourceFile)
+attachFiles <- c(texSourceFile, attachFiles)
 childFile <- system.file("nowebChildAddAnnotation.Rnw", package = "rapbase")
+
+if (usePdfAnnotation) {
+  cat('\\backmatter\n')
+  cat('\\section*{Kilder for videre bearbeidelse av årsrapporten}\n')
+  cat('Her er det satt av plass til nødvendige vedlegg.\n\n')
+} else {
+  attachFiles <- character(0)
+}
+
 @
 
 <<'addAnnotations', child=childFile>>=
