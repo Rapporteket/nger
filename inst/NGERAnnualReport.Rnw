@@ -34,7 +34,7 @@
 
 % For print, bruk dokumentklassen 'book'. Bruk 'report' for å unngå blanke
 % sider
-\documentclass[norsk, a4paper, twocolumn]{report}
+\documentclass[norsk, a4paper, twocolumn]{book}
 
 \usepackage[utf8x]{inputenc}
 \usepackage{babel}
@@ -309,9 +309,18 @@ Her kan det sikkert bli ganske mange figurer og tabeller... Her er en
 pilottabell:
 
 <<'testtabell', results='asis', echo=FALSE, eval=TRUE>>=
-
+tmp <- Sys.setlocale(category = "LC_ALL", locale = "nb_NO.UTF-8")
+mainDates <- as.POSIXlt(RegData$HovedDato, format="%Y-%m-%d")
+minDate <- as.character(format(min(mainDates), format="%e. %B %Y"))
+maxDate <- as.character(format(max(mainDates), format="%e. %B %Y"))
 tabData <- NGERtabXXI(RegData)
-print(xtable::xtable(tabData$tabXXI))
+
+cap <- "Prosentvis fordeling av laparoskopiske postoperative komplikasjoner
+basert på data i NGER i perioden "
+cap <- paste0(cap, minDate, "--", maxDate, ". ")
+print(xtable::xtable(tabData$tabXXI, align=c("l", "r", "r"),
+                     caption=cap, label="tab:postOpLapCompl"),
+      sanitize.text.function = function(x){x})
 @
 
 \twocolumn
@@ -616,14 +625,20 @@ hjelp til registeret og ekspertgruppen i vurdering av registeret.}
 
 \part{Vedlegg}
 
-\section{Kildedokument og figurer}
-Utganspunktet for årsrapporten er automatisk fremstilling fra Rapporteket.
-Vedlegg her kan brukes til videre mauelt arbeid med årsrapporten.
 
-<<'prepareAnnotations', echo=TRUE, eval=TRUE>>=
+<<'prepareAnnotations', results='asis', echo=TRUE, eval=TRUE>>=
 texSourceFile <- "NGERAnnualReport.tex"
-attachFiles <- c(attachFiles, texSourceFile)
+attachFiles <- c(texSourceFile, attachFiles)
 childFile <- system.file("nowebChildAddAnnotation.Rnw", package = "rapbase")
+
+if (usePdfAnnotation) {
+  cat('\n\\backmatter\n')
+  cat('\\section*{Kilder for videre bearbeidelse av årsrapporten}\n')
+  cat('Her er det satt av plass til nødvendige vedlegg.\n\n')
+} else {
+  attachFiles <- character(0)
+}
+
 @
 
 <<'addAnnotations', child=childFile>>=
