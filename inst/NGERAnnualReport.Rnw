@@ -315,21 +315,33 @@ minDate <- as.character(format(min(mainDates), format="%e. %B %Y"))
 maxDate <- as.character(format(max(mainDates), format="%e. %B %Y"))
 tabData <- NGERtabXXI(RegData)
 
+if (tabData$personsWithMultipleCompl == 0) {
+  personInMultipleMainCatText <- "I datagrunnlaget er det ingen personer som
+  er registrert i mer enn én hovedkategori."
+}
+if (tabData$personsWithMultipleCompl == 1) {
+  personInMultipleMainCatText <- "I datagrunnlaget er det én person som er
+  registrert i mer enn én hovedkategori."
+}
+
+if (tabData$personsWithMultipleCompl > 1) {
+  personInMultipleMainCatText <- paste("I datagrunnlaget er det",
+                                       tabData$personsWithMultipleCompl,
+                                       "personer som er registrert i mer enn
+                                       én hovedkategori."
+}
+
 cap <- "Prosentvis fordeling av laparoskopiske postoperative komplikasjoner
 (hoved- og underkategori) basert på data i NGER i perioden "
 cap <- paste0(cap, minDate, " -- ", maxDate, ".")
-
-personText <- "person"
-if (tabData$personsWithMultipleCompl > 1) {
-  personText <- "personer"
-}
-
 cap <- paste(cap, "Datagrunnlaget består av", dim(RegData)[1],
              "laparoskopiforløp brukt som grunnlag for beregning av andel
-             komplikasjoner. I samme datagrunnlaget finnes det",
-             tabData$personsWithMultipleCompl, personText,
-             "som er registrert i mer enn én av",
-             "komplikasjonshovedkategoriene.")
+             komplikasjoner. Innen samme forløp kan flere underkategorier
+             i en og samme hovedkategori være angitt. Videre kan
+             hovekategori være angitt uten at noen underkategori er
+             spesifisert.")
+cap <- paste(cap, personInMultipleMainCatText)
+
 print(xtable::xtable(tabData$tabXXI, align=c("l", "r", "r"),
                      digits=c(0,0,0),
                      caption=cap, label="tab:postOpLapCompl"),
