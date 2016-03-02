@@ -47,10 +47,11 @@ NGERtabXXI <- function(RegData) {
   personsWithMultipleCompl <- length(tab[tab > 1])
 
   tabXXI <- data.frame(Frekvens=apply(mydf, 2, sum, na.rm = TRUE),
-                       Andel=apply(mydf, 2, sum, na.rm = TRUE)/N)
+                       Andel=apply(mydf, 2, sum, na.rm = TRUE)/N*100)
+  # recode colname
+  colnames(tabXXI)[2] <- "Andel (%)"
 
   # recode rownames, also with latex (table) tagging
-
   row.names(tabXXI)[row.names(tabXXI) == "ComplAfterBleed"] <- "\\textit{Blødning}"
   row.names(tabXXI)[row.names(tabXXI) == "ComplAfterBleedAbdom"] <- "\\quad I abdominal vegg"
   row.names(tabXXI)[row.names(tabXXI) == "ComplAfterBleedVaginal"] <- "\\quad Vaginal"
