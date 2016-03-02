@@ -324,9 +324,12 @@ if (tabData$personsWithMultipleCompl > 1) {
   personText <- "personer"
 }
 
-cap <- paste(cap, "I datagrunnlaget er det", tabData$personsWithMultipleCompl,
-             personText, "som er registrert innen mer enn én av
-             komplikasjonshovedkategoriene.")
+cap <- paste(cap, "Datagrunnlaget består av", dim(RegData)[1],
+             "laparoskopiforløp brukt grunnlag for beregning av andel
+             komplikasjoner. I samme datagrunnlaget finnes det",
+             tabData$personsWithMultipleCompl, personText,
+             "som er registrert i mer enn én av",
+             "komplikasjonshovedkategoriene.")
 print(xtable::xtable(tabData$tabXXI, align=c("l", "r", "r"),
                      caption=cap, label="tab:postOpLapCompl"),
       sanitize.text.function = function(x){x})
