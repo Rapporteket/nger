@@ -320,7 +320,7 @@ basert på data i NGER i perioden "
 cap <- paste0(cap, minDate, " -- ", maxDate, ".")
 
 personText <- "person"
-if (tableData$personsWithMultipleCompl > 1) {
+if (tabData$personsWithMultipleCompl > 1) {
   personText <- "personer"
 }
 
