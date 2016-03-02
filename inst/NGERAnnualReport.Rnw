@@ -317,7 +317,16 @@ tabData <- NGERtabXXI(RegData)
 
 cap <- "Prosentvis fordeling av laparoskopiske postoperative komplikasjoner
 basert på data i NGER i perioden "
-cap <- paste0(cap, minDate, "--", maxDate, ". ")
+cap <- paste0(cap, minDate, " -- ", maxDate, ".")
+
+personText <- "person"
+if (tableData$personsWithMultipleCompl > 1) {
+  personText <- "personer"
+}
+
+cap <- paste(cap, "I datagrunnlaget er det", tabData$personsWithMultipleCompl,
+             personText, "som er registrert innen mer enn én av
+             komplikasjonshovedkategoriene.")
 print(xtable::xtable(tabData$tabXXI, align=c("l", "r", "r"),
                      caption=cap, label="tab:postOpLapCompl"),
       sanitize.text.function = function(x){x})
