@@ -50,6 +50,7 @@ NGERtabXXI <- function(RegData) {
                        Andel=apply(mydf, 2, sum, na.rm = TRUE)/N)
 
   # recode rownames, also with latex (table) tagging
+
   row.names(tabXXI[row.names(tabXXI) == "ComplAfterBleed"]) <- "\\textit{Blødning}"
   row.names(tabXXI[row.names(tabXXI) == "ComplAfterBleedAbdom"]) <- "\\quad I abdominal vegg"
   row.names(tabXXI[row.names(tabXXI) == "ComplAfterBleedVaginal"]) <- "\\quad Vaginal"
