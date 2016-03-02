@@ -38,3 +38,5 @@ I skjema registreres alt i avkryssingsbokser. Hver variable tar da verdiene
 er standard verdi som fylles ut for alle forløp og denne verdien representerer
 tilfelle der kategorien i nivået over har verdien 0 eller NULL/NA.
 
+Det er per mars 2016 ingen sjekk på om forløpene som brukes faktisk er
+ferdigstilte...
