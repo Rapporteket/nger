@@ -328,7 +328,7 @@ if (tabData$personsWithMultipleCompl > 1) {
   personInMultipleMainCatText <- paste("I datagrunnlaget er det",
                                        tabData$personsWithMultipleCompl,
                                        "personer som er registrert i mer enn
-                                       én hovedkategori."
+                                       én hovedkategori.")
 }
 
 cap <- "Prosentvis fordeling av laparoskopiske postoperative komplikasjoner
