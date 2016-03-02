@@ -49,7 +49,7 @@ NGERtabXXI <- function(RegData) {
   tabXXI <- data.frame(Frekvens=apply(mydf, 2, sum, na.rm = TRUE),
                        Andel=apply(mydf, 2, sum, na.rm = TRUE)/N*100)
   # recode colname
-  colnames(tabXXI)[2] <- "Andel (%)"
+  colnames(tabXXI)[2] <- "Andel (\\%)"
 
   # recode rownames, also with latex (table) tagging
   row.names(tabXXI)[row.names(tabXXI) == "ComplAfterBleed"] <- "\\textit{Blødning}"
