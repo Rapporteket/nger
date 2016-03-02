@@ -54,7 +54,7 @@ NGERtabXXI <- function(RegData) {
   row.names(tabXXI)[row.names(tabXXI) == "ComplAfterBleed"] <- "\\textit{Blødning}"
   row.names(tabXXI)[row.names(tabXXI) == "ComplAfterBleedAbdom"] <- "\\quad I abdominal vegg"
   row.names(tabXXI)[row.names(tabXXI) == "ComplAfterBleedVaginal"] <- "\\quad Vaginal"
-  row.names(tabXXI)[row.names(tabXXI) == "ComplAfterBleedIntra"] <- "\\quad Intraabdominal"
+  row.names(tabXXI)[row.names(tabXXI) == "ComplAfterBleedIntra"] <- "\\quad Intraabdominal "
   row.names(tabXXI)[row.names(tabXXI) == "ComplEquipment"] <- "\\textit{Problem med utstyr}"
   row.names(tabXXI)[row.names(tabXXI) == "ComplEquipNet"] <- "\\quad Med nett"
   row.names(tabXXI)[row.names(tabXXI) == "ComplEquipInstruments"] <- "\\quad Med instumenter"
