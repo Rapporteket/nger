@@ -46,38 +46,34 @@ NGERtabXXI <- function(RegData) {
   tab <- table(RegData$PatientID[indCompl])
   personsWithMultipleCompl <- length(tab[tab > 1])
 
-  # rename
-#   colnames(mydf)[which(names(mydf) == "ComplAfterBleed")] <- "\\textit\{Blødning\}"
-#   colnames(mydf)[which(names(mydf) == "ComplAfterBleedAbdom")] <- "\\quad I abdominal vegg"
-#   colnames(mydf)[which(names(mydf) == "ComplAfterBleedVaginal")] <- "\\quad Vaginal"
-#   colnames(mydf)[which(names(mydf) == "ComplAfterBleedIntra")] <- "\\quad Intraabdominal"
-#   colnames(mydf)[which(names(mydf) == "ComplEquipment")] <- "\\textit\{Problem med utstyr\}"
-#   colnames(mydf)[which(names(mydf) == "ComplEquipNet")] <- "\\quad Med nett"
-#   colnames(mydf)[which(names(mydf) == "ComplEquipInstruments")] <- "\\quad Med instumenter"
-#   colnames(mydf)[which(names(mydf) == "ComplEquipSuture")] <- "\\quad Med sutur"
-#   colnames(mydf)[which(names(mydf) == "ComplInfection")] <- "\\textit\{Infeksjon\}"
-#   colnames(mydf)[which(names(mydf) == "ComplInfSurg")] <- "\\quad Infeksjon i operasjonssår"
-#   colnames(mydf)[which(names(mydf) == "ComplInfIntra")] <- "\\quad Intraabdominal"
-#   colnames(mydf)[which(names(mydf) == "ComplInfEndoSalpin")] <- "\\quad Salpingitt"
-#   colnames(mydf)[which(names(mydf) == "ComplInfUVI")] <- "\\quad Urinveisinfeksjon"
-#   colnames(mydf)[which(names(mydf) == "ComplInfOther")] <- "\\quad Annen infeksjon"
-#   colnames(mydf)[which(names(mydf) == "ComplOrgan")] <- "\\textit\{Organskade\}"
-#   colnames(mydf)[which(names(mydf) == "ComplOrganIntestinal")] <- "\\quad Tarmskade"
-#   colnames(mydf)[which(names(mydf) == "ComplOrganBladder")] <- "\\quad Blæreskade"
-#   colnames(mydf)[which(names(mydf) == "ComplOrganUreter")] <- "\\quad Ureterskade"
-#   colnames(mydf)[which(names(mydf) == "ComplOrganKar")] <- "\\quad Karskade"
-#   colnames(mydf)[which(names(mydf) == "ComplOrganOther")] <- "\\quad Annen organskade"
-#   colnames(mydf)[which(names(mydf) == "ComplReop")] <- "\\textit\{Reoperasjon\}"
-#   colnames(mydf)[which(names(mydf) == "ComplReopLaparoscopy")] <- "\\quad til laparoskopi"
-#   colnames(mydf)[which(names(mydf) == "ComplReopHysteroscopy")] <- "\\quad til Hysteroskopi?"
-#   colnames(mydf)[which(names(mydf) == "ComplReopLaparotomy")] <- "\\quad til laparotomi"
-
   tabXXI <- data.frame(Frekvens=apply(mydf, 2, sum, na.rm = TRUE),
                        Andel=apply(mydf, 2, sum, na.rm = TRUE)/N)
 
-  # recode values
-  #tabXXI[ , 1][tabXXI[ ,1]=="ComplAfterBleed"] <- "\\textit{Blødning}"
-
+  # recode rownames, also with latex (table) tagging
+  row.names(tabXXI[row.names(tabXXI) == "ComplAfterBleed"]) <- "\\textit{Blødning}"
+  row.names(tabXXI[row.names(tabXXI) == "ComplAfterBleedAbdom"]) <- "\\quad I abdominal vegg"
+  row.names(tabXXI[row.names(tabXXI) == "ComplAfterBleedVaginal"]) <- "\\quad Vaginal"
+  row.names(tabXXI[row.names(tabXXI) == "ComplAfterBleedIntra"]) <- "\\quad Intraabdominal"
+  row.names(tabXXI[row.names(tabXXI) == "ComplEquipment"]) <- "\\textit\{Problem med utstyr\}"
+  row.names(tabXXI[row.names(tabXXI) == "ComplEquipNet"]) <- "\\quad Med nett"
+  row.names(tabXXI[row.names(tabXXI) == "ComplEquipInstruments"]) <- "\\quad Med instumenter"
+  row.names(tabXXI[row.names(tabXXI) == "ComplEquipSuture"]) <- "\\quad Med sutur"
+  row.names(tabXXI[row.names(tabXXI) == "ComplInfection"]) <- "\\textit\{Infeksjon\}"
+  row.names(tabXXI[row.names(tabXXI) == "ComplInfSurg"]) <- "\\quad Infeksjon i operasjonssår"
+  row.names(tabXXI[row.names(tabXXI) == "ComplInfIntra"]) <- "\\quad Intraabdominal"
+  row.names(tabXXI[row.names(tabXXI) == "ComplInfEndoSalpin"]) <- "\\quad Salpingitt"
+  row.names(tabXXI[row.names(tabXXI) == "ComplInfUVI"]) <- "\\quad Urinveisinfeksjon"
+  row.names(tabXXI[row.names(tabXXI) == "ComplInfOther"]) <- "\\quad Annen infeksjon"
+  row.names(tabXXI[row.names(tabXXI) == "ComplOrgan"]) <- "\\textit\{Organskade\}"
+  row.names(tabXXI[row.names(tabXXI) == "ComplOrganIntestinal"]) <- "\\quad Tarmskade"
+  row.names(tabXXI[row.names(tabXXI) == "ComplOrganBladder"]) <- "\\quad Blæreskade"
+  row.names(tabXXI[row.names(tabXXI) == "ComplOrganUreter"]) <- "\\quad Ureterskade"
+  row.names(tabXXI[row.names(tabXXI) == "ComplOrganKar"]) <- "\\quad Karskade"
+  row.names(tabXXI[row.names(tabXXI) == "ComplOrganOther"]) <- "\\quad Annen organskade"
+  row.names(tabXXI[row.names(tabXXI) == "ComplReop"]) <- "\\textit\{Reoperasjon\}"
+  row.names(tabXXI[row.names(tabXXI) == "ComplReopLaparoscopy"]) <- "\\quad til laparoskopi"
+  row.names(tabXXI[row.names(tabXXI) == "ComplReopHysteroscopy"]) <- "\\quad til Hysteroskopi?"
+  row.names(tabXXI[row.names(tabXXI) == "ComplReopLaparotomy"]) <- "\\quad til laparotomi"
 
 
   list(tabXXI=tabXXI, personsWithMultipleCompl=personsWithMultipleCompl)
