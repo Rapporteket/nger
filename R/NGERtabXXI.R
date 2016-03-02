@@ -76,7 +76,7 @@ NGERtabXXI <- function(RegData) {
                        Andel=apply(mydf, 2, sum, na.rm = TRUE)/N)
 
   # recode values
-  tabXXI[ , 1][tabXXI[ ,1]=="ComplAfterBleed"] <- "\\textit{Blødning}"
+  #tabXXI[ , 1][tabXXI[ ,1]=="ComplAfterBleed"] <- "\\textit{Blødning}"
 
 
 
