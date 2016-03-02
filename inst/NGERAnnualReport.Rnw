@@ -316,7 +316,7 @@ maxDate <- as.character(format(max(mainDates), format="%e. %B %Y"))
 tabData <- NGERtabXXI(RegData)
 
 cap <- "Prosentvis fordeling av laparoskopiske postoperative komplikasjoner
-basert på data i NGER i perioden "
+(hoved- og underkategori) basert på data i NGER i perioden "
 cap <- paste0(cap, minDate, " -- ", maxDate, ".")
 
 personText <- "person"
@@ -325,7 +325,7 @@ if (tabData$personsWithMultipleCompl > 1) {
 }
 
 cap <- paste(cap, "Datagrunnlaget består av", dim(RegData)[1],
-             "laparoskopiforløp brukt grunnlag for beregning av andel
+             "laparoskopiforløp brukt som grunnlag for beregning av andel
              komplikasjoner. I samme datagrunnlaget finnes det",
              tabData$personsWithMultipleCompl, personText,
              "som er registrert i mer enn én av",
