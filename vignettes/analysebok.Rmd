@@ -11,6 +11,9 @@ vignette: >
 
 Beskrivelse av hva vi gjør fra rådata til ferdige resultater...
 
+## Pasientkarakteristika
+### Tabell med BMI, fødsler, svangerskap og operasjonstid
+
 ## Komplikasjoner
 Figurer og tabeller relatert til registrerte komplikasjoner
 
