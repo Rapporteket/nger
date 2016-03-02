@@ -331,7 +331,7 @@ cap <- paste(cap, "Datagrunnlaget består av", dim(RegData)[1],
              "som er registrert i mer enn én av",
              "komplikasjonshovedkategoriene.")
 print(xtable::xtable(tabData$tabXXI, align=c("l", "r", "r"),
-                     caption=cap, label="tab:postOpLapCompl"),
+                     digits=c(0,0), caption=cap, label="tab:postOpLapCompl"),
       sanitize.text.function = function(x){x})
 @
 
