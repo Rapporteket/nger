@@ -193,7 +193,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
      }
 
      if (valgtVar %in% c('OpOpcatOutsideDaytime', 'OpDaySurgery')) {
-          #0: Nei, 1: Ja
+          #0: Nei, 1: Ja Manglende:Ukjent
           Tittel <- sprintf('%s', switch(as.character(valgtVar),
                                          'OpOpcatOutsideDaytime' = 'Operasjon i vakttid',
                                          'OpDaySurgery' = 'Dagkirurgiske Inngrep'))
@@ -228,6 +228,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
      }
      if (valgtVar == 'LapNumHjelpeinnstikk') {
        # Velge antall fra 0 til 6
+	   #IKKE gjort noen utvalg. (StatusLap==1?, LapHjelpeinnstikk==1?)
        Tittel <- 'Antall hjelpeinnstikk'
        grtxt <- 0:6
        RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = grtxt)
@@ -364,6 +365,36 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 				NVar <- length(indMed)
        }
 
+		  if (valgtVar == 'KomplPostUtd') {		#Evt. ReopUtd
+		    #Postoperative komplikasjoner for ulike utdanningsgrupper
+			#Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper.
+			####!!!Usikker på hvilke variable som skal inngå. Eks ComplReop=1, OpType=2, tomme?
+			  # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
+			  Tittel <- 'Postop. komplikasjon i utdanningsgrupper'
+			  grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år')
+			  #RegData <- RegData[which(RegData$Education %in% 1:5), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
+			  RegData <- RegData[intersect(which(RegData$Education %in% 1:5), which(RegData$ComplExist %in% 0:1)), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
+			  RegData$Education <- factor(RegData$Education, levels=1:5)
+			  AntVar <- table(RegData$Education[which(RegData$ComplExist ==1)])
+    		  NVar <- table(RegData$Education)
+    		  #100*AntVar/NVar
+    		  retn <- 'H'
+    			}
+		  if (valgtVar == 'KomplReopUtd') {		#Evt. ReopUtd
+		    #Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper.
+			####!!!Usikker på hvilke variable som skal inngå. Eks ComplReop=1, OpType=2, tomme?
+			  # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
+			  Tittel <- 'Reoperasjon (komplikasjon) i utdanningsgrupper'
+			  grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år')
+			  RegData <- RegData[which(RegData$Education %in% 1:5), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
+			  #RegData <- RegData[intersect(which(RegData$Education %in% 1:5), which(RegData$ComplExist %in% 0:1)), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
+			  RegData$Education <- factor(RegData$Education, levels=1:5)
+			  AntVar <- table(RegData$Education[which(RegData$ComplReop ==1)])
+    		  #AntVar <- table(RegData$Education[which(RegData$OpType ==2)])
+    		  NVar <- table(RegData$Education)
+    		  #100*AntVar/NVar
+    		  retn <- 'H'
+    			}
        if (valgtVar=='LapEkstrautstyr') {
 				#Laparaskopisk ekstrautstyr
 				#MCEType=1 el 3 (Laparoskopi eller begge)
@@ -390,36 +421,6 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 				NVar <- length(indMed)
 				}
 
-		  if (valgtVar == 'KomplReopUtd') {		#Evt. ReopUtd
-		    #Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper.
-			####!!!Usikker på hvilke variable som skal inngå. Eks ComplReop=1, OpType=2, tomme?
-			  # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
-			  Tittel <- 'Reoperasjon (komplikasjon) i utdanningsgrupper'
-			  grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år')
-			  RegData <- RegData[which(RegData$Education %in% 1:5), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
-			  #RegData <- RegData[intersect(which(RegData$Education %in% 1:5), which(RegData$ComplExist %in% 0:1)), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
-			  RegData$Education <- factor(RegData$Education, levels=1:5)
-			  AntVar <- table(RegData$Education[which(RegData$ComplReop ==1)])
-    		  #AntVar <- table(RegData$Education[which(RegData$OpType ==2)])
-    		  NVar <- table(RegData$Education)
-    		  #100*AntVar/NVar
-    		  retn <- 'H'
-    			}
-		  if (valgtVar == 'KomplPostUtd') {		#Evt. ReopUtd
-		    #Postoperative komplikasjoner for ulike utdanningsgrupper
-			#Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper.
-			####!!!Usikker på hvilke variable som skal inngå. Eks ComplReop=1, OpType=2, tomme?
-			  # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
-			  Tittel <- 'Postop. komplikasjon i utdanningsgrupper'
-			  grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år')
-			  #RegData <- RegData[which(RegData$Education %in% 1:5), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
-			  RegData <- RegData[intersect(which(RegData$Education %in% 1:5), which(RegData$ComplExist %in% 0:1)), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
-			  RegData$Education <- factor(RegData$Education, levels=1:5)
-			  AntVar <- table(RegData$Education[which(RegData$ComplExist ==1)])
-    		  NVar <- table(RegData$Education)
-    		  #100*AntVar/NVar
-    		  retn <- 'H'
-    			}
 
                #Generell beregning for alle figurer med sammensatte variable:
                if (teller == 1) {

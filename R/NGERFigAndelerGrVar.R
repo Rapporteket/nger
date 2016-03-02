@@ -3,7 +3,9 @@
 #' Funksjon som genererer en figur med andeler av en variabel for en grupperingsvariabelen sykehus.
 #' Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus
 #'
-#' Detajer: Her bør man liste opp hvilke variable funksjonen benytter.
+#'  Variable funksjonen benytter: Alder (beregnes), ComplExist, ComplReop, Education, FollowupSeriousness
+#'  HypComplications, LapComplications, MCEType, OpAntibioticProphylaxis, OpASA, OpBMI, StatusFollowup.
+#'  Det benyttes også andre variable til utvalg osv.
 #'
 #' @inheritParams FigAndelTid
 #' @param valgtVar: Velg hvilken variabel du ønsker å se resultat for
@@ -46,7 +48,7 @@ if (enhetsUtvalg == 7) {
 		cexShNavn <- 1
 	}
 
-grVar <- 'Avdeling'
+grVar <- 'SykehusNavn'
 RegData[ ,grVar] <- factor(RegData[ ,grVar])
 Ngrense <- 10		#Minste antall registreringer for at ei gruppe skal bli vist
 
@@ -56,10 +58,9 @@ RegData$Variabel <- 0
 if (valgtVar == 'Alder') {
 #Andel over 70 år
 	RegData$Variabel[which(RegData[ ,valgtVar] >= 70)] <- 1
-	TittelUt <- 'Pasienter over 70 år'
+	Tittel <- 'Pasienter over 70 år'
 }
 
-}
 if (valgtVar=='OpAntibioticProphylaxis') {
 	#Andel som får antibiotika
 	#Kode 0,1: Nei, Ja (ingen tomme per 22.feb.2016)
@@ -71,13 +72,13 @@ if (valgtVar=='OpAntibioticProphylaxis') {
 if (valgtVar == 'OpASA') {
 	RegData <- RegData[which(RegData[,valgtVar] %in% 1:5), ]
 	RegData$Variabel[which(RegData[ ,valgtVar] > 2)] <- 1
-	TittelUt <- 'ASA-grad > II'
+	Tittel <- 'ASA-grad > II'
 }
 if (valgtVar == 'OpBMI') {
 #BMI > 30
 	RegData <- RegData[which(RegData[,valgtVar] >10), ]
 	RegData$Variabel[which(RegData[ ,valgtVar] > 30)] <- 1
-	TittelUt <- 'Pasienter med fedme'
+	Tittel <- 'Pasienter med fedme'
 }
 
 
@@ -115,19 +116,6 @@ if (valgtVar=='KomplIntra') {
 	RegData$Variabel[indVar] <- 1
 	Tittel <- 'Komplikasjoner, intraoperativt [HypCompl og LapCompl], uten tomme'
 }
-
-Alder
-ComplExist
-ComplReop
-Education
-FollowupSeriousness
-HypComplications
-LapComplications
-MCEType
-OpAntibioticProphylaxis
-OpASA
-OpBMI
-StatusFollowup
 
 if (valgtVar=='ComplReop') {
   #Andel reoperasjon som følge av komplikasjon
@@ -189,7 +177,6 @@ utvalgTxt <- NGERUtvalg$utvalgTxt
 	andeltxt <- paste(sprintf('%.1f',AndelerGrSort), '%',sep='') 	#round(as.numeric(AndelerGrSort),1)
 	if (length(indGrUt)>0) {andeltxt[(AntGr+1):(AntGr+length(indGrUt))] <- ''}
 
-if (tittel==0) {Tittel<-''} else {Tittel <- TittelUt}
 
 #-----------Figur---------------------------------------
 if 	( max(Ngr) < Ngrense)	{#Dvs. hvis ALLE er mindre enn grensa.
@@ -210,7 +197,7 @@ if ( outfile != '') {dev.off()}
 #Innparametre: ...
 
 
-FigTypUt <- figtype(outfile, height=3*800, fargepalett=NGERUtvalg$fargepalett)
+FigTypUt <- figtype(outfile, height=1*800, fargepalett=NGERUtvalg$fargepalett)
 farger <- FigTypUt$farger
 #Tilpasse marger for å kunne skrive utvalgsteksten
 NutvTxt <- length(utvalgTxt)
@@ -243,3 +230,4 @@ if ( outfile != '') {dev.off()}
 #----------------------------------------------------------------------------------
 }
 }
+
