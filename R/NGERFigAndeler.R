@@ -56,6 +56,7 @@
 #'                 3: Begge
 #'                 99: Alle
 #'
+#' Detajer: Her bør man liste opp hvilke variable funksjonen benytter.
 #' @return En figur med søylediagram (fordeling) av ønsket variabel
 #'
 #' @export
