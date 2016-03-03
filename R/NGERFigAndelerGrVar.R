@@ -3,7 +3,7 @@
 #' Funksjon som genererer en figur med andeler av en variabel for en grupperingsvariabelen sykehus.
 #' Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus
 #'
-#'  Variable funksjonen benytter: Alder (beregnes), ComplExist, ComplReop, ComplAfterBleed, ComplEquipment, 
+#'  Variable funksjonen benytter: Alder (beregnes), ComplExist, ComplReop, ComplAfterBleed, ComplEquipment,
 #'  ComplInfection, ComplOrganEducation, FollowupSeriousness
 #'  HypComplications, LapComplications, MCEType, OpAntibioticProphylaxis, OpASA, OpBMI, StatusFollowup.
 #'  Det benyttes også andre variable til utvalg osv.
@@ -95,7 +95,7 @@ if (valgtVar=='KomplPostop') {
 	RegData$Variabel <- RegData$ComplExist
 	Tittel <- 'Komplikasjoner, postoperativt[ComplExist], uten ukjente'
 }
-, , , 
+
 if (valgtVar=='ComplAfterBleed') {
 	#Kode 0: Nei, 1:Ja
 	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$OppflgRegStatus==2)), ]
