@@ -228,7 +228,7 @@ if ( outfile != '') {dev.off()}
 #Innparametre: ...
 
 
-FigTypUt <- figtype(outfile, height=3*800, fargepalett=NGERUtvalg$fargepalett)
+FigTypUt <- figtype(outfile, fargepalett=NGERUtvalg$fargepalett)	#height=3*800, 
 farger <- FigTypUt$farger
 #Tilpasse marger for å kunne skrive utvalgsteksten
 NutvTxt <- length(utvalgTxt)
