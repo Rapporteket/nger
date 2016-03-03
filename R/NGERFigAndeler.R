@@ -88,7 +88,9 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
      subtxt <- ''	#Benevning
      flerevar <- 0
      antDes <- 1
-
+	 '%i%' <- intersect
+	
+	 
      ###############
      ### Variable
      ###############
@@ -115,7 +117,6 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 		koder <- 1:4
 		retn <- 'H'
 	}
-
 	if (valgtVar=='HypCompleteness') {
 		#Gjennomføringsgrad av hysteroskopi
 		#Kode •	1-Fullstendig, 2-Ufullstendig, 3-Mislykket
@@ -237,6 +238,16 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
        grtxt <- 0:6
        RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = grtxt)
      }
+
+	if (valgtVar=='FollowupSeriousness') {
+		#Postoperative komplikasjoner
+		#Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
+		RegData <- RegData[which(RegData$OppflgRegStatus == 2) %i% which(RegData$ComplExist == 1), ]
+        RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = 1:4)
+		grtxt <- c('Lite alvorlig', 'Middels alvorlig', 'Alvorlig', 'Dødelig')	#, 'Ukjent')
+		Tittel <- 'Alvorlighetsgrad av komplikasjoner'
+		retn <- 'H'
+	}
 
 
      ###Gjør utvalg (LibUtvalg)

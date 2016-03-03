@@ -84,7 +84,7 @@ if (valgtVar == 'OpBMI') {
 #BMI > 30
 	RegData <- RegData[which(RegData[,valgtVar] >10), ]
 	RegData$Variabel[which(RegData[ ,valgtVar] > 30)] <- 1
-	Tittel <- 'Pasienter med fedme'
+	Tittel <- 'Pasienter med fedme (BMI > 30)'
 }
 
 
