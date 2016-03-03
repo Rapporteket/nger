@@ -10,17 +10,35 @@ NGERtabVI <- function(RegData) {
 
   # recode MCEType
   ind <- which(RegData$MCEType==1)
-  RegData$MCEType[ind] <- "Laparoskopi"
+  RegData$MCEType[ind] <- "\\quad Laparoskopi"
   ind <- which(RegData$MCEType==2)
-  RegData$MCEType[ind] <- "Hysteroskopi"
+  RegData$MCEType[ind] <- "\\quad Hysteroskopi"
   ind <- which(RegData$MCEType==3)
-  RegData$MCEType[ind] <- "Begge"
+  RegData$MCEType[ind] <- "\\quad Begge"
 
-  myTab <- xtabs(OpBMI ~ MCEType + year,
-                 aggregate(OpBMI~MCEType+year,RegData,mean))
+  # make dummy column for all MCEs
+  n <- dim(RegData)[1]
+  dummy <- rep(1, n)
+  RegData$dummy <- dummy
+#   names(RegData)[names(RegData)==dummy] <- "\\textbf{Alle BMI}"
+#   RegData$dummy <- dummy
+#   names(RegData)[names(RegData)==dummy] <- "\\textbf{Alle fødsler}"
+#   RegData$dummy <- dummy
+#   names(RegData)[names(RegData)==dummy] <- "\\textbf{Alle graviditeter}"
+  myTab <- xtabs(OpBMI ~ dummy + year,
+                 aggregate(OpBMI~dummy+year,RegData,mean))
+  myTab <- rbind(myTab,
+                 xtabs(OpBMI ~ MCEType + year,
+                       aggregate(OpBMI~MCEType+year,RegData,mean)))
+  myTab <- rbind(myTab,
+                 xtabs(OpParities ~ dummy + year,
+                       aggregate(OpParities~dummy+year,RegData,mean)))
   myTab <- rbind(myTab,
                  xtabs(OpParities ~ MCEType + year,
                        aggregate(OpParities~MCEType+year,RegData,mean)))
+  myTab <- rbind(myTab,
+                 xtabs(OpPregnancies ~ dummy + year,
+                       aggregate(OpPregnancies~dummy+year,RegData,mean)))
   myTab <- rbind(myTab,
                  xtabs(OpPregnancies ~ MCEType + year,
                        aggregate(OpPregnancies~MCEType+year,RegData,mean)))
