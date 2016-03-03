@@ -9,21 +9,42 @@
 NGERtabVI <- function(RegData) {
 
   # recode MCEType
-  ind <- which(RegData$MCEType==1)
-  RegData$MCEType[ind] <- "Laparoskopi"
-  ind <- which(RegData$MCEType==2)
-  RegData$MCEType[ind] <- "Hysteroskopi"
-  ind <- which(RegData$MCEType==3)
-  RegData$MCEType[ind] <- "Begge"
+#   ind <- which(RegData$MCEType==1)
+#   RegData$MCEType[ind] <- "\\quad Laparoskopi"
+#   ind <- which(RegData$MCEType==2)
+#   RegData$MCEType[ind] <- "\\quad Hysteroskopi"
+#   ind <- which(RegData$MCEType==3)
+#   RegData$MCEType[ind] <- "\\quad Begge"
 
-  myTab <- xtabs(OpBMI ~ MCEType + year,
-                 aggregate(OpBMI~MCEType+year,RegData,mean))
+  # make dummy column for all MCEs
+  n <- dim(RegData)[1]
+  RegData$dummy <- rep("\\textbf{Alle BMI ($kg/m^2$)}", n)
+  myTab <- xtabs(OpBMI ~ dummy + year,
+                 aggregate(OpBMI~dummy+year,RegData,mean))
+  myTab <- rbind(myTab,
+                 xtabs(OpBMI ~ MCEType + year,
+                       aggregate(OpBMI~MCEType+year,RegData,mean)))
+  RegData$dummy <- "\\textbf{Alle fødsler (antall)}"
+  myTab <- rbind(myTab,
+                 xtabs(OpParities ~ dummy + year,
+                       aggregate(OpParities~dummy+year,RegData,mean)))
   myTab <- rbind(myTab,
                  xtabs(OpParities ~ MCEType + year,
                        aggregate(OpParities~MCEType+year,RegData,mean)))
+  RegData$dummy <- "\\textbf{Alle graviditeter (antall)}"
+  myTab <- rbind(myTab,
+                 xtabs(OpPregnancies ~ dummy + year,
+                       aggregate(OpPregnancies~dummy+year,RegData,mean)))
   myTab <- rbind(myTab,
                  xtabs(OpPregnancies ~ MCEType + year,
                        aggregate(OpPregnancies~MCEType+year,RegData,mean)))
+  RegData$dummy <- "\\textbf{Alle knivtider (min)}"
+  myTab <- rbind(myTab,
+                 xtabs(OpOptimeCount ~ dummy + year,
+                       aggregate(OpOptimeCount~dummy+year,RegData,mean)))
+  myTab <- rbind(myTab,
+                 xtabs(OpOptimeCount ~ MCEType + year,
+                       aggregate(OpOptimeCount~MCEType+year,RegData,mean)))
 
   list(tabVI=myTab)
 
