@@ -22,8 +22,8 @@ NGERtabVI <- function(RegData) {
                  xtabs(OpParities ~ MCEType + year,
                        aggregate(OpParities~MCEType+year,RegData,mean)))
   myTab <- rbind(myTab,
-                 xtabs(Pregnancies ~ MCEType + year,
-                       aggregate(Pregnancies~MCEType+year,RegData,mean)))
+                 xtabs(OpPregnancies ~ MCEType + year,
+                       aggregate(OpPregnancies~MCEType+year,RegData,mean)))
 
   list(tabVI=myTab)
 
