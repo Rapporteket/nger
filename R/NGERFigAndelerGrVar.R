@@ -3,13 +3,18 @@
 #' Funksjon som genererer en figur med andeler av en variabel for en grupperingsvariabelen sykehus.
 #' Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus
 #'
-#'  Variable funksjonen benytter: Alder (beregnes), ComplExist, ComplReop, Education, FollowupSeriousness
+#'  Variable funksjonen benytter: Alder (beregnes), ComplExist, ComplReop, ComplAfterBleed, ComplEquipment, 
+#'  ComplInfection, ComplOrganEducation, FollowupSeriousness
 #'  HypComplications, LapComplications, MCEType, OpAntibioticProphylaxis, OpASA, OpBMI, StatusFollowup.
 #'  Det benyttes også andre variable til utvalg osv.
 #'
 #' @inheritParams FigAndelTid
 #' @param valgtVar: Velg hvilken variabel du ønsker å se resultat for
 #'		Alder: Andel pasienter over 70 år.
+#'		ComplAfterBleed: Postop. komplikasjon: Blødning
+#'		ComplEquipment: Postop. komplikasjon: Problemer med ustyr
+#'		ComplInfection: Postop. komplikasjon: Infeksjon
+#'		ComplOrgan: Postop. komplikasjon: Organskade
 #'		ComplReop: Reoperasjon som følge av komplikasjon
 #'		Education: Pasienter med høyere utdanning
 #'		FollowupSeriousness: Alvorlige komplikasjoner
@@ -86,10 +91,43 @@ if (valgtVar == 'OpBMI') {
 if (valgtVar=='KomplPostop') {
 	# Andel postoperative komplikasjoner
 	#Kode 0: Nei, 1:Ja, tomme
-	RegData <- RegData[which(RegData$ComplExist %in% 0:1), ]
+	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$OppflgRegStatus==2)), ]
 	RegData$Variabel <- RegData$ComplExist
 	Tittel <- 'Komplikasjoner, postoperativt[ComplExist], uten ukjente'
 }
+, , , 
+if (valgtVar=='ComplAfterBleed') {
+	#Kode 0: Nei, 1:Ja
+	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$OppflgRegStatus==2)), ]
+	RegData$Variabel[which(RegData$ComplAfterBleed == 1)] <- 1
+	Tittel <- 'Postop. komplikasjon: Blødning'
+}
+if (valgtVar=='ComplEquipment') {
+	#Kode 0: Nei, 1:Ja
+	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$OppflgRegStatus==2)), ]
+	RegData$Variabel[which(RegData$ComplEquipment == 1)] <- 1
+	Tittel <- 'Postop. komplikasjon: Problemer med ustyr'
+}
+if (valgtVar=='ComplInfection') {
+	#Kode 0: Nei, 1:Ja
+	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$OppflgRegStatus==2)), ]
+	RegData$Variabel[which(RegData$ComplInfection == 1)] <- 1
+	Tittel <- 'Postop. komplikasjon: Infeksjon'
+}
+if (valgtVar=='ComplOrgan') {
+	#Kode 0: Nei, 1:Ja
+	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$OppflgRegStatus==2)), ]
+	RegData$Variabel[which(RegData$ComplOrgan == 1)] <- 1
+	Tittel <- 'Postop. komplikasjon: Organskade'
+}
+
+if (valgtVar=='ComplReop') {
+	#Kode 0: Nei, 1:Ja
+	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$OppflgRegStatus==2)), ]
+	RegData$Variabel[which(RegData$ComplReop == 1)] <- 1
+	Tittel <- 'Postop. komplikasjon: Reoperasjon'
+}
+
 if (valgtVar=='FollowupSeriousness') {
 	#Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
 	#Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
@@ -115,15 +153,6 @@ if (valgtVar=='KomplIntra') {
 					'99' = union(which(RegData$HypComplications == 1), which(RegData$LapComplications==1)))
 	RegData$Variabel[indVar] <- 1
 	Tittel <- 'Komplikasjoner, intraoperativt [HypCompl og LapCompl], uten tomme'
-}
-
-if (valgtVar=='ComplReop') {
-  #Andel reoperasjon som følge av komplikasjon
-	#Andel OpType==2 (1:primær, 2: reop)
-	#RegData <- RegData[which(RegData$OpType %in% 1:2), ]
-	#RegData$Variabel[which(RegData$OpType == 2)] <- 1
-  RegData$Variabel[which(RegData$ComplReop == 1)] <- 1
-	Tittel <- 'Reoperasjoner (basert på [ComplReop])'
 }
 
 if (valgtVar=='StatusFollowup') {
