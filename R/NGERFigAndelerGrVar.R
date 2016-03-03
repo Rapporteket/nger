@@ -27,7 +27,7 @@
 #' @export
 
 FigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
-                        minald=0, maxald=130, MCEType=99, reshID, outfile='',
+                        minald=0, maxald=130, MCEType=99, AlvorlighetKompl=99, reshID, outfile='',
                         enhetsUtvalg=1, preprosess=TRUE, hentData=0) {
 
   ## Hvis spørring skjer fra R på server. ######################
@@ -179,7 +179,7 @@ if (valgtVar == 'Education') {
 
 #Gjør utvalg
 NGERUtvalg <- NGERLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-                            MCEType=MCEType)
+                            MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl)
 RegData <- NGERUtvalg$RegData
 utvalgTxt <- NGERUtvalg$utvalgTxt
 

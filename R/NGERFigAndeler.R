@@ -31,7 +31,7 @@
 #'     OpEarlierVaginal: Tidligere vaginale inngrep
 #'     OpEarlierLaparoscopy: Tidligere laparoskopi
 #'     OpEarlierLaparatomy: Tidligere laparatomi
-#'     OpOutsideDaytime: Operasjon i legens vakttid 
+#'     OpOutsideDaytime: Operasjon i legens vakttid
 #'     OpType: Primæroperasjon eller reoperasjon
 #' @param datoFra Tidligste dato i utvalget (vises alltid i figuren).
 #' @param datoTil Seneste dato i utvalget (vises alltid i figuren).
@@ -62,13 +62,12 @@
 #' @export
 #'
 FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050-12-31', minald=0, maxald=130,
-                        outfile='', reshID, enhetsUtvalg=1, MCEType=99, hentData=0, preprosess=TRUE)
+                        outfile='', reshID, enhetsUtvalg=1, MCEType=99, AlvorlighetKompl=99, hentData=0, preprosess=TRUE)
 {
-  print(hentData)
+
      ## Hvis spørring skjer fra R på server. ######################
      if(hentData == 1){
           RegData <- NGERHentRegData(datoFra = datoFra, datoTil = datoTil)
-          print(dim(RegData))
      }
 
      # Hvis RegData ikke har blitt preprosessert
@@ -238,7 +237,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
      ###Gjør utvalg (LibUtvalg)
      ###Kjører denne etter variabeldefinisjon for at utvalgTxt skal bli riktig
      NGERUtvalg <- NGERLibUtvalg(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra,
-                             datoTil = datoTil, MCEType = MCEType)
+                             datoTil = datoTil, MCEType = MCEType, AlvorlighetKompl=AlvorlighetKompl)
      RegData <- NGERUtvalg$RegData
      utvalgTxt <- NGERUtvalg$utvalgTxt
 
