@@ -55,6 +55,11 @@
 #'                 2: Hysteroskopi
 #'                 3: Begge
 #'                 99: Alle
+#' @param AlvorlighetKompl  Alvorlighetsgrad for postoperative komplikasjoner
+#'                          1: Lite alvorlig
+#'                          2: Middels alvorlig
+#'                          3: Alvorlig
+#'                          4: Dødelig
 #'
 #' Detajer: Her bør man liste opp hvilke variable funksjonen benytter.
 #' @return En figur med søylediagram (fordeling) av ønsket variabel

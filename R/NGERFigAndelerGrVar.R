@@ -17,7 +17,7 @@
 #'		ComplOrgan: Postop. komplikasjon: Organskade
 #'		ComplReop: Reoperasjon som følge av komplikasjon
 #'		Education: Pasienter med høyere utdanning
-#'		FollowupSeriousness: Alvorlige komplikasjoner
+#'		FollowupSeriousness: Alvorlige komplikasjoner (grad 3 og 4)
 #'		KomplIntra: Komplikasjoner under operasjon (intraoperativt)
 #'		KomplPostop: Postoperative komplikasjoner
 #'		OpAntibioticProphylaxis: Fått antibiotikaprofylakse
@@ -131,9 +131,10 @@ if (valgtVar=='ComplReop') {
 if (valgtVar=='FollowupSeriousness') {
 	#Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
 	#Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
-	RegData <- RegData[which(RegData$FollowupSeriousness %in% 1:4), ]
+	RegData <- RegData[which(RegData$ComplExist %in% 0:1) %i% which(RegData$OppflgRegStatus==2), ]
+	#RegData <- RegData[which(RegData$FollowupSeriousness %in% 1:4), ]
 	RegData$Variabel[which(RegData$FollowupSeriousness %in% 3:4)] <- 1
-	Tittel <- 'Alvorlige komplikasjoner (grad 3 og 4) av alle komplikasjoner'
+	Tittel <- 'Alvorlige komplikasjoner (grad 3 og 4)'
 }
 
 if (valgtVar=='KomplIntra') {
