@@ -7,13 +7,13 @@
 #' @return RegData data frame
 #' @export
 #'
-NGERHentRegDataVI <- function(datoFra = '2014-01-01', datoTil = '2099-01-01') {
+NGERHentRegDataVI <- function(reportYear = 2099) {
 
   registryName <- "nger"
   dbType <- "mysql"
 
   query <- paste0(
-'
+"
 SELECT
   v.OpBMI,
   v.OpParities,
@@ -30,9 +30,7 @@ FROM
   AlleVarNum v
 INNER JOIN ForlopsOversikt f ON v.MCEID = f.ForlopsID
 WHERE
-  f.HovedDato >= \'', datoFra, '\' AND
-  f.HovedDato < \'', datoTil, '\'
-'
+  YEAR(f.HovedDato) > ", reportYear + 1
   )
 
   RegData <- rapbase::LoadRegData(registryName, query, dbType)
