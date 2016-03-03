@@ -12,7 +12,7 @@
 #'	KomplPostop: Andel postoperative komplikasjoner
 #'	OpAntibioticProphylaxis: Andel som får antibiotika
 #'	OpBMI: Pasienter med fedme (BMI>30)
-#'	Reop: Andel reoperasjon som følge av komplikasjon
+#'	ComplReop: Andel reoperasjon som følge av komplikasjon
 #'	StatusFollowup: Pasienter som har fått postoperativ oppfølging
 #'
 #' @export
@@ -72,7 +72,7 @@ if (valgtVar=='OpBMI') {
 if (valgtVar=='KomplPostop') {
 	# Andel postoperative komplikasjoner
 	#Kode 0: Nei, 1:Ja, tomme
-	RegData <- RegData[which(RegData$ComplExist %in% 0:1), ]
+	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$OppflgRegStatus==2)), ]
 	RegData$Variabel <- RegData$ComplExist
   	#RegData$Variabel[which(RegData$ComplExist==1)] <- 1
   	VarTxt <- 'komplikasjoner'
@@ -109,11 +109,9 @@ if (valgtVar=='KomplIntra') {
 
 
 #########
-if (valgtVar=='Reop') {
+if (valgtVar=='ComplReop') {
   #Andel reoperasjon som følge av komplikasjon
-	#Andel OpType==2 (1:primær, 2: reop)
-	#RegData <- RegData[which(RegData$OpType %in% 1:2), ]
-	#RegData$Variabel[which(RegData$OpType == 2)] <- 1
+	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$OppflgRegStatus==2)), ]
   RegData$Variabel[which(RegData$ComplReop == 1)] <- 1
   VarTxt <- 'reoperasjoner'
 	Tittel <- 'Reoperasjoner (basert på [ComplReop])'

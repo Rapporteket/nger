@@ -105,7 +105,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 	if (valgtVar=='FollowupSeriousness') {
 		#Postoperative komplikasjoner
 		#Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
-		RegData <- RegData[which(RegData$ComplExist == 1), ]
+		RegData <- RegData[which(RegData$OppflgRegStatus == 2) %i% which(RegData$ComplExist == 1), ]
 		grtxt <- c('Lite alvorlig', 'Middels alvorlig', 'Alvorlig', 'Dødelig', 'Ukjent')
 		Tittel <- 'Alvorlighetsgrad av komplikasjoner'
 		koder <- 1:4
@@ -360,7 +360,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 					        'ComplOrgan') #Organskade
 				grtxt <- Var
 				Tittel <- 'Postoperative(?) komplikasjoner'
-				indMed <- which(RegData$ComplExist %in% 0:1)	#Fjern denne hvis likevel ikke postop.
+				indMed <- intersect(which(RegData$ComplExist %in% 0:1), which(RegData$OppflgRegStatus==2))
  				AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
 				NVar <- length(indMed)
        }
@@ -373,7 +373,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 			  Tittel <- 'Postop. komplikasjon i utdanningsgrupper'
 			  grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år')
 			  #RegData <- RegData[which(RegData$Education %in% 1:5), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
-			  RegData <- RegData[intersect(which(RegData$Education %in% 1:5), which(RegData$ComplExist %in% 0:1)), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
+			  RegData <- RegData[which(RegData$OppflgRegStatus==2) %i% which(RegData$Education %in% 1:5) %i% which(RegData$ComplExist %in% 0:1), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
 			  RegData$Education <- factor(RegData$Education, levels=1:5)
 			  AntVar <- table(RegData$Education[which(RegData$ComplExist ==1)])
     		  NVar <- table(RegData$Education)
@@ -384,9 +384,9 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 		    #Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper.
 			####!!!Usikker på hvilke variable som skal inngå. Eks ComplReop=1, OpType=2, tomme?
 			  # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
-			  Tittel <- 'Reoperasjon (komplikasjon) i utdanningsgrupper'
+			  Tittel <- 'Reoperasjon (grunnet komplikasjon) i utdanningsgrupper'
 			  grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år')
-			  RegData <- RegData[which(RegData$Education %in% 1:5), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
+			  RegData <- RegData[which(RegData$OppflgRegStatus==2) %i% which(RegData$Education %in% 1:5) %i% which(RegData$ComplExist %in% 0:1), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
 			  #RegData <- RegData[intersect(which(RegData$Education %in% 1:5), which(RegData$ComplExist %in% 0:1)), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
 			  RegData$Education <- factor(RegData$Education, levels=1:5)
 			  AntVar <- table(RegData$Education[which(RegData$ComplReop ==1)])
