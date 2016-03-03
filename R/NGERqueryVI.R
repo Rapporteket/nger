@@ -24,7 +24,7 @@ SELECT
   v.MCEType,
   f.BasisRegStatus,
   v.PatientID,
-  f.HovedDato,
+  YEAR(f.HovedDato) AS year,
   f.SykehusNavn
 FROM
   AlleVarNum v
