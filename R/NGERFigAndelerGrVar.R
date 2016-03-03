@@ -40,7 +40,8 @@ FigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     RegData <- NGERPreprosess(RegData=RegData, reshID=reshID)
   }
 
-cexShNavn <- 0.85
+'%i%' <- intersect
+  cexShNavn <- 0.85
 
 #Når bare skal sammenlikne med sykehusgruppe eller region, eller ikke sammenlikne,
 #trengs ikke data for hele landet:
@@ -227,7 +228,7 @@ if ( outfile != '') {dev.off()}
 #Innparametre: ...
 
 
-FigTypUt <- figtype(outfile, height=1*800, fargepalett=NGERUtvalg$fargepalett)
+FigTypUt <- figtype(outfile, height=3*800, fargepalett=NGERUtvalg$fargepalett)
 farger <- FigTypUt$farger
 #Tilpasse marger for å kunne skrive utvalgsteksten
 NutvTxt <- length(utvalgTxt)
