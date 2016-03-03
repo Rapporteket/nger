@@ -8,7 +8,7 @@
 
 NGERtabVI <- function(RegData) {
 
-  tabVI <- plyr::ddply(.(RegData), .(year),
+  tabVI <- plyr::ddply(RegData, .(year),
                        summarize, mean=round(mean(OpBMI), 2))
 
   list(tabVI=tabVI)
