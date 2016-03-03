@@ -8,9 +8,23 @@
 
 NGERtabVI <- function(RegData) {
 
-  tabVI <- plyr::ddply(RegData, .(year),
-                       summarize, mean=round(mean(OpBMI), 2))
+  # recode MCEType
+  ind <- which(RegData$MCEType==1)
+  RegData$MCEType[ind] <- "Laparoskopi"
+  ind <- which(RegData$MCEType==2)
+  RegData$MCEType[ind] <- "Hysteroskopi"
+  ind <- which(RegData$MCEType==3)
+  RegData$MCEType[ind] <- "Begge"
 
-  list(tabVI=tabVI)
+  myTab <- xtabs(OpBMI ~ MCEType + year,
+                 aggregate(OpBMI~MCEType+year,RegData,mean))
+  myTab <- rbind(myTab,
+                 xtabs(OpParities ~ MCEType + year,
+                       aggregate(OpParities~MCEType+year,RegData,mean)))
+  myTab <- rbind(myTab,
+                 xtabs(Pregnancies ~ MCEType + year,
+                       aggregate(Pregnancies~MCEType+year,RegData,mean)))
+
+  list(tabVI=myTab)
 
 }
