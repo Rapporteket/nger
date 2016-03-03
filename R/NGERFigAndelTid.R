@@ -130,11 +130,11 @@ if (valgtVar=='StatusFollowup') {
 }
 
 
-if (valgtVar == 'Utdanning') {
+if (valgtVar == 'Education') {
 	#PasientSkjema. Andel med Utdanning 4 el 5
 	#Kode 1:5,9: 'Grunnskole++, 7-10år','Real-, yrkes- el vg skole', 'Allmennfaglig vg skole',
 			#Høyskole/universitet, <4 år', 'Høyskole/universitet, 4år+', 'Ukjent'
-	RegData <- RegData[intersect(which(RegData$Utdanning %in% 1:5), which(RegData$PasientSkjemaStatus ==1)), ]
+	RegData <- RegData[which(RegData$Education %in% 1:5), ]		#, which(RegData$PasientSkjemaStatus ==1)
 	RegData$Variabel[which(RegData[ ,valgtVar] %in% 4:5)] <- 1
   	VarTxt <- 'med høyere utdanning'
 	Tittel <- 'Andel høyskole-/universitetsutdannede'
