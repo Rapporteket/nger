@@ -27,7 +27,7 @@
 #' @export
 
 FigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
-                        minald=0, maxald=130, MCEType=99, AlvorlighetKompl=99, reshID, outfile='',
+                        minald=0, maxald=130, MCEType=99, AlvorlighetKompl='', reshID, outfile='',
                         enhetsUtvalg=1, preprosess=TRUE, hentData=0) {
 
   ## Hvis spørring skjer fra R på server. ######################
@@ -228,7 +228,7 @@ if ( outfile != '') {dev.off()}
 #Innparametre: ...
 
 
-FigTypUt <- figtype(outfile, fargepalett=NGERUtvalg$fargepalett)	#height=3*800, 
+FigTypUt <- figtype(outfile, fargepalett=NGERUtvalg$fargepalett)	#height=3*800,
 farger <- FigTypUt$farger
 #Tilpasse marger for å kunne skrive utvalgsteksten
 NutvTxt <- length(utvalgTxt)

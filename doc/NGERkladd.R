@@ -21,14 +21,16 @@ outfile <- ""
 hentData<-0
 preprosess=T
 MCEType<-99
+AlvorlighetKompl<-c('1', '2', '4')
+
 
 
 if (outfile=='') {
   x11() #figure new window
 }
-nger::FigAndeler(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil,
+FigAndeler(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil,
            minald=minald, maxald=maxald, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg,
-           MCEType=MCEType, hentData=hentData, preprosess=preprosess)
+           MCEType=MCEType, hentData=hentData, preprosess=preprosess, AlvorlighetKompl=AlvorlighetKompl)
 
 
 

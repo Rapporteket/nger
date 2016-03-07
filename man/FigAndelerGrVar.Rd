@@ -6,8 +6,8 @@
 \usage{
 FigAndelerGrVar(RegData = 0, valgtVar, datoFra = "2013-01-01",
   datoTil = "3000-12-31", minald = 0, maxald = 130, MCEType = 99,
-  reshID, outfile = "", enhetsUtvalg = 1, preprosess = TRUE,
-  hentData = 0)
+  AlvorlighetKompl = "", reshID, outfile = "", enhetsUtvalg = 1,
+  preprosess = TRUE, hentData = 0)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -18,7 +18,7 @@ KomplIntra: Komplikasjoner ved operasjon. (kombinerer variablene HypComplication
 KomplPostop: Andel postoperative komplikasjoner
 OpAntibioticProphylaxis: Andel som får antibiotika
 OpBMI: Pasienter med fedme (BMI>30)
-Reop: Andel reoperasjon som følge av komplikasjon
+ComplReop: Andel reoperasjon som følge av komplikasjon
 StatusFollowup: Pasienter som har fått postoperativ oppfølging}
 
 \item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}
@@ -30,9 +30,16 @@ StatusFollowup: Pasienter som har fått postoperativ oppfølging}
 \item{maxald}{Alder, til og med (Standardverdi: 130)}
 
 \item{MCEType}{1: Laparoskopi
-                2: Hysteroskopi
-                3: Begge
-                99: Alle
+2: Hysteroskopi
+3: Begge
+99: Alle}
+
+\item{AlvorlighetKompl}{Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
+                         Angis som en vektor av tall som tekst, f.eks. c('1','2')
+                         1: Lite alvorlig
+                         2: Middels alvorlig
+                         3: Alvorlig
+                         4: Dødelig
 
 Detajer: Her bør man liste opp hvilke variable funksjonen benytter.}
 
@@ -57,9 +64,13 @@ TRUE: Ja (Standard)}
 
 \item{valgtVar:}{Velg hvilken variabel du ønsker å se resultat for
 Alder: Andel pasienter over 70 år.
+ComplAfterBleed: Postop. komplikasjon: Blødning
+ComplEquipment: Postop. komplikasjon: Problemer med ustyr
+ComplInfection: Postop. komplikasjon: Infeksjon
+ComplOrgan: Postop. komplikasjon: Organskade
 ComplReop: Reoperasjon som følge av komplikasjon
 Education: Pasienter med høyere utdanning
-FollowupSeriousness: Alvorlige komplikasjoner
+FollowupSeriousness: Alvorlige komplikasjoner (grad 3 og 4)
 KomplIntra: Komplikasjoner under operasjon (intraoperativt)
 KomplPostop: Postoperative komplikasjoner
 OpAntibioticProphylaxis: Fått antibiotikaprofylakse
@@ -72,7 +83,8 @@ Funksjon som genererer en figur med andeler av en variabel for en grupperingsvar
 Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus
 }
 \details{
-Detajer: Variable funksjonen benytter: Alder (beregnes), ComplExist, ComplReop, Education, FollowupSeriousness
+Variable funksjonen benytter: Alder (beregnes), ComplExist, ComplReop, ComplAfterBleed, ComplEquipment,
+ ComplInfection, ComplOrganEducation, FollowupSeriousness
  HypComplications, LapComplications, MCEType, OpAntibioticProphylaxis, OpASA, OpBMI, StatusFollowup.
  Det benyttes også andre variable til utvalg osv.
 }

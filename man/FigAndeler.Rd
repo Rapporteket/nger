@@ -6,8 +6,8 @@
 \usage{
 FigAndeler(RegData = 0, valgtVar, datoFra = "2013-01-01",
   datoTil = "2050-12-31", minald = 0, maxald = 130, outfile = "",
-  reshID, enhetsUtvalg = 1, MCEType = 99, hentData = 0,
-  preprosess = TRUE)
+  reshID, enhetsUtvalg = 1, MCEType = 99, AlvorlighetKompl = "",
+  hentData = 0, preprosess = TRUE)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -39,7 +39,7 @@ OpDaySurgery: Dagkirurgiske inngrep
 OpEarlierVaginal: Tidligere vaginale inngrep
 OpEarlierLaparoscopy: Tidligere laparoskopi
 OpEarlierLaparatomy: Tidligere laparatomi
-OpOutsideDaytime: Operasjon i legens vakttid 
+OpOutsideDaytime: Operasjon i legens vakttid
 OpType: Primæroperasjon eller reoperasjon}
 
 \item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}
@@ -62,9 +62,16 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 2: Egen enhet}
 
 \item{MCEType}{1: Laparoskopi
-                2: Hysteroskopi
-                3: Begge
-                99: Alle
+2: Hysteroskopi
+3: Begge
+99: Alle}
+
+\item{AlvorlighetKompl}{Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
+                         Angis som en vektor av tall som tekst, f.eks. c('1','2')
+                         1: Lite alvorlig
+                         2: Middels alvorlig
+                         3: Alvorlig
+                         4: Dødelig
 
 Detajer: Her bør man liste opp hvilke variable funksjonen benytter.}
 

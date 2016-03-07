@@ -6,8 +6,8 @@
 \usage{
 FigAndelTid(RegData = 0, valgtVar, datoFra = "2013-01-01",
   datoTil = "3000-12-31", minald = 0, maxald = 130, MCEType = 99,
-  reshID, outfile = "", enhetsUtvalg = 1, preprosess = TRUE,
-  hentData = 0)
+  AlvorlighetKompl = "", reshID, outfile = "", enhetsUtvalg = 1,
+  preprosess = TRUE, hentData = 0)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -18,7 +18,7 @@ KomplIntra: Komplikasjoner ved operasjon. (kombinerer variablene HypComplication
 KomplPostop: Andel postoperative komplikasjoner
 OpAntibioticProphylaxis: Andel som får antibiotika
 OpBMI: Pasienter med fedme (BMI>30)
-Reop: Andel reoperasjon som følge av komplikasjon
+ComplReop: Andel reoperasjon som følge av komplikasjon
 StatusFollowup: Pasienter som har fått postoperativ oppfølging}
 
 \item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}
@@ -30,9 +30,16 @@ StatusFollowup: Pasienter som har fått postoperativ oppfølging}
 \item{maxald}{Alder, til og med (Standardverdi: 130)}
 
 \item{MCEType}{1: Laparoskopi
-                2: Hysteroskopi
-                3: Begge
-                99: Alle
+2: Hysteroskopi
+3: Begge
+99: Alle}
+
+\item{AlvorlighetKompl}{Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
+                         Angis som en vektor av tall som tekst, f.eks. c('1','2')
+                         1: Lite alvorlig
+                         2: Middels alvorlig
+                         3: Alvorlig
+                         4: Dødelig
 
 Detajer: Her bør man liste opp hvilke variable funksjonen benytter.}
 

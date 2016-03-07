@@ -55,7 +55,8 @@
 #'                 2: Hysteroskopi
 #'                 3: Begge
 #'                 99: Alle
-#' @param AlvorlighetKompl  Alvorlighetsgrad for postoperative komplikasjoner
+#' @param AlvorlighetKompl  Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
+#'                          Angis som en vektor av tall som tekst, f.eks. c('1','2')
 #'                          1: Lite alvorlig
 #'                          2: Middels alvorlig
 #'                          3: Alvorlig
@@ -67,7 +68,7 @@
 #' @export
 #'
 FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050-12-31', minald=0, maxald=130,
-                        outfile='', reshID, enhetsUtvalg=1, MCEType=99, AlvorlighetKompl=99, hentData=0, preprosess=TRUE)
+                        outfile='', reshID, enhetsUtvalg=1, MCEType=99, AlvorlighetKompl='', hentData=0, preprosess=TRUE)
 {
 
      ## Hvis spørring skjer fra R på server. ######################
@@ -89,8 +90,8 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
      flerevar <- 0
      antDes <- 1
 	 '%i%' <- intersect
-	
-	 
+
+
      ###############
      ### Variable
      ###############
