@@ -46,6 +46,14 @@ NGERtabVI <- function(RegData) {
                  xtabs(OpOptimeCount ~ MCEType + year,
                        aggregate(OpOptimeCount~MCEType+year,RegData,mean)))
 
-  list(tabVI=myTab)
+  # move rownames to its own column do allow duplicate names
+  pe <- rownames(myTab)
+  # 1=laparo, 2=hysteroskopi, 3=begge
+  pe[which(pe==1)] <- "\\quad Laparoskopi"
+  pe[which(pe==2)] <- "\\quad Hysteroskopi"
+  pe[which(pe==3)] <- "\\quad Begge"
+
+  mydf <- data.frame(Pasientegenskap=pe, myTab)
+  list(tabVI=mydf)
 
 }
