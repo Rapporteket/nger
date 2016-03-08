@@ -292,11 +292,8 @@ konsesjon, angi eventuell tidsbegrensning for denne.}
 
 \onecolumn
 
-<<'getData', echo=TRUE, eval=TRUE>>=
-year <- as.character(reportYear)
-datoFra <- paste0(year, "-01-01")
-datoTil <- paste0(year, "-12-31")
-RegData <- NGERHentRegDataXXI(datoFra, datoTil)
+<<'getData', echo=TRUE, eval=FALSE>>=
+# if so, add common query here
 @
 
 <<'prepareAttachments', eval=TRUE, echo=TRUE>>=
@@ -306,6 +303,7 @@ attachFiles <- vector()
 \section{Pasientkarakteristika og operasjonsparameter}
 Pilottabell:
 <<'tabPasientegenskaper', results='asis', echo=TRUE, eval=TRUE>>=
+RegData <- NGERHentRegDataVI(reportYear)
 tabData <- NGERtabVI(RegData)
 
 cap <- "Pasientkarakteristika"
@@ -320,6 +318,10 @@ Her kan det sikkert bli ganske mange figurer og tabeller... Her er en
 pilottabell:
 
 <<'testtabell', results='asis', echo=FALSE, eval=TRUE>>=
+year <- as.character(reportYear)
+datoFra <- paste0(year, "-01-01")
+datoTil <- paste0(year, "-12-31")
+RegData <- NGERHentRegDataXXI(datoFra, datoTil)
 tmp <- Sys.setlocale(category = "LC_ALL", locale = "nb_NO.UTF-8")
 mainDates <- as.POSIXlt(RegData$HovedDato, format="%Y-%m-%d")
 minDate <- as.character(format(min(mainDates), format="%e. %B %Y"))
