@@ -296,13 +296,13 @@ konsesjon, angi eventuell tidsbegrensning for denne.}
 # if so, add common query here
 @
 
-<<'prepareAttachments', eval=TRUE, echo=TRUE>>=
+<<'prepareAttachments', eval=TRUE, echo=FALSE>>=
 attachFiles <- vector()
 @
 
 \section{Pasientkarakteristika og operasjonsparametere}
 Pilottabell:
-<<'tabPasientegenskaper', results='asis', echo=FALSE, eval=TRUE>>=
+<<'tabPasientegenskaper', results='asis', echo=FALSE, warning=FALSE, eval=TRUE>>=
 RegData <- NGERHentRegDataVI(reportYear)
 tabData <- NGERtabVI(RegData)
 
