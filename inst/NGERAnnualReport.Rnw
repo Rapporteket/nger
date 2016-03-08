@@ -310,7 +310,7 @@ cap <- "Pasientkarakteristika"
 tab <- xtable::xtable(tabData$tabVI, align=c("l", "l", "r", "r"),
                      digits=c(0,0,2,2),
                      caption=cap, label="tab:pasKarakteristika")
-print(tab, sanitize.text.function = function(x){x})
+print(tab, include.rownames=FALSE, sanitize.text.function = function(x){x})
 @
 
 \section{Komplikasjoner}
