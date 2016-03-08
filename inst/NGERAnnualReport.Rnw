@@ -303,6 +303,17 @@ RegData <- NGERHentRegDataXXI(datoFra, datoTil)
 attachFiles <- vector()
 @
 
+\section{Pasientkarakteristika og operasjonsparameter}
+Pilottabell:
+<<'tabPasientegenskaper', results='asis', echo=TRUE, eval=TRUE>>=
+tabData <- NGERtabVI(RegData)
+
+cap <- "Pasientkarakteristika"
+tab <- xtable::xtable(tabData$tabVI, align=c("l", "r", "r"),
+                     digits=c(0,2,2),
+                     caption=cap, label="tab:pasKarakteristika")
+print(tab, sanitize.text.function = function(x){x})
+@
 
 \section{Komplikasjoner}
 Her kan det sikkert bli ganske mange figurer og tabeller... Her er en
