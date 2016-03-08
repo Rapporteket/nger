@@ -19,7 +19,7 @@
 
 
 FigAndelTid <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
-                        minald=0, maxald=130, MCEType=99, reshID, outfile='',
+                        minald=0, maxald=130, MCEType=99, AlvorlighetKompl='', reshID, outfile='',
                         enhetsUtvalg=1, preprosess=TRUE, hentData=0) {
 
 
@@ -139,7 +139,7 @@ if (valgtVar == 'Education') {
 }
 
 NGERUtvalg <- NGERLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-                            MCEType=MCEType)
+                            MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl)
 RegData <- NGERUtvalg$RegData
 utvalgTxt <- NGERUtvalg$utvalgTxt
 
@@ -163,7 +163,7 @@ if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet
     medSml <- 1
     if (enhetsUtvalg == 1) {
       indHoved <-which(as.numeric(RegData$ReshId)==reshID)
-      smltxt <- 'landet forøvrig'
+      smltxt <- 'Landet forøvrig'
       indRest <- which(as.numeric(RegData$ReshId) != reshID)
     }
   }

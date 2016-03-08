@@ -5,7 +5,7 @@
 \title{Funksjon som gjør utvalg av dataene, returnerer det filtrerte datasettet og utvalgsteksten.}
 \usage{
 NGERLibUtvalg(RegData, datoFra, datoTil, fargepalett = "BlaaOff", minald,
-  maxald, MCEType)
+  maxald, MCEType, AlvorlighetKompl)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -21,9 +21,16 @@ NGERLibUtvalg(RegData, datoFra, datoTil, fargepalett = "BlaaOff", minald,
 \item{maxald}{Alder, til og med (Standardverdi: 130)}
 
 \item{MCEType}{1: Laparoskopi
-                2: Hysteroskopi
-                3: Begge
-                99: Alle
+2: Hysteroskopi
+3: Begge
+99: Alle}
+
+\item{AlvorlighetKompl}{Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
+                         Angis som en vektor av tall som tekst, f.eks. c('1','2')
+                         1: Lite alvorlig
+                         2: Middels alvorlig
+                         3: Alvorlig
+                         4: Dødelig
 
 Detajer: Her bør man liste opp hvilke variable funksjonen benytter.}
 }

@@ -10,7 +10,7 @@ RegData <- merge(RegData, admdata, by.x = 'MCEID', by.y = 'ForlopsID')
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
-datoFra <- '2014-01-01' 	 # min og max dato i utvalget vises alltid i figuren.
+datoFra <- '2012-01-01' 	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2099-12-31'
 enhetsUtvalg <- 1 #0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet, (3-egen enhet mot egen region)
 libkat <- 'C:/SVN/jasper/Rlib/trunk/'		#del av sti til bibliotekkatalog, før /lib/r/<funksjon.R>
@@ -21,14 +21,21 @@ outfile <- ""
 hentData<-0
 preprosess=T
 MCEType<-99
+AlvorlighetKompl<-c('1', '2', '4')
+
 
 
 if (outfile=='') {
   x11() #figure new window
 }
-nger::FigAndeler(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil,
+FigAndeler(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil,
            minald=minald, maxald=maxald, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg,
-           MCEType=MCEType, hentData=hentData, preprosess=preprosess)
+           MCEType=MCEType, hentData=hentData, preprosess=preprosess, AlvorlighetKompl=AlvorlighetKompl)
+
+
+FigAndelTid(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil,
+                        minald=minald, maxald=maxald, MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl, reshID=reshID, outfile=outfile,
+                        enhetsUtvalg=enhetsUtvalg, preprosess=preprosess, hentData=hentData)
 
 
 

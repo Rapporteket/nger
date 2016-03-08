@@ -31,7 +31,7 @@
 #'     OpEarlierVaginal: Tidligere vaginale inngrep
 #'     OpEarlierLaparoscopy: Tidligere laparoskopi
 #'     OpEarlierLaparatomy: Tidligere laparatomi
-#'     OpOutsideDaytime: Operasjon i legens vakttid 
+#'     OpOutsideDaytime: Operasjon i legens vakttid
 #'     OpType: Primæroperasjon eller reoperasjon
 #' @param datoFra Tidligste dato i utvalget (vises alltid i figuren).
 #' @param datoTil Seneste dato i utvalget (vises alltid i figuren).
@@ -55,6 +55,12 @@
 #'                 2: Hysteroskopi
 #'                 3: Begge
 #'                 99: Alle
+#' @param AlvorlighetKompl  Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
+#'                          Angis som en vektor av tall som tekst, f.eks. c('1','2')
+#'                          1: Lite alvorlig
+#'                          2: Middels alvorlig
+#'                          3: Alvorlig
+#'                          4: Dødelig
 #'
 #' Detajer: Her bør man liste opp hvilke variable funksjonen benytter.
 #' @return En figur med søylediagram (fordeling) av ønsket variabel
@@ -62,13 +68,12 @@
 #' @export
 #'
 FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050-12-31', minald=0, maxald=130,
-                        outfile='', reshID, enhetsUtvalg=1, MCEType=99, hentData=0, preprosess=TRUE)
+                        outfile='', reshID, enhetsUtvalg=1, MCEType=99, AlvorlighetKompl='', hentData=0, preprosess=TRUE)
 {
-  print(hentData)
+
      ## Hvis spørring skjer fra R på server. ######################
      if(hentData == 1){
           RegData <- NGERHentRegData(datoFra = datoFra, datoTil = datoTil)
-          print(dim(RegData))
      }
 
      # Hvis RegData ikke har blitt preprosessert
@@ -84,6 +89,8 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
      subtxt <- ''	#Benevning
      flerevar <- 0
      antDes <- 1
+	 '%i%' <- intersect
+
 
      ###############
      ### Variable
@@ -111,7 +118,6 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 		koder <- 1:4
 		retn <- 'H'
 	}
-
 	if (valgtVar=='HypCompleteness') {
 		#Gjennomføringsgrad av hysteroskopi
 		#Kode •	1-Fullstendig, 2-Ufullstendig, 3-Mislykket
@@ -234,11 +240,21 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
        RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = grtxt)
      }
 
+	if (valgtVar=='FollowupSeriousness') {
+		#Postoperative komplikasjoner
+		#Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
+		RegData <- RegData[which(RegData$OppflgRegStatus == 2) %i% which(RegData$ComplExist == 1), ]
+        RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = 1:4)
+		grtxt <- c('Lite alvorlig', 'Middels alvorlig', 'Alvorlig', 'Dødelig')	#, 'Ukjent')
+		Tittel <- 'Alvorlighetsgrad av komplikasjoner'
+		retn <- 'H'
+	}
+
 
      ###Gjør utvalg (LibUtvalg)
      ###Kjører denne etter variabeldefinisjon for at utvalgTxt skal bli riktig
      NGERUtvalg <- NGERLibUtvalg(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra,
-                             datoTil = datoTil, MCEType = MCEType)
+                             datoTil = datoTil, MCEType = MCEType, AlvorlighetKompl=AlvorlighetKompl)
      RegData <- NGERUtvalg$RegData
      utvalgTxt <- NGERUtvalg$utvalgTxt
 
@@ -265,7 +281,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
           medSml <- 1
           if (enhetsUtvalg == 1) {
                indHoved <-which(as.numeric(RegData$ReshId)==reshID)
-               smltxt <- 'landet forøvrig'
+               smltxt <- 'Landet forøvrig'
                indRest <- which(as.numeric(RegData$ReshId) != reshID)
           }
      }

@@ -31,11 +31,9 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 2: Egen enhet}
 
 \item{MCEType}{1: Laparoskopi
-                2: Hysteroskopi
-                3: Begge
-                99: Alle
-
-Detajer: Her bør man liste opp hvilke variable funksjonen benytter.}
+2: Hysteroskopi
+3: Begge
+99: Alle}
 
 \item{preprosess}{Preprosesser data
 FALSE: Nei

@@ -1,6 +1,6 @@
 #' Søylediagram med andeler for hver grupperingsenhet (sykehus, RHF, ...)
 #'
-#' Funksjon som genererer en figur med andeler av en variabel for en grupperingsvariabelen sykehus.
+#' Funksjon som genererer en figur med andeler av en variabel for grupperingsvariabelen sykehus.
 #' Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus
 #'
 #'  Variable funksjonen benytter: Alder (beregnes), ComplExist, ComplReop, ComplAfterBleed, ComplEquipment,
@@ -17,7 +17,7 @@
 #'		ComplOrgan: Postop. komplikasjon: Organskade
 #'		ComplReop: Reoperasjon som følge av komplikasjon
 #'		Education: Pasienter med høyere utdanning
-#'		FollowupSeriousness: Alvorlige komplikasjoner
+#'		FollowupSeriousness: Alvorlige komplikasjoner (grad 3 og 4)
 #'		KomplIntra: Komplikasjoner under operasjon (intraoperativt)
 #'		KomplPostop: Postoperative komplikasjoner
 #'		OpAntibioticProphylaxis: Fått antibiotikaprofylakse
@@ -27,7 +27,7 @@
 #' @export
 
 FigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
-                        minald=0, maxald=130, MCEType=99, reshID, outfile='',
+                        minald=0, maxald=130, MCEType=99, AlvorlighetKompl='', reshID, outfile='',
                         enhetsUtvalg=1, preprosess=TRUE, hentData=0) {
 
   ## Hvis spørring skjer fra R på server. ######################
@@ -40,7 +40,8 @@ FigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     RegData <- NGERPreprosess(RegData=RegData, reshID=reshID)
   }
 
-cexShNavn <- 0.85
+'%i%' <- intersect
+  cexShNavn <- 0.85
 
 #Når bare skal sammenlikne med sykehusgruppe eller region, eller ikke sammenlikne,
 #trengs ikke data for hele landet:
@@ -83,7 +84,7 @@ if (valgtVar == 'OpBMI') {
 #BMI > 30
 	RegData <- RegData[which(RegData[,valgtVar] >10), ]
 	RegData$Variabel[which(RegData[ ,valgtVar] > 30)] <- 1
-	Tittel <- 'Pasienter med fedme'
+	Tittel <- 'Pasienter med fedme (BMI > 30)'
 }
 
 
@@ -131,9 +132,10 @@ if (valgtVar=='ComplReop') {
 if (valgtVar=='FollowupSeriousness') {
 	#Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
 	#Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
-	RegData <- RegData[which(RegData$FollowupSeriousness %in% 1:4), ]
+	RegData <- RegData[which(RegData$ComplExist %in% 0:1) %i% which(RegData$OppflgRegStatus==2), ]
+	#RegData <- RegData[which(RegData$FollowupSeriousness %in% 1:4), ]
 	RegData$Variabel[which(RegData$FollowupSeriousness %in% 3:4)] <- 1
-	Tittel <- 'Alvorlige komplikasjoner (grad 3 og 4) av alle komplikasjoner'
+	Tittel <- 'Alvorlige komplikasjoner (grad 3 og 4)'
 }
 
 if (valgtVar=='KomplIntra') {
@@ -179,7 +181,7 @@ if (valgtVar == 'Education') {
 
 #Gjør utvalg
 NGERUtvalg <- NGERLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-                            MCEType=MCEType)
+                            MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl)
 RegData <- NGERUtvalg$RegData
 utvalgTxt <- NGERUtvalg$utvalgTxt
 
@@ -226,7 +228,7 @@ if ( outfile != '') {dev.off()}
 #Innparametre: ...
 
 
-FigTypUt <- figtype(outfile, height=1*800, fargepalett=NGERUtvalg$fargepalett)
+FigTypUt <- figtype(outfile, fargepalett=NGERUtvalg$fargepalett)	#height=3*800,
 farger <- FigTypUt$farger
 #Tilpasse marger for å kunne skrive utvalgsteksten
 NutvTxt <- length(utvalgTxt)
