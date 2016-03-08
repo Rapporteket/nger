@@ -8,14 +8,6 @@
 
 NGERtabVI <- function(RegData) {
 
-  # recode MCEType
-#   ind <- which(RegData$MCEType==1)
-#   RegData$MCEType[ind] <- "\\quad Laparoskopi"
-#   ind <- which(RegData$MCEType==2)
-#   RegData$MCEType[ind] <- "\\quad Hysteroskopi"
-#   ind <- which(RegData$MCEType==3)
-#   RegData$MCEType[ind] <- "\\quad Begge"
-
   # make dummy column for all MCEs
   n <- dim(RegData)[1]
   RegData$dummy <- rep("\\textbf{Alle BMI} ($kg/m^2$)", n)
@@ -47,8 +39,8 @@ NGERtabVI <- function(RegData) {
                        aggregate(OpOptimeCount~MCEType+year,RegData,mean)))
 
   # move rownames to its own column do allow duplicate names
+  # MCEType 1=laparo, 2=hysteroskopi, 3=begge
   pe <- rownames(myTab)
-  # 1=laparo, 2=hysteroskopi, 3=begge
   pe[which(pe==1)] <- "\\quad Laparoskopi"
   pe[which(pe==2)] <- "\\quad Hysteroskopi"
   pe[which(pe==3)] <- "\\quad Begge"
