@@ -30,7 +30,8 @@ FROM
   AlleVarNum v
 INNER JOIN ForlopsOversikt f ON v.MCEID = f.ForlopsID
 WHERE
-  YEAR(f.HovedDato) < ", reportYear + 1
+  YEAR(f.HovedDato) < ", reportYear + 1, " AND
+  YEAR(f.HovedDato) >= ", reportYear - 1
   )
 
   RegData <- rapbase::LoadRegData(registryName, query, dbType)
