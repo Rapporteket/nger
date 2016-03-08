@@ -45,7 +45,7 @@ NGERtabVI <- function(RegData) {
   pe[which(pe==2)] <- "\\quad Hysteroskopi"
   pe[which(pe==3)] <- "\\quad Begge"
 
-  mydf <- data.frame(Pasientegenskap=pe, myTab)
+  mydf <- data.frame(Pasientegenskap=pe, myTab, check.names = FALSE)
   list(tabVI=mydf)
 
 }
