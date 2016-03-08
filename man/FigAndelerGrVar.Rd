@@ -79,7 +79,7 @@ OpBMI: Pasienter med fedme (BMI>30)
 StatusFollowup: Fått postoperativ pensum}
 }
 \description{
-Funksjon som genererer en figur med andeler av en variabel for en grupperingsvariabelen sykehus.
+Funksjon som genererer en figur med andeler av en variabel for grupperingsvariabelen sykehus.
 Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus
 }
 \details{

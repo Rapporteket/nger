@@ -1,6 +1,6 @@
 #' Søylediagram med andeler for hver grupperingsenhet (sykehus, RHF, ...)
 #'
-#' Funksjon som genererer en figur med andeler av en variabel for en grupperingsvariabelen sykehus.
+#' Funksjon som genererer en figur med andeler av en variabel for grupperingsvariabelen sykehus.
 #' Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus
 #'
 #'  Variable funksjonen benytter: Alder (beregnes), ComplExist, ComplReop, ComplAfterBleed, ComplEquipment,

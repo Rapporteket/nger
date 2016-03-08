@@ -281,7 +281,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
           medSml <- 1
           if (enhetsUtvalg == 1) {
                indHoved <-which(as.numeric(RegData$ReshId)==reshID)
-               smltxt <- 'landet forøvrig'
+               smltxt <- 'Landet forøvrig'
                indRest <- which(as.numeric(RegData$ReshId) != reshID)
           }
      }

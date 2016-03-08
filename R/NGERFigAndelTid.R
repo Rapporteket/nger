@@ -163,7 +163,7 @@ if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet
     medSml <- 1
     if (enhetsUtvalg == 1) {
       indHoved <-which(as.numeric(RegData$ReshId)==reshID)
-      smltxt <- 'landet forøvrig'
+      smltxt <- 'Landet forøvrig'
       indRest <- which(as.numeric(RegData$ReshId) != reshID)
     }
   }
