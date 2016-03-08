@@ -307,8 +307,8 @@ RegData <- NGERHentRegDataVI(reportYear)
 tabData <- NGERtabVI(RegData)
 
 cap <- "Pasientkarakteristika"
-tab <- xtable::xtable(tabData$tabVI, align=c("l", "r", "r"),
-                     digits=c(0,2,2),
+tab <- xtable::xtable(tabData$tabVI, align=c("l", "l", "r", "r"),
+                     digits=c(0,0,2,2),
                      caption=cap, label="tab:pasKarakteristika")
 print(tab, sanitize.text.function = function(x){x})
 @
