@@ -312,7 +312,7 @@ hysteroskopi og der begge prosedyrer er brukt. Datagrunnlaget er tatt fra
 en tre-års periode."
 tabVI <- tabData$tabVI
 tab <- xtable::xtable(tabVI, align=c("l", "l", rep("r", ncol(tabVI)-1)),
-                      digits=c(0,0,rep(2, ncol(tabVI)-1)),
+                      digits=c(0,0,rep(1, ncol(tabVI)-1)),
                       caption=cap, label="tab:pasKarakteristika")
 print(tab, include.rownames=FALSE, sanitize.text.function = function(x){x})
 @
@@ -360,7 +360,7 @@ cap <- paste(cap, "Datagrunnlaget består av", dim(RegData)[1],
 cap <- paste(cap, personInMultipleMainCatText)
 
 print(xtable::xtable(tabData$tabXXI, align=c("l", "r", "r"),
-                     digits=c(0,0,0),
+                     digits=c(0,0,2),
                      caption=cap, label="tab:postOpLapCompl"),
       sanitize.text.function = function(x){x})
 @
