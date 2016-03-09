@@ -339,7 +339,7 @@ FigAndeler(RegData=RegData, valgtVar='Alder', datoFra=datoFra, datoTil=datoTil,
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=\textwidth]{alder.pdf}
+\includegraphics[width=\textwidth]{/usr/local/lib/R/site-library/nger/alder.pdf}
 \caption{Aldersfordelingen til pasientene i NGER}
 \end{figure}
 
