@@ -333,14 +333,14 @@ RegData <- NGERHentRegData(datoFra = datoFra, datoTil = datoTil)      ## SERVER!
 RegData <- NGERPreprosess(RegData=RegData)
 
 FigAndeler(RegData=RegData, valgtVar='Alder', datoFra=datoFra, datoTil=datoTil,
-           outfile='alder.pdf', reshID=reshID, enhetsUtvalg=0,
+           outfile='alder.pdf', reshID=0, enhetsUtvalg=0,
            hentData=0, preprosess=F)
 @
 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=\textwidth]{alder.pdf}
-\caption{\Sexpr{Aldersfordelingen til pasientene i NGER}
+\caption{Aldersfordelingen til pasientene i NGER}
 \end{figure}
 
 
