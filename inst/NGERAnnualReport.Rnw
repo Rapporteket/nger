@@ -343,16 +343,19 @@ outfile='alder.pdf'
 FigAndeler(RegData=RegData, valgtVar='Alder', datoFra=datoFra, datoTil=datoTil,
            outfile=outfile, reshID=reshID, enhetsUtvalg=0,
            hentData=0, preprosess=F)
+attachFiles <- c(attachFiles, outfile)
 
 outfile='LapComplications.pdf'
 FigAndeler(RegData=RegData, valgtVar='LapComplications', datoFra=datoFra, datoTil=datoTil,
            outfile=outfile, reshID=reshID, enhetsUtvalg=0,
            hentData=0, preprosess=F)
+attachFiles <- c(attachFiles, outfile)
 
 outfile='OpAntibioticProphylaxis.pdf'
 FigAndelTid(RegData=RegData, valgtVar='OpAntibioticProphylaxis', datoFra=paste0(as.character(reportYear-2), "-01-01"), datoTil=datoTil,
            outfile=outfile, reshID=reshID, enhetsUtvalg=0,
            hentData=0, preprosess=F)
+attachFiles <- c(attachFiles, outfile)
 @
 
 \begin{figure}[ht]
