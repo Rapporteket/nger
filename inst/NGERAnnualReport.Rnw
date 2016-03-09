@@ -341,7 +341,7 @@ FigAndeler(RegData=RegData, valgtVar='LapComplications', datoFra=datoFra, datoTi
            hentData=0, preprosess=F)
 
 datoFra <- paste0(as.character(reportYear-2), "-01-01")
-
+print(datoFra)
 FigAndelTid(RegData=RegData, valgtVar='OpAntibioticProphylaxis', datoFra=datoFra, datoTil=datoTil,
            outfile='OpAntibioticProphylaxis.pdf', reshID=reshID, enhetsUtvalg=0,
            hentData=0, preprosess=F)
