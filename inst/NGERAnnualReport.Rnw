@@ -317,7 +317,7 @@ tab <- xtable::xtable(tabVI, align=c("l", "l", rep("r", ncol(tabVI)-1)),
 print(tab, include.rownames=FALSE, sanitize.text.function = function(x){x})
 @
 
-Her er eksempler på noen figurer:
+
 <<'Demografisk_kolon', include=FALSE, echo=FALSE, eval=T, cache=FALSE>>=
 year <- as.character(reportYear)      ## SERVER!!!!!!
 # year <- 2015                          ## LOKALT!!!!!!
@@ -333,8 +333,17 @@ RegData <- NGERHentRegData(datoFra = datoFra, datoTil = datoTil)      ## SERVER!
 RegData <- NGERPreprosess(RegData=RegData)
 
 FigAndeler(RegData=RegData, valgtVar='Alder', datoFra=datoFra, datoTil=datoTil,
-           outfile='alder.pdf', reshID=0, enhetsUtvalg=0,
+           outfile='alder.pdf', reshID=reshID, enhetsUtvalg=0,
            hentData=0, preprosess=F)
+
+FigAndeler(RegData=RegData, valgtVar='LapComplications', datoFra=datoFra, datoTil=datoTil,
+           outfile='LapComplications.pdf', reshID=reshID, enhetsUtvalg=0,
+           hentData=0, preprosess=F)
+
+FigAndelTid(RegData=RegData, valgtVar='OpAntibioticProphylaxis', datoFra=datoFra, datoTil=datoTil,
+           outfile='OpAntibioticProphylaxis.pdf', reshID=reshID, enhetsUtvalg=0,
+           hentData=0, preprosess=F)
+
 @
 
 \begin{figure}[ht]
@@ -342,6 +351,19 @@ FigAndeler(RegData=RegData, valgtVar='Alder', datoFra=datoFra, datoTil=datoTil,
 \includegraphics[width=\textwidth]{/usr/local/lib/R/site-library/nger/alder.pdf}
 \caption{Aldersfordelingen til pasientene i NGER}
 \end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{/usr/local/lib/R/site-library/nger/LapComplications.pdf}
+\caption{Komplikasjoner ved laparoskopi}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{/usr/local/lib/R/site-library/nger/OpAntibioticProphylaxis.pdf}
+\caption{Andel opererte som får antibiotika}
+\end{figure}
+
 
 
 \section{Komplikasjoner}
