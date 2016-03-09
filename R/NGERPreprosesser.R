@@ -4,11 +4,11 @@
 #'
 #' @inheritParams FigAndeler
 #'
-#' @return Data En list med det filtrerte datasettet og sykehusnavnet som tilsvarer reshID
+#' @return RegData En data.frame med det preprosesserte datasettet
 #'
 #' @export
 #'
-NGERPreprosess <- function(RegData=RegData, reshID=reshID)
+NGERPreprosess <- function(RegData=RegData)
 {
   #Kun ferdigstilte registreringer:
   RegData <- RegData[RegData$BasisRegStatus==1, ]

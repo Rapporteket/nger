@@ -37,7 +37,7 @@ FigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
 
   # Hvis RegData ikke har blitt preprosessert
   if (preprosess){
-    RegData <- NGERPreprosess(RegData=RegData, reshID=reshID)
+    RegData <- NGERPreprosess(RegData=RegData)
   }
 
 '%i%' <- intersect

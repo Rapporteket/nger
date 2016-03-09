@@ -317,6 +317,33 @@ tab <- xtable::xtable(tabVI, align=c("l", "l", rep("r", ncol(tabVI)-1)),
 print(tab, include.rownames=FALSE, sanitize.text.function = function(x){x})
 @
 
+Her er eksempler på noen figurer:
+<<'Demografisk_kolon', include=FALSE, echo=FALSE, eval=T, cache=FALSE>>=
+year <- as.character(reportYear)      ## SERVER!!!!!!
+# year <- 2015                          ## LOKALT!!!!!!
+# reshID <- 110734 # 110734 (Tønsberg)  ## LOKALT!!!!!!
+datoFra <- paste0(year, "-01-01")
+datoTil <- paste0(year, "-12-31")
+
+RegData <- NGERHentRegData(datoFra = datoFra, datoTil = datoTil)      ## SERVER!!!!!!
+# RegData <- read.table('C:/SVN/jasper/nger/data/AlleVarNum2016-02-04 10-35-25.txt', sep=';', header=T)        ## LOKALT!!!!!!
+# admdata <- read.table('C:/SVN/jasper/nger/data/ForlopsOversikt2016-02-04 10-35-42.txt', sep=';', header=T)   ## LOKALT!!!!!!
+# RegData <- merge(RegData, admdata, by.x = 'MCEID', by.y = 'ForlopsID')                                       ## LOKALT!!!!!!
+
+RegData <- NGERPreprosess(RegData=RegData)
+
+FigAndeler(RegData=RegData, valgtVar='Alder', datoFra=datoFra, datoTil=datoTil,
+           outfile='alder.pdf', reshID=reshID, enhetsUtvalg=0,
+           hentData=0, preprosess=F)
+@
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{alder.pdf}
+\caption{\Sexpr{Aldersfordelingen til pasientene i NGER}
+\end{figure}
+
+
 \section{Komplikasjoner}
 Her kan det sikkert bli ganske mange figurer og tabeller... Her er en
 pilottabell:
@@ -364,6 +391,8 @@ print(xtable::xtable(tabData$tabXXI, align=c("l", "r", "r"),
                      caption=cap, label="tab:postOpLapCompl"),
       sanitize.text.function = function(x){x})
 @
+
+
 
 \twocolumn
 
