@@ -36,7 +36,7 @@
 % sider
 \documentclass[norsk, a4paper, twocolumn]{book}
 
-\usepackage[utf8x]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage{babel}
 \usepackage{authblk}
 \usepackage{longtable}
