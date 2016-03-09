@@ -63,17 +63,19 @@
 
 
 % Sett registerets navn
-\def \registernavn {\textit{Navn på register}}
+\def \registernavn {\textit{Norsk gynekologisk endoskopiregister}}
 
 
 % tittelting
-\title{\registernavn \\ \textbf{Årsrapport for \textit{[årstall]} med \\
+\title{\registernavn \\ \textbf{Årsrapport for \Sexpr{reportYear} med \\
 plan for forbedringstiltak}}
 
-\author[1]{Ola Normann}
-\author[2]{Medel Svensson}
-\author[1]{Kari Normann}
-\affil[1]{et Sykehus, et Foretak, et Sted}
+\author[1]{Andreas Putz}
+\author[1]{Martin Rokovan}
+\author[1]{Ariane Putz}
+\affil[1]{Sykehus i Vestfold HF, Tønsberg \\
+PB 2168, 3103 Tønsberg \\
+NGER@siv.no}
 \affil[2]{en annen adresse, et annet Sted}
 
 \renewcommand\Authands{ og }
