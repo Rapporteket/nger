@@ -293,6 +293,12 @@ konsesjon, angi eventuell tidsbegrensning for denne.}
 
 \onecolumn
 
+<<'init', echo=FALSE, eval=TRUE>>=
+# NOTE: this noweb should be called through rapbase::RunNoweb.R that takes
+# care of this
+knitr::opts_knit$set(root.dir = './')
+@
+
 <<'getData', echo=FALSE, eval=FALSE>>=
 # if so, add common query here
 @
@@ -348,7 +354,7 @@ FigAndelTid(RegData=RegData, valgtVar='OpAntibioticProphylaxis', datoFra=paste0(
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=\textwidth]{/usr/local/lib/R/site-library/nger/alder.pdf}
+\includegraphics[width=\textwidth]{alder.pdf}
 \caption{Aldersfordelingen til pasientene i NGER}
 \end{figure}
 
