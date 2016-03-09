@@ -76,7 +76,6 @@ plan for forbedringstiltak}}
 \affil[1]{Sykehus i Vestfold HF, Tønsberg \\
 PB 2168, 3103 Tønsberg \\
 NGER@siv.no}
-\affil[2]{en annen adresse, et annet Sted}
 
 \renewcommand\Authands{ og }
 \renewcommand\Authfont{\scshape}
