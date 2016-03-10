@@ -81,7 +81,7 @@ if (valgtVar=='KomplPostop') {
 if (valgtVar=='FollowupSeriousness') {
 	#Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
 	#Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
-	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$OppflgRegStatus==2)), ], ]
+	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$OppflgRegStatus==2)), ]
 	RegData$Variabel[which(RegData$FollowupSeriousness %in% 3:4)] <- 1
   	VarTxt <- 'alvorlige komplikasjoner'
 	Tittel <- 'Andel av komplikasjonene som var alvorlige (3 og 4)'
