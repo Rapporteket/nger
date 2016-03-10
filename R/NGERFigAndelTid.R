@@ -76,12 +76,12 @@ if (valgtVar=='KomplPostop') {
 	RegData$Variabel <- RegData$ComplExist
   	#RegData$Variabel[which(RegData$ComplExist==1)] <- 1
   	VarTxt <- 'komplikasjoner'
-	Tittel <- 'Komplikasjoner, postoperativt[ComplExist], uten ukjente'
+	Tittel <- 'Komplikasjoner, postoperativt'
 }
 if (valgtVar=='FollowupSeriousness') {
 	#Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
 	#Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
-	RegData <- RegData[which(RegData$FollowupSeriousness %in% 1:4), ]
+	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$OppflgRegStatus==2)), ], ]
 	RegData$Variabel[which(RegData$FollowupSeriousness %in% 3:4)] <- 1
   	VarTxt <- 'alvorlige komplikasjoner'
 	Tittel <- 'Andel av komplikasjonene som var alvorlige (3 og 4)'
@@ -104,7 +104,7 @@ if (valgtVar=='KomplIntra') {
 					'99' = union(which(RegData$HypComplications == 1), which(RegData$LapComplications==1)))
 	RegData$Variabel[indVar] <- 1
 	VarTxt <- 'komplikasjoner'
-	Tittel <- 'Komplikasjoner, intraoperativt (?)[HypCompl og LapCompl], uten tomme'
+	Tittel <- 'Komplikasjoner, intraoperativt '
 }
 
 
@@ -114,14 +114,14 @@ if (valgtVar=='ComplReop') {
 	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$OppflgRegStatus==2)), ]
   RegData$Variabel[which(RegData$ComplReop == 1)] <- 1
   VarTxt <- 'reoperasjoner'
-	Tittel <- 'Reoperasjoner (basert på [ComplReop])'
+	Tittel <- 'Reoperasjoner som følge av komplikasjon'
 }
 
 if (valgtVar=='StatusFollowup') {
 	#Andel med StatusFollowup=1 (av samtlige, også tomme reg.)
 	#Kode: tomme, -1,0,1
   #Tar ut hendelser siste 6 uker:
-  datoTil <- min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 6*7))
+  datoTil <- min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 8*7))
   RegData$Variabel[RegData$StatusFollowup==1] <- 1
   VarTxt <- 'av postoperativ oppfølging'
 	Tittel <- 'Pasienter som har fått postoperativ oppfølging'
@@ -133,9 +133,9 @@ if (valgtVar == 'Education') {
 	#Kode 1:5,9: 'Grunnskole++, 7-10år','Real-, yrkes- el vg skole', 'Allmennfaglig vg skole',
 			#Høyskole/universitet, <4 år', 'Høyskole/universitet, 4år+', 'Ukjent'
 	RegData <- RegData[which(RegData$Education %in% 1:5), ]		#, which(RegData$PasientSkjemaStatus ==1)
-	RegData$Variabel[which(RegData[ ,valgtVar] %in% 4:5)] <- 1
-  	VarTxt <- 'med høyere utdanning'
-	Tittel <- 'Andel høyskole-/universitetsutdannede'
+	RegData$Variabel[which(RegData[ ,valgtVar] %in% 1:3)] <- 1
+  	VarTxt <- 'uten høyere utdanning'
+	Tittel <- 'Andel uten høyere utdanning'
 }
 
 NGERUtvalg <- NGERLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,

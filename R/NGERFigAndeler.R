@@ -131,7 +131,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 		      #Bare laparoskopi og begge
 		  RegData <- RegData[which(RegData$MCEType %in% c(1,3)), ]
           Tittel <- 'Teknikk for laparaskopisk tilgang'
-          grtxt <- c('Åpent', 'Veress-nål', 'Annet', 'Ukjent')
+          grtxt <- c('Åpent', 'Veress-nål', 'Annet', 'Ukjent') #Ny kategori: Palmers point, neste prod.setting, etterreg. fra 1.1.2016(?)
           koder <- 0:2
      }
 
@@ -175,7 +175,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
      if (valgtVar == 'OpBMICategory') {
           # 1:Alvorlig undervekt,2:moderat undervekt, 3:mild undervekt, 4:normal vekt, 5:overvekt,
           # 6:fedme kl.I, 7:fedme kl.II, 8:fedme kl.III
-          Tittel <- 'BMI-kategorier, slå sammen noen???'
+          Tittel <- 'BMI-kategorier, slå sammen noen???' #JA, undervekt, fedme 2 og 3.
           grtxt <- c('Alvorlig undervekt','Moderat undervekt', 'Mild undervekt', 'Normal vekt', 'Overvekt',
                      'Fedme kl.I', 'Fedme kl.II', 'Fedme kl.III', 'Ukjent')
           koder <- 1:8
@@ -201,11 +201,12 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
      if (valgtVar %in% c('OpOpcatOutsideDaytime', 'OpDaySurgery')) {
           #0: Nei, 1: Ja Manglende:Ukjent
           Tittel <- sprintf('%s', switch(as.character(valgtVar),
-                                         'OpOpcatOutsideDaytime' = 'Operasjon i vakttid',
+                                         'OpOpcatOutsideDaytime' = 'Operasjon i vakttid', #SLÅ sammen
                                          'OpDaySurgery' = 'Dagkirurgiske Inngrep'))
           grtxt <- c('Nei', 'Ja', 'Ukjent')
           koder <- 0:1
      }
+
 
      if (valgtVar == 'OpType') {
           # 1:Primærinngrep, 2:Reoperasjon
@@ -236,14 +237,14 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
        # Velge antall fra 0 til 6
 	   #IKKE gjort noen utvalg. (StatusLap==1?, LapHjelpeinnstikk==1?)
        Tittel <- 'Antall hjelpeinnstikk'
-       grtxt <- 0:6
+       grtxt <- 0:6 #Kategoriser: 0,1,2,3,4+
        RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = grtxt)
      }
 
 	if (valgtVar=='FollowupSeriousness') {
 		#Postoperative komplikasjoner
 		#Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
-		RegData <- RegData[which(RegData$OppflgRegStatus == 2) %i% which(RegData$ComplExist == 1), ]
+		RegData <- RegData[(which(RegData$OppflgRegStatus == 2) & which(RegData$ComplExist %in% 0:1)), ]
         RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = 1:4)
 		grtxt <- c('Lite alvorlig', 'Middels alvorlig', 'Alvorlig', 'Dødelig')	#, 'Ukjent')
 		Tittel <- 'Alvorlighetsgrad av komplikasjoner'

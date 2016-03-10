@@ -94,7 +94,7 @@ if (valgtVar=='KomplPostop') {
 	#Kode 0: Nei, 1:Ja, tomme
 	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$OppflgRegStatus==2)), ]
 	RegData$Variabel <- RegData$ComplExist
-	Tittel <- 'Komplikasjoner, postoperativt[ComplExist], uten ukjente'
+	Tittel <- 'Komplikasjoner, postoperativt'
 }
 
 if (valgtVar=='ComplAfterBleed') {
@@ -161,11 +161,12 @@ if (valgtVar=='StatusFollowup') {
 	#Andel med StatusFollowup=1 (av samtlige, også tomme reg.)
 	#Kode: tomme, -1,0,1
   #Tar ut hendelser siste 6 uker:
-  datoTil <- min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 6*7))
+  datoTil <- min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 8*7))
   RegData$Variabel[RegData$StatusFollowup==1] <- 1
   VarTxt <- 'av postoperativ oppfølging'
 	Tittel <- 'Pasienter som har fått postoperativ oppfølging'
 }
+#Lag figur for ett års oppfølging
 
 
 if (valgtVar == 'Education') {
