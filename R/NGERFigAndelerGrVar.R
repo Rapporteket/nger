@@ -92,39 +92,39 @@ if (valgtVar == 'OpBMI') {
 if (valgtVar=='KomplPostop') {
 	# Andel postoperative komplikasjoner
 	#Kode 0: Nei, 1:Ja, tomme
-	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$OppflgRegStatus==2)), ]
+	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$StatusFollowup == 1)), ]
 	RegData$Variabel <- RegData$ComplExist
 	Tittel <- 'Komplikasjoner, postoperativt'
 }
 
 if (valgtVar=='ComplAfterBleed') {
 	#Kode 0: Nei, 1:Ja
-	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$OppflgRegStatus==2)), ]
+	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$StatusFollowup == 1)), ]
 	RegData$Variabel[which(RegData$ComplAfterBleed == 1)] <- 1
 	Tittel <- 'Postop. komplikasjon: Blødning'
 }
 if (valgtVar=='ComplEquipment') {
 	#Kode 0: Nei, 1:Ja
-	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$OppflgRegStatus==2)), ]
+	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$StatusFollowup == 1)), ]
 	RegData$Variabel[which(RegData$ComplEquipment == 1)] <- 1
 	Tittel <- 'Postop. komplikasjon: Problemer med ustyr'
 }
 if (valgtVar=='ComplInfection') {
 	#Kode 0: Nei, 1:Ja
-	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$OppflgRegStatus==2)), ]
+	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$StatusFollowup == 1)), ]
 	RegData$Variabel[which(RegData$ComplInfection == 1)] <- 1
 	Tittel <- 'Postop. komplikasjon: Infeksjon'
 }
 if (valgtVar=='ComplOrgan') {
 	#Kode 0: Nei, 1:Ja
-	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$OppflgRegStatus==2)), ]
+	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$StatusFollowup == 1)), ]
 	RegData$Variabel[which(RegData$ComplOrgan == 1)] <- 1
 	Tittel <- 'Postop. komplikasjon: Organskade'
 }
 
 if (valgtVar=='ComplReop') {
 	#Kode 0: Nei, 1:Ja
-	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$OppflgRegStatus==2)), ]
+	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$StatusFollowup == 1)), ]
 	RegData$Variabel[which(RegData$ComplReop == 1)] <- 1
 	Tittel <- 'Postop. komplikasjon: Reoperasjon'
 }
@@ -132,7 +132,7 @@ if (valgtVar=='ComplReop') {
 if (valgtVar=='FollowupSeriousness') {
 	#Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
 	#Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
-	RegData <- RegData[which(RegData$ComplExist %in% 0:1) %i% which(RegData$OppflgRegStatus==2), ]
+	RegData <- RegData[which(RegData$ComplExist %in% 0:1) %i% which(RegData$StatusFollowup == 1), ]
 	#RegData <- RegData[which(RegData$FollowupSeriousness %in% 1:4), ]
 	RegData$Variabel[which(RegData$FollowupSeriousness %in% 3:4)] <- 1
 	Tittel <- 'Alvorlige komplikasjoner (grad 3 og 4)'

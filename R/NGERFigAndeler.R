@@ -112,7 +112,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 	if (valgtVar=='FollowupSeriousness') {
 		#Postoperative komplikasjoner
 		#Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
-		RegData <- RegData[which(RegData$OppflgRegStatus == 2) %i% which(RegData$ComplExist == 1), ]
+		RegData <- RegData[which(RegData$StatusFollowup == 1) %i% which(RegData$ComplExist == 1), ]
 		grtxt <- c('Lite alvorlig', 'Middels alvorlig', 'Alvorlig', 'Dødelig', 'Ukjent')
 		Tittel <- 'Alvorlighetsgrad av komplikasjoner'
 		koder <- 1:4
@@ -175,10 +175,14 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
      if (valgtVar == 'OpBMICategory') {
           # 1:Alvorlig undervekt,2:moderat undervekt, 3:mild undervekt, 4:normal vekt, 5:overvekt,
           # 6:fedme kl.I, 7:fedme kl.II, 8:fedme kl.III
-          Tittel <- 'BMI-kategorier, slå sammen noen???' #JA, undervekt, fedme 2 og 3.
-          grtxt <- c('Alvorlig undervekt','Moderat undervekt', 'Mild undervekt', 'Normal vekt', 'Overvekt',
-                     'Fedme kl.I', 'Fedme kl.II', 'Fedme kl.III', 'Ukjent')
-          koder <- 1:8
+          Tittel <- 'BMI-kategorier' #, slå sammen noen???' #JA, undervekt, fedme 2 og 3.
+          #grtxtAlle <- c('Undervekt','Undervekt','Undervekt','Normal vekt', 'Overvekt', 'Fedme kl.I', 
+			#	'Fedme kl.II&III', 'Fedme kl.II&III' 'Ukjent')
+          #mapvalues(RegData$OpBMICategory, from = 1:8, to = grtxtAlle)
+		  revalue(RegData$OpBMICategory, c('1'='1', '2'='1', '3'='1', '4'='2', '5'='3', '6'='4', 
+		  									'7'='5', '8'='5')
+		  grtxtAlle <- c('Undervekt','Normal vekt', 'Overvekt', 'Fedme kl.I', 'Fedme kl.II&III' 'Ukjent')
+          koder <- as.character(1:5)
           retn <- 'H'
      }
 
@@ -194,7 +198,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
                                                    'OpEarlierVaginal' = 'vaginale inngrep',
                                                    'OpEarlierLaparoscopy' = 'laparoskopiske inngrep',
                                                    'OpEarlierLaparatomy' = 'laparatomi'))
-          grtxt <- c('Nei', 'Ja', 'Vet ikke')
+          grtxt <- c('Nei', 'Ja', 'Vet ikke/Ukjent')
           koder <- 0:1
      }
 
@@ -244,7 +248,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 	if (valgtVar=='FollowupSeriousness') {
 		#Postoperative komplikasjoner
 		#Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
-		RegData <- RegData[(which(RegData$OppflgRegStatus == 2) & which(RegData$ComplExist %in% 0:1)), ]
+		RegData <- RegData[(which(RegData$StatusFollowup == 1) & which(RegData$ComplExist %in% 0:1)), ]
         RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = 1:4)
 		grtxt <- c('Lite alvorlig', 'Middels alvorlig', 'Alvorlig', 'Dødelig')	#, 'Ukjent')
 		Tittel <- 'Alvorlighetsgrad av komplikasjoner'
@@ -376,8 +380,8 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 					        'ComplInfection', #Postoperativ infeksjon
 					        'ComplOrgan') #Organskade
 				grtxt <- Var
-				Tittel <- 'Postoperative(?) komplikasjoner'
-				indMed <- intersect(which(RegData$ComplExist %in% 0:1), which(RegData$OppflgRegStatus==2))
+				Tittel <- 'Postoperative komplikasjoner'
+				indMed <- intersect(which(RegData$ComplExist %in% 0:1), which(RegData$StatusFollowup == 1))
  				AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
 				NVar <- length(indMed)
        }
@@ -390,7 +394,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 			  Tittel <- 'Postop. komplikasjon i utdanningsgrupper'
 			  grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år')
 			  #RegData <- RegData[which(RegData$Education %in% 1:5), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
-			  RegData <- RegData[which(RegData$OppflgRegStatus==2) %i% which(RegData$Education %in% 1:5) %i% which(RegData$ComplExist %in% 0:1), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
+			  RegData <- RegData[which(RegData$StatusFollowup == 1) %i% which(RegData$Education %in% 1:5) %i% which(RegData$ComplExist %in% 0:1), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
 			  RegData$Education <- factor(RegData$Education, levels=1:5)
 			  AntVar <- table(RegData$Education[which(RegData$ComplExist ==1)])
     		  NVar <- table(RegData$Education)
@@ -403,7 +407,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 			  # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
 			  Tittel <- 'Reoperasjon (grunnet komplikasjon) i utdanningsgrupper'
 			  grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år')
-			  RegData <- RegData[which(RegData$OppflgRegStatus==2) %i% which(RegData$Education %in% 1:5) %i% which(RegData$ComplExist %in% 0:1), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
+			  RegData <- RegData[which(RegData$StatusFollowup == 1) %i% which(RegData$Education %in% 1:5) %i% which(RegData$ComplExist %in% 0:1), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
 			  #RegData <- RegData[intersect(which(RegData$Education %in% 1:5), which(RegData$ComplExist %in% 0:1)), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
 			  RegData$Education <- factor(RegData$Education, levels=1:5)
 			  AntVar <- table(RegData$Education[which(RegData$ComplReop ==1)])
