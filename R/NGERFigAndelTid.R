@@ -84,7 +84,7 @@ if (valgtVar=='FollowupSeriousness') {
 	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$StatusFollowup == 1)), ]
 	RegData$Variabel[which(RegData$FollowupSeriousness %in% 3:4)] <- 1
   	VarTxt <- 'alvorlige komplikasjoner'
-	Tittel <- 'Andel av komplikasjonene som var alvorlige (3 og 4)'
+	Tittel <- 'Alvorlige komplikasjoner (grad 3 og 4)'
 }
 
 if (valgtVar=='KomplIntra') {

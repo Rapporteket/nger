@@ -21,14 +21,16 @@ NGERLibUtvalg <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', mina
   #Operasjonstype:
   indMCE <- if (MCEType %in% c(1:3)){which(RegData$MCEType == MCEType)
   } else {indMCE <- 1:Ninn}
-#   indAlvor <- if (AlvorlighetKompl %in% c(1:4)){which(RegData$FollowupSeriousness == AlvorlighetKompl) %i% which(RegData$OppflgRegStatus==2)
-#   } else {indAlvor <- 1:Ninn}
+  #Alvorlighetsgrad, flervalgsutvalg
   indAlvor <- if (AlvorlighetKompl[1] != '') {which(RegData$FollowupSeriousness %in% as.numeric(AlvorlighetKompl)) %i%
-      which(RegData$OppflgRegStatus %in% c(1,2))} else {indAlvor <- 1:Ninn}
+      which(RegData$StatusFollowup == 1)} else {indAlvor <- 1:Ninn}
+  #Hastegrad  1:3 'Elektiv', 'Akutt', 'Ø-hjelp'
+  indHastegrad <- if (Hastegrad[1] != '') {which(RegData$Opcat %in% as.numeric(Hastegrad))
+                  } else {indHastegrad <- 1:Ninn}
 
 
   #utvalg:
-  indMed <- indAld %i% indDato %i% indMCE %i% indAlvor
+  indMed <- indAld %i% indDato %i% indMCE %i% indAlvor %i% indHastegrad
 
   RegData <- RegData[indMed,]
 
@@ -41,6 +43,7 @@ NGERLibUtvalg <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', mina
                  {paste('Pasienter fra ', if (N>0) {min(RegData$Alder, na.rm=T)} else {minald},
                         ' til ', if (N>0) {max(RegData$Alder, na.rm=T)} else {maxald}, ' år', sep='')},
                  if (MCEType %in% c(1:3)){paste('Operasjonsmetode: ', c('Laparoskopi', 'Hysteroskopi', 'Begge')[MCEType], sep='')},
+                 if (Hastegrad [1] != ''){paste('Hastegrad: ', paste(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','), sep='')},
                  if (AlvorlighetKompl[1] != ''){paste('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
                                                          [as.numeric(AlvorlighetKompl)], collapse=','), sep='')})
 

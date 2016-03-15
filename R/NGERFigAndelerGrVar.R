@@ -154,7 +154,7 @@ if (valgtVar=='KomplIntra') {
 					'3' = which(RegData$KomplIntra == 1),
 					'99' = union(which(RegData$HypComplications == 1), which(RegData$LapComplications==1)))
 	RegData$Variabel[indVar] <- 1
-	Tittel <- 'Komplikasjoner, intraoperativt [HypCompl og LapCompl], uten tomme'
+	Tittel <- 'Komplikasjoner, intraoperativt'
 }
 
 if (valgtVar=='StatusFollowup') {
