@@ -8,7 +8,7 @@
 \usepackage{amssymb}
 
 \title{Testrapport for NGER}
-\author{Yusman Kamaleri \& Kevin Thon (SKDE)}
+% \author{Yusman Kamaleri \& Kevin Thon (SKDE)}
 
 \renewcommand\thempfootnote{\fnsymbol{mpfootnote}}
 \def\labelitemi{$\bullet$}
