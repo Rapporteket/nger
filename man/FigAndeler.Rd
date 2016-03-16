@@ -6,8 +6,8 @@
 \usage{
 FigAndeler(RegData = 0, valgtVar, datoFra = "2013-01-01",
   datoTil = "2050-12-31", minald = 0, maxald = 130, outfile = "",
-  reshID, enhetsUtvalg = 1, MCEType = 99, AlvorlighetKompl = "",
-  hentData = 0, preprosess = TRUE)
+  reshID, enhetsUtvalg = 1, MCEType = 99, Hastegrad = "",
+  AlvorlighetKompl = "", hentData = 0, preprosess = TRUE)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -65,6 +65,11 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 2: Hysteroskopi
 3: Begge
 99: Alle}
+
+\item{Hastegrad}{Hastegrad av operasjon.
+1: Elektiv
+2: Akutt
+3: Ø-hjelp}
 
 \item{AlvorlighetKompl}{Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
                          Angis som en vektor av tall som tekst, f.eks. c('1','2')

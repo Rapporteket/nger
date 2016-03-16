@@ -6,20 +6,27 @@
 \usage{
 FigAndelerGrVar(RegData = 0, valgtVar, datoFra = "2013-01-01",
   datoTil = "3000-12-31", minald = 0, maxald = 130, MCEType = 99,
-  AlvorlighetKompl = "", reshID, outfile = "", enhetsUtvalg = 1,
-  preprosess = TRUE, hentData = 0)
+  Hastegrad = "", AlvorlighetKompl = "", reshID, outfile = "",
+  enhetsUtvalg = 1, preprosess = TRUE, hentData = 0)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
 
-\item{valgtVar}{Alder: Pasienter over 70 år
-FollowupSeriousness: Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
-KomplIntra: Komplikasjoner ved operasjon. (kombinerer variablene HypComplications og LapComplications)
-KomplPostop: Andel postoperative komplikasjoner
-OpAntibioticProphylaxis: Andel som får antibiotika
+\item{valgtVar}{Velg hvilken variabel du ønsker å se resultat for
+Alder: Andel pasienter over 70 år.
+ComplAfterBleed: Postop. komplikasjon: Blødning
+ComplEquipment: Postop. komplikasjon: Problemer med ustyr
+ComplInfection: Postop. komplikasjon: Infeksjon
+ComplOrgan: Postop. komplikasjon: Organskade
+ComplReop: Reoperasjon som følge av komplikasjon
+Education: Pasienter med høyere utdanning
+FollowupSeriousness: Alvorlige komplikasjoner (grad 3 og 4)
+KomplIntra: Komplikasjoner under operasjon (intraoperativt)
+KomplPostop: Postoperative komplikasjoner
+OpAntibioticProphylaxis: Fått antibiotikaprofylakse
+OpASA: ASA-grad > II
 OpBMI: Pasienter med fedme (BMI>30)
-ComplReop: Andel reoperasjon som følge av komplikasjon
-StatusFollowup: Pasienter som har fått postoperativ oppfølging}
+StatusFollowup: Fått postoperativ pensum}
 
 \item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}
 
@@ -33,6 +40,11 @@ StatusFollowup: Pasienter som har fått postoperativ oppfølging}
 2: Hysteroskopi
 3: Begge
 99: Alle}
+
+\item{Hastegrad}{Hastegrad av operasjon.
+1: Elektiv
+2: Akutt
+3: Ø-hjelp}
 
 \item{AlvorlighetKompl}{Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
                          Angis som en vektor av tall som tekst, f.eks. c('1','2')
@@ -61,22 +73,6 @@ TRUE: Ja (Standard)}
 \item{hentData}{Gjør spørring mot database
 0: Nei, RegData gis som input til funksjonen (Standard)
 1: Ja}
-
-\item{valgtVar:}{Velg hvilken variabel du ønsker å se resultat for
-Alder: Andel pasienter over 70 år.
-ComplAfterBleed: Postop. komplikasjon: Blødning
-ComplEquipment: Postop. komplikasjon: Problemer med ustyr
-ComplInfection: Postop. komplikasjon: Infeksjon
-ComplOrgan: Postop. komplikasjon: Organskade
-ComplReop: Reoperasjon som følge av komplikasjon
-Education: Pasienter med høyere utdanning
-FollowupSeriousness: Alvorlige komplikasjoner (grad 3 og 4)
-KomplIntra: Komplikasjoner under operasjon (intraoperativt)
-KomplPostop: Postoperative komplikasjoner
-OpAntibioticProphylaxis: Fått antibiotikaprofylakse
-OpASA: ASA-grad > II
-OpBMI: Pasienter med fedme (BMI>30)
-StatusFollowup: Fått postoperativ pensum}
 }
 \description{
 Funksjon som genererer en figur med andeler av en variabel for grupperingsvariabelen sykehus.

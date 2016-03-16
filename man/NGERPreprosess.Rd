@@ -4,16 +4,13 @@
 \alias{NGERPreprosess}
 \title{Preprosesser data fra NGER}
 \usage{
-NGERPreprosess(RegData = RegData, reshID = reshID)
+NGERPreprosess(RegData = RegData)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
-
-\item{reshID}{Parameter følger fra innlogging helseregister.no og angir
-hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 }
 \value{
-Data En list med det filtrerte datasettet og sykehusnavnet som tilsvarer reshID
+RegData En data.frame med det preprosesserte datasettet
 }
 \description{
 Denne funksjonen definerer variabler og fjerner ikke-ferdigstilte registreringer

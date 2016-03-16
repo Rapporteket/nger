@@ -6,8 +6,8 @@
 \usage{
 FigAndelTid(RegData = 0, valgtVar, datoFra = "2013-01-01",
   datoTil = "3000-12-31", minald = 0, maxald = 130, MCEType = 99,
-  AlvorlighetKompl = "", reshID, outfile = "", enhetsUtvalg = 1,
-  preprosess = TRUE, hentData = 0)
+  Hastegrad = "", AlvorlighetKompl = "", reshID, outfile = "",
+  enhetsUtvalg = 1, preprosess = TRUE, hentData = 0)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -33,6 +33,11 @@ StatusFollowup: Pasienter som har fått postoperativ oppfølging}
 2: Hysteroskopi
 3: Begge
 99: Alle}
+
+\item{Hastegrad}{Hastegrad av operasjon.
+1: Elektiv
+2: Akutt
+3: Ø-hjelp}
 
 \item{AlvorlighetKompl}{Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
                          Angis som en vektor av tall som tekst, f.eks. c('1','2')
