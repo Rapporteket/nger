@@ -182,7 +182,7 @@ if (valgtVar == 'Education') {
 
 #Gjør utvalg
 NGERUtvalg <- NGERLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-                            MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl)
+                            MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
 RegData <- NGERUtvalg$RegData
 utvalgTxt <- NGERUtvalg$utvalgTxt
 
