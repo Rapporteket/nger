@@ -31,7 +31,7 @@
 #'     OpEarlierVaginal: Tidligere vaginale inngrep
 #'     OpEarlierLaparoscopy: Tidligere laparoskopi
 #'     OpEarlierLaparatomy: Tidligere laparatomi
-#'     OpOutsideDaytime: Operasjon i legens vakttid
+#'     OpOpcatOutsideDaytime: Operasjon i legens vakttid 
 #'     OpType: Primæroperasjon eller reoperasjon
 #' @param datoFra Tidligste dato i utvalget (vises alltid i figuren).
 #' @param datoTil Seneste dato i utvalget (vises alltid i figuren).
