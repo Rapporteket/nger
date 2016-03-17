@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-03-15T13:02:12 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="NGERFigAndelTid" language="groovy" pageWidth="595" pageHeight="595" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" scriptletClass="no.skde.report.nger.NGERCommonScriptletRPackage" isIgnorePagination="true" uuid="9ca92060-e90f-4e3c-acec-23662a03f059">
+<!-- 2016-03-16T12:33:44 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="NGERFigAndelTid" language="groovy" pageWidth="595" pageHeight="595" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" scriptletClass="NGERCommonScriptletRPackage" isIgnorePagination="true" uuid="9ca92060-e90f-4e3c-acec-23662a03f059">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -38,16 +38,10 @@
 		<defaultValueExpression><![CDATA[new String("nger")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="rFunctionCallString" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new String("FigAndelTid(RegData=0, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg, MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl, hentData=1, preprosess=TRUE)")]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new String("FigAndelTid(RegData=0, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg, MCEType=MCEType, Hastegrad=Hastegrad, AlvorlighetKompl=AlvorlighetKompl, hentData=1, preprosess=TRUE)")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="varName" class="java.lang.String">
 		<defaultValueExpression><![CDATA[new String("Alder")]]></defaultValueExpression>
-	</parameter>
-	<parameter name="minAge" class="java.lang.Integer">
-		<defaultValueExpression><![CDATA[new java.lang.Integer(0)]]></defaultValueExpression>
-	</parameter>
-	<parameter name="maxAge" class="java.lang.Integer">
-		<defaultValueExpression><![CDATA[new java.lang.Integer(130)]]></defaultValueExpression>
 	</parameter>
 	<parameter name="beginDate" class="java.util.Date">
 		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").parse("2013-01-01")]]></defaultValueExpression>
@@ -56,8 +50,17 @@
 		<parameterDescription><![CDATA[]]></parameterDescription>
 		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 	</parameter>
+	<parameter name="minAge" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new java.lang.Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="maxAge" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new java.lang.Integer(130)]]></defaultValueExpression>
+	</parameter>
 	<parameter name="MCEType" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[new java.lang.Integer(99)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Hastegrad" class="java.util.List">
+		<defaultValueExpression><![CDATA[[""]]]></defaultValueExpression>
 	</parameter>
 	<parameter name="AlvorlighetKompl" class="java.util.List">
 		<defaultValueExpression><![CDATA[[""]]]></defaultValueExpression>

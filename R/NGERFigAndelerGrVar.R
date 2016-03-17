@@ -9,7 +9,7 @@
 #'  Det benyttes også andre variable til utvalg osv.
 #'
 #' @inheritParams FigAndelTid
-#' @param valgtVar: Velg hvilken variabel du ønsker å se resultat for
+#' @param valgtVar Velg hvilken variabel du ønsker å se resultat for
 #'		Alder: Andel pasienter over 70 år.
 #'		ComplAfterBleed: Postop. komplikasjon: Blødning
 #'		ComplEquipment: Postop. komplikasjon: Problemer med ustyr
@@ -27,7 +27,7 @@
 #' @export
 
 FigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
-                        minald=0, maxald=130, MCEType=99, AlvorlighetKompl='', reshID, outfile='',
+                        minald=0, maxald=130, MCEType=99, Hastegrad='', AlvorlighetKompl='', reshID, outfile='',
                         enhetsUtvalg=1, preprosess=TRUE, hentData=0) {
 
   ## Hvis spørring skjer fra R på server. ######################

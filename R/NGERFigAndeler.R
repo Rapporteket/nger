@@ -55,6 +55,10 @@
 #'                 2: Hysteroskopi
 #'                 3: Begge
 #'                 99: Alle
+#' @param Hastegrad Hastegrad av operasjon.
+#'                1: Elektiv
+#'                2: Akutt
+#'                3: Ø-hjelp
 #' @param AlvorlighetKompl  Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
 #'                          Angis som en vektor av tall som tekst, f.eks. c('1','2')
 #'                          1: Lite alvorlig
@@ -68,7 +72,7 @@
 #' @export
 #'
 FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050-12-31', minald=0, maxald=130,
-                        outfile='', reshID, enhetsUtvalg=1, MCEType=99, AlvorlighetKompl='', hentData=0, preprosess=TRUE)
+                        outfile='', reshID, enhetsUtvalg=1, MCEType=99, Hastegrad='', AlvorlighetKompl='', hentData=0, preprosess=TRUE)
 {
 
      ## Hvis spørring skjer fra R på server. ######################
@@ -176,12 +180,11 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
           # 1:Alvorlig undervekt,2:moderat undervekt, 3:mild undervekt, 4:normal vekt, 5:overvekt,
           # 6:fedme kl.I, 7:fedme kl.II, 8:fedme kl.III
           Tittel <- 'BMI-kategorier' #, slå sammen noen???' #JA, undervekt, fedme 2 og 3.
-          #grtxtAlle <- c('Undervekt','Undervekt','Undervekt','Normal vekt', 'Overvekt', 'Fedme kl.I', 
+          #grtxtAlle <- c('Undervekt','Undervekt','Undervekt','Normal vekt', 'Overvekt', 'Fedme kl.I',
 			#	'Fedme kl.II&III', 'Fedme kl.II&III' 'Ukjent')
           #mapvalues(RegData$OpBMICategory, from = 1:8, to = grtxtAlle)
-		  revalue(RegData$OpBMICategory, c('1'='1', '2'='1', '3'='1', '4'='2', '5'='3', '6'='4', 
-		  									'7'='5', '8'='5')
-		  grtxtAlle <- c('Undervekt','Normal vekt', 'Overvekt', 'Fedme kl.I', 'Fedme kl.II&III' 'Ukjent')
+		  RegData$OpBMICategory <- revalue(as.character(RegData$OpBMICategory), c('1'='1', '2'='1', '3'='1', '4'='2', '5'='3', '6'='4', '7'='5', '8'='5'))
+		  grtxt <- c('Undervekt','Normalvekt', 'Overvekt', 'Fedme kl.I', 'Fedme kl.II&III', 'Ukjent')
           koder <- as.character(1:5)
           retn <- 'H'
      }
