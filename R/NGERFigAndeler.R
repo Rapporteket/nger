@@ -31,7 +31,7 @@
 #'     OpEarlierVaginal: Tidligere vaginale inngrep
 #'     OpEarlierLaparoscopy: Tidligere laparoskopi
 #'     OpEarlierLaparatomy: Tidligere laparatomi
-#'     OpOpcatOutsideDaytime: Operasjon i legens vakttid 
+#'     OpOpcatOutsideDaytime: Operasjon i legens vakttid
 #'     OpType: Primæroperasjon eller reoperasjon
 #' @param datoFra Tidligste dato i utvalget (vises alltid i figuren).
 #' @param datoTil Seneste dato i utvalget (vises alltid i figuren).
@@ -205,14 +205,21 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
           koder <- 0:1
      }
 
-     if (valgtVar %in% c('OpOpcatOutsideDaytime', 'OpDaySurgery')) {
+     if (valgtVar == 'OpDaySurgery') {
           #0: Nei, 1: Ja Manglende:Ukjent
-          Tittel <- sprintf('%s', switch(as.character(valgtVar),
-                                         'OpOpcatOutsideDaytime' = 'Operasjon i vakttid', #SLÅ sammen
-                                         'OpDaySurgery' = 'Dagkirurgiske Inngrep'))
+          Tittel <- 'Dagkirurgiske Inngrep'
           grtxt <- c('Nei', 'Ja', 'Ukjent')
           koder <- 0:1
      }
+
+     if (valgtVar == 'OpOpcatOutsideDaytime') {
+       #0: Nei, 1: Ja Manglende:Ukjent
+       Hastegrad <- as.character(2:3)
+       Tittel <- 'Operasjon i vakttid'
+       grtxt <- c('Nei', 'Ja', 'Ukjent')
+       koder <- 0:1
+     }
+
 
 
      if (valgtVar == 'OpType') {

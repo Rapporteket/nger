@@ -5,7 +5,7 @@
 \title{Funksjon som gjør utvalg av dataene, returnerer det filtrerte datasettet og utvalgsteksten.}
 \usage{
 NGERLibUtvalg(RegData, datoFra, datoTil, fargepalett = "BlaaOff", minald,
-  maxald, MCEType, AlvorlighetKompl)
+  maxald, MCEType, AlvorlighetKompl, Hastegrad)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -33,6 +33,11 @@ NGERLibUtvalg(RegData, datoFra, datoTil, fargepalett = "BlaaOff", minald,
                          4: Dødelig
 
 Detajer: Her bør man liste opp hvilke variable funksjonen benytter.}
+
+\item{Hastegrad}{Hastegrad av operasjon.
+1: Elektiv
+2: Akutt
+3: Ø-hjelp}
 }
 \value{
 UtData En liste bestående av det filtrerte datasettet, utvalgstekst for figur og tekststreng som angir fargepalett

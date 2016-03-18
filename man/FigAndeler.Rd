@@ -39,7 +39,7 @@ OpDaySurgery: Dagkirurgiske inngrep
 OpEarlierVaginal: Tidligere vaginale inngrep
 OpEarlierLaparoscopy: Tidligere laparoskopi
 OpEarlierLaparatomy: Tidligere laparatomi
-OpOutsideDaytime: Operasjon i legens vakttid
+OpOpcatOutsideDaytime: Operasjon i legens vakttid
 OpType: Primæroperasjon eller reoperasjon}
 
 \item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}
