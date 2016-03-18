@@ -183,7 +183,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
           #grtxtAlle <- c('Undervekt','Undervekt','Undervekt','Normal vekt', 'Overvekt', 'Fedme kl.I',
 			#	'Fedme kl.II&III', 'Fedme kl.II&III' 'Ukjent')
           #mapvalues(RegData$OpBMICategory, from = 1:8, to = grtxtAlle)
-		  RegData$OpBMICategory <- revalue(as.character(RegData$OpBMICategory), c('1'='1', '2'='1', '3'='1', '4'='2', '5'='3', '6'='4', '7'='5', '8'='5'))
+		  RegData$OpBMICategory <- plyr::revalue(as.character(RegData$OpBMICategory), c('1'='1', '2'='1', '3'='1', '4'='2', '5'='3', '6'='4', '7'='5', '8'='5'))
 		  grtxt <- c('Undervekt','Normalvekt', 'Overvekt', 'Fedme kl.I', 'Fedme kl.II&III', 'Ukjent')
           koder <- as.character(1:5)
           retn <- 'H'
