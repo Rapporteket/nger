@@ -23,7 +23,7 @@
 #'		OpAntibioticProphylaxis: Fått antibiotikaprofylakse
 #'		OpASA: ASA-grad > II
 #'		OpBMI: Pasienter med fedme (BMI>30)
-#'		StatusFollowup: Fått postoperativ pensum
+#'		StatusFollowup: Fått postoperativ oppfølging
 #' @export
 
 FigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
