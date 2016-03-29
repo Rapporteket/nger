@@ -12,11 +12,11 @@
 #'     HypCompleteness: Gjennomføringsgrad av hysteroskopi
 #'    		Koder:	1-Fullstendig, 2-Ufullstendig, 3-Mislykket
 #'     HypComplications: Hysteroskopi intrapoerative komplikasjoner
-#'     LapComplications: Laparoskopiske intrapoerative komplikasjoner
 #'     KomplPost: Postoperative komplikasjoner
 #'     KomplPostUtd: Postoperative komplikasjoner for ulike utdanningsgrupper
 #'     KomplReopUtd: Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper
 #'     LapAccessMethod: Teknikk for laparaskopisk tilgang
+#'     LapComplications: Laparoskopiske intrapoerative komplikasjoner
 #'     LapEkstrautstyr: Laparaskopisk ekstrautstyr
 #'     LapIntraAbdominal: Laparoskopiske intraabdominale komplikasjoner
 #'     LapNumHjelpeinnstikk: Antall hjelpeinnstikk
@@ -346,12 +346,14 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 			   'LapTekniskUtstyr',
 			   'LapPostoperativ',
 			   'LapConverted')
-				grtxt <- Var
-				Tittel <- 'Laparoskopiske intraoperative komplikasjoner'
+				grtxt <- c('Uterusmanipulator', 'Tilgangsmetode', 'Hjelpeinnstikk',
+				           'Intraabdominal', 'Utstyr', 'Postoperativ', 'Konvertert')
+				Tittel <- 'Intraoperative komplikasjoner ved laparoskopi'
 				indMed <- which(RegData$LapComplications %in% 0:1)	#
  				AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
 				NVar <- length(indMed)
        }
+
 
       if (valgtVar=='LapIntraAbdominal') {
 	#Laparoskopiske intraabdominale komplikasjoner:
@@ -361,12 +363,13 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 					'LapTarm',
 					'LapBlaere',
 					'LapKarBleed')
-			grtxt <- Var
-			Tittel <- 'Laparoskopiske intraoperative komplikasjoner'
+			grtxt <- c('Nerve', 'Ureter', 'Tarm', 'Blære', 'Kar')
+			Tittel <- 'Intraabdominelle komplikasjoner ved laparoskopi'
 			indMed <- which(RegData$LapIntraAbdominal %in% 0:1)	#
 			AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
 			NVar <- length(indMed)
        }
+
 
        if (valgtVar=='HypComplications') {
 	#Hysteroskopi intrapoerative komplikasjoner:
@@ -376,8 +379,9 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 					'HypTechnical',
 					'HypFluidOverload',
 					'HypBleeding')
-				grtxt <- Var
-				Tittel <- 'Hysteroskopiske intraoperative komplikasjoner'
+				grtxt <- c('Ved tilgang', 'Perforasjon', 'Teknisk/utstyr',
+				           'Fluid overload', 'Blødning')
+				Tittel <- 'Intraoperative komplikasjoner ved hysteroskopi'
 				indMed <- which(RegData$HypComplications %in% 0:1)	#
  				AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
 				NVar <- length(indMed)
@@ -386,11 +390,8 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
        if (valgtVar=='KomplPost') {
          #Postoperative komplikasjoner. Bare registreringer hvor ComplExist er 0 el. 1
          retn <- 'H'
-         Var <- c('ComplAfterBleed', #Postoperativ blødning?
-					        'ComplEquipment', #Komplikasjoner med ustyr
-					        'ComplInfection', #Postoperativ infeksjon
-					        'ComplOrgan') #Organskade
-				grtxt <- Var
+         Var <- c('ComplAfterBleed', 'ComplEquipment', 'ComplInfection', 'ComplOrgan')
+				grtxt <- c('Blødning', 'Med utstyr', 'Infeksjon', 'Organskade')
 				Tittel <- 'Postoperative komplikasjoner'
 				indMed <- intersect(which(RegData$ComplExist %in% 0:1), which(RegData$StatusFollowup == 1))
  				AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
@@ -432,26 +433,27 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 				#MCEType=1 el 3 (Laparoskopi eller begge)
         retn <- 'H'
          Var <- c('LapAdheanseprofylakse',
-					'LapBipolarDiatermi',
-					'LapClips',
-					'LapHarmonicS',
-					'LapMorcellator',
-					'LapNett',
-					'LapPlasmajet',
-					'LapPreparatopose',
-					'LapProtoadapter',
-					'LapRobotKirurgi',
-					'LapSingelPort',
-					'LapStaplerEndogia',
-					'LapSutur',
-					'LapThunderbeat',
-					'LapUnipolarDiatermi')
-				grtxt <- Var
+                  'LapBipolarDiatermi',
+                  'LapClips',
+                  'LapHarmonicS',
+                  'LapMorcellator',
+                  'LapNett',
+                  'LapPreparatopose',
+                  'LapRobotKirurgi',
+                  'LapSingelPort',
+                  'LapStaplerEndogia',
+                  'LapSutur',
+                  'LapThunderbeat',
+                  'LapUnipolarDiatermi')
+				grtxt <- c('Adheranseprofylakse', 'Bipolar Diatermi', 'Clips', 'Harmonic skalpell',
+				           'Morcellator', 'Nett', 'Preparatpose', 'Robotkirurgi', 'Singel port',
+				           'Stapler/endoGIA', 'Sutur', 'Thunderbeat', 'Unipolar Diatermi')
 				Tittel <- 'Laparaskopisk ekstrautstyr'
 				indMed <- which(RegData$MCEType %in% c(1,3))
  				AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
 				NVar <- length(indMed)
-				}
+       }
+
 
 
                #Generell beregning for alle figurer med sammensatte variable:
