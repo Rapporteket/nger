@@ -31,7 +31,7 @@
 #'     OpEarlierVaginal: Tidligere vaginale inngrep
 #'     OpEarlierLaparoscopy: Tidligere laparoskopi
 #'     OpEarlierLaparatomy: Tidligere laparatomi
-#'     OpOutsideDaytime: Operasjon i legens vakttid
+#'     OpOpcatOutsideDaytime: Operasjon i legens vakttid
 #'     OpType: Primæroperasjon eller reoperasjon
 #' @param datoFra Tidligste dato i utvalget (vises alltid i figuren).
 #' @param datoTil Seneste dato i utvalget (vises alltid i figuren).
@@ -183,7 +183,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
     #grtxtAlle <- c('Undervekt','Undervekt','Undervekt','Normal vekt', 'Overvekt', 'Fedme kl.I',
     #	'Fedme kl.II&III', 'Fedme kl.II&III' 'Ukjent')
     #mapvalues(RegData$OpBMICategory, from = 1:8, to = grtxtAlle)
-    RegData$OpBMICategory <- revalue(as.character(RegData$OpBMICategory), c('1'='1', '2'='1', '3'='1', '4'='2', '5'='3', '6'='4', '7'='5', '8'='5'))
+    RegData$OpBMICategory <- plyr::revalue(as.character(RegData$OpBMICategory), c('1'='1', '2'='1', '3'='1', '4'='2', '5'='3', '6'='4', '7'='5', '8'='5'))
     grtxt <- c('Undervekt','Normalvekt', 'Overvekt', 'Fedme kl.I', 'Fedme kl.II&III', 'Ukjent')
     koder <- as.character(1:5)
     retn <- 'H'
@@ -205,14 +205,21 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
     koder <- 0:1
   }
 
-  if (valgtVar %in% c('OpOpcatOutsideDaytime', 'OpDaySurgery')) {
+  if (valgtVar == 'OpDaySurgery') {
     #0: Nei, 1: Ja Manglende:Ukjent
-    Tittel <- sprintf('%s', switch(as.character(valgtVar),
-                                   'OpOpcatOutsideDaytime' = 'Operasjon i vakttid', #SLÅ sammen
-                                   'OpDaySurgery' = 'Dagkirurgiske Inngrep'))
+    Tittel <- 'Dagkirurgiske Inngrep'
     grtxt <- c('Nei', 'Ja', 'Ukjent')
     koder <- 0:1
   }
+
+  if (valgtVar == 'OpOpcatOutsideDaytime') {
+    #0: Nei, 1: Ja Manglende:Ukjent
+    Hastegrad <- as.character(2:3)
+    Tittel <- 'Operasjon i vakttid'
+    grtxt <- c('Nei', 'Ja', 'Ukjent')
+    koder <- 0:1
+  }
+
 
 
   if (valgtVar == 'OpType') {
@@ -262,7 +269,8 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
   ###Gjør utvalg (LibUtvalg)
   ###Kjører denne etter variabeldefinisjon for at utvalgTxt skal bli riktig
   NGERUtvalg <- NGERLibUtvalg(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra,
-                              datoTil = datoTil, MCEType = MCEType, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
+                              datoTil = datoTil, MCEType = MCEType, AlvorlighetKompl=AlvorlighetKompl,
+                              Hastegrad=Hastegrad)
   RegData <- NGERUtvalg$RegData
   utvalgTxt <- NGERUtvalg$utvalgTxt
 
@@ -413,8 +421,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
         RegData <- RegData[which(RegData$StatusFollowup == 1) %i% which(RegData$Education %in% 1:5) %i% which(RegData$ComplExist %in% 0:1), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
         #RegData <- RegData[intersect(which(RegData$Education %in% 1:5), which(RegData$ComplExist %in% 0:1)), ] #Antar at tomme ComplReop er nei. & which(RegData$ComplReop %in% 0:1)
         RegData$Education <- factor(RegData$Education, levels=1:5)
-        AntVar <- t
-        able(RegData$Education[which(RegData$ComplReop ==1)])
+        AntVar <- table(RegData$Education[which(RegData$ComplReop ==1)])
         #AntVar <- table(RegData$Education[which(RegData$OpType ==2)])
         NVar <- table(RegData$Education)
         #100*AntVar/NVar

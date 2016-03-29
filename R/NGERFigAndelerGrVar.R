@@ -174,15 +174,15 @@ if (valgtVar == 'Education') {
 	#Kode 1:5,9: 'Grunnskole++, 7-10år','Real-, yrkes- el vg skole', 'Allmennfaglig vg skole',
 			#Høyskole/universitet, <4 år', 'Høyskole/universitet, 4år+', 'Ukjent'
 	RegData <- RegData[which(RegData$Education %in% 1:5), ]		#which(RegData$PasientSkjemaStatus ==1)), ]
-	RegData$Variabel[which(RegData[ ,valgtVar] %in% 4:5)] <- 1
-  	VarTxt <- 'med høyere utdanning'
-	Tittel <- 'Andel høyskole-/universitetsutdannede'
+	RegData$Variabel[which(RegData[ ,valgtVar] %in% 1:3)] <- 1
+  	VarTxt <- 'uten høyere utdanning'
+	Tittel <- 'Andel uten høyere utdanning'
 }
 
 
 #Gjør utvalg
 NGERUtvalg <- NGERLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-                            MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl)
+                            MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
 RegData <- NGERUtvalg$RegData
 utvalgTxt <- NGERUtvalg$utvalgTxt
 

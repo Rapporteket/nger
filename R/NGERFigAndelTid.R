@@ -7,12 +7,12 @@
 #' @inheritParams FigAndeler
 #' @param valgtVar
 #'	Alder: Pasienter over 70 år
+#'	ComplReop: Andel reoperasjon som følge av komplikasjon
 #'	FollowupSeriousness: Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
 #'	KomplIntra: Komplikasjoner ved operasjon. (kombinerer variablene HypComplications og LapComplications)
 #'	KomplPostop: Andel postoperative komplikasjoner
 #'	OpAntibioticProphylaxis: Andel som får antibiotika
 #'	OpBMI: Pasienter med fedme (BMI>30)
-#'	ComplReop: Andel reoperasjon som følge av komplikasjon
 #'	StatusFollowup: Pasienter som har fått postoperativ oppfølging
 #'
 #' @export
@@ -139,7 +139,7 @@ if (valgtVar == 'Education') {
 }
 
 NGERUtvalg <- NGERLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-                            MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl)
+                            MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
 RegData <- NGERUtvalg$RegData
 utvalgTxt <- NGERUtvalg$utvalgTxt
 
