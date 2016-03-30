@@ -68,7 +68,7 @@ MÅNEDSRAPPORT \\
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=\textwidth]{ageAbove70hospitals.pdf}
+\includegraphics[width=\textwidth*0.8]{ageAbove70hospitals.pdf}
 \caption{Andel pasienter over 70 år}
 \end{figure}
 
@@ -80,7 +80,7 @@ MÅNEDSRAPPORT \\
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{OpAntibioticProphylaxis.pdf}
+\includegraphics[width=\textwidth*0.8]{OpAntibioticProphylaxis.pdf}
 \caption{Andeler over tid...}
 \end{figure}
 
