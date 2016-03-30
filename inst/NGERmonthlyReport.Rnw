@@ -9,7 +9,7 @@
 \usepackage{rotating}
 
 
-<<'initOpts',include=FALSE>>=
+<<'initOpts',include=TRUE>>=
 knitr::opts_chunk$set(warnings=FALSE,echo=FALSE,root.dir = './')
 @
 
