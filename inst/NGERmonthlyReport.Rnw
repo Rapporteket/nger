@@ -77,9 +77,13 @@ Månedsrapport \\
 \section{Andeler over tid}
 
   \begin{frame}[fragile]
+
+    \begin{figure}
       \centering
       \includegraphics[width=\textwidth]{OpAntibioticProphylaxis.pdf}
       \caption{Andeler over tid...}
+    \end{figure}
+
   \end{frame}
 
 \section{Fordeling av et eller annet}
