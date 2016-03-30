@@ -354,8 +354,8 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 				NVar <- length(indMed)
        }
 
-
       if (valgtVar=='LapIntraAbdominal') {
+
 	#Laparoskopiske intraabdominale komplikasjoner:
          retn <- 'H'
          Var <- c('LapNerv',
