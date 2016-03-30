@@ -7,13 +7,19 @@
 #' @inheritParams FigAndeler
 #' @param valgtVar
 #'	Alder: Pasienter over 70 år
+#'  ComplAfterBleed: Postop. komplikasjon: Blødning
+#'  ComplEquipment: Postop. komplikasjon: Problemer med ustyr
+#'  ComplInfection: Postop. komplikasjon: Infeksjon
+#'  ComplOrgan: Postop. komplikasjon: Organskade
 #'	ComplReop: Andel reoperasjon som følge av komplikasjon
 #'	FollowupSeriousness: Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
 #'	KomplIntra: Komplikasjoner ved operasjon. (kombinerer variablene HypComplications og LapComplications)
 #'	KomplPostop: Andel postoperative komplikasjoner
 #'	OpAntibioticProphylaxis: Andel som får antibiotika
+#'  OpASA: ASA-grad > II
 #'	OpBMI: Pasienter med fedme (BMI>30)
 #'	StatusFollowup: Pasienter som har fått postoperativ oppfølging
+#' @return Figur med ...
 #'
 #' @export
 
@@ -51,6 +57,35 @@ if (valgtVar=='Alder') {
 	Tittel <- 'Andel pasienter over 70 år'
 }
 
+if (valgtVar=='ComplAfterBleed') {
+	#Kode 0: Nei, 1:Ja
+	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$StatusFollowup == 1)), ]
+	RegData$Variabel[which(RegData$ComplAfterBleed == 1)] <- 1
+  	VarTxt <- 'blødninger'
+	Tittel <- 'Postop. komplikasjon: Blødning'
+}
+if (valgtVar=='ComplEquipment') {
+	#Kode 0: Nei, 1:Ja
+	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$StatusFollowup == 1)), ]
+	RegData$Variabel[which(RegData$ComplEquipment == 1)] <- 1
+  	VarTxt <- 'tilfeller av problem med utstyr'
+	Tittel <- 'Postop. komplikasjon: Problemer med ustyr'
+}
+if (valgtVar=='ComplInfection') {
+	#Kode 0: Nei, 1:Ja
+	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$StatusFollowup == 1)), ]
+	RegData$Variabel[which(RegData$ComplInfection == 1)] <- 1
+	VarTxt <- 'infeksjoner'
+	Tittel <- 'Postop. komplikasjon: Infeksjon'
+}
+if (valgtVar=='ComplOrgan') {
+	#Kode 0: Nei, 1:Ja
+	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$StatusFollowup == 1)), ]
+	RegData$Variabel[which(RegData$ComplOrgan == 1)] <- 1
+	VarTxt <- 'organskader'
+	Tittel <- 'Postop. komplikasjon: Organskade'
+}
+
 if (valgtVar=='OpAntibioticProphylaxis') {
 	#Andel som får antibiotika
 	#Kode 0,1: Nei, Ja (ingen tomme per 22.feb.2016)
@@ -59,7 +94,13 @@ if (valgtVar=='OpAntibioticProphylaxis') {
   	VarTxt <- 'profylakser'
 	Tittel <- 'Andel som får antibiotika'
 }
-
+if (valgtVar == 'OpASA') {
+	#Andel med ASA-grad>2
+	RegData <- RegData[which(RegData[,valgtVar] %in% 1:5), ]
+	RegData$Variabel[which(RegData[ ,valgtVar] > 2)] <- 1
+ 	VarTxt <- 'med ASA-grad > II'
+	Tittel <- 'ASA-grad > II'
+}
 if (valgtVar=='OpBMI') {
 	#Andel pasienter med fedme (BMI over 30)
 	indMed <- which(RegData[ ,valgtVar] >30)

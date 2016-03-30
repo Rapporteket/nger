@@ -38,8 +38,8 @@ Hastegrad <- ''
 AlvorlighetKompl <- ''
 enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
-valgtVar <- 'OpOpcatOutsideDaytime'	#Må velge... Alder, Education, FollowupSeriousness, HypCompleteness, KomplPost, KomplPostUtd, KomplReopUtd,
-        #KomplHyp, LapIntraAbdominal, KomplLap,
+valgtVar <- 'LapComplications'	#Må velge... Alder, Education, FollowupSeriousness, HypCompleteness, KomplPost, KomplPostUtd, KomplReopUtd,
+        #KomplHyp, LapIntraAbdominal, KomplLap, LapComplications
         #LapAccessMethod, LapEkstrautstyr,LapNumHjelpeinnstikk
         #MaritalStatus, MCETypeOpAnesthetic, PatientNorwegian, OpAnesthetic
 				#, OpASA,
@@ -56,11 +56,14 @@ FigAndeler(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil
 
 
 #Teste variable
-variable <- c('Alder', 'Education', 'FollowupSeriousness', 'HypCompleteness', 'KomplPost', 'KomplPostUtd', 'KomplReopUtd',
-              'KomplHyp', 'LapIntraAbdominal', 'KomplLap', 'LapAccessMethod', 'LapEkstrautstyr','LapNumHjelpeinnstikk',
-        'MaritalStatus', 'MCEType', 'PatientNorwegian', 'OpAnesthetic', 'OpASA',
-		  'OpBMICategory', 'Opcat', 'OpDaySurgery', 'OpEarlierVaginal', 'OpEarlierLaparoscopy', 'OpEarlierLaparatomy',
-		  'OpOpcatOutsideDaytime', 'OpType')
+variable <- c('Alder', 'Education', 'FollowupSeriousness', 'HypCompleteness', 'HypComplications',
+              'KomplPost', 'KomplPostUtd', 'KomplReopUtd', 'LapAccessMethod', 'LapComplications',
+              'LapEkstrautstyr', 'LapIntraAbdominal', 'LapNumHjelpeinnstikk',
+              'MaritalStatus', 'MCEType', 'PatientNorwegian', 'OpAnesthetic', 'OpASA',
+              'OpBMICategory', 'Opcat', 'OpDaySurgery', 'OpEarlierVaginal', 'OpEarlierLaparoscopy',
+              'OpEarlierLaparatomy', 'OpOpcatOutsideDaytime', 'OpType')
+
+KomplLapIntraOp
 
 for (valgtVar in variable) {
 	outfile <- paste(valgtVar, '_ford.png', sep='')
@@ -93,8 +96,11 @@ enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av la
 
 
 #Teste variable
-variable <- c('Alder', 'KomplPostop', 'FollowupSeriousness', 'KomplIntra', 'OpAntibioticProphylaxis',
-      'OpBMI', 'Reop', 'StatusFollowup')
+variable <- c('Alder', 'ComplAfterBleed', 'ComplEquipment', 'ComplInfection', 'ComplOrgan', 'ComplReop',
+              'FollowupSeriousness', 'KomplIntra', 'KomplPostop', 'OpAntibioticProphylaxis',
+              'OpASA', 'OpBMI', 'StatusFollowup')
+
+
 
 for (valgtVar in variable) {
   outfile <- paste(valgtVar, '_Aar.png', sep='')

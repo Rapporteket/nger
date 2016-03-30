@@ -23,7 +23,7 @@
 #'		OpAntibioticProphylaxis: Fått antibiotikaprofylakse
 #'		OpASA: ASA-grad > II
 #'		OpBMI: Pasienter med fedme (BMI>30)
-#'		StatusFollowup: Fått postoperativ pensum
+#'		StatusFollowup: Fått postoperativ oppfølging
 #' @export
 
 FigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
@@ -76,6 +76,7 @@ if (valgtVar=='OpAntibioticProphylaxis') {
 }
 
 if (valgtVar == 'OpASA') {
+	#Andel med ASA-grad>2
 	RegData <- RegData[which(RegData[,valgtVar] %in% 1:5), ]
 	RegData$Variabel[which(RegData[ ,valgtVar] > 2)] <- 1
 	Tittel <- 'ASA-grad > II'

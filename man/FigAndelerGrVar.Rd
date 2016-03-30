@@ -26,7 +26,7 @@ KomplPostop: Postoperative komplikasjoner
 OpAntibioticProphylaxis: Fått antibiotikaprofylakse
 OpASA: ASA-grad > II
 OpBMI: Pasienter med fedme (BMI>30)
-StatusFollowup: Fått postoperativ pensum}
+StatusFollowup: Fått postoperativ oppfølging}
 
 \item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}
 
