@@ -64,33 +64,33 @@ Månedsrapport \\
 
 \section{Sykehusoversikt}
 
-  \begin{frame}[fragile]
+\begin{frame}[fragile]
 
-    \begin{figure}[ht]
-      \centering
-      \includegraphics[width=\textwidth]{ageAbove70hospitals.pdf}
-      \caption{Andel pasienter over 70 år}
-    \end{figure}
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{ageAbove70hospitals.pdf}
+\caption{Andel pasienter over 70 år}
+\end{figure}
 
-  \end{frame}
+\end{frame}
 
 \section{Andeler over tid}
 
-  \begin{frame}[fragile]
+\begin{frame}[fragile]
 
-    \begin{figure}
-      \centering
-      \includegraphics[width=\textwidth]{OpAntibioticProphylaxis.pdf}
-      \caption{Andeler over tid...}
-    \end{figure}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{OpAntibioticProphylaxis.pdf}
+\caption{Andeler over tid...}
+\end{figure}
 
-  \end{frame}
+\end{frame}
 
 \section{Fordeling av et eller annet}
 
-  \begin{frame}[fragile]
-    Og her kan det komme en figur til...
-  \end{frame}
+\begin{frame}[fragile]
+Og her kan det komme en figur til...
+\end{frame}
 
 \end{tiny}
 \end{document}
