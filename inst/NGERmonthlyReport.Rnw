@@ -15,6 +15,7 @@ knitr::opts_chunk$set(warnings=FALSE,echo=FALSE,root.dir = './')
 
 <<'getData', include=TRUE>>=
 datoFra <- "2015-01-01"
+datoTil <- Sys.Date()
 RegData <- NGERHentRegData(datoFra=datoFra, datoTil=datoTil)
 RegData <- NGERPreprosess(RegData=RegData)
 @
