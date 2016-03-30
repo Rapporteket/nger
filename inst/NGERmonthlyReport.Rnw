@@ -46,7 +46,7 @@ FigAndelerGrVar(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra,
 outfile='OpAntibioticProphylaxis.pdf'
 FigAndelTid(RegData=RegData, valgtVar='OpAntibioticProphylaxis',
             datoFra=datoFra, datoTil=datoTil, outfile=outfile, reshID=reshID,
-            enhetsUtvalg=0, hentData=0, preprosess=F)
+            enhetsUtvalg=1, hentData=0, preprosess=F)
 @
 
 \title[NGER\\\Sexpr{shtxt}]{\textit{Norsk gynekologisk endoskopiregister} \\
@@ -68,7 +68,7 @@ MÅNEDSRAPPORT \\
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=\textwidth*0.8]{ageAbove70hospitals.pdf}
+\includegraphics[width=\textwidth*0.5]{ageAbove70hospitals.pdf}
 \caption{Andel pasienter over 70 år}
 \end{figure}
 
@@ -80,7 +80,7 @@ MÅNEDSRAPPORT \\
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth*0.8]{OpAntibioticProphylaxis.pdf}
+\includegraphics[width=\textwidth*0.5]{OpAntibioticProphylaxis.pdf}
 \caption{Andeler over tid...}
 \end{figure}
 
