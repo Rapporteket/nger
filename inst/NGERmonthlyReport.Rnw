@@ -49,8 +49,8 @@ FigAndelTid(RegData=RegData, valgtVar='OpAntibioticProphylaxis',
             enhetsUtvalg=0, hentData=0, preprosess=F)
 @
 
-\title[NGER\\\Sexpr{shtxt}]{Norsk gynekologisk endoskopiregister \\
-Månedsrapport \\
+\title[NGER\\\Sexpr{shtxt}]{\textit{Norsk gynekologisk endoskopiregister} \\
+MÅNEDSRAPPORT \\
 \Sexpr{shtxt}}
 \date{}
 
@@ -62,13 +62,13 @@ Månedsrapport \\
 \maketitle
 
 
-\section{Sykehusoversikt}
+\section{Alle sykehus}
 
 \begin{frame}[fragile]
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=\textwidth]{ageAbove70hospitals.pdf}
+\includegraphics[width=\textwidth*0.8]{ageAbove70hospitals.pdf}
 \caption{Andel pasienter over 70 år}
 \end{figure}
 
@@ -80,7 +80,7 @@ Månedsrapport \\
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{OpAntibioticProphylaxis.pdf}
+\includegraphics[width=\textwidth*0.8]{OpAntibioticProphylaxis.pdf}
 \caption{Andeler over tid...}
 \end{figure}
 
