@@ -27,6 +27,8 @@ shtxt <- as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)])
 <<'makeFigs', include=TRUE>>=
 outfile='ageAbove70hospitals.pdf'
 valgtVar <- "Alder"
+minald <- 0
+maxald <- 130
 MCEType <- 99
 Hastegrad <- ""
 AlvorlighetKompl <- ""
