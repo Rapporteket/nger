@@ -19,7 +19,7 @@ RegData <- NGERHentRegData(datoFra=datoFra, datoTil=datoTil)
 RegData <- NGERPreprosess(RegData=RegData)
 @
 
-<<'defineHospitalName, include=TRUE>>=
+<<'defineHospitalName', include=TRUE>>=
 shtxt <- as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)])
 @
 
