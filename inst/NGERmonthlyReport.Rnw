@@ -1,0 +1,91 @@
+\documentclass[presentation,xcolor=pdftex,dvipsnames,table]{beamer}
+\usetheme{Hannover}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english, norsk]{babel}
+\usepackage{xspace}
+\usepackage{booktabs}
+\usepackage{rotating}
+
+
+<<'initOpts',include=TRUE>>=
+knitr::opts_chunk$set(warnings=FALSE,echo=FALSE,root.dir = './')
+@
+
+<<'getData', include=TRUE>>=
+datoFra <- "2015-01-01"
+datoTil <- Sys.Date()
+RegData <- NGERHentRegData(datoFra=datoFra, datoTil=datoTil)
+RegData <- NGERPreprosess(RegData=RegData)
+@
+
+<<'defineHospitalName', include=TRUE>>=
+shtxt <- as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)])
+@
+
+<<'makeFigs', include=TRUE>>=
+outfile='ageAbove70hospitals.pdf'
+valgtVar <- "Alder"
+minald <- 0
+maxald <- 130
+MCEType <- 99
+Hastegrad <- ""
+AlvorlighetKompl <- ""
+enhetsUtvalg <- 1
+preprosess <- TRUE
+hentData <- 0
+FigAndelerGrVar(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra,
+                datoTil=datoTil, minald=minald, maxald=maxald,
+                outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg,
+                MCEType=MCEType, Hastegrad=Hastegrad,
+                AlvorlighetKompl=AlvorlighetKompl, hentData=0,
+                preprosess=TRUE)
+
+outfile='OpAntibioticProphylaxis.pdf'
+FigAndelTid(RegData=RegData, valgtVar='OpAntibioticProphylaxis',
+            datoFra=datoFra, datoTil=datoTil, outfile=outfile, reshID=reshID,
+            enhetsUtvalg=0, hentData=0, preprosess=F)
+@
+
+\title[NGER\\\Sexpr{shtxt}]{Norsk gynekologisk endoskopiregister \\
+Månedsrapport \\
+\Sexpr{shtxt}}
+\date{}
+
+
+
+\begin{document}
+\begin{tiny}
+
+\maketitle
+
+
+\section{Sykehusoversikt}
+
+  \begin{frame}[fragile]
+
+    \begin{figure}[ht]
+      \centering
+      \includegraphics[width=\textwidth]{ageAbove70hospitals.pdf}
+      \caption{Andel pasienter over 70 år}
+    \end{figure}
+
+  \end{frame}
+
+\section{Andeler over tid}
+
+  \begin{frame}[fragile]
+      \centering
+      \includegraphics[width=\textwidth]{OpAntibioticProphylaxis.pdf}
+      \caption{Andeler over tid...}
+  \end{frame}
+
+\section{Fordeling av et eller annet}
+
+  \begin{frame}[fragile]
+    Og her kan det komme en figur til...
+  \end{frame}
+
+\end{tiny}
+\end{document}
