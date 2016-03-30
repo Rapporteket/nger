@@ -10,7 +10,8 @@
 
 
 <<'initOpts',include=TRUE>>=
-knitr::opts_chunk$set(warnings=FALSE,echo=FALSE,root.dir = './')
+knitr::opts_chunk$set(warnings=FALSE,echo=FALSE)
+knitr::opts_knit$set(root.dir = './')
 @
 
 <<'getData', include=TRUE>>=
