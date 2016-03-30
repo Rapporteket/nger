@@ -49,8 +49,8 @@ FigAndelTid(RegData=RegData, valgtVar='OpAntibioticProphylaxis',
             enhetsUtvalg=0, hentData=0, preprosess=F)
 @
 
-\title[NGER\\\Sexpr{shtxt}]{Norsk gynekologisk endoskopiregister \\
-Månedsrapport \\
+\title[NGER\\\Sexpr{shtxt}]{\textit{Norsk gynekologisk endoskopiregister} \\
+MÅNEDSRAPPORT \\
 \Sexpr{shtxt}}
 \date{}
 
@@ -62,7 +62,7 @@ Månedsrapport \\
 \maketitle
 
 
-\section{Sykehusoversikt}
+\section{Alle sykehus}
 
 \begin{frame}[fragile]
 
