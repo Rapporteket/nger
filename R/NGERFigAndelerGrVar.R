@@ -76,6 +76,7 @@ if (valgtVar=='OpAntibioticProphylaxis') {
 }
 
 if (valgtVar == 'OpASA') {
+	#Andel med ASA-grad>2
 	RegData <- RegData[which(RegData[,valgtVar] %in% 1:5), ]
 	RegData$Variabel[which(RegData[ ,valgtVar] > 2)] <- 1
 	Tittel <- 'ASA-grad > II'
