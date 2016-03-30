@@ -9,23 +9,23 @@
 \usepackage{rotating}
 
 
-<<'initOpts',include=TRUE>>=
+<<'initOpts',include=FALSE>>=
 knitr::opts_chunk$set(warnings=FALSE,echo=FALSE)
 knitr::opts_knit$set(root.dir = './')
 @
 
-<<'getData', include=TRUE>>=
+<<'getData', include=FALSE>>=
 datoFra <- "2015-01-01"
 datoTil <- Sys.Date()
 RegData <- NGERHentRegData(datoFra=datoFra, datoTil=datoTil)
 RegData <- NGERPreprosess(RegData=RegData)
 @
 
-<<'defineHospitalName', include=TRUE>>=
+<<'defineHospitalName', include=FALSE>>=
 shtxt <- as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)])
 @
 
-<<'makeFigs', include=TRUE>>=
+<<'makeFigs', include=FALSE>>=
 outfile='ageAbove70hospitals.pdf'
 valgtVar <- "Alder"
 minald <- 0
