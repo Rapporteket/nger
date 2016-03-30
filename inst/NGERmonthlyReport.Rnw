@@ -69,7 +69,7 @@ MÅNEDSRAPPORT \\
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=\linewidth*0.5]{ageAbove70hospitals.pdf}
+\includegraphics[scale=0.5]{ageAbove70hospitals.pdf}
 \caption{Andel pasienter over 70 år}
 \end{figure}
 
