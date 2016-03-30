@@ -96,8 +96,11 @@ enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av la
 
 
 #Teste variable
-variable <- c('Alder', 'KomplPostop', 'FollowupSeriousness', 'KomplIntra', 'OpAntibioticProphylaxis',
-      'OpBMI', 'Reop', 'StatusFollowup')
+variable <- c('Alder', 'ComplAfterBleed', 'ComplEquipment', 'ComplInfection', 'ComplOrgan', 'ComplReop',
+              'FollowupSeriousness', 'KomplIntra', 'KomplPostop', 'OpAntibioticProphylaxis',
+              'OpASA', 'OpBMI', 'StatusFollowup')
+
+
 
 for (valgtVar in variable) {
   outfile <- paste(valgtVar, '_Aar.png', sep='')

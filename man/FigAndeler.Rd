@@ -20,11 +20,11 @@ FollowupSeriousness: Alvorlighetsgrad, postoperative komplikasjoner
 HypCompleteness: Gjennomføringsgrad av hysteroskopi
        Koder:    1-Fullstendig, 2-Ufullstendig, 3-Mislykket
 HypComplications: Hysteroskopi intrapoerative komplikasjoner
-LapComplications: Laparoskopiske intrapoerative komplikasjoner
 KomplPost: Postoperative komplikasjoner
 KomplPostUtd: Postoperative komplikasjoner for ulike utdanningsgrupper
 KomplReopUtd: Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper
 LapAccessMethod: Teknikk for laparaskopisk tilgang
+LapComplications: Laparoskopiske intrapoerative komplikasjoner
 LapEkstrautstyr: Laparaskopisk ekstrautstyr
 LapIntraAbdominal: Laparoskopiske intraabdominale komplikasjoner
 LapNumHjelpeinnstikk: Antall hjelpeinnstikk

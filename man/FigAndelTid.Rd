@@ -13,11 +13,16 @@ FigAndelTid(RegData = 0, valgtVar, datoFra = "2013-01-01",
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
 
 \item{valgtVar}{Alder: Pasienter over 70 år
+ ComplAfterBleed: Postop. komplikasjon: Blødning
+ ComplEquipment: Postop. komplikasjon: Problemer med ustyr
+ ComplInfection: Postop. komplikasjon: Infeksjon
+ ComplOrgan: Postop. komplikasjon: Organskade
 ComplReop: Andel reoperasjon som følge av komplikasjon
 FollowupSeriousness: Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
 KomplIntra: Komplikasjoner ved operasjon. (kombinerer variablene HypComplications og LapComplications)
 KomplPostop: Andel postoperative komplikasjoner
 OpAntibioticProphylaxis: Andel som får antibiotika
+ OpASA: ASA-grad > II
 OpBMI: Pasienter med fedme (BMI>30)
 StatusFollowup: Pasienter som har fått postoperativ oppfølging}
 
@@ -66,6 +71,9 @@ TRUE: Ja (Standard)}
 \item{hentData}{Gjør spørring mot database
 0: Nei, RegData gis som input til funksjonen (Standard)
 1: Ja}
+}
+\value{
+Figur med ...
 }
 \description{
 Funksjon som genererer en figur med andeler av en variabel for hvert år.
