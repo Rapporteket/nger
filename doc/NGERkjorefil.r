@@ -1,29 +1,25 @@
 
-#--------------------------------------SAMLERAPPORT-----------------------------------
+#--------------------------------------MÅNEDSRAPPORT-----------------------------------
 
 rm(list=ls())
+library(nger)
 library(knitr)
-setwd('C:/Registre/Hjerneslag/trunk/RSamleDok')
+NGERAlleVarNum <- read.table('C:/Registre/NGER/data/AlleVarNum2016-03-31.csv', sep=';', header=T) #,
+NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-03-31.csv', sep=';', header=T)
+NGERData <- merge(NGERForlop, NGERAlleVarNum, by.x = "ForlopsID", by.y = "MCEID", all = FALSE)
+RegData <- NGERData
 
-SlagData <- read.table('C:/Registre/Hjerneslag/data/HjerneSlag2014-10-21.csv', sep=';', header=T) #HjerneSlag2014-04-07
-RegData <- SlagData
-reshID <- 106340 #StOlav: 106340, Harstad sykehus: 700741, Narvik sykehus: 700742, Tromsø sykehus: 601159
+reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 
-libkat <- 'C:/Registre/Rlib/trunk/'		#del av sti til bibliotekkatalog, før /lib/r/<funksjon.R>
-libkatTex <- libkat
-
-source("../RAndeler/SlagFigAndeler.R", encoding="UTF-8")
-
-knit('SlagSamleDok.Rnw')
-
+knit('C:/ResultattjenesteGIT/nger/inst/NGERmonthlyReport.Rnw')
 #--------------------------------------------------------
 #------------------------------ Andeler flere var --------------------------
 #------------------------------ (erstatter Fordelinger) --------------------------
 rm(list=ls())
 library(nger)
 #NGERData <- read.table('C:/Registre/NGER/data/NGER2015-03-03NyeNavn.csv', sep=';', header=T) #,
-NGERAlleVarNum <- read.table('C:/Registre/NGER/data/AlleVarNum2016-02-17.csv', sep=';', header=T) #,
-NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-02-17.csv', sep=';', header=T)
+NGERAlleVarNum <- read.table('C:/Registre/NGER/data/AlleVarNum2016-03-31.csv', sep=';', header=T) #,
+NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-03-31.csv', sep=';', header=T)
 NGERData <- merge(NGERForlop, NGERAlleVarNum, by.x = "ForlopsID", by.y = "MCEID", all = FALSE)
 RegData <- NGERData
 # Inndata til funksjon:
