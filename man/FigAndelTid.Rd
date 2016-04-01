@@ -7,7 +7,7 @@
 FigAndelTid(RegData = 0, valgtVar, datoFra = "2013-01-01",
   datoTil = "3000-12-31", minald = 0, maxald = 130, MCEType = 99,
   Hastegrad = "", AlvorlighetKompl = "", reshID, outfile = "",
-  enhetsUtvalg = 1, preprosess = TRUE, hentData = 0)
+  enhetsUtvalg = 1, preprosess = TRUE, hentData = 0, tidsenhet = "Mnd")
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -71,6 +71,9 @@ TRUE: Ja (Standard)}
 \item{hentData}{Gjør spørring mot database
 0: Nei, RegData gis som input til funksjonen (Standard)
 1: Ja}
+
+\item{tidsenhet}{Oppløsning på tidsaksen. Verdier: 'Aar' (standard), 'Mnd'
+NB: Når tidsenhet='Mnd', settes datoFra lik X måneder før datoTil.}
 }
 \value{
 Figur med ...

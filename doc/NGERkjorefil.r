@@ -77,8 +77,8 @@ for (valgtVar in variable) {
 rm(list=ls())
 library(nger)
 #NGERData <- read.table('C:/Registre/NGER/data/NGER2015-03-03NyeNavn.csv', sep=';', header=T) #,
-NGERAlleVarNum <- read.table('C:/Registre/NGER/data/AlleVarNum2016-02-17.csv', sep=';', header=T) #,
-NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-02-17.csv', sep=';', header=T)
+NGERAlleVarNum <- read.table('C:/Registre/NGER/data/AlleVarNum2016-03-31.csv', sep=';', header=T) #,
+NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-03-31.csv', sep=';', header=T)
 NGERData <- merge(NGERForlop, NGERAlleVarNum, by.x = "ForlopsID", by.y = "MCEID", all = FALSE)
 RegData <- NGERData
 # Inndata til funksjon:
@@ -86,13 +86,23 @@ reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
 datoFra <- '2013-02-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2016-03-01'
+datoTil <- Sys.Date() #'2016-03-01'
 preprosess <- TRUE
-if (preprosess){RegData <- NGERPreprosess(RegData=RegData, reshID=reshID)}
-
-MCEType <- 1
-enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
+hentData <- 0
+MCEType <- 99
+tidsenhet <- 'Aar'
+Hastegrad <- ''
+AlvorlighetKompl <- ''
+enhetsUtvalg <- 1 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
+valgtVar <- 'Alder' #
+outfile <- paste(valgtVar, '_', tidsenhet, '.png', sep='')
+
+FigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
+            reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,
+            minald=minald, maxald=maxald, MCEType=MCEType, Hastegrad=Hastegrad,
+            AlvorlighetKompl=AlvorlighetKompl, tidsenhet=tidsenhet, preprosess=TRUE)
+
 
 
 #Teste variable
@@ -100,13 +110,12 @@ variable <- c('Alder', 'ComplAfterBleed', 'ComplEquipment', 'ComplInfection', 'C
               'FollowupSeriousness', 'KomplIntra', 'KomplPostop', 'OpAntibioticProphylaxis',
               'OpASA', 'OpBMI', 'StatusFollowup')
 
-
-
 for (valgtVar in variable) {
-  outfile <- paste(valgtVar, '_Aar.png', sep='')
+  outfile <- paste0(valgtVar, '_', tidsenhet, '.png')
   FigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
-             reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,
-             minald=minald, maxald=maxald)
+              reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,
+              minald=minald, maxald=maxald, MCEType=MCEType, Hastegrad=Hastegrad,
+              AlvorlighetKompl=AlvorlighetKompl, tidsenhet=tidsenhet, preprosess=TRUE)
 }
 
 

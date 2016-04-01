@@ -5,6 +5,8 @@
 #' Detaljer:
 #'
 #' @inheritParams FigAndeler
+#' @param tidsenhet Oppløsning på tidsaksen. Verdier: 'Aar' (standard), 'Mnd'
+#'    NB: Når tidsenhet='Mnd', settes datoFra lik X måneder før datoTil.
 #' @param valgtVar
 #'	Alder: Pasienter over 70 år
 #'  ComplAfterBleed: Postop. komplikasjon: Blødning
@@ -26,7 +28,7 @@
 
 FigAndelTid <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
                         minald=0, maxald=130, MCEType=99, Hastegrad='', AlvorlighetKompl='', reshID, outfile='',
-                        enhetsUtvalg=1, preprosess=TRUE, hentData=0) {
+                        enhetsUtvalg=1, preprosess=TRUE, hentData=0, tidsenhet='Mnd') {
 
 
   ## Hvis spørring skjer fra R på server. ######################
@@ -148,8 +150,6 @@ if (valgtVar=='KomplIntra') {
 	Tittel <- 'Komplikasjoner, intraoperativt '
 }
 
-
-#########
 if (valgtVar=='ComplReop') {
   #Andel reoperasjon som følge av komplikasjon
 	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$StatusFollowup == 1)), ]
@@ -179,14 +179,33 @@ if (valgtVar == 'Education') {
 	Tittel <- 'Andel uten høyere utdanning'
 }
 
+#Endrer startdato til å være 12 hele måneder før sluttdato
+if (tidsenhet == 'Mnd') {datoFra <- paste0(as.numeric(strftime(datoTil, format="%Y"))-1,'-',
+                                     strftime(datoTil, format="%m"),'-','01')}
+
 NGERUtvalg <- NGERLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
                             MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
 RegData <- NGERUtvalg$RegData
 utvalgTxt <- NGERUtvalg$utvalgTxt
 
-RegData$Aar <- strftime(RegData$InnDato, format="%Y") #as.numeric(
-#RegData$Aar <- 1900 + strptime(RegData$InnDato, format="%Y")$year
+RegData$TidsEnhet <- as.character(switch(tidsenhet,
+                            Aar = strftime(RegData$InnDato, format="%Y"),
+                            Mnd = strftime(RegData$InnDato, format="%y.%m")))
 
+if (tidsenhet == 'Mnd') {
+  #Må ta høyde for at det kan være en måned uten registreringer
+  startAar <- as.numeric(strftime(sort(RegData$InnDato)[1], format = "%y"))
+  startMnd <- as.numeric(strftime(sort(RegData$InnDato)[1], format = "%m"))
+  mnd <- c('01', '02', '03', '04', '05', '06', '07', '08', '09', '10','11', '12')
+  aar <- c(rep(startAar, 13-startMnd),rep(startAar+1,startMnd))
+  Tidtxt <- paste(aar, mnd[c(startMnd:12,1:startMnd)], sep='.')
+}
+if (tidsenhet == 'Aar') {
+  #RegData$TidsEnhet <- strftime(RegData$InnDato, format="%Y")
+  #gml: RegData$TidsEnhet <- 1900 + strptime(RegData$InnDato, format="%Y")$year
+  Tidtxt <- as.character(min(as.numeric(RegData$TidsEnhet)):max(as.numeric(RegData$TidsEnhet)))
+}
+RegData$TidsEnhet <- factor(RegData$TidsEnhet, levels=Tidtxt)
 
 #Generere hovedgruppe og sammenlikningsgruppe
 #Trenger indeksene før genererer tall for figurer med flere variable med ulike utvalg
@@ -215,15 +234,13 @@ NSmlRes <- length(indRest)
 
 
 #-------------------------Beregning av andel-----------------------------------------
-Aartxt <- min(RegData$Aar):max(RegData$Aar)
-RegData$Aar <- factor(RegData$Aar, levels=Aartxt)
-
-NAarRest <- tapply(RegData$Variabel[indRest], RegData$Aar[indRest], length)
-NAarHendRest <- tapply(RegData$Variabel[indRest], RegData$Aar[indRest],sum, na.rm=T)
-AndelRest <- NAarHendRest/NAarRest*100
-NAarHoved <- tapply(RegData[indHoved, 'Variabel'], RegData[indHoved ,'Aar'], length)
-NAarHendHoved <- tapply(RegData[indHoved, 'Variabel'], RegData[indHoved ,'Aar'],sum, na.rm=T)
-AndelHoved <- NAarHendHoved/NAarHoved*100
+#RegData$TidsEnhet <- factor(RegData$TidsEnhet, levels=as.character(Tidtxt))
+NTidRest <- tapply(RegData$Variabel[indRest], RegData$TidsEnhet[indRest], length)
+NTidHendRest <- tapply(RegData$Variabel[indRest], RegData$TidsEnhet[indRest],sum, na.rm=T)
+AndelRest <- NTidHendRest/NTidRest*100
+NTidHoved <- tapply(RegData[indHoved, 'Variabel'], RegData[indHoved ,'TidsEnhet'], length)
+NTidHendHoved <- tapply(RegData[indHoved, 'Variabel'], RegData[indHoved ,'TidsEnhet'],sum, na.rm=T)
+AndelHoved <- NTidHendHoved/NTidHoved*100
 Andeler <- rbind(AndelRest, AndelHoved)
 
 
@@ -255,43 +272,24 @@ NutvTxt <- length(utvalgTxt)
 hmarg <- 0.04+0.01*NutvTxt
 par('fig' = c(0,1,0,1-hmarg))
 cexleg <- 1	#Størrelse på legendtekst
-
-
+cexskala <- switch(tidsenhet, Aar=1, Mnd=0.9)
+xskala <- 1:length(Tidtxt)
+xaksetxt <- switch(tidsenhet, Aar='Operasjonsår', Mnd='Operasjonsår og -måned')
 ymax <- min(119, 1.25*max(Andeler,na.rm=T))
-plot(Aartxt, AndelHoved,  font.main=1,  type='o', pch="'", col='white', #type='o',
-		xlim= c(Aartxt[1], max(Aartxt)), xaxt='n', frame.plot = FALSE,  #xaxp=c(min(Aartxt), max(Aartxt),length(Aartxt)-1)
-		cex=2, xlab='Operasjonsår', ylab="Andel (%)", ylim=c(0,ymax), yaxs = 'i') 	#Operasjonsår,
 
-#plot(Aartxt, Midt, xlim= c(xmin, xmax), ylim=c(ymin, ymax), type='n', frame.plot=FALSE, #ylim=c(ymin-0.05*ymax, ymax),
-#		#cex=0.8, cex.lab=0.9, cex.axis=0.9,
-#		ylab=c(ytxt,'med 95% konfidensintervall'),
-#		xlab='Operasjonsår', xaxt='n',
-#		sub='(Tall i boksene angir antall operasjoner)', cex.sub=cexgr)	#, axes=F)
-axis(side=1, at = Aartxt)
+plot(AndelHoved,  font.main=1,  type='o', pch="'", col=fargeHoved, xaxt='n',
+		 frame.plot = FALSE,  xaxp=c(1,length(Tidtxt),length(Tidtxt)-1),xlim = c(1,length(Tidtxt)),
+		cex=2, lwd=3, xlab=xaksetxt, ylab="Andel (%)", ylim=c(0,ymax), yaxs = 'i')
 
+axis(side=1, at = xskala, labels = Tidtxt, cex.axis=0.9)
 title(Tittel, line=1, font.main=1)
-
-#Legge på linjer i plottet. Denne kan nok gjøres mer elegant...
-if ((ymax > 10) & (ymax < 40)) {lines(range(Aartxt),rep(10,2), col=farger[4])}
-if (ymax > 20) {lines(range(Aartxt),rep(20,2), col=farger[4])}
-if ((ymax > 30) & (ymax < 40)) {lines(range(Aartxt),rep(30,2), col=farger[4])}
-if (ymax > 40) {lines(range(Aartxt),rep(40,2), col=farger[4])}
-if (ymax > 60) {lines(range(Aartxt),rep(60,2), col=farger[4])}
-if (ymax > 80) {lines(range(Aartxt),rep(80,2), col=farger[4])}
-if (ymax > 100) {lines(range(Aartxt),rep(100,2), col=farger[4])}
-#		axis(2, at=c(0,20,40,60,80,100), pos=0),
-
-
-lines(Aartxt, AndelHoved, col=fargeHoved, lwd=3)
-points(Aartxt, AndelHoved, pch="'", cex=2, col=fargeHoved)
-text(Aartxt, AndelHoved, pos=1, NAarHendHoved, cex=0.9, col=fargeHoved)
-
-lines(Aartxt, AndelRest, col=fargeRest, lwd=3)
-points(Aartxt, AndelRest, pch="'", cex=2, col=fargeRest)	#}
+text(xskala, AndelHoved, pos=3, NTidHendHoved, cex=0.9, col=fargeHoved)#pos=1,
 
 Ttxt <- paste('(Tall ved punktene angir antall ', VarTxt, ')', sep='')
 if (medSml == 1) {
-	text(Aartxt, AndelRest, pos=3, NAarHendRest, cex=0.9, col=fargeRest)
+  lines(xskala, AndelRest, col=fargeRest, lwd=3)
+  points(xskala, AndelRest, pch="'", cex=2, col=fargeRest)	#}
+  text(xskala, AndelRest, pos=3, NTidHendRest, cex=0.9, col=fargeRest)
 	legend('topleft', border=NA, c(paste(shtxt, ' (N=', NHovedRes, ')', sep=''),
 		paste(smltxt, ' (N=', NSmlRes, ')', sep=''), Ttxt), bty='n', ncol=1, cex=cexleg,
 		col=c(fargeHoved, fargeRest, NA), lwd=3)
@@ -299,6 +297,16 @@ if (medSml == 1) {
 		legend('top', c(paste(shtxt, ' (N=', NHovedRes, ')', sep=''), Ttxt),
 		col=c(fargeHoved, NA), lwd=3, bty='n')
 	}
+
+#Legge på linjer i plottet. Denne kan nok gjøres mer elegant...
+if ((ymax > 10) & (ymax < 40)) {lines(range(xskala),rep(10,2), col=farger[4])}
+if (ymax > 20) {lines(range(xskala),rep(20,2), col=farger[4])}
+if ((ymax > 30) & (ymax < 40)) {lines(range(xskala),rep(30,2), col=farger[4])}
+if (ymax > 40) {lines(range(xskala),rep(40,2), col=farger[4])}
+if (ymax > 60) {lines(range(xskala),rep(60,2), col=farger[4])}
+if (ymax > 80) {lines(range(xskala),rep(80,2), col=farger[4])}
+if (ymax > 100) {lines(range(xskala),rep(100,2), col=farger[4])}
+#		axis(2, at=c(0,20,40,60,80,100), pos=0),
 
 #Tekst som angir hvilket utvalg som er gjort
 mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=fargeRest, line=c(3+0.8*((NutvTxt-1):0)))
