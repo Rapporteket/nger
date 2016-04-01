@@ -28,7 +28,7 @@
 
 FigAndelTid <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
                         minald=0, maxald=130, MCEType=99, Hastegrad='', AlvorlighetKompl='', reshID, outfile='',
-                        enhetsUtvalg=1, preprosess=TRUE, hentData=0, tidsenhet='Mnd') {
+                        enhetsUtvalg=1, preprosess=TRUE, hentData=0, tidsenhet='Aar') {
 
 
   ## Hvis spørring skjer fra R på server. ######################
