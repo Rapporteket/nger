@@ -18,7 +18,7 @@ knitr::opts_knit$set(root.dir = './')
 <<'getData', include=FALSE>>=
 datoFra <- "2015-01-01"
 datoTil <- Sys.Date()
-#RegData <- NGERHentRegData(datoFra=datoFra, datoTil=datoTil)
+RegData <- NGERHentRegData(datoFra=datoFra, datoTil=datoTil)
 RegData <- NGERPreprosess(RegData=RegData)
 @
 
