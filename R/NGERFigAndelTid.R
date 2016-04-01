@@ -188,6 +188,7 @@ NGERUtvalg <- NGERLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, m
 RegData <- NGERUtvalg$RegData
 utvalgTxt <- NGERUtvalg$utvalgTxt
 
+if (dim(RegData)[1] > 0) {datoTil <- max(RegData$InnDato, na.rm=T)}
 RegData$TidsEnhet <- as.character(switch(tidsenhet,
                             Aar = strftime(RegData$InnDato, format="%Y"),
                             Mnd = strftime(RegData$InnDato, format="%y.%m")))

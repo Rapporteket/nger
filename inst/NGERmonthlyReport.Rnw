@@ -18,7 +18,7 @@ knitr::opts_knit$set(root.dir = './')
 <<'getData', include=FALSE>>=
 datoFra <- "2015-01-01"
 datoTil <- Sys.Date()
-RegData <- NGERHentRegData(datoFra=datoFra, datoTil=datoTil)
+#RegData <- NGERHentRegData(datoFra=datoFra, datoTil=datoTil)
 RegData <- NGERPreprosess(RegData=RegData)
 @
 
@@ -27,27 +27,34 @@ shtxt <- as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)])
 @
 
 <<'makeFigs', include=FALSE>>=
-outfile='ageAbove70hospitals.pdf'
-valgtVar <- "Alder"
 minald <- 0
 maxald <- 130
 MCEType <- 99
 Hastegrad <- ""
 AlvorlighetKompl <- ""
 enhetsUtvalg <- 1
-preprosess <- TRUE
+tidsenhet <- 'Mnd'
+preprosess <- FALSE
 hentData <- 0
-FigAndelerGrVar(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra,
-                datoTil=datoTil, minald=minald, maxald=maxald,
-                outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg,
-                MCEType=MCEType, Hastegrad=Hastegrad,
-                AlvorlighetKompl=AlvorlighetKompl, hentData=0,
-                preprosess=TRUE)
 
-outfile='OpAntibioticProphylaxis.pdf'
-FigAndelTid(RegData=RegData, valgtVar='OpAntibioticProphylaxis',
-            datoFra=datoFra, datoTil=datoTil, outfile=outfile, reshID=reshID,
-            enhetsUtvalg=1, hentData=0, preprosess=F)
+datoFra <- "2016-01-01"
+variable <- c('KomplIntra', 'KomplPostop', 'StatusFollowup')
+for (valgtVar in variable) {
+	outfile <- paste0(valgtVar, '_Alle', tidsenhet, '.pdf')
+	FigAndelerGrVar(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra,
+                datoTil=datoTil, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg,
+                hentData=0, preprosess=preprosess)
+}
+
+variable <- c('ComplAfterBleed', 'ComplEquipment', 'ComplInfection', 'ComplOrgan', 'ComplReop',
+              'FollowupSeriousness', 'KomplIntra', 'KomplPostop', 'OpAntibioticProphylaxis',
+              'OpASA', 'OpBMI', 'StatusFollowup')
+for (valgtVar in variable) {
+	outfile <- paste0(valgtVar, '_', tidsenhet, '.pdf')
+	FigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
+              reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,
+              tidsenhet=tidsenhet, preprosess=preprosess)
+			  }
 @
 
 \title[NGER\\\Sexpr{shtxt}]{\textit{Norsk gynekologisk endoskopiregister} \\
@@ -62,36 +69,122 @@ MÅNEDSRAPPORT \\
 
 \maketitle
 
-
-\section{Alle sykehus}
+\section{Prosessvariable}
 
 \begin{frame}[fragile]
-
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.35]{ageAbove70hospitals.pdf}
-\caption{Andel pasienter over 70 år}
+\includegraphics[scale=0.35]{OpAntibioticProphylaxis_Mnd.pdf}
+\caption{Andel pasienter som har fått antibiotikaprofylakse}
 \end{figure}
-
 \end{frame}
 
-\section{Andeler over tid}
-
 \begin{frame}[fragile]
-
-\begin{figure}
+\begin{figure}[ht]
 \centering
-\includegraphics[scale=0.35]{OpAntibioticProphylaxis.pdf}
-\caption{Andeler over tid...}
+\includegraphics[scale=0.35]{OpBMI_Mnd.pdf}
+\caption{Pasienter med fedme (BMI>30)}
 \end{figure}
-
 \end{frame}
 
-\section{Fordeling av et eller annet}
+
+\section{Komplikasjoner under operasjon}
 
 \begin{frame}[fragile]
-Og her kan det komme en figur til...
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{KomplIntra_Mnd.pdf}
+\caption{Komplikasjoner under operasjon (intraoperativt)}
+\end{figure}
 \end{frame}
+
+
+\section{Postoperative komplikasjoner}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{KomplPostop_Mnd.pdf}
+\caption{Postoperative komplikasjoner}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{ComplAfterBleed_Mnd.pdf}
+\caption{Postoperativ komplikasjon: Blødning}
+\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{ComplEquipment_Mnd.pdf}
+\caption{Postoperativ komplikasjon: Problemer med ustyr}
+\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{ComplInfection_Mnd.pdf}
+\caption{Postoperativ komplikasjon: Infeksjon}
+\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{ComplOrgan_Mnd.pdf}
+\caption{Postoperativ komplikasjon: Organskade}
+\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{ComplReop_Mnd.pdf}
+\caption{Postoperativ komplikasjon: Reoperasjon}
+\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{FollowupSeriousness_Mnd.pdf}
+\caption{Alvorlige komplikasjoner (grad 3 og 4)}
+\end{figure}
+\end{frame}
+
+
+
+\section{Alle sykehus}
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{KomplIntra_AlleMnd.pdf}
+\caption{Intraoperative komplikasjoner}
+\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{KomplPostop_AlleMnd.pdf}
+\caption{Postoperative komplikasjoner}
+\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{StatusFollowup_AlleMnd.pdf}
+\caption{Oppfølging utført}
+\end{figure}
+\end{frame}
+
 
 \end{tiny}
 \end{document}
