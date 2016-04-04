@@ -447,7 +447,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
                   'LapThunderbeat',
                   'LapUnipolarDiatermi')
 				grtxt <- c('Adheranseprofylakse', 'Bipolar Diatermi', 'Clips', 'Harmonic skalpell',
-				           'Morcellator', 'Nett', 'Preparatpose', 'Uterusmanipulator' 'Robotkirurgi', 'Singel port',
+				           'Morcellator', 'Nett', 'Preparatpose', 'Uterusmanipulator', 'Robotkirurgi', 'Singel port',
 				           'Stapler/endoGIA', 'Sutur', 'Bipolar og ultralyd', 'Unipolar Diatermi')
 				Tittel <- 'Laparaskopisk ekstrautstyr'
 				indMed <- which(RegData$MCEType %in% c(1,3))
