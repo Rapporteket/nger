@@ -246,8 +246,9 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
        gr <- c(-1, 0, 18.5, 25, 30, 35, 1000)
        ind <- which(RegData$OpBMI>0)
        #	RegData$VariabelGr[ind] <- cut(RegData[ind ,valgtVar], breaks=gr, include.lowest=TRUE, right=FALSE)
-       RegData$VariabelGr <- -1
-       RegData$VariabelGr[ind] <- cut(RegData$OpBMI[ind], breaks=gr, include.lowest=TRUE, right=FALSE)
+       RegData$Variabel <- -1
+       RegData$Variabel[ind] <- RegData$OpBMI[ind]
+       RegData$VariabelGr <- cut(RegData$Variabel, breaks=gr, include.lowest=TRUE, right=FALSE)
        grtxt <- c('Ukjent', 'Undervekt','Normalvekt', 'Overvekt', 'Fedme kl.I', 'Fedme kl.II&III')
 #       koder <- as.character(1:5)
        retn <- 'H'
