@@ -17,7 +17,7 @@
 #'     KomplReopUtd: Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper
 #'     LapAccessMethod: Teknikk for laparaskopisk tilgang
 #'     LapComplications: Laparoskopiske intrapoerative komplikasjoner
-#'     LapEkstrautstyr: Laparaskopisk ekstrautstyr
+#'     LapEkstrautstyr: Laparaskopisk ekstrautstyr - Kommer, NY variabel: koagulasjon og klipping
 #'     LapIntraAbdominal: Laparoskopiske intraabdominale komplikasjoner
 #'     LapNumHjelpeinnstikk: Antall hjelpeinnstikk
 #'     MaritalStatus: Sivilstand
@@ -439,6 +439,7 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
                   'LapMorcellator',
                   'LapNett',
                   'LapPreparatopose',
+                  'LapProtoadapter',
                   'LapRobotKirurgi',
                   'LapSingelPort',
                   'LapStaplerEndogia',
@@ -446,8 +447,8 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
                   'LapThunderbeat',
                   'LapUnipolarDiatermi')
 				grtxt <- c('Adheranseprofylakse', 'Bipolar Diatermi', 'Clips', 'Harmonic skalpell',
-				           'Morcellator', 'Nett', 'Preparatpose', 'Robotkirurgi', 'Singel port',
-				           'Stapler/endoGIA', 'Sutur', 'Thunderbeat', 'Unipolar Diatermi')
+				           'Morcellator', 'Nett', 'Preparatpose', 'Uterusmanipulator' 'Robotkirurgi', 'Singel port',
+				           'Stapler/endoGIA', 'Sutur', 'Bipolar og ultralyd', 'Unipolar Diatermi')
 				Tittel <- 'Laparaskopisk ekstrautstyr'
 				indMed <- which(RegData$MCEType %in% c(1,3))
  				AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
