@@ -25,7 +25,7 @@ KomplPostUtd: Postoperative komplikasjoner for ulike utdanningsgrupper
 KomplReopUtd: Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper
 LapAccessMethod: Teknikk for laparaskopisk tilgang
 LapComplications: Laparoskopiske intrapoerative komplikasjoner
-LapEkstrautstyr: Laparaskopisk ekstrautstyr
+LapEkstrautstyr: Laparaskopisk ekstrautstyr - Kommer, NY variabel: koagulasjon og klipping
 LapIntraAbdominal: Laparoskopiske intraabdominale komplikasjoner
 LapNumHjelpeinnstikk: Antall hjelpeinnstikk
 MaritalStatus: Sivilstand
