@@ -176,19 +176,6 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
 	   retn <- 'H'
      }
 
-     if (valgtVar == 'OpBMICategory') {
-          # 1:Alvorlig undervekt,2:moderat undervekt, 3:mild undervekt, 4:normal vekt, 5:overvekt,
-          # 6:fedme kl.I, 7:fedme kl.II, 8:fedme kl.III
-          Tittel <- 'BMI-kategorier' #, slå sammen noen???' #JA, undervekt, fedme 2 og 3.
-          #grtxtAlle <- c('Undervekt','Undervekt','Undervekt','Normal vekt', 'Overvekt', 'Fedme kl.I',
-			#	'Fedme kl.II&III', 'Fedme kl.II&III' 'Ukjent')
-          #mapvalues(RegData$OpBMICategory, from = 1:8, to = grtxtAlle)
-		  RegData$OpBMICategory <- plyr::revalue(as.character(RegData$OpBMICategory), c('1'='1', '2'='1', '3'='1', '4'='2', '5'='3', '6'='4', '7'='5', '8'='5'))
-		  grtxt <- c('Undervekt','Normalvekt', 'Overvekt', 'Fedme kl.I', 'Fedme kl.II&III', 'Ukjent')
-          koder <- as.character(1:5)
-          retn <- 'H'
-     }
-
      if (valgtVar == 'Opcat') {
           # 1:Elektiv, 2:Akutt, 3:Øyeblikkelig hjelp
           Tittel <- 'Operasjonskategori'
@@ -246,6 +233,24 @@ FigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050
           grtxt <- c('<15', levels(RegData$VariabelGr)[2:(length(gr)-2)], '80+')
           subtxt <- 'Aldersgrupper'
           retn <- 'H'
+     }
+     if (valgtVar == 'OpBMICategory') {
+       # 1:Alvorlig undervekt,2:moderat undervekt, 3:mild undervekt, 4:normal vekt, 5:overvekt,
+       # 6:fedme kl.I, 7:fedme kl.II, 8:fedme kl.III
+       Tittel <- 'BMI-kategorier' #, Slå sammen undervekt, fedme 2 og 3.
+       #grtxtAlle <- c('Undervekt','Undervekt','Undervekt','Normal vekt', 'Overvekt', 'Fedme kl.I',
+       #	'Fedme kl.II&III', 'Fedme kl.II&III' 'Ukjent')
+       #mapvalues(RegData$OpBMICategory, from = 1:8, to = grtxtAlle)
+#       RegData$OpBMICategory <- plyr::revalue(as.character(RegData$OpBMICategory), c('1'='1', '2'='1', '3'='1', '4'='2', '5'='3', '6'='4', '7'='5', '8'='5'))
+
+       gr <- c(-1, 0, 18.5, 25, 30, 35, 1000)
+       ind <- which(RegData$OpBMI>0)
+       #	RegData$VariabelGr[ind] <- cut(RegData[ind ,valgtVar], breaks=gr, include.lowest=TRUE, right=FALSE)
+       RegData$VariabelGr <- -1
+       RegData$VariabelGr[ind] <- cut(RegData$OpBMI[ind], breaks=gr, include.lowest=TRUE, right=FALSE)
+       grtxt <- c('Ukjent', 'Undervekt','Normalvekt', 'Overvekt', 'Fedme kl.I', 'Fedme kl.II&III')
+#       koder <- as.character(1:5)
+       retn <- 'H'
      }
      if (valgtVar == 'LapNumHjelpeinnstikk') {
        # Velge antall fra 0 til 6

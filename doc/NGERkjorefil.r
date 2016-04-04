@@ -34,7 +34,7 @@ Hastegrad <- ''
 AlvorlighetKompl <- ''
 enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
-valgtVar <- 'LapComplications'	#Må velge... Alder, Education, FollowupSeriousness, HypCompleteness, KomplPost, KomplPostUtd, KomplReopUtd,
+valgtVar <- 'OpBMICategory'	#Må velge... Alder, Education, FollowupSeriousness, HypCompleteness, KomplPost, KomplPostUtd, KomplReopUtd,
         #KomplHyp, LapIntraAbdominal, KomplLap, LapComplications
         #LapAccessMethod, LapEkstrautstyr,LapNumHjelpeinnstikk
         #MaritalStatus, MCETypeOpAnesthetic, PatientNorwegian, OpAnesthetic
