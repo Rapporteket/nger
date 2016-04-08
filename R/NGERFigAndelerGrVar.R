@@ -204,8 +204,8 @@ utvalgTxt <- NGERUtvalg$utvalgTxt
 
 	AndelerGrSort <- AndelerGr[sortInd]
 	AndelHele <- round(100*sum(RegData$Variabel)/N, 2)
-#	GrNavnSort <- paste(names(Ngr)[sortInd], ', ',Ngrtxt[sortInd], sep='')
-	GrNavnSort <- names(Ngr)[sortInd]
+	GrNavnSort <- paste0(names(Ngr)[sortInd], ' (N=',Ngrtxt[sortInd], ')')
+#	GrNavnSort <- names(Ngr)[sortInd]
 
 	andeltxt <- paste(sprintf('%.1f',AndelerGrSort), '%',sep='') 	#round(as.numeric(AndelerGrSort),1)
 	if (length(indGrUt)>0) {andeltxt[(AntGr+1):(AntGr+length(indGrUt))] <- ''}
@@ -248,7 +248,7 @@ legend('topright', xjust=1, cex=1, lwd=2, col=farger[2],
 	legend=paste(smltxt, ' (', sprintf('%.1f',AndelHele), '%), ', 'N=', N,sep='' ),
 	bty='o', bg='white', box.col='white')
 mtext(at=pos+max(pos)*0.0045, GrNavnSort, side=2, las=1, cex=cexShNavn, adj=1, line=0.25)	#Legge på navn som eget steg
-text(x=0.005*xmax, y=pos, Ngrtxt[sortInd], las=1, cex=cexShNavn, adj=0, col=farger[4], lwd=3)	#c(Nshtxt[sortInd],''),
+#text(x=0.005*xmax, y=pos, Ngrtxt[sortInd], las=1, cex=cexShNavn, adj=0, col=farger[4], lwd=3)	#Legge til N
 title(Tittel, line=1, font.main=1, cex.main=1.2)
 
 text(x=AndelerGrSort+xmax*0.01, y=pos+0.1, andeltxt,
