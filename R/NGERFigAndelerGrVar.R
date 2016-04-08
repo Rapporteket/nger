@@ -204,7 +204,7 @@ utvalgTxt <- NGERUtvalg$utvalgTxt
 
 	AndelerGrSort <- AndelerGr[sortInd]
 	AndelHele <- round(100*sum(RegData$Variabel)/N, 2)
-	GrNavnSort <- paste0(names(Ngr)[sortInd], ' (N=',Ngrtxt[sortInd], ')')
+	GrNavnSort <- paste0(names(Ngr)[sortInd], ' (',Ngrtxt[sortInd], ')')
 #	GrNavnSort <- names(Ngr)[sortInd]
 
 	andeltxt <- paste(sprintf('%.1f',AndelerGrSort), '%',sep='') 	#round(as.numeric(AndelerGrSort),1)
