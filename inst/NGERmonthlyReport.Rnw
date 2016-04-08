@@ -16,8 +16,10 @@ knitr::opts_knit$set(root.dir = './')
 @
 
 <<'getData', include=FALSE>>=
-datoFra <- "2015-01-01"
 datoTil <- Sys.Date()
+dato <- as.POSIXlt(datoTil)
+datoFra <- as.Date(paste0(1900+dato$year-1,'-', '0', dato$mon, '-', '01'))
+
 RegData <- NGERHentRegData(datoFra=datoFra, datoTil=datoTil)
 RegData <- NGERPreprosess(RegData=RegData)
 @
@@ -38,6 +40,7 @@ preprosess <- FALSE
 hentData <- 0
 
 datoFra <- "2016-01-01"
+#I månedsfigurene er datoFra automatisk satt til 13 mnd før dagens dato.
 variable <- c('KomplIntra', 'KomplPostop', 'StatusFollowup')
 for (valgtVar in variable) {
 	outfile <- paste0(valgtVar, '_Alle', tidsenhet, '.pdf')
@@ -69,15 +72,7 @@ MÅNEDSRAPPORT \\
 
 \maketitle
 
-\section{Prosessvariable}
-
-\begin{frame}[fragile]
-\begin{figure}[ht]
-\centering
-\includegraphics[scale=0.35]{OpAntibioticProphylaxis_Mnd.pdf}
-\caption{Andel pasienter som har fått antibiotikaprofylakse}
-\end{figure}
-\end{frame}
+\section{Pasientkarakteristika}
 
 \begin{frame}[fragile]
 \begin{figure}[ht]
