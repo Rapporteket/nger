@@ -31,10 +31,11 @@ datoTil <- '2016-12-31'
 preprosess <- TRUE
 MCEType <- 99
 Hastegrad <- ''
-AlvorlighetKompl <- ''
+AlvorlighetKompl <- c('2','3')
+hentData <- 0
 enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
-valgtVar <- 'OpBMICategory'	#Må velge... Alder, Education, FollowupSeriousness, HypCompleteness, KomplPost, KomplPostUtd, KomplReopUtd,
+valgtVar <- 'KomplPostUtd'	#Må velge... Alder, Education, FollowupSeriousness, HypCompleteness, KomplPost, KomplPostUtd, KomplReopUtd,
         #KomplHyp, LapIntraAbdominal, KomplLap, LapComplications
         #LapAccessMethod, LapEkstrautstyr,LapNumHjelpeinnstikk
         #MaritalStatus, MCETypeOpAnesthetic, PatientNorwegian, OpAnesthetic
