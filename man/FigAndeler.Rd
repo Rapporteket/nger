@@ -2,34 +2,63 @@
 % Please edit documentation in R/NGERFigAndeler.R
 \name{FigAndeler}
 \alias{FigAndeler}
-\title{Lag søylediagram eller stabelplott som viser andeler av ulike variabler}
+\title{Søylediagram som viser andeler av ulike variabler}
 \usage{
-FigAndeler(RegData, valgtVar, datoFra = "2000-04-01",
+FigAndeler(RegData = 0, valgtVar, datoFra = "2013-01-01",
   datoTil = "2050-12-31", minald = 0, maxald = 130, outfile = "",
-  reshID, enhetsUtvalg = 1, MCEType = 99, hentData = F, preprosess = T)
+  reshID, enhetsUtvalg = 1, MCEType = 99, Hastegrad = "",
+  AlvorlighetKompl = "", hentData = 0, preprosess = TRUE)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
 
-\item{valgtVar}{Hvilken variabel skal plottes}
+\item{valgtVar}{Hvilken variabel som skal visualiseres
+Alder: Pasientens alder, 5-årige aldersgrupper
+Education: Pasientens utdanning (1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent)
+FollowupSeriousness: Alvorlighetsgrad, postoperative komplikasjoner
+    Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
+HypCompleteness: Gjennomføringsgrad av hysteroskopi
+       Koder:    1-Fullstendig, 2-Ufullstendig, 3-Mislykket
+HypComplications: Hysteroskopi intrapoerative komplikasjoner
+KomplPost: Postoperative komplikasjoner
+KomplPostUtd: Postoperative komplikasjoner for ulike utdanningsgrupper
+KomplReopUtd: Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper
+LapAccessMethod: Teknikk for laparaskopisk tilgang
+LapComplications: Laparoskopiske intrapoerative komplikasjoner
+LapEkstrautstyr: Laparaskopisk ekstrautstyr - Kommer, NY variabel: koagulasjon og klipping
+LapIntraAbdominal: Laparoskopiske intraabdominale komplikasjoner
+LapNumHjelpeinnstikk: Antall hjelpeinnstikk
+MaritalStatus: Sivilstand
+MCEType: Operasjonsmetode
+PatientNorwegian: Pasientens norskkunnskaper
+OpAnesthetic: Anestesitype
+OpASA: ASA-grad
+OpBMICategory: BMI-kategori
+Opcat: Hastegrad av operasjon
+OpDaySurgery: Dagkirurgiske inngrep
+OpEarlierVaginal: Tidligere vaginale inngrep
+OpEarlierLaparoscopy: Tidligere laparoskopi
+OpEarlierLaparatomy: Tidligere laparatomi
+OpOpcatOutsideDaytime: Operasjon i legens vakttid
+OpType: Primæroperasjon eller reoperasjon}
 
 \item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}
 
 \item{datoTil}{Seneste dato i utvalget (vises alltid i figuren).}
 
-\item{minald}{Alder, fra og med (Default: 0)}
+\item{minald}{Alder, fra og med (Standardverdi: 0)}
 
-\item{maxald}{Alder, til og med (Default: 130)}
+\item{maxald}{Alder, til og med (Standardverdi: 130)}
 
-\item{outfile}{Navn på fil figuren skrives til. Default: '' (Figur skrives
-til systemets default output device (som regel skjerm))}
+\item{outfile}{Navn på fil figuren skrives til. Standard: '' (Figur skrives
+til systemets standard utdataenhet (som regel skjerm))}
 
 \item{reshID}{Parameter følger fra innlogging helseregister.no og angir
 hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 
 \item{enhetsUtvalg}{Lag figur for
 0: Hele landet
-1: Egen enhet mot resten av landet (Default)
+1: Egen enhet mot resten av landet (Standard)
 2: Egen enhet}
 
 \item{MCEType}{1: Laparoskopi
@@ -37,19 +66,33 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 3: Begge
 99: Alle}
 
+\item{Hastegrad}{Hastegrad av operasjon.
+1: Elektiv
+2: Akutt
+3: Ø-hjelp}
+
+\item{AlvorlighetKompl}{Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
+                         Angis som en vektor av tall som tekst, f.eks. c('1','2')
+                         1: Lite alvorlig
+                         2: Middels alvorlig
+                         3: Alvorlig
+                         4: Dødelig
+
+Detajer: Her bør man liste opp hvilke variable funksjonen benytter.}
+
 \item{hentData}{Gjør spørring mot database
-FALSE: Nei, RegData gis som input til funksjonen (Default)
-TRUE: Ja}
+0: Nei, RegData gis som input til funksjonen (Standard)
+1: Ja}
 
 \item{preprosess}{Preprosesser data
-FALSE: Nei (Default)
-TRUE: Ja}
+FALSE: Nei
+TRUE: Ja (Standard)}
 }
 \value{
-En figur med søylediagram eller et stabelplot av ønsket variabel
+En figur med søylediagram (fordeling) av ønsket variabel
 }
 \description{
-Denne funksjonen lager et søylediagram eller stabelplot som viser andeler av valgt variabel
+Denne funksjonen lager et søylediagram som viser andeler (fordeling) av valgt variabel
 filtrert på de utvalg som er gjort.
 }
 

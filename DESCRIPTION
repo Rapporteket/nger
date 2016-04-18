@@ -13,8 +13,8 @@ License: GPL2
 LazyData: TRUE
 Depends: R (>= 3.0.2), rapbase
 Imports:
-  xtable,
-  plotrix
+  plyr,
+  xtable
 RoxygenNote: 5.0.1
 Suggests: knitr,
     rmarkdown

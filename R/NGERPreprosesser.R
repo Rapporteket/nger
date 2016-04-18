@@ -1,25 +1,28 @@
 #' Preprosesser data fra NGER
 #'
-#' Denne funksjonen definerer opp sammensatte variabler og fjerner ikke-ferdigstilte registreringer
+#' Denne funksjonen definerer variabler og fjerner ikke-ferdigstilte registreringer
 #'
 #' @inheritParams FigAndeler
 #'
-#' @return Data En list med det filtrerte datasettet og sykehusnavnet som tilsvarer reshID
+#' @return RegData En data.frame med det preprosesserte datasettet
 #'
 #' @export
 #'
-NGERPreprosess <- function(RegData=RegData, reshID=reshID)
+NGERPreprosess <- function(RegData=RegData)
 {
+  #Kun ferdigstilte registreringer:
   RegData <- RegData[RegData$BasisRegStatus==1, ]
+  #For bedre lesbarhet:
   RegData$OpEarlierLaparatomy <- RegData$OpEarlierPaparotomy
-  RegData$BirthDate <- as.POSIXlt(RegData$BirthDate, format="%Y-%m-%d")
-  RegData$InnDato <- as.POSIXlt(RegData$OpDate, format="%Y-%m-%d")
-  # RegData$Variabel <- 0	#Fordi LibUtvalg trenger denne variabelen uansett
+  #Riktig format på datovariable:
+  RegData$BirthDate <- as.Date(RegData$BirthDate, format="%Y-%m-%d")
+  RegData$InnDato <- as.Date(RegData$OpDate, format="%Y-%m-%d")
+  RegData$HovedDato <- as.Date(RegData$HovedDato, format="%Y-%m-%d")
+  #Riktig navn på resh-variabel:
   names(RegData)[which(names(RegData)=='AVD_RESH')] <- 'ReshId' #Change var name
+  #Beregner alder:
   RegData$Alder <- as.numeric(floor(difftime(RegData$InnDato, RegData$BirthDate, units='days')/365.25))
-  shtxt <- as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)])  # Må sjekkes !!!!!!!!!!!!!!!!!!!
 
-  Data <- list(RegData=RegData, shtxt=shtxt)
 
-  return(invisible(Data))
+  return(invisible(RegData))
 }
