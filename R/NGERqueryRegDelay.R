@@ -15,7 +15,7 @@
 #' \item{SkjemaStatus = 1}{use Only finished registrations}
 #' \item{SkjemaNavn = "Operasjon"}{use only registry form 'Operasjon'}
 #' }
-#' @return RegData data frame
+#' @return RegDelayData data frame
 #' @export
 
 
@@ -34,7 +34,7 @@ where
   SkjemaStatus=1 and SkjemaNavn="Operasjon";'
   )
 
-  RegData <- rapbase::LoadRegData(registryName, query, dbType)
+  RegDelayData <- rapbase::LoadRegData(registryName, query, dbType)
 
-  return(RegData)
+  return(RegDelayData)
 }
