@@ -1,26 +1,37 @@
-#' Provide registration delay for NGER
+#' Provide registration delay data from NGER
 #'
-#' Provides delay between event (main date) and registration in days
+#' Provides delay between event (main date) and registration as a data frame
 #'
+#' @format Return a data frame with two variables:
+#' \describe{
+#' \item{year}{the year for the event (from db field \emph{HovedDato})}
+#' \item{daysDiff}{the difference in days between event (from db field
+#' \emph{HovedDato}) and the last time the registration form was saved
+#' (from db field \emph{SistLagretDato})}
+#' }
+#'
+#' @details For the query these conditions apply:
+#' \describe{
+#' \item{SkjemaStatus = 1}{use Only finished registrations}
+#' \item{SkjemaNavn = "Operasjon"}{use only registry form 'Operasjon'}
+#' }
 #' @return RegData data frame
 #' @export
-#'
-NGERHentRegDataRegDelay <- function() {
+
+
+NGERRegDelayData <- function() {
 
   registryName <- "nger"
   dbType <- "mysql"
 
   query <- paste0(
 'select
-  year(HovedDato) as yr,
-  avg(DATEDIFF(SistLagretDato, HovedDato)) as mean,
-  count(*) as N
+  year(HovedDato) as year,
+  DATEDIFF(SistLagretDato, HovedDato) as daysDiff
 from
   SkjemaOversikt
 where
-  SkjemaStatus=1 and SkjemaNavn="Operasjon"
-group by
-  year(HovedDato);'
+  SkjemaStatus=1 and SkjemaNavn="Operasjon";'
   )
 
   RegData <- rapbase::LoadRegData(registryName, query, dbType)
