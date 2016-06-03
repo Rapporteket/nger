@@ -17,6 +17,7 @@ NGERregDealy <- function(years) {
     ind <- which(NGERdelayData$year == i)
     medianDelay[[as.character(i)]] = median(NGERdelayData$daysDiff[ind])
     medianDelay[[paste0("N", as.character(i))]] = length(ind)
+
   }
 
   return(medianDelay)
