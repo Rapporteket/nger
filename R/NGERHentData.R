@@ -76,7 +76,7 @@ NGERHentRegData <- function(datoFra = '2014-01-01', datoTil = '2099-01-01') {
 	PatientID,
 	PatientNorwegian,
 	StatusFollowup,
-  ForlopsOversikt.AvdRESH
+  ForlopsOversikt.AvdRESH,
 	ForlopsOversikt.BasisRegStatus,
 	ForlopsOversikt.HovedDato,
 	ForlopsOversikt.OppflgRegStatus,
