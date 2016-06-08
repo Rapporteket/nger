@@ -19,7 +19,7 @@ NGERPreprosess <- function(RegData=RegData)
   RegData$InnDato <- as.Date(RegData$OpDate, format="%Y-%m-%d")
   RegData$HovedDato <- as.Date(RegData$HovedDato, format="%Y-%m-%d")
   #Riktig navn på resh-variabel:
-  names(RegData)[which(names(RegData)=='AVD_RESH')] <- 'ReshId' #Change var name
+  names(RegData)[which(names(RegData)=='AvdRESH')] <- 'ReshId' #Change var name
   #Beregner alder:
   RegData$Alder <- as.numeric(floor(difftime(RegData$InnDato, RegData$BirthDate, units='days')/365.25))
 

@@ -16,7 +16,7 @@ NGERHentRegDataXXI <- function(datoFra = '2014-01-01', datoTil = '2099-01-01') {
 '
 SELECT
   v.OpDate,
-  v.AVD_RESH,
+  f.AvdRESH,
   v.BirthDate,
   v.FollowupSeriousness,
   v.Education,

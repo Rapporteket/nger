@@ -13,7 +13,6 @@ NGERHentRegData <- function(datoFra = '2014-01-01', datoTil = '2099-01-01') {
   dbType <- "mysql"
 
   query <- paste0('SELECT
-	AVD_RESH,
 	BirthDate,
 	ComplAfterBleed,
 	ComplEquipment,
@@ -77,6 +76,7 @@ NGERHentRegData <- function(datoFra = '2014-01-01', datoTil = '2099-01-01') {
 	PatientID,
 	PatientNorwegian,
 	StatusFollowup,
+  ForlopsOversikt.AvdRESH
 	ForlopsOversikt.BasisRegStatus,
 	ForlopsOversikt.HovedDato,
 	ForlopsOversikt.OppflgRegStatus,
@@ -87,8 +87,8 @@ FROM alleVarNum INNER JOIN ForlopsOversikt ON alleVarNum.MCEID = ForlopsOversikt
 
 RegData <- rapbase::LoadRegData(registryName, query, dbType)
 
-#ForlopsOversikt.AvdRESH
 #ForlopsOversikt.PasientAlder
+#Tatt ut av alleVarNum: 	AVD_RESH,
 
 return(RegData)
 }
