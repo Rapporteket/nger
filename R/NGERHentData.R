@@ -15,7 +15,7 @@ NGERHentRegData <- function(datoFra = '2014-01-01', datoTil = '2099-01-01') {
   query <- paste0('SELECT
 	AVD_RESH,
 	BirthDate,
-	ComplAfterBleed, 
+	ComplAfterBleed,
 	ComplEquipment,
 	ComplExist,
 	ComplInfection,
@@ -79,10 +79,10 @@ NGERHentRegData <- function(datoFra = '2014-01-01', datoTil = '2099-01-01') {
 	StatusFollowup,
 	ForlopsOversikt.BasisRegStatus,
 	ForlopsOversikt.HovedDato,
-	ForlopsOversikt.OppflgRegStatus, 
-	ForlopsOversikt.OppflgStatus, 
+	ForlopsOversikt.OppflgRegStatus,
+	ForlopsOversikt.OppflgStatus,
 	ForlopsOversikt.SykehusNavn
-FROM AlleVarNum INNER JOIN ForlopsOversikt ON AlleVarNum.MCEID = ForlopsOversikt.ForlopsID
+FROM alleVarNum INNER JOIN ForlopsOversikt ON alleVarNum.MCEID = ForlopsOversikt.ForlopsID
                   WHERE HovedDato >= \'', datoFra, '\' AND HovedDato <= \'', datoTil, '\'')
 
 RegData <- rapbase::LoadRegData(registryName, query, dbType)
