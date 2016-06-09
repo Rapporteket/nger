@@ -2,6 +2,7 @@
 .Rhistory
 .RData
 ngerNy.Rproj
+*.Rproj
 testing
 *.png
 *.docx
@@ -21,3 +22,4 @@ figure
 NGERmonthlyReport.pdf
 NGERmonthlyReport.tex
 config
+nger.Rproj
