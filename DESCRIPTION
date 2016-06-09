@@ -1,14 +1,14 @@
 Package: nger
 Type: Package
 Title: Resultatrapporter for NGER
-Version: 0.1
-Date: 2016-02-15
+Version: 1.1.0
+Date: 2016-06-09
 Authors@R: c(person("Thon", "Kevin", email = "kevin.thon@skde.no", role
-    = c("cre", "aut")), person("Kamaleri", "Yusman", email = "yuskam@ous-hf.no",
+    = "aut"), person("Kamaleri", "Yusman", email = "yuskam@ous-hf.no",
     role = "aut"), person("Edvardsen", "Are", email = "are.edvardsen@helse-nord.no",
     role = "aut"), person("Olsen", "Lena", email = "Lena.Ringstad.Olsen@unn.no",
-    role = "aut"))
-Maintainer: Kevin Thon <kevin.thon@skde.no>
+    role = c("cre", "aut")))
+Maintainer: Lena Ringstad Olsen <lena.olsen@skde.no>
 Description: Pakke for generering av resultatrapporter for NGER.
 Encoding: UTF-8
 License: GPL-2
