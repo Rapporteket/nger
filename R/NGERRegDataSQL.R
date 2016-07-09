@@ -7,7 +7,7 @@
 #' @return RegData data frame
 #' @export
 #'
-NGERHentRegData <- function(datoFra = '2014-01-01', datoTil = '2099-01-01') {
+NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = '2099-01-01') {
 
   registryName <- "nger"
   dbType <- "mysql"
@@ -81,7 +81,10 @@ NGERHentRegData <- function(datoFra = '2014-01-01', datoTil = '2099-01-01') {
 	ForlopsOversikt.HovedDato,
 	ForlopsOversikt.OppflgRegStatus,
 	ForlopsOversikt.OppflgStatus,
-	ForlopsOversikt.SykehusNavn
+	ForlopsOversikt.SykehusNavn,
+OpParities,
+OpPregnancies,
+OpOptimeCount
 FROM alleVarNum INNER JOIN ForlopsOversikt ON alleVarNum.MCEID = ForlopsOversikt.ForlopsID
                   WHERE HovedDato >= \'', datoFra, '\' AND HovedDato <= \'', datoTil, '\'')
 

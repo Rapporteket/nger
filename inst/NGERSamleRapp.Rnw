@@ -1,0 +1,248 @@
+\documentclass [norsk,a4paper,twoside]{article}
+
+\usepackage[norsk]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{textcomp}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{rotating} %add rotating for plain tables
+\usepackage{pdflscape} %add rotating/landcape for pdf
+\usepackage{booktabs} %for nice looking tabs
+%\usepackage{subfig}
+%\usepackage{pdfpages}
+%\usepackage{booktabs}
+%\usepackage{caption}
+
+\addtolength{\hoffset}{-1.5cm}
+\addtolength{\textwidth}{1cm}
+\addtolength{\voffset}{-2cm}
+\addtolength{\textheight}{4cm}
+
+
+%bytte font
+\renewcommand{\familydefault}{\sfdefault}
+
+%setter grå skrift fremfort sort
+\usepackage{xcolor}
+\usepackage{graphicx}
+
+%Offentliggjøringsfargene 1-6, lys-mørk, benytter 2-5
+\definecolor{OffBlaa2}{rgb}{0.42, 0.68, 0.84}	%107/255, 174/255, 214/255}
+\definecolor{OffBlaa3}{rgb}{0.26, 0.57, 0.78}	%66/255, 146/255, 198/255}
+\definecolor{OffBlaa4}{rgb}{ 0.13 0.44 0.71}	%33/255, 113/255, 181/255}
+\definecolor{OffBlaa5}{rgb}{0.03 0.27 0.58}		%8/255,  69/255, 148/255}
+%\definecolor{SKDE}{rgb}{0,0.32,0.61}
+%\definecolor{moerkgraa}{rgb}{0.25,0.25,0.25}
+%\color{moerkgraa}
+
+\usepackage[pdftex, colorlinks, linkcolor=OffBlaa3, urlcolor=OffBlaa3]{hyperref}
+
+%bytte overskrifter
+\usepackage[compact]{titlesec}
+\titleformat{\section} {\vspace*{10pt}\color{OffBlaa5}\normalfont\Large\bfseries} {\thesection}{}{}
+\titleformat{\subsection} {\color{OffBlaa3}\normalfont\large\bfseries} {\thesection}{}{}
+
+%topptekst og vertikal sidenummer
+\fancyhead{}\fancyfoot{}  % clear all fields
+\fancyheadoffset[LO, RE]{3cm}
+\fancyfootoffset[LO]{1.5cm}
+\fancyfootoffset[RE]{1.5cm}
+%Stripe øverst på sida med registerets navn
+\fancyhead[LO]{\colorbox{OffBlaa5}{\textcolor{white}{\hspace*{2cm}\scshape\small Norsk Gynekologisk Endoskopiregister}}} %Lengde på stripa
+\fancyfoot[LO]{\colorbox{OffBlaa5}{\textcolor{white}{\scshape\small\thepage}}}
+\fancyfoot[RE]{\colorbox{OffBlaa5}{\textcolor{white}{\scshape\small\thepage}}}
+\renewcommand{\headrulewidth}{0pt} %\iffloatpage{0pt}{0.4pt}
+ \renewcommand{\footrulewidth}{0pt}
+%evt. horisontal sidenummer
+\fancyfoot[LO]{\colorbox{OffBlaa5}{\textcolor{white}{\hspace*{2cm} \small \thepage}}} \fancyfootoffset[LO]{4.4cm}
+\fancyfoot[RE]{\hspace*{2cm}\colorbox{OffBlaa5}{\textcolor{white}{\small \thepage \hspace*{3cm}}}}  \fancyfootoffset[RE]{5.3cm}
+\setcounter{secnumdepth}{-1}
+
+
+%Hva skjer her??
+\renewcommand\thempfootnote{\fnsymbol{mpfootnote}}
+\def\labelitemi{$\bullet$}
+\def\labelitemii{--}
+\def\labelitemiii{$\ast$}
+\def\labelitemiv{$\cdot$}
+
+
+\begin{document}
+
+%\begin{titlepage}
+%\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines,
+%change thickness here
+%\center % Center everything on the page
+
+%	TITLE SECTION
+%\HRule \\[1.5cm]
+%{ \huge \bfseries Samlerapport med resultater fra Norsk Gynekologisk Endoskopiregister (NGER)}\\[0.4cm] % Title of your document
+\title{Samlerapport med resultater fra Norsk Gynekologisk Endoskopiregister (NGER)}
+
+%	AUTHOR SECTION
+%\author{NIR og SKDE}
+%\Large \emph{Author:}\\
+%\Large Utarbeidet av: \\
+%\huge{NGER og SKDE}\\[3cm] % Your name
+
+%	DATE SECTION
+%{\Large \today}\\[2cm] % Date, change the \today to a set date if you want to be precise
+
+%\vspace{7cm}
+
+% LOGO, Include a department/university logo - this will require the graphicx package
+ %\\[1cm]
+% \includegraphics[height=2cm]{\Sexpr{system.file(file='logoNIR.jpg', package='intensiv')}}
+% eller: \includepdf[fitpaper]{\Sexpr{system.file(file='ForsideV1logo.pdf', package='norgast')}}
+%\end{titlepage}
+
+
+\maketitle
+\tableofcontents
+%\newpage
+\listoffigures
+\listoftables
+\newpage
+
+
+
+<<setup, include=FALSE, cache=FALSE>>=
+knitr::opts_chunk$set()	#Settes også i rapbase
+knitr::opts_knit$set(root.dir = './')	#Settes også i rapbase
+knitr::opts_chunk$set(warnings=FALSE,echo=FALSE)
+knitr::opts_chunk$set(fig.align='center', fig.show='hold', out.width='.8\\textwidth',cache=FALSE)
+options(replace.assign=TRUE, width=90)
+@
+
+\section{Informasjonsgrunnlag og ansvarsforhold}
+%\section*{Informasjonsgrunnlag og ansvarsforhold}
+
+Denne rapporten er fremstilt automatisk på grunnlag av en mal laget av
+Lena Ringstad Olsen ved Senter for Klinisk Dokumentasjon og Evaluering (SKDE) på oppdrag
+fra Norsk Gynekologisk Endoskopiregister (NGER) ved Andreas Putz.
+Alle resultater er basert på tall fra registeret og er gyldige per
+rapportdato. Tilsvarende rapport av annen dato kan derfor gi andre resulter siden datagrunnlaget er
+basert på hva som til enhver tid er registrert i databasen.
+
+Alle vurderinger og tolkninger av data, såvel som feil i resultater på
+som skyldes feil i datagrunnlaget er det styringsgruppa for
+registeret som er ansvarlige for, ikke SKDE.
+
+Data rapporteres på aggregert nivå og rapporten inneholder derfor ingen
+informasjon om enkeltpersoner. I tilfeller der utvalget inneholder få registreringer og
+er kombinert med for eksempel demografisk informasjon, kan det ikke utelukkes
+at rapporterte data kan tilbakeføres til enkeltpersoner. Det er registeret sitt ansvar
+å vurdere hvorvidt rapporten skal vurderes som sensitiv eller ikke.
+
+Rapporten er laget ved hjelp av statistikkverktøyet R, dokumentverktøyet \LaTeX{} og
+rapporteringsløsningen JasperReports
+og kan genereres av gynekologiregisterets databasebrukerne på \textit{helseregister.no}.
+
+
+<<LasteData, echo=FALSE, eval=T>>=
+if (!exists('NGERRegData')){
+      NGERRegData <- NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil)
+}
+@
+
+<<FellesParamOgPreprosess, echo=FALSE>>=
+
+NGERRegData <- NGERPreprosess(NGERRegData)
+NGERRegData$OpAar <- as.factor(format(NGERRegData$HovedDato, '%Y'))
+
+library(xtable)
+datoFra <- '2013-01-01' 	 # min og max dato i utvalget vises alltid i figuren.
+datoTil <- '2099-12-31'
+outfile <- ''
+enhetsUtvalg <- 1
+minald <- 0
+maxald <- 130
+MCEType<-99
+Hastegrad <- ''
+outfile= 'test.pdf'
+figKrymp1 <- 0.9	#Skaleringsparameter for enkeltfigurer
+figKrymp2 <- 0.7
+@
+
+\section{Registrerende avdelinger}
+
+Innregistrering i registeret ble startet i 2013. Alle resultater i denne rapporten er basert
+å
+Norsk Gynekologisk Endoskopiregister startet elektronisk registrering helseregister.no i 2013.
+Denne samlerapporten er basert på alle registreringer som er lagret og ferdigstilt i NGER fra
+oppstart til dagen før tidspunktet for rapportuttrekk.
+For hele landet er det gjort registrering av operasjoner i perioden
+\Sexpr{min(NGERRegData$InnDato)} til \Sexpr{max(NGERRegData$InnDato)}.
+
+
+<<'Tabell:RegistrerendeAvd', results='asis', echo=FALSE, eval=T, >>=
+## VIDERE: Max 5 år i tabellen
+if (dim(table(NGERRegData$OpAar)) > 1) {
+	tabAvdN <- addmargins(as.table(ftable(NGERRegData[ ,c('SykehusNavn', 'OpAar')])))
+	colnames(tabAvdN)[dim(tabAvdN)[2] ]<- 'Alle år'
+} else {
+	tabAvdN <- addmargins(table(NGERRegData$ShNavn))
+}
+rownames(tabAvdN)[dim(tabAvdN)[1] ]<- 'TOTALT, alle sykehus:'
+
+#Tabell <- table(NGERRegData[,c('SykehusNavn', 'OpAar')])
+print(xtable::xtable(tabAvdN, digits=0, align=c('l', rep('r', max(c(1,ncol(tabAvdN)), na.rm=T))),
+                     caption='Avdelinger som registrerer pasienter i NGER.',
+                     label='tab:RegistrenrendeAvd'),
+					 include.rownames=TRUE, include.colnames=TRUE)
+@
+
+
+<<'DivFig1', results='asis', echo=FALSE, eval=T>>=
+dum <- NGERFigAndelTid(RegData=NGERRegData, datoFra=datoFra, valgtVar='StatusFollowup', datoTil=datoTil,
+            reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='StatusOppf0Aar.pdf',
+            minald=minald, maxald=maxald, MCEType=MCEType, Hastegrad=Hastegrad)
+
+dum <- NGERFigAndeler(RegData=NGERRegData, datoFra=datoFra, valgtVar='OpAnesthetic', datoTil=datoTil,
+	reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='OpAnestheticLap.pdf', MCEType = 1,
+  minald=minald, maxald=maxald, Hastegrad=Hastegrad)
+
+dum <- NGERFigAndeler(RegData=NGERRegData, datoFra=datoFra, valgtVar='OpAnesthetic', datoTil=datoTil,
+	reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='OpAnestheticHyp.pdf', MCEType = 2,
+  minald=minald, maxald=maxald, Hastegrad=Hastegrad)
+@
+
+\begin{figure}[ht]
+  \centering \includegraphics[width= \Sexpr{figKrymp1}\textwidth]{StatusOppf0Aar.pdf}
+  \caption{\label{fig:StatusOppf0Aar} Andel som får postoperativ oppfølging.}
+\end{figure}
+
+
+\begin{figure}[ht]
+  \centering \includegraphics[width= \Sexpr{figKrymp2}\textwidth]{OpAnestheticLap.pdf}
+  \centering \includegraphics[width= \Sexpr{figKrymp2}\textwidth]{OpAnestheticHyp.pdf}
+  \caption{\label{fig:OpAnesthetic} Anestesitype ved endoskopiske inngrep.}
+\end{figure}
+
+
+<<'Tabell:Pasientkarakterisika', results='asis', echo=FALSE, eval=T, >>=
+
+#TabPasKar <- NGERtabVI(NGERRegData)
+
+#print(xtable::xtable(TabPasKar, digits=0, align=c('l', rep('r', max(c(1,ncol(TabPasKar)), na.rm=T))),
+#                     caption='Pasientkarakterisika og operasjonstid.',
+#                     label='tab:TabPasKar'),
+#					 include.rownames=TRUE, include.colnames=TRUE)
+
+@
+
+%DOBBELTFIGURER
+%\begin{figure}[ht]
+%\centering \includegraphics[width= \Sexpr{figKrymp1}\textwidth]{FigAlderGjsn.pdf}
+%\centering \includegraphics[width= \Sexpr{figKrymp1}\textwidth]{FigAlderMed.pdf}
+% \caption{Gjennomsnitt og median alder ved \Sexpr{ShTypeEgen}sykehus.}
+%  \label{fig:Alder}
+%\end{figure}
+
+
+
+
+
+\end{document}

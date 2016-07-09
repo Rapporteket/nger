@@ -11,32 +11,32 @@ NGERtabVI <- function(RegData) {
   # make dummy column for all MCEs
   n <- dim(RegData)[1]
   RegData$dummy <- rep("\\textbf{Alle BMI} ($kg/m^2$)", n)
-  myTab <- xtabs(OpBMI ~ dummy + year,
-                 aggregate(OpBMI~dummy+year,RegData,mean))
+  myTab <- xtabs(OpBMI ~ dummy + OpAar,
+                 aggregate(OpBMI~dummy+OpAar,RegData,mean))
   myTab <- rbind(myTab,
-                 xtabs(OpBMI ~ MCEType + year,
-                       aggregate(OpBMI~MCEType+year,RegData,mean)))
+                 xtabs(OpBMI ~ MCEType + OpAar,
+                       aggregate(OpBMI~MCEType+OpAar,RegData,mean)))
   RegData$dummy <- "\\textbf{Alle fødsler} (\\textit{antall})"
   myTab <- rbind(myTab,
-                 xtabs(OpParities ~ dummy + year,
-                       aggregate(OpParities~dummy+year,RegData,mean)))
+                 xtabs(OpParities ~ dummy + OpAar,
+                       aggregate(OpParities~dummy+OpAar,RegData,mean)))
   myTab <- rbind(myTab,
-                 xtabs(OpParities ~ MCEType + year,
-                       aggregate(OpParities~MCEType+year,RegData,mean)))
+                 xtabs(OpParities ~ MCEType + OpAar,
+                       aggregate(OpParities~MCEType+OpAar,RegData,mean)))
   RegData$dummy <- "\\textbf{Alle graviditeter} (\\textit{antall})"
   myTab <- rbind(myTab,
-                 xtabs(OpPregnancies ~ dummy + year,
-                       aggregate(OpPregnancies~dummy+year,RegData,mean)))
+                 xtabs(OpPregnancies ~ dummy + OpAar,
+                       aggregate(OpPregnancies~dummy+OpAar,RegData,mean)))
   myTab <- rbind(myTab,
-                 xtabs(OpPregnancies ~ MCEType + year,
-                       aggregate(OpPregnancies~MCEType+year,RegData,mean)))
+                 xtabs(OpPregnancies ~ MCEType + OpAar,
+                       aggregate(OpPregnancies~MCEType+OpAar,RegData,mean)))
   RegData$dummy <- "\\textbf{Alle knivtider} (\\textit{minutt})"
   myTab <- rbind(myTab,
-                 xtabs(OpOptimeCount ~ dummy + year,
-                       aggregate(OpOptimeCount~dummy+year,RegData,mean)))
+                 xtabs(OpOptimeCount ~ dummy + OpAar,
+                       aggregate(OpOptimeCount~dummy+OpAar,RegData,mean)))
   myTab <- rbind(myTab,
-                 xtabs(OpOptimeCount ~ MCEType + year,
-                       aggregate(OpOptimeCount~MCEType+year,RegData,mean)))
+                 xtabs(OpOptimeCount ~ MCEType + OpAar,
+                       aggregate(OpOptimeCount~MCEType+OpAar,RegData,mean)))
 
   # move rownames to its own column do allow duplicate names
   # MCEType 1=laparo, 2=hysteroskopi, 3=begge

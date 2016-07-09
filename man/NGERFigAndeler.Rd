@@ -7,7 +7,7 @@
 NGERFigAndeler(RegData = 0, valgtVar, datoFra = "2013-01-01",
   datoTil = "2050-12-31", minald = 0, maxald = 130, outfile = "",
   reshID, enhetsUtvalg = 1, MCEType = 99, Hastegrad = "",
-  AlvorlighetKompl = "", hentData = 0, preprosess = TRUE)
+  AlvorlighetKompl = "", hentData = 0, preprosess = 0)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -57,8 +57,8 @@ Detajer: Her bør man liste opp hvilke variable funksjonen benytter.}
 1: Ja}
 
 \item{preprosess}{Preprosesser data
-FALSE: Nei
-TRUE: Ja (Standard)}
+FALSE: Nei (Standard)
+TRUE: Ja}
 }
 \value{
 En figur med søylediagram (fordeling) av ønsket variabel
@@ -73,7 +73,7 @@ Argumentet \emph{valgtVar} har følgende valgmuligheter:
     \item Alder: Pasientens alder, 5-årige aldersgrupper
     \item Education: Pasientens utdanning (1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent)
     \item FollowupSeriousness: Alvorlighetsgrad, postoperative komplikasjoner
-		Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
+		  Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
     \item HypCompleteness: Gjennomføringsgrad av hysteroskopi
    		Koder:	1-Fullstendig, 2-Ufullstendig, 3-Mislykket
     \item HypComplications: Hysteroskopi intrapoerative komplikasjoner

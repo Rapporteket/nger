@@ -10,15 +10,15 @@
 #' @export
 #'
 NGEROpInd <- function(RegData=0, datoFra='2000-04-01', datoTil='2050-12-31', minald=0, maxald=130, outfile='',
-                     reshID, enhetsUtvalg=1, MCEType=99, preprosess=TRUE, hentData=TRUE)
+                     reshID, enhetsUtvalg=1, MCEType=99, preprosess=0, hentData=0)
 {
   ## Hvis spørring skjer fra R på server. ######################
-  if(hentData){
-    RegData <- NGERHentRegData(datoFra = datoFra, datoTil = datoTil)
+  if(hentData==1){
+    RegData <- NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil)
   }
 
   # Hvis RegData ikke har blitt preprosessert
-  if (preprosess){
+  if (preprosess==1){
     RegData <- NGERPreprosess(RegData=RegData)
   }
 

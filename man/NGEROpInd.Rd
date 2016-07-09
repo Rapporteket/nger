@@ -6,7 +6,7 @@
 \usage{
 NGEROpInd(RegData = 0, datoFra = "2000-04-01", datoTil = "2050-12-31",
   minald = 0, maxald = 130, outfile = "", reshID, enhetsUtvalg = 1,
-  MCEType = 99, preprosess = TRUE, hentData = TRUE)
+  MCEType = 99, preprosess = 0, hentData = 0)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -36,8 +36,8 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 99: Alle}
 
 \item{preprosess}{Preprosesser data
-FALSE: Nei
-TRUE: Ja (Standard)}
+FALSE: Nei (Standard)
+TRUE: Ja}
 
 \item{hentData}{Gjør spørring mot database
 0: Nei, RegData gis som input til funksjonen (Standard)

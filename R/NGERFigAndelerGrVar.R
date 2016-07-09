@@ -31,7 +31,7 @@
 
 NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
                         minald=0, maxald=130, MCEType=99, Hastegrad='', AlvorlighetKompl='', reshID, outfile='',
-                        enhetsUtvalg=1, preprosess=TRUE, hentData=0) {
+                        enhetsUtvalg=1, preprosess=0, hentData=0) {
 
   ## Hvis spørring skjer fra R på server. ######################
   if(hentData == 1){
@@ -39,7 +39,7 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoT
   }
 
   # Hvis RegData ikke har blitt preprosessert
-  if (preprosess){
+  if (preprosess==1){
     RegData <- NGERPreprosess(RegData=RegData)
   }
 

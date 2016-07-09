@@ -1,17 +1,22 @@
 
-#--------------------------------------MÅNEDSRAPPORT-----------------------------------
+#--------------------------------------SamleRAPPORTER-----------------------------------
 
 rm(list=ls())
 library(nger)
 library(knitr)
-NGERAlleVarNum <- read.table('C:/Registre/NGER/data/AlleVarNum2016-03-31.csv', sep=';', header=T) #,
-NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-03-31.csv', sep=';', header=T)
-NGERData <- merge(NGERForlop, NGERAlleVarNum, by.x = "ForlopsID", by.y = "MCEID", all = FALSE)
-RegData <- NGERData
+library(tools)
+NGERAlleVarNum <- read.table('C:/Registre/NGER/data/AlleVarNum2016-03-31.csv', sep=';', header=T, encoding = 'UTF-8') #,
+NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-03-31.csv', sep=';', header=T, encoding = 'UTF-8')
+NGERRegData <- merge(NGERForlop, NGERAlleVarNum, by.x = "ForlopsID", by.y = "MCEID", all = FALSE)
 
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
+setwd('C:/ResultattjenesteGIT/nger/inst/')
+#knit('NGERmonthlyReport.Rnw')
+#tools:: texi2pdf('NGERmonthlyReport.tex')
+knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
+tools::texi2pdf('NGERSamleRapp.tex')
 
-knit('C:/ResultattjenesteGIT/nger/inst/NGERmonthlyReport.Rnw')
+
 #--------------------------------------------------------
 #------------------------------ Andeler flere var --------------------------
 #------------------------------ (erstatter Fordelinger) --------------------------
@@ -47,7 +52,7 @@ outfile <- paste(valgtVar, '_ford.png', sep='')	#Navn angis av Jasper
 setwd("C:/ResultattjenesteGIT/nger/")
 
 
-FigAndeler(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
 	reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile, MCEType = MCEType,
   minald=minald, maxald=maxald, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
 
@@ -64,7 +69,7 @@ KomplLapIntraOp
 
 for (valgtVar in variable) {
 	outfile <- paste(valgtVar, '_ford.png', sep='')
-	FigAndeler(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
+	NGERFigAndeler(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
 		reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,
 		minald=minald, maxald=maxald)
 }
@@ -74,8 +79,8 @@ for (valgtVar in variable) {
 rm(list=ls())
 library(nger)
 #NGERData <- read.table('C:/Registre/NGER/data/NGER2015-03-03NyeNavn.csv', sep=';', header=T) #,
-NGERAlleVarNum <- read.table('C:/Registre/NGER/data/AlleVarNum2016-03-31.csv', sep=';', header=T) #,
-NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-03-31.csv', sep=';', header=T)
+NGERAlleVarNum <- read.table('C:/Registre/NGER/data/alleVarNum2016-06-08.csv', sep=';', header=T) #,
+NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-06-08.csv', sep=';', header=T)
 NGERData <- merge(NGERForlop, NGERAlleVarNum, by.x = "ForlopsID", by.y = "MCEID", all = FALSE)
 RegData <- NGERData
 # Inndata til funksjon:
@@ -92,13 +97,13 @@ Hastegrad <- ''
 AlvorlighetKompl <- ''
 enhetsUtvalg <- 1 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
-valgtVar <- 'Alder' #
+valgtVar <- 'StatusFollowup' #
 outfile <- paste(valgtVar, '_', tidsenhet, '.png', sep='')
 
-FigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
+NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
             reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,
             minald=minald, maxald=maxald, MCEType=MCEType, Hastegrad=Hastegrad,
-            AlvorlighetKompl=AlvorlighetKompl, tidsenhet=tidsenhet, preprosess=TRUE)
+            AlvorlighetKompl=AlvorlighetKompl, tidsenhet=tidsenhet, preprosess=1)
 
 
 
@@ -109,7 +114,7 @@ variable <- c('Alder', 'ComplAfterBleed', 'ComplEquipment', 'ComplInfection', 'C
 
 for (valgtVar in variable) {
   outfile <- paste0(valgtVar, '_', tidsenhet, '.png')
-  FigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
+  NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
               reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,
               minald=minald, maxald=maxald, MCEType=MCEType, Hastegrad=Hastegrad,
               AlvorlighetKompl=AlvorlighetKompl, tidsenhet=tidsenhet, preprosess=TRUE)
@@ -145,7 +150,7 @@ outfile <- paste(valgtVar, '_Shus.png', sep='')	#Navn angis av Jasper
 setwd("C:/ResultattjenesteGIT/nger/")
 
 
-FigAndelerGrVar(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
+NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
             reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile, MCEType=MCEType,
             minald=minald, maxald=maxald, Hastegrad = Hastegrad)
 
@@ -156,7 +161,7 @@ variable <- c('Alder', 'ComplReop', 'Education', 'FollowupSeriousness', 'KomplIn
 
 for (valgtVar in variable) {
   outfile <- paste(valgtVar, '_Shus.png', sep='')
-  FigAndelerGrVar(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
+  NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
               reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,
               minald=minald, maxald=maxald)
 }

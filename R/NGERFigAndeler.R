@@ -50,8 +50,8 @@
 #'                 1: Egen enhet mot resten av landet (Standard)
 #'                 2: Egen enhet
 #' @param preprosess Preprosesser data
-#'                 FALSE: Nei
-#'                 TRUE: Ja (Standard)
+#'                 FALSE: Nei (Standard)
+#'                 TRUE: Ja
 #' @param hentData Gjør spørring mot database
 #'                 0: Nei, RegData gis som input til funksjonen (Standard)
 #'                 1: Ja
@@ -76,7 +76,8 @@
 #' @export
 #'
 NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050-12-31', minald=0, maxald=130,
-                        outfile='', reshID, enhetsUtvalg=1, MCEType=99, Hastegrad='', AlvorlighetKompl='', hentData=0, preprosess=TRUE)
+                      outfile='', reshID, enhetsUtvalg=1, MCEType=99, Hastegrad='', AlvorlighetKompl='',
+                      hentData=0, preprosess=0)
 {
 
      ## Hvis spørring skjer fra R på server. ######################
@@ -85,7 +86,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
      }
 
      # Hvis RegData ikke har blitt preprosessert
-     if (preprosess){
+     if (preprosess==1){
        RegData <- NGERPreprosess(RegData=RegData)
      }
 

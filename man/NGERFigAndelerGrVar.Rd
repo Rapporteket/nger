@@ -7,7 +7,7 @@
 NGERFigAndelerGrVar(RegData = 0, valgtVar, datoFra = "2013-01-01",
   datoTil = "3000-12-31", minald = 0, maxald = 130, MCEType = 99,
   Hastegrad = "", AlvorlighetKompl = "", reshID, outfile = "",
-  enhetsUtvalg = 1, preprosess = TRUE, hentData = 0)
+  enhetsUtvalg = 1, preprosess = 0, hentData = 0)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -53,8 +53,8 @@ til systemets standard utdataenhet (som regel skjerm))}
 2: Egen enhet}
 
 \item{preprosess}{Preprosesser data
-FALSE: Nei
-TRUE: Ja (Standard)}
+FALSE: Nei (Standard)
+TRUE: Ja}
 
 \item{hentData}{Gjør spørring mot database
 0: Nei, RegData gis som input til funksjonen (Standard)
