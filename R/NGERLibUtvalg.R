@@ -1,6 +1,6 @@
 #' Funksjon som gjør utvalg av dataene, returnerer det filtrerte datasettet og utvalgsteksten.
 #'
-#' @inheritParams FigAndeler
+#' @inheritParams NGERFigAndeler
 #' @param fargepalett Hvilken fargepalett skal brukes i figurer (Default: BlaaRapp)
 #'
 #' @return UtData En liste bestående av det filtrerte datasettet, utvalgstekst for figur og tekststreng som angir fargepalett

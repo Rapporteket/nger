@@ -2,7 +2,7 @@
 #'
 #' Yes, generate tab XXI
 #'
-#' @inheritParams FigAndeler
+#' @inheritParams NGERFigAndeler
 #' @return list $tabXXI data frame of table data
 #' @return list $personsWithMultipleCompl number of persons
 #' @export

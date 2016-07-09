@@ -2,7 +2,7 @@
 #'
 #' Yes, generate tab VI
 #'
-#' @inheritParams FigAndeler
+#' @inheritParams NGERFigAndeler
 #' @return list $tabVI data frame of table data
 #' @export
 

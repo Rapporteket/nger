@@ -2,7 +2,7 @@
 #'
 #' Denne funksjonen lager en tabell over antall registreringer per år per avdeling
 #'
-#' @inheritParams FigAndeler
+#' @inheritParams NGERFigAndeler
 #'
 #' @return Tabell En tabell over antall registreringer per år per avdeling
 #'

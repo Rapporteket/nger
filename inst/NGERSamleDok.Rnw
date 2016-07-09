@@ -28,112 +28,124 @@
 \color{moerkgraa}
 
 
-\begin{document}
-% \thispagestyle{empty}
-% \includepdf[fitpaper]{../ForsideV1logo.pdf}
-% \thispagestyle{empty}
-% \cleardoublepage
-% \setcounter{page}{1}
-
 \addtolength{\hoffset}{-0.5cm}
 \addtolength{\textwidth}{1cm}
 \addtolength{\voffset}{-1cm}
 \addtolength{\textheight}{2cm}
 
+\begin{document}
+
+
 \maketitle
 
 \tableofcontents
-\newpage
 
 \listoffigures
 \listoftables
 
 \clearpage
-%'
-%' <<setup, include=FALSE, cache=FALSE>>=
-%' opts_chunk$set(fig.path='figurer/nger-', fig.align='center', fig.show='hold', out.width='.7\\textwidth', cache=FALSE)
-%' 	#out.heigth='.45\\pageheight', #
-%'
-%' #opts_chunk$set(par=TRUE)
-%' 		 #, dev='pdf')	#comments=NA,
-%' #options(replace.assign=TRUE,width=90)
-%' #options(continue=" ")	#?% supress the '+' continuation prompt
-%' @
 
 
-<<LastData, include=FALSE, cache=FALSE>>=
+<<setup, include=FALSE, cache=FALSE>>=
+knitr::opts_chunk$set()	#Settes også i rapbase
+knitr::opts_knit$set(root.dir = './')	#Settes også i rapbase
+knitr::opts_chunk$set(warnings=FALSE,echo=FALSE)
+knitr::opts_chunk$set(fig.align='center', fig.show='hold', out.width='.8\\textwidth',cache=FALSE)
+options(replace.assign=TRUE, width=90)
+@
 
-hentData <- FALSE
-reshID <- 110734 # (Tønsberg)  	#Må sendes med til funksjon
+\section{Informasjonsgrunnlag og ansvarsforhold}
+%\section*{Informasjonsgrunnlag og ansvarsforhold}
+
+Denne rapporten er fremstilt automatisk på grunnlag av en mal laget av
+Lena Ringstad Olsen ved Senter for Klinisk Dokumentasjon og Evaluering (SKDE) på oppdrag
+fra Norsk Gynekologisk Endoskopiregister (NGER) ved Andreas Putz. 
+Alle resultater er basert på tall fra registeret og er gyldige per 
+rapportdato. Tilsvarende rapport av annen dato kan derfor gi andre resulter siden datagrunnlaget er
+basert på hva som til enhver tid er registrert i databasen.
+
+Alle vurderinger og tolkninger av data, såvel som feil i resultater på
+som skyldes feil i datagrunnlaget er det styringsgruppa for
+registeret som er ansvarlige for, ikke SKDE.
+
+Data rapporteres på aggregert nivå og rapporten inneholder derfor ingen
+informasjon om enkeltpersoner. I tilfeller der utvalget inneholder få registreringer og
+er kombinert med for eksempel demografisk informasjon, kan det ikke utelukkes
+at rapporterte data kan tilbakeføres til enkeltpersoner. Det er registeret sitt ansvar
+å vurdere hvorvidt rapporten skal vurderes som sensitiv eller ikke.
+
+Rapporten er laget ved hjelp av statistikkverktøyet R, dokumentverktøyet \LaTeX{} og 
+rapporteringsløsningen JasperReports
+og kan genereres av gynekologiregisterets databasebrukerne på \textit{helseregister.no}.
+
+
+<<LasteData, echo=FALSE, eval=T>>=
+if (!exists('NGERdata')){
+      NGERRegData <- NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil)
+}
+NGERRegData <- NGERPreprosess(NGERRegData)
+@
+
+<<FellesParam, echo=FALSE>>=
+library(xtable)
 datoFra <- '2014-01-01' 	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2099-12-31'
-
-if(hentData){
-  RegData <- NGERHentRegData(datoFra = datoFra, datoTil = datoTil)
-} else {
-  library(nger)
-  RegData <- read.table('C:/SVN/jasper/nger/data/AlleVarNum2016-02-04 10-35-25.txt', sep=';', header=T)
-  admdata <- read.table('C:/SVN/jasper/nger/data/ForlopsOversikt2016-02-04 10-35-42.txt', sep=';', header=T)
-  RegData <- merge(RegData, admdata, by.x = 'MCEID', by.y = 'ForlopsID')
-}
-@
-
-%'
-%' <<'TestDebug', results='asis', echo=FALSE, eval=T, warning=TRUE>>=
-%' libkat <- 'C:/SVN/jasper/Rlib/trunk/'
-%'
-%' figstr <- 0.58
-%' source("C:/SVN/jasper/nger/trunk/NGERAntallRegPrAvd.R", encoding = "UTF-8")
-%' source("C:/SVN/jasper/nger/trunk/NGERFigAndeler.R", encoding = "UTF-8")
-%'
-%' datoFra='2013-01-01'
-%' datoTil=Sys.Date()
-%' @
-
-% \addtolength{\hoffset}{-1.5cm}
-
-\section{Registrerende avdelinger}
-
-<<'Tabell:RegistrerendeAvd', results='asis', echo=FALSE, eval=T, warning=FALSE, message=FALSE>>=
-Tabell <- nger::NGERAntallRegPrAvd(RegData=RegData, datoFra = datoFra, datoTil = datoTil)
-
-# print(xtable::xtable(Tabell, digits=0, align=c('l', 'l', rep('r', ncol(Tabell)-1)),
-#     caption='Liste over avdelinger som registrerer pasienter i NoRGast.',
-#     label='tab:RegistrenrendeAvd'),
-#     include.rownames=FALSE,
-#     include.colnames=TRUE,
-#     hline.after=NULL)
-
-print(xtable::xtable(Tabell, digits=0, align=c('l', rep('r', ncol(Tabell))),
-                     caption='Liste over avdelinger som registrerer pasienter i NGER.',
-                     label='tab:RegistrenrendeAvd'),
-      include.rownames=TRUE,
-      include.colnames=TRUE)
-
-@
-
-
-<<'testfig', include=FALSE, echo=FALSE, eval=T, cache=FALSE>>=
-valgtVar<-'Alder'
+outfile <- ''
 enhetsUtvalg <- 1
 minald <- 0
 maxald <- 130
-preprosess=T
 MCEType<-99
 outfile= 'test.pdf'
 figstr <- 0.58
-
-FigAndeler(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil,
-           minald=minald, maxald=maxald, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg,
-           MCEType=MCEType, hentData=hentData, preprosess=preprosess)
+figKrymp1 <- 0.7	#Skaleringsparameter for enkeltfigurer
+#s1 <- 0.8	#Skaleringsparameter for enkeltfigurer
 
 @
 
+\section{Registrerende avdelinger}
+
+Innregistrering i registeret ble startet i 2013. Alle resultater i denne rapporten er basert
+å
+Norsk Gynekologisk Endoskopiregister startet elektronisk registrering helseregister.no i 2013. 
+Denne samlerapporten er basert på alle registreringer som er lagret og ferdigstilt i NGER fra 
+oppstart til dagen før tidspunktet for rapportuttrekk. 
+For hele landet er det gjort registrering av operasjoner i perioden 
+\Sexpr{min(NGERRegData$InnDato)} til \Sexpr{max(NGERRegData$InnDato)}.
+
+
+<<'Tabell:RegistrerendeAvd', results='asis', echo=FALSE, eval=T, >>=
+Tabell <- nger::NGERAntallRegPrAvd(RegData=RegData, datoFra = datoFra, datoTil = datoTil)
+
+
+print(xtable::xtable(Tabell, digits=0, align=c('l', rep('r', ncol(Tabell))),
+                     caption='Avdelinger som registrerer pasienter i NGER.',
+                     label='tab:RegistrenrendeAvd'),
+      include.rownames=TRUE,
+      include.colnames=TRUE)
+@
+
+
+<<'DivFig1', results='asis', echo=FALSE, eval=T>>=
+dum <- NGERFigAndelTid(RegData=NIRdata, valgtVar='alder', preprosess=0, hentData=0, datoFra=datoFra, 
+	datoTil=datoTil, enhetsUtvalg=1, reshID=reshID, outfile='FigAlderFord.pdf')
+@
+
 \begin{figure}[ht]
-\centering
-\includegraphics[width=\Sexpr{figstr}\textwidth]{test.pdf}
-\caption{testfigur for nger}
+\centering \includegraphics[width= \Sexpr{figKrymp1}\textwidth]{FigAlderFord.pdf} 
+\caption{\label{fig:AlderFord} Aldersfordeling, alle intensivopphold i uttrekket}
 \end{figure}
+
+
+%DOBBELTFIGURER
+%\begin{figure}[ht] 
+%\centering \includegraphics[width= \Sexpr{figKrymp1}\textwidth]{FigAlderGjsn.pdf} 
+%\centering \includegraphics[width= \Sexpr{figKrymp1}\textwidth]{FigAlderMed.pdf} 
+% \caption{Gjennomsnitt og median alder ved \Sexpr{ShTypeEgen}sykehus.}	
+%  \label{fig:Alder}
+%\end{figure}
+
+
+
 
 
 \end{document}

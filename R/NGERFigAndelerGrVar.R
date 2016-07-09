@@ -8,25 +8,28 @@
 #'  HypComplications, LapComplications, MCEType, OpAntibioticProphylaxis, OpASA, OpBMI, StatusFollowup.
 #'  Det benyttes også andre variable til utvalg osv.
 #'
-#' @inheritParams FigAndelTid
-#' @param valgtVar Velg hvilken variabel du ønsker å se resultat for
-#'		Alder: Andel pasienter over 70 år.
-#'		ComplAfterBleed: Postop. komplikasjon: Blødning
-#'		ComplEquipment: Postop. komplikasjon: Problemer med ustyr
-#'		ComplInfection: Postop. komplikasjon: Infeksjon
-#'		ComplOrgan: Postop. komplikasjon: Organskade
-#'		ComplReop: Reoperasjon som følge av komplikasjon
-#'		Education: Pasienter med høyere utdanning
-#'		FollowupSeriousness: Alvorlige komplikasjoner (grad 3 og 4)
-#'		KomplIntra: Komplikasjoner under operasjon (intraoperativt)
-#'		KomplPostop: Postoperative komplikasjoner
-#'		OpAntibioticProphylaxis: Fått antibiotikaprofylakse
-#'		OpASA: ASA-grad > II
-#'		OpBMI: Pasienter med fedme (BMI>30)
-#'		StatusFollowup: Fått postoperativ oppfølging
+#' Argumentet \emph{valgtVar} har følgende valgmuligheter:
+#'    \itemize{
+#'		\item Alder: Andel pasienter over 70 år.
+#'		\item ComplAfterBleed: Postop. komplikasjon: Blødning
+#'		\item ComplEquipment: Postop. komplikasjon: Problemer med ustyr
+#'		\item ComplInfection: Postop. komplikasjon: Infeksjon
+#'		\item ComplOrgan: Postop. komplikasjon: Organskade
+#'		\item ComplReop: Reoperasjon som følge av komplikasjon
+#'		\item Education: Pasienter med høyere utdanning
+#'		\item FollowupSeriousness: Alvorlige komplikasjoner (grad 3 og 4)
+#'		\item KomplIntra: Komplikasjoner under operasjon (intraoperativt)
+#'		\item KomplPostop: Postoperative komplikasjoner
+#'		\item OpAntibioticProphylaxis: Fått antibiotikaprofylakse
+#'		\item OpASA: ASA-grad > II
+#'		\item OpBMI: Pasienter med fedme (BMI>30)
+#'		\item StatusFollowup: Fått postoperativ oppfølging
+#'    }
+#'
+#' @inheritParams NGERFigAndelTid
 #' @export
 
-FigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
+NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
                         minald=0, maxald=130, MCEType=99, Hastegrad='', AlvorlighetKompl='', reshID, outfile='',
                         enhetsUtvalg=1, preprosess=TRUE, hentData=0) {
 

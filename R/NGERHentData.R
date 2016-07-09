@@ -2,7 +2,7 @@
 #'
 #' Provides NGER data from staging
 #'
-#' @inheritParams FigAndeler
+#' @inheritParams NGERFigAndeler
 #'
 #' @return RegData data frame
 #' @export

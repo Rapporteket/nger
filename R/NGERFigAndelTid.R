@@ -3,30 +3,32 @@
 #' Funksjon som genererer en figur med andeler av en variabel for hvert år.
 #'
 #' Detaljer:
-#'
-#' @inheritParams FigAndeler
+#' Argumentet \emph{valgtVar} har følgende valgmuligheter:
+#'    \itemize{
+#'		\item Alder: Pasienter over 70 år
+#'		\item ComplAfterBleed: Postop. komplikasjon: Blødning
+#'		\item ComplEquipment: Postop. komplikasjon: Problemer med ustyr
+#'		\item ComplInfection: Postop. komplikasjon: Infeksjon
+#'		\item ComplOrgan: Postop. komplikasjon: Organskade
+#'		\item ComplReop: Andel reoperasjon som følge av komplikasjon
+#'		\item FollowupSeriousness: Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
+#'		\item KomplIntra: Komplikasjoner ved operasjon. (kombinerer variablene HypComplications og LapComplications)
+#'		\item KomplPostop: Andel postoperative komplikasjoner
+#'		\item OpAntibioticProphylaxis: Andel som får antibiotika
+#'		\item OpASA: ASA-grad > II
+#'		\item OpBMI: Pasienter med fedme (BMI>30)
+#'		\item StatusFollowup: Pasienter som har fått postoperativ oppfølging
+#'    }
+
+#' @inheritParams NGERFigAndeler
 #' @param tidsenhet Oppløsning på tidsaksen. Verdier: 'Aar' (standard), 'Mnd'
 #'    NB: Når tidsenhet='Mnd', settes datoFra lik X måneder før datoTil.
-#' @param valgtVar
-#'	Alder: Pasienter over 70 år
-#'  ComplAfterBleed: Postop. komplikasjon: Blødning
-#'  ComplEquipment: Postop. komplikasjon: Problemer med ustyr
-#'  ComplInfection: Postop. komplikasjon: Infeksjon
-#'  ComplOrgan: Postop. komplikasjon: Organskade
-#'	ComplReop: Andel reoperasjon som følge av komplikasjon
-#'	FollowupSeriousness: Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
-#'	KomplIntra: Komplikasjoner ved operasjon. (kombinerer variablene HypComplications og LapComplications)
-#'	KomplPostop: Andel postoperative komplikasjoner
-#'	OpAntibioticProphylaxis: Andel som får antibiotika
-#'  OpASA: ASA-grad > II
-#'	OpBMI: Pasienter med fedme (BMI>30)
-#'	StatusFollowup: Pasienter som har fått postoperativ oppfølging
 #' @return Figur med ...
 #'
 #' @export
 
 
-FigAndelTid <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
+NGERFigAndelTid <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
                         minald=0, maxald=130, MCEType=99, Hastegrad='', AlvorlighetKompl='', reshID, outfile='',
                         enhetsUtvalg=1, preprosess=TRUE, hentData=0, tidsenhet='Aar') {
 

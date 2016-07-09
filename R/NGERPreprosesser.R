@@ -2,7 +2,7 @@
 #'
 #' Denne funksjonen definerer variabler og fjerner ikke-ferdigstilte registreringer
 #'
-#' @inheritParams FigAndeler
+#' @inheritParams NGERFigAndeler
 #'
 #' @return RegData En data.frame med det preprosesserte datasettet
 #'

@@ -14,7 +14,7 @@
 NGERRegDelayData()
 }
 \value{
-RegData data frame
+RegDelayData data frame
 }
 \description{
 Provides delay between event (main date) and registration as a data frame
@@ -22,8 +22,8 @@ Provides delay between event (main date) and registration as a data frame
 \details{
 For the query these conditions apply:
 \describe{
-\item{SkjemaStatus=1}{use Only finished registrations}
-\item{SkjemaNavn="Operasjon"}{use only registry form 'Operasjon'}
+\item{SkjemaStatus = 1}{use Only finished registrations}
+\item{SkjemaNavn = "Operasjon"}{use only registry form 'Operasjon'}
 }
 }
 
