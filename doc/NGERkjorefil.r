@@ -5,8 +5,8 @@ rm(list=ls())
 library(nger)
 library(knitr)
 library(tools)
-NGERAlleVarNum <- read.table('C:/Registre/NGER/data/AlleVarNum2016-03-31.csv', sep=';', header=T, encoding = 'UTF-8') #,
-NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-03-31.csv', sep=';', header=T, encoding = 'UTF-8')
+NGERAlleVarNum <- read.table('C:/Registre/NGER/data/AlleVarNum2016-06-08.csv', sep=';', header=T, encoding = 'UTF-8') #,
+NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-06-08.csv', sep=';', header=T, encoding = 'UTF-8')
 NGERRegData <- merge(NGERForlop, NGERAlleVarNum, by.x = "ForlopsID", by.y = "MCEID", all = FALSE)
 
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
@@ -165,3 +165,42 @@ for (valgtVar in variable) {
               reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,
               minald=minald, maxald=maxald)
 }
+
+
+######################### LITT LEKING ##############################
+setwd("C:/ResultattjenesteGIT/nger/")
+
+NGERAlleVarNum <- read.table('C:/Registre/NGER/data/AlleVarNum2016-06-08.csv', sep=';', header=T, encoding = 'UTF-8') #,
+NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-06-08.csv', sep=';', header=T, encoding = 'UTF-8')
+NGERRegData <- merge(NGERForlop, NGERAlleVarNum, by.x = "ForlopsID", by.y = "MCEID", all = FALSE)
+RegData <- NGERRegData
+
+data.frame(lapply(df, function(v) {
+  if (is.character(v)) return(toupper(v))
+  else return(v)
+}))
+
+x <- "MiXeD cAsE 123"
+chartr("iXs", "why", x)
+chartr("a-cX", "D-Fw", x)
+tolower(x)
+toupper(x)
+
+ProcHys <- c('HypProc1', 'HypProc2', 'HypProc3')
+ProcLap <- c('LapProc1', 'LapProc2', 'LapProc3')
+DiagLap <- c('LapDiag1', 'LapDiag2', 'LapDiag3')
+DiagHysLap <- c('HypDiag1', 'HypDiag2', 'HypDiag3')
+
+table(as.vector(RegData[,c(ProcHys, ProcLap)]))
+Alleproc <- table(toupper(as.vector(as.matrix(RegData[,c(ProcHys, ProcLap)]))))
+sort(Alleproc, decreasing = TRUE)[1:20]
+a <- names(Alleproc)
+
+
+
+
+
+
+
+
+

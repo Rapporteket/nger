@@ -10,7 +10,7 @@
 #' @export
 #'
 NGEROpInd <- function(RegData=0, datoFra='2000-04-01', datoTil='2050-12-31', minald=0, maxald=130, outfile='',
-                     reshID, enhetsUtvalg=1, MCEType=99, preprosess=0, hentData=0)
+                     reshID, enhetsUtvalg=1, OpMetode=99, preprosess=0, hentData=0)
 {
   ## Hvis spørring skjer fra R på server. ######################
   if(hentData==1){
@@ -23,7 +23,7 @@ NGEROpInd <- function(RegData=0, datoFra='2000-04-01', datoTil='2050-12-31', min
   }
 
   RegData$Variabel <- RegData$OpInd1
-  NGERUtvalg <- NGERLibUtvalg(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra, datoTil = datoTil, MCEType = MCEType)
+  NGERUtvalg <- NGERUtvalg(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra, datoTil = datoTil, OpMetode = OpMetode)
   RegData <- NGERUtvalg$RegData
   utvalgTxt <- NGERUtvalg$utvalgTxt
 

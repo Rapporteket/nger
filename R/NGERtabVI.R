@@ -14,32 +14,32 @@ NGERtabVI <- function(RegData) {
   myTab <- xtabs(OpBMI ~ dummy + OpAar,
                  aggregate(OpBMI~dummy+OpAar,RegData,mean))
   myTab <- rbind(myTab,
-                 xtabs(OpBMI ~ MCEType + OpAar,
-                       aggregate(OpBMI~MCEType+OpAar,RegData,mean)))
+                 xtabs(OpBMI ~ OpMetode + OpAar,
+                       aggregate(OpBMI~OpMetode+OpAar,RegData,mean)))
   RegData$dummy <- "\\textbf{Alle fødsler} (\\textit{antall})"
   myTab <- rbind(myTab,
                  xtabs(OpParities ~ dummy + OpAar,
                        aggregate(OpParities~dummy+OpAar,RegData,mean)))
   myTab <- rbind(myTab,
-                 xtabs(OpParities ~ MCEType + OpAar,
-                       aggregate(OpParities~MCEType+OpAar,RegData,mean)))
+                 xtabs(OpParities ~ OpMetode + OpAar,
+                       aggregate(OpParities~OpMetode+OpAar,RegData,mean)))
   RegData$dummy <- "\\textbf{Alle graviditeter} (\\textit{antall})"
   myTab <- rbind(myTab,
                  xtabs(OpPregnancies ~ dummy + OpAar,
                        aggregate(OpPregnancies~dummy+OpAar,RegData,mean)))
   myTab <- rbind(myTab,
-                 xtabs(OpPregnancies ~ MCEType + OpAar,
-                       aggregate(OpPregnancies~MCEType+OpAar,RegData,mean)))
+                 xtabs(OpPregnancies ~ OpMetode + OpAar,
+                       aggregate(OpPregnancies~OpMetode+OpAar,RegData,mean)))
   RegData$dummy <- "\\textbf{Alle knivtider} (\\textit{minutt})"
   myTab <- rbind(myTab,
                  xtabs(OpOptimeCount ~ dummy + OpAar,
                        aggregate(OpOptimeCount~dummy+OpAar,RegData,mean)))
   myTab <- rbind(myTab,
-                 xtabs(OpOptimeCount ~ MCEType + OpAar,
-                       aggregate(OpOptimeCount~MCEType+OpAar,RegData,mean)))
+                 xtabs(OpOptimeCount ~ OpMetode + OpAar,
+                       aggregate(OpOptimeCount~OpMetode+OpAar,RegData,mean)))
 
   # move rownames to its own column do allow duplicate names
-  # MCEType 1=laparo, 2=hysteroskopi, 3=begge
+  # OpMetode 1=laparo, 2=hysteroskopi, 3=begge
   pe <- rownames(myTab)
   pe[which(pe==1)] <- "\\quad Laparoskopi"
   pe[which(pe==2)] <- "\\quad Hysteroskopi"

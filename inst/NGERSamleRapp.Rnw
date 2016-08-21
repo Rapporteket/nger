@@ -1,5 +1,6 @@
 \documentclass [norsk,a4paper,twoside]{article}
 
+%Kan evt. samle alle pakkene i ei felles fil (mal) og bruke \include{filmeddiv.tex}
 \usepackage[norsk]{babel}
 \usepackage[utf8x]{inputenc}
 \usepackage{textcomp}
@@ -151,6 +152,10 @@ if (!exists('NGERRegData')){
 
 NGERRegData <- NGERPreprosess(NGERRegData)
 NGERRegData$OpAar <- as.factor(format(NGERRegData$HovedDato, '%Y'))
+indEget <- which(NGERRegData$ReshId == reshID)
+egetSh <- NGERRegData$SykehusNavn[match(reshID,NGERRegData$ReshId)]
+N <- dim(NGERRegData)[1]
+Neget <- length(indEget)
 
 library(xtable)
 datoFra <- '2013-01-01' 	 # min og max dato i utvalget vises alltid i figuren.
@@ -195,6 +200,82 @@ print(xtable::xtable(tabAvdN, digits=0, align=c('l', rep('r', max(c(1,ncol(tabAv
 @
 
 
+
+<<'Tabell:Pasientkarakterisika', results='asis', echo=FALSE, eval=T, >>=
+# Får feilmelding med duplikate radnavn. Be Are se på koden sin.
+
+#TabPasKar <- NGERtabVI(NGERRegData)
+
+#print(xtable::xtable(TabPasKar, digits=0, align=c('l', rep('r', max(c(1,ncol(TabPasKar)), na.rm=T))),
+#                     caption='Pasientkarakterisika og operasjonstid.',
+#                     label='tab:TabPasKar'),
+#					 include.rownames=TRUE, include.colnames=TRUE)
+
+@
+
+%DOBBELTFIGURER
+%\begin{figure}[ht]
+%\centering \includegraphics[width= \Sexpr{figKrymp1}\textwidth]{FigAlderGjsn.pdf}
+%\centering \includegraphics[width= \Sexpr{figKrymp1}\textwidth]{FigAlderMed.pdf}
+% \caption{Gjennomsnitt og median alder ved \Sexpr{ShTypeEgen}sykehus.}
+%  \label{fig:Alder}
+%\end{figure}
+
+<<'ProsedyrerDiagnoser', results='asis', echo=FALSE, eval=T, >>=
+#Tabell med de 20 vanligste prosedyrer og diagnoser for egen avdeling og hele landet
+
+ProcHys <- c('HypProc1', 'HypProc2', 'HypProc3')
+ProcLap <- c('LapProc1', 'LapProc2', 'LapProc3')
+DiagLap <- c('LapDiag1', 'LapDiag2', 'LapDiag3')
+DiagHys <- c('HypDiag1', 'HypDiag2', 'HypDiag3')
+
+
+Alleproc <- sort(table(toupper(as.vector(as.matrix(NGERRegData[ ,c(ProcHys, ProcLap)])))), decreasing = TRUE)
+AlleprocEget <- sort(table(toupper(as.vector(as.matrix(NGERRegData[indEget ,c(ProcHys, ProcLap)])))), decreasing = TRUE)
+ant <- 20
+Proc <- cbind( #Må fjerne tomme
+          Andel = (Alleproc[2:ant+1])/N*100 ,
+          Antall = Alleproc[2:ant+1] )
+
+ProcEget <- cbind( #Må fjerne tomme
+          Andel = (AlleprocEget[2:ant+1])/Neget*100 ,
+          Antall = AlleprocEget[2:ant+1] )
+
+Allediag <- sort(table(toupper(as.vector(as.matrix(NGERRegData[ ,c(DiagHys, DiagLap)])))), decreasing = TRUE)
+AllediagEget <- sort(table(toupper(as.vector(as.matrix(NGERRegData[indEget ,c(DiagHys, DiagLap)])))), decreasing = TRUE)
+ant <- 20
+Diag <- cbind( #Må fjerne tomme
+          Andel = (Allediag[2:ant+1])/N*100 ,
+          Antall = Allediag[2:ant+1] )
+
+DiagEget <- cbind( #Må fjerne tomme
+          Andel = (AllediagEget[2:ant+1])/Neget*100 ,
+          Antall = AllediagEget[2:ant+1] )
+
+
+xtable(Proc, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(Proc)), na.rm=T))),
+                     caption='Vanligste prosedyrer. Andel angir andel av antall utførte
+       operasjoner hvor prosedyra er benyttet.',
+                     label='tab:Proc', include.rownames=TRUE, include.colnames=TRUE)
+
+xtable(ProcEget, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(ProcEget)), na.rm=T))),
+                     caption='Vanligste prosedyrer, eget sykehus. Andel angir andel av antall utførte
+       operasjoner hvor prosedyra er benyttet.',
+                     label='tab:ProcEget', include.rownames=TRUE, include.colnames=TRUE)
+
+xtable(Diag, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(Diag)), na.rm=T))),
+                     caption='Vanligste diagnoser. Andel angir andel av antall utførte
+       operasjoner hvor diagnosen er benyttet.',
+                     label='tab:Diag', include.rownames=TRUE, include.colnames=TRUE)
+
+xtable(DiagEget, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(DiagEget)), na.rm=T))),
+                     caption='Vanligste diagnoser, eget sykehus. Andel angir andel av antall utførte
+       operasjoner hvor diagnosen er benyttet.',
+                     label='tab:DiagEget', include.rownames=TRUE, include.colnames=TRUE)
+
+
+@
+
 <<'DivFig1', results='asis', echo=FALSE, eval=T>>=
 dum <- NGERFigAndelTid(RegData=NGERRegData, datoFra=datoFra, valgtVar='StatusFollowup', datoTil=datoTil,
             reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='StatusOppf0Aar.pdf',
@@ -220,27 +301,6 @@ dum <- NGERFigAndeler(RegData=NGERRegData, datoFra=datoFra, valgtVar='OpAnesthet
   \centering \includegraphics[width= \Sexpr{figKrymp2}\textwidth]{OpAnestheticHyp.pdf}
   \caption{\label{fig:OpAnesthetic} Anestesitype ved endoskopiske inngrep.}
 \end{figure}
-
-
-<<'Tabell:Pasientkarakterisika', results='asis', echo=FALSE, eval=T, >>=
-
-#TabPasKar <- NGERtabVI(NGERRegData)
-
-#print(xtable::xtable(TabPasKar, digits=0, align=c('l', rep('r', max(c(1,ncol(TabPasKar)), na.rm=T))),
-#                     caption='Pasientkarakterisika og operasjonstid.',
-#                     label='tab:TabPasKar'),
-#					 include.rownames=TRUE, include.colnames=TRUE)
-
-@
-
-%DOBBELTFIGURER
-%\begin{figure}[ht]
-%\centering \includegraphics[width= \Sexpr{figKrymp1}\textwidth]{FigAlderGjsn.pdf}
-%\centering \includegraphics[width= \Sexpr{figKrymp1}\textwidth]{FigAlderMed.pdf}
-% \caption{Gjennomsnitt og median alder ved \Sexpr{ShTypeEgen}sykehus.}
-%  \label{fig:Alder}
-%\end{figure}
-
 
 
 
