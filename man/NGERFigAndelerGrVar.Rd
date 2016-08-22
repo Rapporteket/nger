@@ -5,7 +5,7 @@
 \title{Søylediagram med andeler for hver grupperingsenhet (sykehus, RHF, ...)}
 \usage{
 NGERFigAndelerGrVar(RegData = 0, valgtVar, datoFra = "2013-01-01",
-  datoTil = "3000-12-31", minald = 0, maxald = 130, MCEType = 99,
+  datoTil = "3000-12-31", minald = 0, maxald = 130, OpMetode = 99,
   Hastegrad = "", AlvorlighetKompl = "", reshID, outfile = "",
   enhetsUtvalg = 1, preprosess = 0, hentData = 0)
 }
@@ -22,7 +22,7 @@ NGERFigAndelerGrVar(RegData = 0, valgtVar, datoFra = "2013-01-01",
 
 \item{maxald}{Alder, til og med (Standardverdi: 130)}
 
-\item{MCEType}{1: Laparoskopi
+\item{OpMetode}{1: Laparoskopi
 2: Hysteroskopi
 3: Begge
 99: Alle}
@@ -65,27 +65,27 @@ Funksjon som genererer en figur med andeler av en variabel for grupperingsvariab
 Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus
 }
 \details{
-Variable funksjonen benytter: Alder (beregnes), ComplExist, ComplReop, ComplAfterBleed, ComplEquipment,
- ComplInfection, ComplOrganEducation, FollowupSeriousness
- HypComplications, LapComplications, MCEType, OpAntibioticProphylaxis, OpASA, OpBMI, StatusFollowup.
+Variable funksjonen benytter: Alder (beregnes), Opf0Komplikasjoner, Opf0Reoperasjon, Opf0KomplBlodning, LapAdherProfylakse,
+ Opf0KomplInfeksjon, Opf0KomplOrganUtdanning, Opf0AlvorlighetsGrad
+ HysKomplikasjoner, LapKomplikasjoner, OpMetode, OpAntibProfylakse, OpASA, OpBMI, Opf0Status.
  Det benyttes også andre variable til utvalg osv.
 
 Argumentet \emph{valgtVar} har følgende valgmuligheter:
    \itemize{
 	\item Alder: Andel pasienter over 70 år.
-	\item ComplAfterBleed: Postop. komplikasjon: Blødning
-	\item ComplEquipment: Postop. komplikasjon: Problemer med ustyr
-	\item ComplInfection: Postop. komplikasjon: Infeksjon
-	\item ComplOrgan: Postop. komplikasjon: Organskade
-	\item ComplReop: Reoperasjon som følge av komplikasjon
-	\item Education: Pasienter med høyere utdanning
-	\item FollowupSeriousness: Alvorlige komplikasjoner (grad 3 og 4)
+	\item Opf0KomplBlodning: Postop. komplikasjon: Blødning
+	\item LapAdherProfylakse: Postop. komplikasjon: Problemer med ustyr
+	\item Opf0KomplInfeksjon: Postop. komplikasjon: Infeksjon
+	\item Opf0KomplOrgan: Postop. komplikasjon: Organskade
+	\item Opf0Reoperasjon: Reoperasjon som følge av komplikasjon
+	\item Utdanning: Pasienter med høyere utdanning
+	\item Opf0AlvorlighetsGrad: Alvorlige komplikasjoner (grad 3 og 4)
 	\item KomplIntra: Komplikasjoner under operasjon (intraoperativt)
 	\item KomplPostop: Postoperative komplikasjoner
-	\item OpAntibioticProphylaxis: Fått antibiotikaprofylakse
+	\item OpAntibProfylakse: Fått antibiotikaprofylakse
 	\item OpASA: ASA-grad > II
 	\item OpBMI: Pasienter med fedme (BMI>30)
-	\item StatusFollowup: Fått postoperativ oppfølging
+	\item Opf0Status: Fått postoperativ oppfølging
    }
 }
 

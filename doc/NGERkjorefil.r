@@ -23,9 +23,9 @@ tools::texi2pdf('NGERSamleRapp.tex')
 rm(list=ls())
 library(nger)
 #NGERData <- read.table('C:/Registre/NGER/data/NGER2015-03-03NyeNavn.csv', sep=';', header=T) #,
-NGERAlleVarNum <- read.table('C:/Registre/NGER/data/AlleVarNum2016-03-31.csv', sep=';', header=T) #,
-NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-03-31.csv', sep=';', header=T)
-NGERData <- merge(NGERForlop, NGERAlleVarNum, by.x = "ForlopsID", by.y = "MCEID", all = FALSE)
+NGERAlleVarNum <- read.table('C:/Registre/NGER/data/alleVarNum2016-08-22.csv', sep=';', header=T) #,
+NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-08-22.csv', sep=';', header=T)
+NGERData <- merge(NGERForlop, NGERAlleVarNum, by = "ForlopsID", suffixes = c('','xx'), all = FALSE)
 RegData <- NGERData
 # Inndata til funksjon:
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
@@ -34,16 +34,16 @@ maxald <- 130	#alder, til og med
 datoFra <- '2013-01-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2016-12-31'
 preprosess <- TRUE
-MCEType <- 99
+OpMetode <- 99
 Hastegrad <- ''
-AlvorlighetKompl <- c('2','3')
+AlvorlighetKompl <- ''#c('2','3')
 hentData <- 0
 enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
-valgtVar <- 'KomplPostUtd'	#Må velge... Alder, Education, FollowupSeriousness, HypCompleteness, KomplPost, KomplPostUtd, KomplReopUtd,
-        #KomplHyp, LapIntraAbdominal, KomplLap, LapComplications
+valgtVar <- 'Alder'	#Må velge... Alder, Education, FollowupSeriousness, HysCompleteness, KomplPost, KomplPostUtd, KomplReopUtd,
+        #KomplHys, LapIntraAbdominal, KomplLap, LapComplications
         #LapAccessMethod, LapEkstrautstyr,LapNumHjelpeinnstikk
-        #MaritalStatus, MCETypeOpAnesthetic, PatientNorwegian, OpAnesthetic
+        #MaritalStatus, OpMetodeOpAnesthetic, PatientNorwegian, OpAnesthetic
 				#, OpASA,
 		#OpBMICategory, Opcat, OpDaySurgery, OpEarlierVaginal, OpEarlierLaparoscopy, OpEarlierLaparatomy,
 		#OpOpcatOutsideDaytime, OpType
@@ -51,17 +51,16 @@ valgtVar <- 'KomplPostUtd'	#Må velge... Alder, Education, FollowupSeriousness, 
 outfile <- paste(valgtVar, '_ford.png', sep='')	#Navn angis av Jasper
 setwd("C:/ResultattjenesteGIT/nger/")
 
-
 NGERFigAndeler(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
-	reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile, MCEType = MCEType,
+	reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile, OpMetode = OpMetode,
   minald=minald, maxald=maxald, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
 
 
 #Teste variable
-variable <- c('Alder', 'Education', 'FollowupSeriousness', 'HypCompleteness', 'HypComplications',
+variable <- c('Alder', 'Education', 'FollowupSeriousness', 'HysCompleteness', 'HysComplications',
               'KomplPost', 'KomplPostUtd', 'KomplReopUtd', 'LapAccessMethod', 'LapComplications',
               'LapEkstrautstyr', 'LapIntraAbdominal', 'LapNumHjelpeinnstikk',
-              'MaritalStatus', 'MCEType', 'PatientNorwegian', 'OpAnesthetic', 'OpASA',
+              'MaritalStatus', 'OpMetode', 'PatientNorwegian', 'OpAnesthetic', 'OpASA',
               'OpBMICategory', 'Opcat', 'OpDaySurgery', 'OpEarlierVaginal', 'OpEarlierLaparoscopy',
               'OpEarlierLaparatomy', 'OpOpcatOutsideDaytime', 'OpType')
 
@@ -91,7 +90,7 @@ datoFra <- '2013-02-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- Sys.Date() #'2016-03-01'
 preprosess <- TRUE
 hentData <- 0
-MCEType <- 99
+OpMetode <- 99
 tidsenhet <- 'Aar'
 Hastegrad <- ''
 AlvorlighetKompl <- ''
@@ -102,7 +101,7 @@ outfile <- paste(valgtVar, '_', tidsenhet, '.png', sep='')
 
 NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
             reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,
-            minald=minald, maxald=maxald, MCEType=MCEType, Hastegrad=Hastegrad,
+            minald=minald, maxald=maxald, OpMetode=OpMetode, Hastegrad=Hastegrad,
             AlvorlighetKompl=AlvorlighetKompl, tidsenhet=tidsenhet, preprosess=1)
 
 
@@ -116,7 +115,7 @@ for (valgtVar in variable) {
   outfile <- paste0(valgtVar, '_', tidsenhet, '.png')
   NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
               reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,
-              minald=minald, maxald=maxald, MCEType=MCEType, Hastegrad=Hastegrad,
+              minald=minald, maxald=maxald, OpMetode=OpMetode, Hastegrad=Hastegrad,
               AlvorlighetKompl=AlvorlighetKompl, tidsenhet=tidsenhet, preprosess=TRUE)
 }
 
@@ -139,7 +138,7 @@ datoTil <- '2016-10-01'
 preprosess <- TRUE
 if (preprosess){RegData <- NGERPreprosess(RegData=RegData, reshID=reshID)}
 
-MCEType <- 1
+OpMetode <- 1
 enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
 valgtVar <- 'OpBMI'	#Må velge... Alder, ComplReop, Education, FollowupSeriousness, KomplIntra, KomplPostop,
@@ -151,7 +150,7 @@ setwd("C:/ResultattjenesteGIT/nger/")
 
 
 NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
-            reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile, MCEType=MCEType,
+            reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile, OpMetode=OpMetode,
             minald=minald, maxald=maxald, Hastegrad = Hastegrad)
 
 
@@ -186,10 +185,10 @@ chartr("a-cX", "D-Fw", x)
 tolower(x)
 toupper(x)
 
-ProcHys <- c('HypProc1', 'HypProc2', 'HypProc3')
+ProcHys <- c('HysProc1', 'HysProc2', 'HysProc3')
 ProcLap <- c('LapProc1', 'LapProc2', 'LapProc3')
 DiagLap <- c('LapDiag1', 'LapDiag2', 'LapDiag3')
-DiagHysLap <- c('HypDiag1', 'HypDiag2', 'HypDiag3')
+DiagHysLap <- c('HysDiag1', 'HysDiag2', 'HysDiag3')
 
 table(as.vector(RegData[,c(ProcHys, ProcLap)]))
 Alleproc <- table(toupper(as.vector(as.matrix(RegData[,c(ProcHys, ProcLap)]))))

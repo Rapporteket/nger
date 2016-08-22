@@ -6,7 +6,7 @@
 \usage{
 NGERFigAndeler(RegData = 0, valgtVar, datoFra = "2013-01-01",
   datoTil = "2050-12-31", minald = 0, maxald = 130, outfile = "",
-  reshID, enhetsUtvalg = 1, MCEType = 99, Hastegrad = "",
+  reshID, enhetsUtvalg = 1, OpMetode = 99, Hastegrad = "",
   AlvorlighetKompl = "", hentData = 0, preprosess = 0)
 }
 \arguments{
@@ -33,7 +33,7 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 1: Egen enhet mot resten av landet (Standard)
 2: Egen enhet}
 
-\item{MCEType}{1: Laparoskopi
+\item{OpMetode}{1: Laparoskopi
 2: Hysteroskopi
 3: Begge
 99: Alle}
@@ -71,32 +71,32 @@ filtrert på de utvalg som er gjort.
 Argumentet \emph{valgtVar} har følgende valgmuligheter:
    \itemize{
     \item Alder: Pasientens alder, 5-årige aldersgrupper
-    \item Education: Pasientens utdanning (1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent)
-    \item FollowupSeriousness: Alvorlighetsgrad, postoperative komplikasjoner
+    \item Utdanning: Pasientens utdanning (1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent)
+    \item Opf0AlvorlighetsGrad: Alvorlighetsgrad, postoperative komplikasjoner
 		  Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
-    \item HypCompleteness: Gjennomføringsgrad av hysteroskopi
+    \item HysGjforingsGrad: Gjennomføringsgrad av hysteroskopi
    		Koder:	1-Fullstendig, 2-Ufullstendig, 3-Mislykket
-    \item HypComplications: Hysteroskopi intrapoerative komplikasjoner
+    \item HysKomplikasjoner: Hysteroskopi intrapoerative komplikasjoner
     \item KomplPost: Postoperative komplikasjoner
     \item KomplPostUtd: Postoperative komplikasjoner for ulike utdanningsgrupper
     \item KomplReopUtd: Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper
-    \item LapAccessMethod: Teknikk for laparaskopisk tilgang
-    \item LapComplications: Laparoskopiske intrapoerative komplikasjoner
+    \item LapTilgangsMetode: Teknikk for laparaskopisk tilgang
+    \item LapKomplikasjoner: Laparoskopiske intrapoerative komplikasjoner
     \item LapEkstrautstyr: Laparaskopisk ekstrautstyr - Kommer, NY variabel: koagulasjon og klipping
-    \item LapIntraAbdominal: Laparoskopiske intraabdominale komplikasjoner
+    \item LapIntraabdominell: Laparoskopiske intraabdominale komplikasjoner
     \item LapNumHjelpeinnstikk: Antall hjelpeinnstikk
-    \item MaritalStatus: Sivilstand
-    \item MCEType: Operasjonsmetode
-    \item PatientNorwegian: Pasientens norskkunnskaper
-    \item OpAnesthetic: Anestesitype
+    \item Sivilstatus: Sivilstand
+    \item OpMetode: Operasjonsmetode
+    \item Norsktalende: Pasientens norskkunnskaper
+    \item OpAnestesi: Anestesitype
     \item OpASA: ASA-grad
-    \item OpBMICategory: BMI-kategori
-    \item Opcat: Hastegrad av operasjon
-    \item OpDaySurgery: Dagkirurgiske inngrep
-    \item OpEarlierVaginal: Tidligere vaginale inngrep
-    \item OpEarlierLaparoscopy: Tidligere laparoskopi
+    \item OpBMIKategori: BMI-kategori
+    \item OpKategori: Hastegrad av operasjon
+    \item OpDagkirurgi: Dagkirurgiske inngrep
+    \item OpTidlVagInngrep: Tidligere vaginale inngrep
+    \item OpTidlLapsko: Tidligere laparoskopi
     \item OpEarlierLaparatomy: Tidligere laparatomi
-    \item OpOpcatOutsideDaytime: Operasjon i legens vakttid
+    \item OpOpKategoriOutsideDaytime: Operasjon i legens vakttid
     \item OpType: Primæroperasjon eller reoperasjon
    }
 }
