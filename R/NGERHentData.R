@@ -71,7 +71,7 @@ NGERHentRegData <- function(datoFra = '2014-01-01', datoTil = '2099-01-01') {
 	OpTidlLapsko,
 	OpTidlLaparotomi,
 	OpTidlVagInngrep,
-	OpOpKategoriOutsideDaytime,
+	OpIVaktTid,
 	OpType,
 	PasientID,
 	Norsktalende,

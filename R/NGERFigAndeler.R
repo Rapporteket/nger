@@ -30,8 +30,8 @@
 #'     \item OpDagkirurgi: Dagkirurgiske inngrep
 #'     \item OpTidlVagInngrep: Tidligere vaginale inngrep
 #'     \item OpTidlLapsko: Tidligere laparoskopi
-#'     \item OpEarlierLaparatomy: Tidligere laparatomi
-#'     \item OpOpKategoriOutsideDaytime: Operasjon i legens vakttid
+#'     \item OpTidlLaparotomi: Tidligere laparatomi
+#'     \item OpIVaktTid: Operasjon i legens vakttid
 #'     \item OpType: Primæroperasjon eller reoperasjon
 #'    }
 #'
@@ -187,12 +187,12 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
           grtxt <- c('Elektiv', 'Akutt', 'Ø-hjelp', 'Ukjent')
           koder <- 1:3
      }
-     if (valgtVar %in% c('OpTidlVagInngrep', 'OpTidlLapsko', 'OpEarlierLaparatomy')) {
+     if (valgtVar %in% c('OpTidlVagInngrep', 'OpTidlLapsko', 'OpTidlLaparotomi')) {
           # 0: Nei, 1: Ja, 9: Vet ikke
           Tittel <- sprintf('Tidligere %s', switch(as.character(valgtVar),
                                                    'OpTidlVagInngrep' = 'vaginale inngrep',
                                                    'OpTidlLapsko' = 'laparoskopiske inngrep',
-                                                   'OpEarlierLaparatomy' = 'laparatomi'))
+                                                   'OpTidlLaparotomi' = 'laparatomi'))
           grtxt <- c('Nei', 'Ja', 'Vet ikke/Ukjent')
           koder <- 0:1
      }
@@ -204,7 +204,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
           koder <- 0:1
      }
 
-     if (valgtVar == 'OpOpKategoriOutsideDaytime') {
+     if (valgtVar == 'OpIVaktTid') {
        #0: Nei, 1: Ja Manglende:Ukjent
        Hastegrad <- as.character(2:3)
        Tittel <- 'Operasjon i vakttid'

@@ -14,7 +14,7 @@ NGERPreprosess <- function(RegData=RegData)
   RegData <- RegData[RegData$BasisRegStatus==1, ]
 
   #For bedre lesbarhet:
-  RegData$OpEarlierLaparatomy <- RegData$OpTidlLaparotomi
+  #RegData$OpTidlLaparotomi <- RegData$OpTidlLaparotomi
 
   #Riktig format på datovariable:
   #RegData$FodselsDato <- as.Date(RegData$FodselsDato, format="%Y-%m-%d")

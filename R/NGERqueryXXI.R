@@ -31,7 +31,7 @@ SELECT
   v.OpTidlVagInngrep,
   v.OpTidlLapsko,
   v.OpTidlLaparotomi,
-  v.OpOpKategoriOutsideDaytime,
+  v.OpIVaktTid,
   v.OpDagkirurgi,
   v.OpMetode,
   f.BasisRegStatus,
