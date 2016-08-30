@@ -43,7 +43,7 @@ hentData <- 0
 variable <- c('KomplIntra', 'KomplPostop', 'Opf0Status')
 for (valgtVar in variable) {
 	outfile <- paste0(valgtVar, '_Alle', tidsenhet, '.pdf')
-	FigAndelerGrVar(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra,
+	NGERFigAndelerGrVar(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra,
                 datoTil=datoTil, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg,
                 hentData=0, preprosess=preprosess)
 }
@@ -53,7 +53,7 @@ variable <- c('Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf
               'OpASA', 'OpBMI', 'Opf0Status')
 for (valgtVar in variable) {
 	outfile <- paste0(valgtVar, '_', tidsenhet, '.pdf')
-	FigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
+	NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
               reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,
               tidsenhet=tidsenhet, preprosess=preprosess)
 			  }
