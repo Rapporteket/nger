@@ -37,7 +37,7 @@ Hastegrad <- ""
 AlvorlighetKompl <- ""
 enhetsUtvalg <- 1
 tidsenhet <- 'Mnd'
-preprosess <- FALSE
+preprosess <- 0
 hentData <- 0
 
 variable <- c('KomplIntra', 'KomplPostop', 'Opf0Status')

@@ -5,7 +5,7 @@
 \title{Søylediagram med andeler for hver grupperingsenhet (sykehus, RHF, ...)}
 \usage{
 NGERFigAndelerGrVar(RegData = 0, valgtVar, datoFra = "2013-01-01",
-  datoTil = "3000-12-31", minald = 0, maxald = 130, OpMetode = 99,
+  datoTil = "3000-12-31", minald = 0, maxald = 130, MCEType = 99,
   Hastegrad = "", AlvorlighetKompl = "", reshID, outfile = "",
   enhetsUtvalg = 1, preprosess = 0, hentData = 0)
 }
@@ -21,11 +21,6 @@ NGERFigAndelerGrVar(RegData = 0, valgtVar, datoFra = "2013-01-01",
 \item{minald}{Alder, fra og med (Standardverdi: 0)}
 
 \item{maxald}{Alder, til og med (Standardverdi: 130)}
-
-\item{OpMetode}{1: Laparoskopi
-2: Hysteroskopi
-3: Begge
-99: Alle}
 
 \item{Hastegrad}{Hastegrad av operasjon.
 1: Elektiv

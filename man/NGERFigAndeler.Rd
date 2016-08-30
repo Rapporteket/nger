@@ -6,7 +6,7 @@
 \usage{
 NGERFigAndeler(RegData = 0, valgtVar, datoFra = "2013-01-01",
   datoTil = "2050-12-31", minald = 0, maxald = 130, outfile = "",
-  reshID, enhetsUtvalg = 1, OpMetode = 99, Hastegrad = "",
+  reshID, enhetsUtvalg = 1, MCEType = 99, Hastegrad = "",
   AlvorlighetKompl = "", hentData = 0, preprosess = 0)
 }
 \arguments{
@@ -33,11 +33,6 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 1: Egen enhet mot resten av landet (Standard)
 2: Egen enhet}
 
-\item{OpMetode}{1: Laparoskopi
-2: Hysteroskopi
-3: Begge
-99: Alle}
-
 \item{Hastegrad}{Hastegrad av operasjon.
 1: Elektiv
 2: Akutt
@@ -59,6 +54,11 @@ Detajer: Her bør man liste opp hvilke variable funksjonen benytter.}
 \item{preprosess}{Preprosesser data
 0: Nei (Standard)
 1: Ja}
+
+\item{OpMetode}{1: Laparoskopi
+2: Hysteroskopi
+3: Begge
+99: Alle}
 }
 \value{
 En figur med søylediagram (fordeling) av ønsket variabel
