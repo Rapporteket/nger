@@ -21,6 +21,9 @@ if (varUtvalg==0) {
   HysGjforingsGrad,
   HysKomplikasjoner,
   HysPerforasjon,
+  HysProsedyre1,
+  HysProsedyre2,
+  HysProsedyre3,
   HysTeknisk,
   HysTilgang,
   LapAdherProfylakse,
@@ -40,6 +43,9 @@ if (varUtvalg==0) {
   LapNerv,
   LapNett,
   LapNumHjelpeinnstikk,
+  LapProsedyre1,
+  LapProsedyre2,
+  LapProsedyre3,
   LapPostoperativ,
   LapPreparatopose,
   LapRobotKirurgi,
@@ -91,7 +97,7 @@ if (varUtvalg==0) {
   FROM AlleVarNum
   INNER JOIN ForlopsOversikt
   ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID
-  INNER JOIN FollowupsNum
+  LEFT JOIN FollowupsNum
   ON ForlopsOversikt.ForlopsID = FollowupsNum.ForlopsID
 WHERE HovedDato >= \'', datoFra, '\' AND HovedDato <= \'', datoTil, '\'')
 

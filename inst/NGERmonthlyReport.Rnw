@@ -40,7 +40,7 @@ tidsenhet <- 'Mnd'
 preprosess <- FALSE
 hentData <- 0
 
-variable <- c('KomplIntra', 'KomplPostop', 'StatusFollowup')
+variable <- c('KomplIntra', 'KomplPostop', 'Opf0Status')
 for (valgtVar in variable) {
 	outfile <- paste0(valgtVar, '_Alle', tidsenhet, '.pdf')
 	FigAndelerGrVar(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra,
@@ -48,9 +48,9 @@ for (valgtVar in variable) {
                 hentData=0, preprosess=preprosess)
 }
 
-variable <- c('ComplAfterBleed', 'ComplEquipment', 'ComplInfection', 'ComplOrgan', 'ComplReop',
-              'FollowupSeriousness', 'KomplIntra', 'KomplPostop', 'OpAntibioticProphylaxis',
-              'OpASA', 'OpBMI', 'StatusFollowup')
+variable <- c('Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan', 'Opf0Reoperasjon',
+              'Opf0AlvorlighetsGrad', 'KomplIntra', 'KomplPostop', 'OpAntibProfylakse',
+              'OpASA', 'OpBMI', 'Opf0Status')
 for (valgtVar in variable) {
 	outfile <- paste0(valgtVar, '_', tidsenhet, '.pdf')
 	FigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
@@ -107,7 +107,7 @@ MÅNEDSRAPPORT \\
 \begin{frame}[fragile]
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.35]{ComplAfterBleed_Mnd.pdf}
+\includegraphics[scale=0.35]{Opf0KomplBlodning_Mnd.pdf}
 \caption{Postoperativ komplikasjon: Blødning}
 \end{figure}
 \end{frame}
@@ -115,7 +115,7 @@ MÅNEDSRAPPORT \\
 \begin{frame}[fragile]
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.35]{ComplEquipment_Mnd.pdf}
+\includegraphics[scale=0.35]{Opf0KomplUtstyr_Mnd.pdf}
 \caption{Postoperativ komplikasjon: Problemer med ustyr}
 \end{figure}
 \end{frame}
@@ -123,7 +123,7 @@ MÅNEDSRAPPORT \\
 \begin{frame}[fragile]
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.35]{ComplInfection_Mnd.pdf}
+\includegraphics[scale=0.35]{Opf0KomplInfeksjon_Mnd.pdf}
 \caption{Postoperativ komplikasjon: Infeksjon}
 \end{figure}
 \end{frame}
@@ -131,7 +131,7 @@ MÅNEDSRAPPORT \\
 \begin{frame}[fragile]
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.35]{ComplOrgan_Mnd.pdf}
+\includegraphics[scale=0.35]{Opf0KomplOrgan_Mnd.pdf}
 \caption{Postoperativ komplikasjon: Organskade}
 \end{figure}
 \end{frame}
@@ -139,7 +139,7 @@ MÅNEDSRAPPORT \\
 \begin{frame}[fragile]
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.35]{ComplReop_Mnd.pdf}
+\includegraphics[scale=0.35]{Opf0Reoperasjon_Mnd.pdf}
 \caption{Postoperativ komplikasjon: Reoperasjon}
 \end{figure}
 \end{frame}
@@ -147,7 +147,7 @@ MÅNEDSRAPPORT \\
 \begin{frame}[fragile]
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.35]{FollowupSeriousness_Mnd.pdf}
+\includegraphics[scale=0.35]{Opf0AlvorlighetsGrad_Mnd.pdf}
 \caption{Alvorlige komplikasjoner (grad 3 og 4)}
 \end{figure}
 \end{frame}
@@ -174,7 +174,7 @@ MÅNEDSRAPPORT \\
 \begin{frame}[fragile]
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.35]{StatusFollowup_AlleMnd.pdf}
+\includegraphics[scale=0.35]{Opf0Status_AlleMnd.pdf}
 \caption{Oppfølging utført}
 \end{figure}
 \end{frame}

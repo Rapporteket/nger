@@ -36,8 +36,8 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 99: Alle}
 
 \item{preprosess}{Preprosesser data
-FALSE: Nei (Standard)
-TRUE: Ja}
+0: Nei (Standard)
+1: Ja}
 
 \item{hentData}{Gjør spørring mot database
 0: Nei, RegData gis som input til funksjonen (Standard)

@@ -6,33 +6,35 @@
 #' Argumentet \emph{valgtVar} har følgende valgmuligheter:
 #'    \itemize{
 #'     \item Alder: Pasientens alder, 5-årige aldersgrupper
-#'     \item Utdanning: Pasientens utdanning (1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent)
-#'     \item Opf0AlvorlighetsGrad: Alvorlighetsgrad, postoperative komplikasjoner
-#'			  Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
+#'     \item Diagnoser: Hyppigst forekommende diagnoser
 #'     \item HysGjforingsGrad: Gjennomføringsgrad av hysteroskopi
 #'    		Koder:	1-Fullstendig, 2-Ufullstendig, 3-Mislykket
 #'     \item HysKomplikasjoner: Hysteroskopi intrapoerative komplikasjoner
 #'     \item KomplPost: Postoperative komplikasjoner
 #'     \item KomplPostUtd: Postoperative komplikasjoner for ulike utdanningsgrupper
 #'     \item KomplReopUtd: Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper
-#'     \item LapTilgangsMetode: Teknikk for laparaskopisk tilgang
 #'     \item LapKomplikasjoner: Laparoskopiske intrapoerative komplikasjoner
 #'     \item LapEkstrautstyr: Laparaskopisk ekstrautstyr - Kommer, NY variabel: koagulasjon og klipping
 #'     \item LapIntraabdominell: Laparoskopiske intraabdominale komplikasjoner
 #'     \item LapNumHjelpeinnstikk: Antall hjelpeinnstikk
-#'     \item Sivilstatus: Sivilstand
-#'     \item OpMetode: Operasjonsmetode
+#'     \item LapTilgangsMetode: Teknikk for laparaskopisk tilgang
 #'     \item Norsktalende: Pasientens norskkunnskaper
 #'     \item OpAnestesi: Anestesitype
 #'     \item OpASA: ASA-grad
-#'     \item OpBMIKategori: BMI-kategori
-#'     \item OpKategori: Hastegrad av operasjon
+#'     \item OpBMI: BMI-kategori
+#'     \item Opf0AlvorlighetsGrad: Alvorlighetsgrad, postoperative komplikasjoner
+#'			  Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
 #'     \item OpDagkirurgi: Dagkirurgiske inngrep
+#'     \item OpIVaktTid: Operasjon i legens vakttid
+#'     \item OpKategori: Hastegrad av operasjon
+#'     \item OpMetode: Operasjonsmetode
 #'     \item OpTidlVagInngrep: Tidligere vaginale inngrep
 #'     \item OpTidlLapsko: Tidligere laparoskopi
 #'     \item OpTidlLaparotomi: Tidligere laparatomi
-#'     \item OpIVaktTid: Operasjon i legens vakttid
 #'     \item OpType: Primæroperasjon eller reoperasjon
+#'     \item Prosedyrer: Hyppigst forekommende prosedyrer
+#'     \item Sivilstatus: Sivilstand
+#'     \item Utdanning: Pasientens utdanning (1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent)
 #'    }
 #'
 #' @param RegData En dataramme med alle nødvendige variabler fra registeret
@@ -50,8 +52,8 @@
 #'                 1: Egen enhet mot resten av landet (Standard)
 #'                 2: Egen enhet
 #' @param preprosess Preprosesser data
-#'                 FALSE: Nei (Standard)
-#'                 TRUE: Ja
+#'                 0: Nei (Standard)
+#'                 1: Ja
 #' @param hentData Gjør spørring mot database
 #'                 0: Nei, RegData gis som input til funksjonen (Standard)
 #'                 1: Ja
@@ -110,24 +112,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
      koder <- NULL
 
 
-     if (valgtVar == 'Utdanning') {
-          # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
-          Tittel <- 'Utdanningsnivå'
-          grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år', 'Ukjent')
-          koder <- 1:5
-          retn <- 'H'
-     }
-
-	if (valgtVar=='Opf0AlvorlighetsGrad') {
-		#Postoperative komplikasjoner
-		#Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
-		RegData <- RegData[which(RegData$Opf0Status == 1) %i% which(RegData$Opf0Komplikasjoner == 1), ]
-		grtxt <- c('Lite alvorlig', 'Middels alvorlig', 'Alvorlig', 'Dødelig', 'Ukjent')
-		Tittel <- 'Alvorlighetsgrad av komplikasjoner'
-		koder <- 1:4
-		retn <- 'H'
-	}
-	if (valgtVar=='HysGjforingsGrad') {
+	 if (valgtVar=='HysGjforingsGrad') {
 		#Gjennomføringsgrad av hysteroskopi
 		#Kode •	1-Fullstendig, 2-Ufullstendig, 3-Mislykket
 		RegData <- RegData[which(RegData$OpMetode == 2), ]
@@ -143,23 +128,6 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
           grtxt <- c('Åpent', 'Veress-nål', 'Annet', 'Ukjent') #Ny kategori: Palmers point, neste prod.setting, etterreg. fra 1.1.2016(?)
           koder <- 0:2
      }
-
-     if (valgtVar == 'Sivilstatus') {
-          # 1:Enslig, 2:Særboer, 3:Samboer, 4:Gift, 5:Skilt, 6:Enke, 9:Ukjent
-          Tittel <- 'Sivilstatus'
-          grtxt <- c('Enslig', 'Særboer', 'Samboer', 'Gift', 'Skilt', 'Enke', 'Ukjent')
-          koder <- 1:6
-          retn <- 'H'
-     }
-
-     if (valgtVar == 'OpMetode') {
-          #1:Laparoskopi, 2:Hysteroskopi, 3:Begge
-          Tittel <- 'Operasjonsmetode'
-          koder <- 1:3
-          grtxt <- c('Laparoskopi', 'Hysteroskopi', 'Begge', 'Ukjent')
-          retn <- 'H'
-     }
-
      if (valgtVar == 'Norsktalende') {
           # 0:Nei, 1:Ja, 2:Delvis, 9:Ukjent
           Tittel <- 'Patient forstår og gjør seg forstått på norsk'
@@ -180,12 +148,41 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
        Tittel <-  'ASA-gruppe'
 	   retn <- 'H'
      }
-
+     if (valgtVar == 'OpDagkirurgi') {
+          #0: Nei, 1: Ja Manglende:Ukjent
+          Tittel <- 'Dagkirurgiske Inngrep'
+          grtxt <- c('Nei', 'Ja', 'Ukjent')
+          koder <- 0:1
+     }
+	if (valgtVar=='Opf0AlvorlighetsGrad') {
+		#Postoperative komplikasjoner
+		#Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
+#		RegData <- RegData[which(RegData$Opf0Status == 1) %i% which(RegData$Opf0Komplikasjoner == 1), ]
+		RegData <- RegData[(which(RegData$Opf0Status == 1) %i% which(RegData$Opf0Komplikasjoner %in% 0:1)), ]
+		grtxt <- c('Lite alvorlig', 'Middels alvorlig', 'Alvorlig', 'Dødelig', 'Ingen kompl.')
+		Tittel <- 'Alvorlighetsgrad av komplikasjoner'
+		koder <- 1:4
+		retn <- 'H'
+	}
+     if (valgtVar == 'OpIVaktTid') {
+       #0: Nei, 1: Ja Manglende:Ukjent
+       Hastegrad <- as.character(2:3)
+       Tittel <- 'Operasjon i vakttid'
+       grtxt <- c('Nei', 'Ja', 'Ukjent')
+       koder <- 0:1
+     }
      if (valgtVar == 'OpKategori') {
           # 1:Elektiv, 2:Akutt, 3:Øyeblikkelig hjelp
           Tittel <- 'Operasjonskategori'
           grtxt <- c('Elektiv', 'Akutt', 'Ø-hjelp', 'Ukjent')
           koder <- 1:3
+     }
+     if (valgtVar == 'OpMetode') {
+          #1:Laparoskopi, 2:Hysteroskopi, 3:Begge
+          Tittel <- 'Operasjonsmetode'
+          koder <- 1:3
+          grtxt <- c('Laparoskopi', 'Hysteroskopi', 'Begge', 'Ukjent')
+          retn <- 'H'
      }
      if (valgtVar %in% c('OpTidlVagInngrep', 'OpTidlLapsko', 'OpTidlLaparotomi')) {
           # 0: Nei, 1: Ja, 9: Vet ikke
@@ -196,36 +193,32 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
           grtxt <- c('Nei', 'Ja', 'Vet ikke/Ukjent')
           koder <- 0:1
      }
-
-     if (valgtVar == 'OpDagkirurgi') {
-          #0: Nei, 1: Ja Manglende:Ukjent
-          Tittel <- 'Dagkirurgiske Inngrep'
-          grtxt <- c('Nei', 'Ja', 'Ukjent')
-          koder <- 0:1
-     }
-
-     if (valgtVar == 'OpIVaktTid') {
-       #0: Nei, 1: Ja Manglende:Ukjent
-       Hastegrad <- as.character(2:3)
-       Tittel <- 'Operasjon i vakttid'
-       grtxt <- c('Nei', 'Ja', 'Ukjent')
-       koder <- 0:1
-     }
-
-
-
      if (valgtVar == 'OpType') {
           # 1:Primærinngrep, 2:Reoperasjon
           Tittel <- 'Operasjonstype'
           grtxt <- c('Primærinngrep', 'Reoperasjon', 'Ukjent')
           koder <- 1:2
      }
+     if (valgtVar == 'Sivilstatus') {
+          # 1:Enslig, 2:Særboer, 3:Samboer, 4:Gift, 5:Skilt, 6:Enke, 9:Ukjent
+          Tittel <- 'Sivilstatus'
+          grtxt <- c('Enslig', 'Særboer', 'Samboer', 'Gift', 'Skilt', 'Enke', 'Ukjent')
+          koder <- 1:6
+          retn <- 'H'
+     }
+     if (valgtVar == 'Utdanning') {
+          # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
+          Tittel <- 'Utdanningsnivå'
+          grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år', 'Ukjent')
+          koder <- 1:5
+          retn <- 'H'
+     }
 
 
      #Likt for alle kategoriske variable
 	if (length(koder)>0) {
 		 RegData$Variabel <- 99
-		 indVar <- which(RegData[ ,valgtVar] %in% koder)	#Må definere koder <- 1:5 i variabeldef.
+		 indVar <- which(RegData[ ,valgtVar] %in% koder)	#Må definere koder eks <- 1:5 i variabeldef.
 		 RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
 		 RegData$VariabelGr <- factor(RegData$Variabel, levels=c(koder,99), labels = grtxt) #levels=c(nivaa,9)
 		}
@@ -239,7 +232,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
           subtxt <- 'Aldersgrupper'
           retn <- 'H'
      }
-     if (valgtVar == 'OpBMIKategori') {
+     if (valgtVar == 'OpBMI') {
        # 1:Alvorlig undervekt,2:moderat undervekt, 3:mild undervekt, 4:normal vekt, 5:overvekt,
        # 6:fedme kl.I, 7:fedme kl.II, 8:fedme kl.III
        Tittel <- 'BMI-kategorier' #, Slå sammen undervekt, fedme 2 og 3.
@@ -266,37 +259,14 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
        RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = grtxt)
      }
 
-	if (valgtVar=='Opf0AlvorlighetsGrad') {
-		#Postoperative komplikasjoner
-		#Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
-		RegData <- RegData[(which(RegData$Opf0Status == 1) & which(RegData$Opf0Komplikasjoner %in% 0:1)), ]
-        RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = 1:4)
-		grtxt <- c('Lite alvorlig', 'Middels alvorlig', 'Alvorlig', 'Dødelig')	#, 'Ukjent')
-		Tittel <- 'Alvorlighetsgrad av komplikasjoner'
-		retn <- 'H'
-	}
 
-
-     ###Gjør utvalg (LibUtvalg)
+     ###Gjør utvalg (NGERUtvalg)
      ###Kjører denne etter variabeldefinisjon for at utvalgTxt skal bli riktig
      NGERUtvalg <- NGERUtvalg(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra,
                              datoTil = datoTil, OpMetode = OpMetode, AlvorlighetKompl=AlvorlighetKompl,
                              Hastegrad=Hastegrad)
      RegData <- NGERUtvalg$RegData
      utvalgTxt <- NGERUtvalg$utvalgTxt
-
-#Disse må kjøres etter at utvalg er gjort for at de mest forekommende
-#     i det gjenværende datagrunnlaget skal kunne hentes.
-
-  if (valgtVar=='Prosedyrer') {#venter med denne
-       #Hyppigst forekommende prosedyrer
-       RegData <- RegData[(which(RegData$Opf0Status == 1) & which(RegData$Opf0Komplikasjoner %in% 0:1)), ]
-       RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = 1:4)
-       grtxt <- c('Lite alvorlig', 'Middels alvorlig', 'Alvorlig', 'Dødelig')	#, 'Ukjent')
-       Tittel <- 'Alvorlighetsgrad av komplikasjoner'
-       retn <- 'H'
-     }
-
 
 
 
@@ -334,7 +304,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
      NRest <- 0
      AntRest <- 0
 
-     if (flerevar == 0 ) {
+#     if (flerevar == 0 ) { #pt. alltid 0 når kommer hit...
           AntHoved <- table(RegData$VariabelGr[indHoved])
           NHoved <- sum(AntHoved)
           Andeler$Hoved <- 100*AntHoved/NHoved
@@ -343,158 +313,186 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
                NRest <- sum(AntRest)	#length(indRest)- Kan inneholde NA
                Andeler$Rest <- 100*AntRest/NRest
           }
-     }
+#    }
 
 
 
 
-     #FIGURER SATT SAMMEN AV FLERE VARIABLE, ULIKT TOTALUTVALG
-     if (valgtVar %in% c('KomplPost', 'HysKomplikasjoner', 'LapKomplikasjoner', 'KomplPostUtd', 'KomplReopUtd',
-				'LapEkstrautstyr', 'LapIntraabdominell')){
-          flerevar <-  1
-          utvalg <- c('Hoved', 'Rest')	#Hoved vil angi enhet, evt. hele landet hvis ikke gjøre sml, 'Rest' utgjør sammenligningsgruppa
-          RegDataLand <- RegData
-          NHoved <-length(indHoved)
-          NRest <- length(indRest)
+          #FIGURER SATT SAMMEN AV FLERE VARIABLE, ULIKT TOTALUTVALG
+		if (valgtVar %in% c('Diagnoser', 'KomplPost', 'HysKomplikasjoner', 'LapKomplikasjoner',
+                              'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr',
+		                          'LapIntraabdominell', 'Prosedyrer')){
+            #flerevar <-  1
+            retn <- 'H'
+            utvalg <- c('Hoved', 'Rest')	#Hoved vil angi enhet, evt. hele landet hvis ikke gjøre sml, 'Rest' utgjør sammenligningsgruppa
+            RegDataLand <- RegData
+            NHoved <-length(indHoved)
+            NRest <- length(indRest)
 
-          for (teller in 1:(medSml+1)) {
-               #  Variablene kjøres for angitt indeks, dvs. to ganger hvis vi skal ha sammenligning med Resten.
-               RegData <- RegDataLand[switch(utvalg[teller], Hoved = indHoved, Rest=indRest), ]
+            for (teller in 1:(medSml+1)) {
+              #  Variablene kjøres for angitt indeks, dvs. to ganger hvis vi skal ha sammenligning med Resten.
+              RegData <- RegDataLand[switch(utvalg[teller], Hoved = indHoved, Rest=indRest), ]
 
-       if (valgtVar=='LapKomplikasjoner') {
-	#Laparoskopiske intrapoerative komplikasjoner:
-         retn <- 'H'
-         Var <- c('LapUterusmanipulator',
-			   'LapTilgang',
-			   'LapHjelpeinnstikk',
-			   'LapIntraabdominell',
-			   'LapTekniskUtstyr',
-			   'LapPostoperativ',
-			   'LapKonvertert')
-				grtxt <- c('Uterusmanipulator', 'Tilgangsmetode', 'Hjelpeinnstikk',
-				           'Intraabdominal', 'Utstyr', 'Postoperativ', 'Konvertert')
-				Tittel <- 'Intraoperative komplikasjoner ved laparoskopi'
-				indMed <- which(RegData$LapKomplikasjoner %in% 0:1)	#
- 				AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
-				NVar <- length(indMed)
-       }
-
-      if (valgtVar=='LapIntraabdominell') {
-
-	#Laparoskopiske intraabdominale komplikasjoner:
-         retn <- 'H'
-         Var <- c('LapNerv',
-					'LapUreter',
-					'LapTarm',
-					'LapBlare',
-					'LapKarBlodning')
-			grtxt <- c('Nerve', 'Ureter', 'Tarm', 'Blære', 'Kar')
-			Tittel <- 'Intraabdominelle komplikasjoner ved laparoskopi'
-			indMed <- which(RegData$LapIntraabdominell %in% 0:1)	#
-			AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
-			NVar <- length(indMed)
-       }
+              if (valgtVar=='LapKomplikasjoner') {
+                #Laparoskopiske intrapoerative komplikasjoner:
+                Var <- c('LapUterusmanipulator',
+                         'LapTilgang',
+                         'LapHjelpeinnstikk',
+                         'LapIntraabdominell',
+                         'LapTekniskUtstyr',
+                         'LapPostoperativ',
+                         'LapKonvertert')
+                grtxt <- c('Uterusmanipulator', 'Tilgangsmetode', 'Hjelpeinnstikk',
+                           'Intraabdominal', 'Utstyr', 'Postoperativ', 'Konvertert')
+                Tittel <- 'Intraoperative komplikasjoner ved laparoskopi'
+                indMed <- which(RegData$LapKomplikasjoner %in% 0:1)	#
+                AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
+                NVar <- length(indMed)
+              }
 
 
-       if (valgtVar=='HysKomplikasjoner') {
-	#Hysteroskopi intrapoerative komplikasjoner:
-         retn <- 'H'
-         Var <- c('HysTilgang',
-					'HysPerforasjon',
-					'HysTeknisk',
-					'HysFluidOverload',
-					'HysBlodning')
-				grtxt <- c('Ved tilgang', 'Perforasjon', 'Teknisk/utstyr',
-				           'Fluid overload', 'Blødning')
-				Tittel <- 'Intraoperative komplikasjoner ved hysteroskopi'
-				indMed <- which(RegData$HysKomplikasjoner %in% 0:1)	#
- 				AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
-				NVar <- length(indMed)
-       }
-
-       if (valgtVar=='KomplPost') {
-         #Postoperative komplikasjoner. Bare registreringer hvor Opf0Komplikasjoner er 0 el. 1
-         retn <- 'H'
-         Var <- c('Opf0KomplBlodning', 'LapAdherProfylakse', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan')
-				grtxt <- c('Blødning', 'Med utstyr', 'Infeksjon', 'Organskade')
-				Tittel <- 'Postoperative komplikasjoner'
-				indMed <- intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1))
- 				AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
-				NVar <- length(indMed)
-       }
-
-		  if (valgtVar == 'KomplPostUtd') {		#Evt. ReopUtd
-		    #Postoperative komplikasjoner for ulike utdanningsgrupper
-			#Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper.
-			####!!!Usikker på hvilke variable som skal inngå. Eks Opf0Reoperasjon=1, OpType=2, tomme?
-			  # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
-			  Tittel <- 'Postop. komplikasjon i utdanningsgrupper'
-			  grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år')
-			  #RegData <- RegData[which(RegData$Utdanning %in% 1:5), ] #Antar at tomme Opf0Reoperasjon er nei. & which(RegData$Opf0Reoperasjon %in% 0:1)
-			  RegData <- RegData[which(RegData$Opf0Status == 1) %i% which(RegData$Utdanning %in% 1:5) %i% which(RegData$Opf0Komplikasjoner %in% 0:1), ] #Antar at tomme Opf0Reoperasjon er nei. & which(RegData$Opf0Reoperasjon %in% 0:1)
-			  RegData$Utdanning <- factor(RegData$Utdanning, levels=1:5)
-			  AntVar <- table(RegData$Utdanning[which(RegData$Opf0Komplikasjoner ==1)])
-    		  NVar <- table(RegData$Utdanning)
-    		  #100*AntVar/NVar
-    		  retn <- 'H'
-    			}
-		  if (valgtVar == 'KomplReopUtd') {		#Evt. ReopUtd
-		    #Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper.
-			####!!!Usikker på hvilke variable som skal inngå. Eks Opf0Reoperasjon=1, OpType=2, tomme?
-			  # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
-			  Tittel <- 'Reoperasjon (grunnet komplikasjon) i utdanningsgrupper'
-			  grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år')
-			  RegData <- RegData[which(RegData$Opf0Status == 1) %i% which(RegData$Utdanning %in% 1:5) %i% which(RegData$Opf0Komplikasjoner %in% 0:1), ] #Antar at tomme Opf0Reoperasjon er nei. & which(RegData$Opf0Reoperasjon %in% 0:1)
-			  #RegData <- RegData[intersect(which(RegData$Utdanning %in% 1:5), which(RegData$Opf0Komplikasjoner %in% 0:1)), ] #Antar at tomme Opf0Reoperasjon er nei. & which(RegData$Opf0Reoperasjon %in% 0:1)
-			  RegData$Utdanning <- factor(RegData$Utdanning, levels=1:5)
-			  AntVar <- table(RegData$Utdanning[which(RegData$Opf0Reoperasjon ==1)])
-    		  #AntVar <- table(RegData$Utdanning[which(RegData$OpType ==2)])
-    		  NVar <- table(RegData$Utdanning)
-    		  #100*AntVar/NVar
-    		  retn <- 'H'
-    			}
-       if (valgtVar=='LapEkstrautstyr') {
-				#Laparaskopisk ekstrautstyr
-				#OpMetode=1 el 3 (Laparoskopi eller begge)
-        retn <- 'H'
-         Var <- c('LapAdherProfylakse',
-                  'LapBipolarDiatermi',
-                  'LapClips',
-                  'LapHarmonicS',
-                  'LapMorcellator',
-                  'LapNett',
-                  'LapPreparatopose',
-                  'LapUterusmanipulator',
-                  'LapRobotKirurgi',
-                  'LapSingelPort',
-                  'LapStaplerEndogia',
-                  'LapSutur',
-                  'LapIntKombo',
-                  'LapUnipolarDiatermi')
-				grtxt <- c('Adheranseprofylakse', 'Bipolar Diatermi', 'Clips', 'Harmonic skalpell',
-				           'Morcellator', 'Nett', 'Preparatpose', 'Uterusmanipulator', 'Robotkirurgi', 'Singel port',
-				           'Stapler/endoGIA', 'Sutur', 'Bipolar og ultralyd', 'Unipolar Diatermi')
-				Tittel <- 'Laparaskopisk ekstrautstyr'
-				indMed <- which(RegData$OpMetode %in% c(1,3))
- 				AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
-				NVar <- length(indMed)
-       }
+              if (valgtVar=='LapIntraabdominell') {
+                #Laparoskopiske intraabdominale komplikasjoner:
+                Var <- c('LapNerv',
+                         'LapUreter',
+                         'LapTarm',
+                         'LapBlare',
+                         'LapKarBlodning')
+                grtxt <- c('Nerve', 'Ureter', 'Tarm', 'Blære', 'Kar')
+                Tittel <- 'Intraabdominelle komplikasjoner ved laparoskopi'
+                indMed <- which(RegData$LapIntraabdominell %in% 0:1)	#
+                AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
+                NVar <- length(indMed)
+              }
 
 
+              if (valgtVar=='HysKomplikasjoner') {
+                #Hysteroskopi intrapoerative komplikasjoner:
+                Var <- c('HysTilgang',
+                         'HysPerforasjon',
+                         'HysTeknisk',
+                         'HysFluidOverload',
+                         'HysBlodning')
+                grtxt <- c('Ved tilgang', 'Perforasjon', 'Teknisk/utstyr',
+                           'Fluid overload', 'Blødning')
+                Tittel <- 'Intraoperative komplikasjoner ved hysteroskopi'
+                indMed <- which(RegData$HysKomplikasjoner %in% 0:1)	#
+                AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
+                NVar <- length(indMed)
+              }
 
-               #Generell beregning for alle figurer med sammensatte variable:
-               if (teller == 1) {
-                    AntHoved <- AntVar
-                    NHoved <- max(NVar, na.rm=T)
-                    Andeler$Hoved <- 100*AntVar/NVar
-               }
-               if (teller == 2) {
-                    AntRest <- AntVar
-                    NRest <- max(NVar,na.rm=T)	#length(indRest)- Kan inneholde NA
-                    Andeler$Rest <- 100*AntVar/NVar
-               }
-          } #end medSml (med sammenligning)
-     }	#end sjekk om figuren inneholder flere variable
+              if (valgtVar=='KomplPost') {
+                #Postoperative komplikasjoner. Bare registreringer hvor Opf0Komplikasjoner er 0 el. 1
+                Var <- c('Opf0KomplBlodning', 'LapAdherProfylakse', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan')
+                grtxt <- c('Blødning', 'Med utstyr', 'Infeksjon', 'Organskade')
+                Tittel <- 'Postoperative komplikasjoner'
+                indMed <- intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1))
+                AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
+                NVar <- length(indMed)
+              }
+
+              if (valgtVar == 'KomplPostUtd') {		#Evt. ReopUtd
+                #Postoperative komplikasjoner for ulike utdanningsgrupper
+                #Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper.
+                ####!!!Usikker på hvilke variable som skal inngå, dvs. om tomme burde være med i N.
+                # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 9:Ukjent
+                Tittel <- 'Postop. komplikasjon i utdanningsgrupper'
+                grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år')
+                #RegData <- RegData[which(RegData$Utdanning %in% 1:5), ] #Antar at tomme Opf0Reoperasjon er nei. & which(RegData$Opf0Reoperasjon %in% 0:1)
+                RegData <- RegData[which(RegData$Opf0Status == 1) %i% which(RegData$Utdanning %in% 1:5)
+                                   %i% which(RegData$Opf0Komplikasjoner %in% 0:1), ] #Antar at tomme Opf0Reoperasjon er nei. & which(RegData$Opf0Reoperasjon %in% 0:1)
+                RegData$Utdanning <- factor(RegData$Utdanning, levels=1:5)
+                AntVar <- table(RegData$Utdanning[which(RegData$Opf0Komplikasjoner ==1)])
+                NVar <- table(RegData$Utdanning)
+                #100*AntVar/NVar
+              }
+              if (valgtVar == 'KomplReopUtd') {		#Evt. ReopUtd
+                #Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper.
+                ####!!!Usikker på hvilke variable som skal inngå. Eks Opf0Reoperasjon=1, OpType=2, tomme?
+                # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
+                Tittel <- 'Reoperasjon (grunnet komplikasjon) i utdanningsgrupper'
+                grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år')
+                RegData <- RegData[which(RegData$Opf0Status == 1) %i% which(RegData$Utdanning %in% 1:5) %i% which(RegData$Opf0Komplikasjoner %in% 0:1), ] #Antar at tomme Opf0Reoperasjon er nei. & which(RegData$Opf0Reoperasjon %in% 0:1)
+                #RegData <- RegData[intersect(which(RegData$Utdanning %in% 1:5), which(RegData$Opf0Komplikasjoner %in% 0:1)), ] #Antar at tomme Opf0Reoperasjon er nei. & which(RegData$Opf0Reoperasjon %in% 0:1)
+                RegData$Utdanning <- factor(RegData$Utdanning, levels=1:5)
+                AntVar <- table(RegData$Utdanning[which(RegData$Opf0Reoperasjon ==1)])
+                #AntVar <- table(RegData$Utdanning[which(RegData$OpType ==2)])
+                NVar <- table(RegData$Utdanning)
+                #100*AntVar/NVar
+                retn <- 'H'
+              }
+              if (valgtVar=='LapEkstrautstyr') {
+                #Laparaskopisk ekstrautstyr
+                #OpMetode=1 el 3 (Laparoskopi eller begge)
+                #29.08.2016: Thunderbeat -> To nye variable: Kob.bipolar og ultralys. Legg til «Bipolar koagulasjon og klipping»
+                #LapThunderbeat -> LapIntKombo
+
+                retn <- 'H'
+                Var <- c('LapAdherProfylakse',
+                         'LapBipolarDiatermi',
+                         'LapClips',
+                         'LapHarmonicS',
+                         'LapMorcellatorUtenPose',
+                         'LapMorcellatorMedPose',
+                         'LapNett',
+                         'LapPreparatopose',
+                         'LapUterusmanipulator',
+                         'LapRobotKirurgi',
+                         'LapSingelPort',
+                         'LapStaplerEndogia',
+                         'LapSutur',
+                         'LapIntKombo',
+                         'LapIntKoagOgKlipp',
+                         'LapUnipolarDiatermi')
+                grtxt <- c('Adheranseprofylakse', 'Bipolar Diatermi', 'Clips', 'Harmonic skalpell',
+                           'Morcellator u/pose', 'Morcellator m/pose',
+                           'Nett', 'Preparatpose', 'Uterusmanipulator', 'Robotkirurgi', 'Singel port',
+                           'Stapler/endoGIA', 'Sutur', 'Bipolar og ultralyd', 'Bipolar koag. og klipping',
+                           'Unipolar Diatermi')
+                Tittel <- 'Laparaskopisk ekstrautstyr'
+                indMed <- which(RegData$OpMetode %in% c(1,3))
+                AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
+                NVar <- length(indMed)
+              }
+
+              if (valgtVar=='Prosedyrer') {
+                #Hyppigst forekommende prosedyrer
+                #RegData$Opf0Status == 1 OK
+                ProsHys <- c('HysProsedyre1', 'HysProsedyre2', 'HysProsedyre3')
+                ProsLap <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3')
+                AllePros <- sort(table(toupper(as.vector(as.matrix(RegData[ ,c(ProsHys, ProsLap)])))), decreasing = TRUE)
+                ant <- 20
+                grtxt <- names(AllePros)[1:ant+1]
+                Tittel <- 'Hyppigst forekommende prosedyrer'
+                AntVar <- AllePros[1:ant+1] #Må fjerne tomme. Starter derfor på 2. Hva om vi ikke har tomme...?
+                NVar <- dim(RegData)[1]
+              }
+
+              if (valgtVar=='Diagnoser') {
+                DiagLap <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3')
+                DiagHys <- c('HysDiagnose1', 'HysDiagnose2', 'HysDiagnose3')
+                AlleDiag <- sort(table(toupper(as.vector(as.matrix(RegData[ ,c(DiagHys, DiagLap)])))), decreasing = TRUE)
+                ant <- 20
+                grtxt <- names(AlleDiag)[1:ant+1]	#Evt. 2:11..
+                Tittel <- 'Hyppigst forekommende diagnoser'
+                AntVar <- AlleDiag[1:ant+1] #Må fjerne tomme. Starter derfor på 2. Hva om vi ikke har tomme...?
+                NVar <- dim(RegData)[1]
+              }
+
+
+              #Generell beregning for alle figurer med sammensatte variable:
+              if (teller == 1) {
+                AntHoved <- AntVar
+                NHoved <- sum(NVar, na.rm=T)	#feil: max(NVar, na.rm=T)
+                Andeler$Hoved <- 100*AntVar/NVar
+              }
+              if (teller == 2) {
+                AntRest <- AntVar
+                NRest <- sum(NVar,na.rm=T)	#length(indRest)- Kan inneholde NA
+                Andeler$Rest <- 100*AntVar/NVar
+              }
+            } #end medSml (med sammenligning)
+          }	#end begrensning til valgtVar som inneholder flere variable
 
 
 

@@ -57,8 +57,8 @@ Detajer: Her bør man liste opp hvilke variable funksjonen benytter.}
 1: Ja}
 
 \item{preprosess}{Preprosesser data
-FALSE: Nei (Standard)
-TRUE: Ja}
+0: Nei (Standard)
+1: Ja}
 }
 \value{
 En figur med søylediagram (fordeling) av ønsket variabel
@@ -71,33 +71,35 @@ filtrert på de utvalg som er gjort.
 Argumentet \emph{valgtVar} har følgende valgmuligheter:
    \itemize{
     \item Alder: Pasientens alder, 5-årige aldersgrupper
-    \item Utdanning: Pasientens utdanning (1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent)
-    \item Opf0AlvorlighetsGrad: Alvorlighetsgrad, postoperative komplikasjoner
-		  Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
+    \item Diagnoser: Hyppigst forekommende diagnoser
     \item HysGjforingsGrad: Gjennomføringsgrad av hysteroskopi
    		Koder:	1-Fullstendig, 2-Ufullstendig, 3-Mislykket
     \item HysKomplikasjoner: Hysteroskopi intrapoerative komplikasjoner
     \item KomplPost: Postoperative komplikasjoner
     \item KomplPostUtd: Postoperative komplikasjoner for ulike utdanningsgrupper
     \item KomplReopUtd: Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper
-    \item LapTilgangsMetode: Teknikk for laparaskopisk tilgang
     \item LapKomplikasjoner: Laparoskopiske intrapoerative komplikasjoner
     \item LapEkstrautstyr: Laparaskopisk ekstrautstyr - Kommer, NY variabel: koagulasjon og klipping
     \item LapIntraabdominell: Laparoskopiske intraabdominale komplikasjoner
     \item LapNumHjelpeinnstikk: Antall hjelpeinnstikk
-    \item Sivilstatus: Sivilstand
-    \item OpMetode: Operasjonsmetode
+    \item LapTilgangsMetode: Teknikk for laparaskopisk tilgang
     \item Norsktalende: Pasientens norskkunnskaper
     \item OpAnestesi: Anestesitype
     \item OpASA: ASA-grad
-    \item OpBMIKategori: BMI-kategori
-    \item OpKategori: Hastegrad av operasjon
+    \item OpBMI: BMI-kategori
+    \item Opf0AlvorlighetsGrad: Alvorlighetsgrad, postoperative komplikasjoner
+		  Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
     \item OpDagkirurgi: Dagkirurgiske inngrep
+    \item OpIVaktTid: Operasjon i legens vakttid
+    \item OpKategori: Hastegrad av operasjon
+    \item OpMetode: Operasjonsmetode
     \item OpTidlVagInngrep: Tidligere vaginale inngrep
     \item OpTidlLapsko: Tidligere laparoskopi
-    \item OpEarlierLaparatomy: Tidligere laparatomi
-    \item OpOpKategoriOutsideDaytime: Operasjon i legens vakttid
+    \item OpTidlLaparotomi: Tidligere laparatomi
     \item OpType: Primæroperasjon eller reoperasjon
+    \item Prosedyrer: Hyppigst forekommende prosedyrer
+    \item Sivilstatus: Sivilstand
+    \item Utdanning: Pasientens utdanning (1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent)
    }
 }
 

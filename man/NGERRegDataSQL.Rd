@@ -2,19 +2,23 @@
 % Please edit documentation in R/NGERRegDataSQL.R
 \name{NGERRegDataSQL}
 \alias{NGERRegDataSQL}
-\title{Provide global dataframe for NGER}
+\title{Henter global dataramme for NGER}
 \usage{
-NGERRegDataSQL(datoFra = "2014-01-01", datoTil = "2099-01-01")
+NGERRegDataSQL(datoFra = "2014-01-01", datoTil = "2099-01-01",
+  varUtvalg = 0)
 }
 \arguments{
 \item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}
 
 \item{datoTil}{Seneste dato i utvalget (vises alltid i figuren).}
+
+\item{varUtvalg:}{Hvilke variable som skal hentes. (Oppf)}
 }
 \value{
 RegData data frame
 }
 \description{
-Provides NGER data from staging
+Henter NGER-data fra staging.
+Klargjort (delvis) for å kunne  sende inn en vektor med hvilke variable det skal spørres etter.
 }
 

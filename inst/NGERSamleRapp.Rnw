@@ -224,22 +224,22 @@ print(xtable::xtable(tabAvdN, digits=0, align=c('l', rep('r', max(c(1,ncol(tabAv
 <<'ProsedyrerDiagnoser', results='asis', echo=FALSE, eval=T, >>=
 #Tabell med de 20 vanligste prosedyrer og diagnoser for egen avdeling og hele landet
 
-ProcHys <- c('HypProc1', 'HypProc2', 'HypProc3')
-ProcLap <- c('LapProc1', 'LapProc2', 'LapProc3')
+ProsHys <- c('HysProsedyre1', 'HysProsedyre2', 'HysProsedyre3')
+ProsLap <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3')
 DiagLap <- c('LapDiag1', 'LapDiag2', 'LapDiag3')
 DiagHys <- c('HypDiag1', 'HypDiag2', 'HypDiag3')
 
 
-Alleproc <- sort(table(toupper(as.vector(as.matrix(NGERRegData[ ,c(ProcHys, ProcLap)])))), decreasing = TRUE)
-AlleprocEget <- sort(table(toupper(as.vector(as.matrix(NGERRegData[indEget ,c(ProcHys, ProcLap)])))), decreasing = TRUE)
+Allepros <- sort(table(toupper(as.vector(as.matrix(NGERRegData[ ,c(ProsHys, ProsLap)])))), decreasing = TRUE)
+AlleprosEget <- sort(table(toupper(as.vector(as.matrix(NGERRegData[indEget ,c(ProsHys, ProsLap)])))), decreasing = TRUE)
 ant <- 20
 Proc <- cbind( #Må fjerne tomme
-          Andel = (Alleproc[2:ant+1])/N*100 ,
-          Antall = Alleproc[2:ant+1] )
+          Andel = (Allepros[2:ant+1])/N*100 ,
+          Antall = Allepros[2:ant+1] )
 
 ProcEget <- cbind( #Må fjerne tomme
-          Andel = (AlleprocEget[2:ant+1])/Neget*100 ,
-          Antall = AlleprocEget[2:ant+1] )
+          Andel = (AlleprosEget[2:ant+1])/Neget*100 ,
+          Antall = AlleprosEget[2:ant+1] )
 
 Allediag <- sort(table(toupper(as.vector(as.matrix(NGERRegData[ ,c(DiagHys, DiagLap)])))), decreasing = TRUE)
 AllediagEget <- sort(table(toupper(as.vector(as.matrix(NGERRegData[indEget ,c(DiagHys, DiagLap)])))), decreasing = TRUE)
@@ -277,7 +277,7 @@ xtable(DiagEget, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(DiagEget)),
 @
 
 <<'DivFig1', results='asis', echo=FALSE, eval=T>>=
-dum <- NGERFigAndelTid(RegData=NGERRegData, datoFra=datoFra, valgtVar='StatusFollowup', datoTil=datoTil,
+dum <- NGERFigAndelTid(RegData=NGERRegData, datoFra=datoFra, valgtVar='Opf0Status', datoTil=datoTil,
             reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='StatusOppf0Aar.pdf',
             minald=minald, maxald=maxald, MCEType=MCEType, Hastegrad=Hastegrad)
 

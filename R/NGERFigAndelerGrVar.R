@@ -3,7 +3,7 @@
 #' Funksjon som genererer en figur med andeler av en variabel for grupperingsvariabelen sykehus.
 #' Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus
 #'
-#'  Variable funksjonen benytter: Alder (beregnes), Opf0Komplikasjoner, Opf0Reoperasjon, Opf0KomplBlodning, LapAdherProfylakse,
+#'  Variable funksjonen benytter: Alder (beregnes), Opf0Komplikasjoner, Opf0Reoperasjon, Opf0KomplBlodning, Opf0KomplUtstyr,
 #'  Opf0KomplInfeksjon, Opf0KomplOrganUtdanning, Opf0AlvorlighetsGrad
 #'  HysKomplikasjoner, LapKomplikasjoner, OpMetode, OpAntibProfylakse, OpASA, OpBMI, Opf0Status.
 #'  Det benyttes også andre variable til utvalg osv.
@@ -11,22 +11,22 @@
 #' Argumentet \emph{valgtVar} har følgende valgmuligheter:
 #'    \itemize{
 #'		\item Alder: Andel pasienter over 70 år.
-#'		\item Opf0KomplBlodning: Postop. komplikasjon: Blødning
-#'		\item LapAdherProfylakse: Postop. komplikasjon: Problemer med ustyr
-#'		\item Opf0KomplInfeksjon: Postop. komplikasjon: Infeksjon
-#'		\item Opf0KomplOrgan: Postop. komplikasjon: Organskade
-#'		\item Opf0Reoperasjon: Reoperasjon som følge av komplikasjon
-#'		\item Utdanning: Pasienter med høyere utdanning
-#'		\item Opf0AlvorlighetsGrad: Alvorlige komplikasjoner (grad 3 og 4)
 #'		\item KomplIntra: Komplikasjoner under operasjon (intraoperativt)
 #'		\item KomplPostop: Postoperative komplikasjoner
 #'		\item OpAntibProfylakse: Fått antibiotikaprofylakse
 #'		\item OpASA: ASA-grad > II
 #'		\item OpBMI: Pasienter med fedme (BMI>30)
+#'		\item Opf0AlvorlighetsGrad: Alvorlige komplikasjoner (grad 3 og 4)
+#'		\item Opf0KomplBlodning: Postop. komplikasjon: Blødning
+#'		\item Opf0KomplUtstyr: Postop. komplikasjon: Problemer med ustyr
+#'		\item Opf0KomplInfeksjon: Postop. komplikasjon: Infeksjon
+#'		\item Opf0KomplOrgan: Postop. komplikasjon: Organskade
+#'		\item Opf0Reoperasjon: Reoperasjon som følge av komplikasjon
 #'		\item Opf0Status: Fått postoperativ oppfølging
+#'		\item Utdanning: Pasienter med høyere utdanning
 #'    }
 #'
-#' @inheritParams NGERFigAndelTid
+#' @inheritParams NGERFigAndeler
 #' @export
 
 NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
@@ -107,10 +107,10 @@ if (valgtVar=='Opf0KomplBlodning') {
 	RegData$Variabel[which(RegData$Opf0KomplBlodning == 1)] <- 1
 	Tittel <- 'Postop. komplikasjon: Blødning'
 }
-if (valgtVar=='LapAdherProfylakse') {
+if (valgtVar=='Opf0KomplUtstyr') {
 	#Kode 0: Nei, 1:Ja
 	RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
-	RegData$Variabel[which(RegData$LapAdherProfylakse == 1)] <- 1
+	RegData$Variabel[which(RegData$Opf0KomplUtstyr == 1)] <- 1
 	Tittel <- 'Postop. komplikasjon: Problemer med ustyr'
 }
 if (valgtVar=='Opf0KomplInfeksjon') {
@@ -164,11 +164,11 @@ if (valgtVar=='KomplIntra') {
 if (valgtVar=='Opf0Status') {
 	#Andel med Opf0Status=1 (av samtlige, også tomme reg.)
 	#Kode: tomme, -1,0,1
-  #Tar ut hendelser siste 6 uker:
+  #Tar ut hendelser siste 8 uker:
   datoTil <- min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 8*7))
   RegData$Variabel[RegData$Opf0Status==1] <- 1
   VarTxt <- 'av postoperativ oppfølging'
-	Tittel <- 'Pasienter som har fått postoperativ oppfølging'
+	Tittel <- 'Pasienter som har fått oppfølging etter 6-8 uker'
 }
 #Lag figur for ett års oppfølging
 

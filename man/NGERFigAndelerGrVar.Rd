@@ -53,8 +53,8 @@ til systemets standard utdataenhet (som regel skjerm))}
 2: Egen enhet}
 
 \item{preprosess}{Preprosesser data
-FALSE: Nei (Standard)
-TRUE: Ja}
+0: Nei (Standard)
+1: Ja}
 
 \item{hentData}{Gjør spørring mot database
 0: Nei, RegData gis som input til funksjonen (Standard)
@@ -65,7 +65,7 @@ Funksjon som genererer en figur med andeler av en variabel for grupperingsvariab
 Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus
 }
 \details{
-Variable funksjonen benytter: Alder (beregnes), Opf0Komplikasjoner, Opf0Reoperasjon, Opf0KomplBlodning, LapAdherProfylakse,
+Variable funksjonen benytter: Alder (beregnes), Opf0Komplikasjoner, Opf0Reoperasjon, Opf0KomplBlodning, Opf0KomplUtstyr,
  Opf0KomplInfeksjon, Opf0KomplOrganUtdanning, Opf0AlvorlighetsGrad
  HysKomplikasjoner, LapKomplikasjoner, OpMetode, OpAntibProfylakse, OpASA, OpBMI, Opf0Status.
  Det benyttes også andre variable til utvalg osv.
@@ -73,19 +73,19 @@ Variable funksjonen benytter: Alder (beregnes), Opf0Komplikasjoner, Opf0Reoperas
 Argumentet \emph{valgtVar} har følgende valgmuligheter:
    \itemize{
 	\item Alder: Andel pasienter over 70 år.
-	\item Opf0KomplBlodning: Postop. komplikasjon: Blødning
-	\item LapAdherProfylakse: Postop. komplikasjon: Problemer med ustyr
-	\item Opf0KomplInfeksjon: Postop. komplikasjon: Infeksjon
-	\item Opf0KomplOrgan: Postop. komplikasjon: Organskade
-	\item Opf0Reoperasjon: Reoperasjon som følge av komplikasjon
-	\item Utdanning: Pasienter med høyere utdanning
-	\item Opf0AlvorlighetsGrad: Alvorlige komplikasjoner (grad 3 og 4)
 	\item KomplIntra: Komplikasjoner under operasjon (intraoperativt)
 	\item KomplPostop: Postoperative komplikasjoner
 	\item OpAntibProfylakse: Fått antibiotikaprofylakse
 	\item OpASA: ASA-grad > II
 	\item OpBMI: Pasienter med fedme (BMI>30)
+	\item Opf0AlvorlighetsGrad: Alvorlige komplikasjoner (grad 3 og 4)
+	\item Opf0KomplBlodning: Postop. komplikasjon: Blødning
+	\item Opf0KomplUtstyr: Postop. komplikasjon: Problemer med ustyr
+	\item Opf0KomplInfeksjon: Postop. komplikasjon: Infeksjon
+	\item Opf0KomplOrgan: Postop. komplikasjon: Organskade
+	\item Opf0Reoperasjon: Reoperasjon som følge av komplikasjon
 	\item Opf0Status: Fått postoperativ oppfølging
+	\item Utdanning: Pasienter med høyere utdanning
    }
 }
 

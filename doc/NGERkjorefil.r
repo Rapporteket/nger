@@ -28,9 +28,12 @@ NGERRegData <- merge(NGERForlop, NGERAlleVarNum, by = "ForlopsID", suffixes = c(
 rm(list=ls())
 library(nger)
 #NGERData <- read.table('C:/Registre/NGER/data/NGER2015-03-03NyeNavn.csv', sep=';', header=T) #,
-NGERAlleVarNum <- read.table('C:/Registre/NGER/data/alleVarNum2016-08-22.csv', sep=';', header=T) #,
-NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-08-22.csv', sep=';', header=T)
-NGERData <- merge(NGERForlop, NGERAlleVarNum, by = "ForlopsID", suffixes = c('','xx'), all = FALSE)
+NGERBasis <- read.table('C:/Registre/NGER/data/AlleVarNum2016-08-24.csv', sep=';', header=T) #,
+NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-08-24.csv', sep=';', header=T)
+NGEROppf <- read.table('C:/Registre/NGER/data/FollowupsNum2016-08-24.csv', sep=';', header=T)
+NGERData <- merge(NGERForlop, NGERBasis, by = "ForlopsID", suffixes = c('','xx'), all = FALSE)
+NGERData <- merge(NGERData, NGEROppf, by = "ForlopsID", suffixes = c('','YY'),all.x = TRUE)
+#write.table(NGERData, file = "NGERData.csv", row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
 RegData <- NGERData
 # Inndata til funksjon:
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
@@ -39,13 +42,13 @@ maxald <- 130	#alder, til og med
 datoFra <- '2013-01-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2016-12-31'
 preprosess <- 1
-OpMetode <- 99
+OpMetode <- ''
 Hastegrad <- ''
 AlvorlighetKompl <- ''#c('2','3')
 hentData <- 0
 enhetsUtvalg <- 1 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
-valgtVar <- 'OpBMIKategori'	#Må velge... Alder,
+valgtVar <- 'OpBMI'	#Må velge... Alder,... NY: Diagnoser, Prosedyrer
 
 outfile <- paste(valgtVar, '_ford.png', sep='')	#Navn angis av Jasper
 setwd("C:/ResultattjenesteGIT/nger/")
@@ -55,15 +58,13 @@ NGERFigAndeler(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=dat
   minald=minald, maxald=maxald, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
 
 #Teste variable
-#Venter på tabell: 'Opf0AlvorlighetsGrad', 'KomplPost', 'KomplPostUtd',
-#Med og uten pose: 'LapEkstrautstyr',
-#Venter på kodede data: OpBMIKategori
-variable <- c('Alder', 'Utdanning',  'HysGjforingsGrad', 'HysKomplikasjoner',
-              'KomplReopUtd', 'LapTilgangsMetode', 'LapKomplikasjoner',
-               'LapIntraabdominell', 'LapNumHjelpeinnstikk',
+variable <- c('Alder','Diagnoser',  'HysGjforingsGrad', 'HysKomplikasjoner','KomplPost',
+              'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr', 'LapTilgangsMetode',
+              'LapKomplikasjoner', 'LapIntraabdominell', 'LapNumHjelpeinnstikk',
               'Sivilstatus', 'OpMetode', 'Norsktalende', 'OpAnestesi', 'OpASA',
-              'OpBMIKategori', 'OpKategori', 'OpDagkirurgi', 'OpTidlVagInngrep', 'OpTidlLapsko',
-              'OpTidlLaparotomi', 'OpIVaktTid', 'OpType')
+              'OpBMI', 'OpKategori', 'OpDagkirurgi','Opf0AlvorlighetsGrad',
+              'OpTidlVagInngrep', 'OpTidlLapsko',
+              'OpTidlLaparotomi', 'OpIVaktTid', 'OpType', 'Prosedyrer', 'Utdanning')
 
 for (valgtVar in variable) {
 	outfile <- paste(valgtVar, '_ford.png', sep='')
@@ -72,14 +73,17 @@ for (valgtVar in variable) {
 		minald=minald, maxald=maxald)
 }
 
+#Opf0KomplUtstyr - LapAdherProfylakse
+
 #------------------------------ Andeler per år --------------------------
 #------------------------------ (AndelTid) --------------------------
 rm(list=ls())
 library(nger)
-#NGERData <- read.table('C:/Registre/NGER/data/NGER2015-03-03NyeNavn.csv', sep=';', header=T) #,
-NGERAlleVarNum <- read.table('C:/Registre/NGER/data/alleVarNum2016-06-08.csv', sep=';', header=T) #,
-NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-06-08.csv', sep=';', header=T)
-NGERData <- merge(NGERForlop, NGERAlleVarNum, by.x = "ForlopsID", by.y = "MCEID", all = FALSE)
+NGERBasis <- read.table('C:/Registre/NGER/data/AlleVarNum2016-08-24.csv', sep=';', header=T) #,
+NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-08-24.csv', sep=';', header=T)
+NGEROppf <- read.table('C:/Registre/NGER/data/FollowupsNum2016-08-24.csv', sep=';', header=T)
+NGERData <- merge(NGERForlop, NGERBasis, by = "ForlopsID", suffixes = c('','xx'), all = FALSE)
+NGERData <- merge(NGERData, NGEROppf, by = "ForlopsID", suffixes = c('','YY'),all.x = TRUE)
 RegData <- NGERData
 # Inndata til funksjon:
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
@@ -87,7 +91,7 @@ minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
 datoFra <- '2013-02-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- Sys.Date() #'2016-03-01'
-preprosess <- TRUE
+preprosess <- 1
 hentData <- 0
 OpMetode <- 99
 tidsenhet <- 'Aar'
@@ -95,7 +99,7 @@ Hastegrad <- ''
 AlvorlighetKompl <- ''
 enhetsUtvalg <- 1 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
-valgtVar <- 'StatusFollowup' #
+valgtVar <- 'Opf0Status' #
 outfile <- paste(valgtVar, '_', tidsenhet, '.png', sep='')
 
 NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
@@ -106,9 +110,9 @@ NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=da
 
 
 #Teste variable
-variable <- c('Alder', 'ComplAfterBleed', 'ComplEquipment', 'ComplInfection', 'ComplOrgan', 'ComplReop',
-              'FollowupSeriousness', 'KomplIntra', 'KomplPostop', 'OpAntibioticProphylaxis',
-              'OpASA', 'OpBMI', 'StatusFollowup')
+variable <- c('Alder', 'Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan', 'Opf0Reoperasjon',
+              'Opf0AlvorlighetsGrad', 'KomplIntra', 'KomplPostop', 'OpAntibProfylakse',
+              'OpASA', 'OpBMI', 'Opf0Status')
 
 for (valgtVar in variable) {
   outfile <- paste0(valgtVar, '_', tidsenhet, '.png')
@@ -123,10 +127,6 @@ for (valgtVar in variable) {
 #------------------------------ (AndelGrVar) --------------------------
 rm(list=ls())
 library(nger)
-#NGERData <- read.table('C:/Registre/NGER/data/NGER2015-03-03NyeNavn.csv', sep=';', header=T) #,
-NGERAlleVarNum <- read.table('C:/Registre/NGER/data/AlleVarNum2016-02-17.csv', sep=';', header=T) #,
-NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-02-17.csv', sep=';', header=T)
-NGERData <- merge(NGERForlop, NGERAlleVarNum, by.x = "ForlopsID", by.y = "MCEID", all = FALSE)
 RegData <- NGERData
 # Inndata til funksjon:
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
@@ -134,34 +134,35 @@ minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
 datoFra <- '2013-02-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2016-10-01'
-preprosess <- TRUE
-if (preprosess){RegData <- NGERPreprosess(RegData=RegData, reshID=reshID)}
+preprosess <- 1
+Hastegrad <- ''
+#if (preprosess){RegData <- NGERPreprosess(RegData=RegData, reshID=reshID)}
 
-OpMetode <- 1
+OpMetode <- ''
 enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
-valgtVar <- 'OpBMI'	#Må velge... Alder, ComplReop, Education, FollowupSeriousness, KomplIntra, KomplPostop,
-      #OpAntibioticProphylaxis, OpASA, OpBMI, StatusFollowup
+valgtVar <- 'Alder'	#Må velge... Alder, Opf0Reoperasjon, Education, Opf0AlvorlighetsGrad, KomplIntra, KomplPostop,
+      #OpAntibProfylakse, OpASA, OpBMI, Opf0Status
 
 
 outfile <- paste(valgtVar, '_Shus.png', sep='')	#Navn angis av Jasper
 setwd("C:/ResultattjenesteGIT/nger/")
 
 
-NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
+NGERFigAndelerGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
             reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile, OpMetode=OpMetode,
-            minald=minald, maxald=maxald, Hastegrad = Hastegrad)
+            minald=minald, maxald=maxald, Hastegrad = Hastegrad, preprosess = 1)
 
 
 #Teste variable
-variable <- c('Alder', 'ComplReop', 'Education', 'FollowupSeriousness', 'KomplIntra', 'KomplPostop',
-      'OpAntibioticProphylaxis', 'OpASA', 'OpBMI', 'StatusFollowup')
+variable <- c('Alder', 'KomplIntra', 'KomplPostop', 'Opf0Reoperasjon', 'Opf0AlvorlighetsGrad',
+              'OpAntibProfylakse', 'OpASA', 'OpBMI', 'Opf0Status', 'Utdanning')
 
 for (valgtVar in variable) {
   outfile <- paste(valgtVar, '_Shus.png', sep='')
   NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
               reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,
-              minald=minald, maxald=maxald)
+              minald=minald, maxald=maxald, preprosess = 1)
 }
 
 

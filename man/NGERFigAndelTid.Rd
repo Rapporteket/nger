@@ -53,8 +53,8 @@ til systemets standard utdataenhet (som regel skjerm))}
 2: Egen enhet}
 
 \item{preprosess}{Preprosesser data
-FALSE: Nei (Standard)
-TRUE: Ja}
+0: Nei (Standard)
+1: Ja}
 
 \item{hentData}{Gjør spørring mot database
 0: Nei, RegData gis som input til funksjonen (Standard)
@@ -75,7 +75,7 @@ Argumentet \emph{valgtVar} har følgende valgmuligheter:
    \itemize{
 	\item Alder: Pasienter over 70 år
 	\item Opf0KomplBlodning: Postop. komplikasjon: Blødning
-	\item LapAdherProfylakse: Postop. komplikasjon: Problemer med ustyr
+	\item Opf0KomplUtstyr: Postop. komplikasjon: Problemer med ustyr
 	\item Opf0KomplInfeksjon: Postop. komplikasjon: Infeksjon
 	\item Opf0KomplOrgan: Postop. komplikasjon: Organskade
 	\item Opf0Reoperasjon: Andel reoperasjon som følge av komplikasjon

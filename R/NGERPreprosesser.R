@@ -11,10 +11,24 @@
 NGERPreprosess <- function(RegData=RegData)
 {
   #Kun ferdigstilte registreringer:
-  RegData <- RegData[RegData$BasisRegStatus==1, ]
+  #OK
+  RegData <- RegData[RegData$BasisRegStatus==1, ]#Leveres fortsatt registreringer m/BasisRegStatus=0
+  #Opf0Status=1 for alle registreringer i FollowupsNum
+  #OppflgRegStatus:
+    # NULL	Oppfølginger finnes ikke for denne typen forløp.
+    # -2	Ingen oppføringer er opprettet.
+    # -1	En eller flere oppfølgninger er opprettet, og ingen er lagret eller ferdigstilt.
+    # 0	En eller flere er i kladd, men ingen ferdigstilt
+    # 1	En eller flere er ferdigstilt (noen kan være i kladd eller ikke opprettet)
+    # 2	Alle oppfølgningene er ferdigstilt.
+  #OppflgStatus
+   #Tekstfelt som angir om oppfølging er mulig, evt, hvorfor ikke. Hvis oppfølging var mulig
+    #og utført er teksten: Oppfølging utført.
+  #ErOppflg
+    #Hvis oppføringen er en oppfølgning skal denne settes til 1.
+    #Det er kun godkjent med 0 på de som ikke er oppfølginger.
+    #Hvis ForløpsID'en inneholder både hovedforløpet og oppfølgingen skal dette feltet settes lik 0.
 
-  #For bedre lesbarhet:
-  #RegData$OpTidlLaparotomi <- RegData$OpTidlLaparotomi
 
   #Riktig format på datovariable:
   #RegData$FodselsDato <- as.Date(RegData$FodselsDato, format="%Y-%m-%d")
