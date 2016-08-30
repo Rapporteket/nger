@@ -78,7 +78,7 @@
 #' @export
 #'
 NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050-12-31', minald=0, maxald=130,
-                      outfile='', reshID, enhetsUtvalg=1, OpMetode=99, Hastegrad='', AlvorlighetKompl='',
+                      outfile='', reshID, enhetsUtvalg=1, MCEType=99, Hastegrad='', AlvorlighetKompl='',
                       hentData=0, preprosess=0)
 {
 
@@ -263,7 +263,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
      ###Gjør utvalg (NGERUtvalg)
      ###Kjører denne etter variabeldefinisjon for at utvalgTxt skal bli riktig
      NGERUtvalg <- NGERUtvalg(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra,
-                             datoTil = datoTil, OpMetode = OpMetode, AlvorlighetKompl=AlvorlighetKompl,
+                             datoTil = datoTil, MCEType = MCEType, AlvorlighetKompl=AlvorlighetKompl,
                              Hastegrad=Hastegrad)
      RegData <- NGERUtvalg$RegData
      utvalgTxt <- NGERUtvalg$utvalgTxt

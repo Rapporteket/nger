@@ -30,7 +30,7 @@
 #' @export
 
 NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
-                        minald=0, maxald=130, OpMetode=99, Hastegrad='', AlvorlighetKompl='', reshID, outfile='',
+                        minald=0, maxald=130, MCEType=99, Hastegrad='', AlvorlighetKompl='', reshID, outfile='',
                         enhetsUtvalg=1, preprosess=0, hentData=0) {
 
   ## Hvis spørring skjer fra R på server. ######################
@@ -186,7 +186,7 @@ if (valgtVar == 'Utdanning') {
 
 #Gjør utvalg
 NGERUtvalg <- NGERUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-                            OpMetode=OpMetode, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
+                         MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
 RegData <- NGERUtvalg$RegData
 utvalgTxt <- NGERUtvalg$utvalgTxt
 

@@ -7,7 +7,7 @@
 #'
 #' @export
 #'
-NGERUtvalg <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', minald, maxald, OpMetode, AlvorlighetKompl, Hastegrad)
+NGERUtvalg <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', minald, maxald, MCEType, AlvorlighetKompl, Hastegrad)
 {
   # Definer intersect-operator
   "%i%" <- intersect
@@ -19,7 +19,7 @@ NGERUtvalg <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', minald,
   #Utvalg på dato:
   indDato <- which(RegData$InnDato >= as.Date(datoFra) & RegData$InnDato <= as.Date(datoTil))
   #Operasjonstype:
-  indMCE <- if (OpMetode %in% c(1:3)){which(RegData$OpMetode == OpMetode)
+  indMCE <- if (MCEType %in% c(1:3)){which(RegData$MCEType == MCEType)
   } else {indMCE <- 1:Ninn}
   #Alvorlighetsgrad, flervalgsutvalg
   indAlvor <- if (AlvorlighetKompl[1] != '') {which(RegData$Opf0AlvorlighetsGrad %in% as.numeric(AlvorlighetKompl)) %i%
@@ -42,7 +42,7 @@ NGERUtvalg <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', minald,
                  if ((minald>0) | (maxald<130))
                  {paste('Pasienter fra ', if (N>0) {min(RegData$Alder, na.rm=T)} else {minald},
                         ' til ', if (N>0) {max(RegData$Alder, na.rm=T)} else {maxald}, ' år', sep='')},
-                 if (OpMetode %in% c(1:3)){paste('Operasjonsmetode: ', c('Laparoskopi', 'Hysteroskopi', 'Begge')[OpMetode], sep='')},
+                 if (MCEType %in% c(1:3)){paste('Operasjonsmetode: ', c('Laparoskopi', 'Hysteroskopi', 'Begge')[MCEType], sep='')},
                  if (Hastegrad[1] != ''){paste('Hastegrad: ', paste(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','), sep='')},
                  if (AlvorlighetKompl[1] != ''){paste('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
                                                          [as.numeric(AlvorlighetKompl)], collapse=','), sep='')})
