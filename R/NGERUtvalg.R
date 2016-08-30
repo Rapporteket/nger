@@ -19,7 +19,7 @@ NGERUtvalg <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', minald,
   #Utvalg på dato:
   indDato <- which(RegData$InnDato >= as.Date(datoFra) & RegData$InnDato <= as.Date(datoTil))
   #Operasjonstype:
-  indMCE <- if (MCEType %in% c(1:3)){which(RegData$MCEType == MCEType)
+  indMCE <- if (MCEType %in% c(1:3)){which(RegData$OpMetode == MCEType)
   } else {indMCE <- 1:Ninn}
   #Alvorlighetsgrad, flervalgsutvalg
   indAlvor <- if (AlvorlighetKompl[1] != '') {which(RegData$Opf0AlvorlighetsGrad %in% as.numeric(AlvorlighetKompl)) %i%

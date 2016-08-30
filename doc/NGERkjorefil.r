@@ -35,7 +35,7 @@ maxald <- 130	#alder, til og med
 datoFra <- '2013-01-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2016-12-31'
 preprosess <- 1
-MCEType <- ''
+MCEType <- 1
 Hastegrad <- ''
 AlvorlighetKompl <- ''#c('2','3')
 hentData <- 0
@@ -78,7 +78,7 @@ datoFra <- '2013-02-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- Sys.Date() #'2016-03-01'
 preprosess <- 1
 hentData <- 0
-MCEType <- 99
+MCEType <- 1
 tidsenhet <- 'Aar'
 Hastegrad <- ''
 AlvorlighetKompl <- ''
