@@ -21,7 +21,7 @@ dato <- as.POSIXlt(datoTil)
 datoFra <- as.Date(paste0(1900+dato$year-1,'-', '0', dato$mon, '-', '01'))
 #I månedsfigurene er datoFra automatisk satt til 13 mnd før dagens dato.
 
-RegData <- NGERHentRegData(datoFra=datoFra, datoTil=datoTil)
+RegData <- NGERRegDataSQL(datoFra=datoFra, datoTil=datoTil)
 RegData <- NGERPreprosess(RegData=RegData)
 @
 

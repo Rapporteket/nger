@@ -35,7 +35,7 @@ NGERFigAndelTid <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
 
   ## Hvis spørring skjer fra R på server. ######################
   if(hentData == 1){
-    RegData <- NGERHentRegData(datoFra = datoFra, datoTil = datoTil)
+    RegData <- NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil)
   }
 
   # Hvis RegData ikke har blitt preprosessert
