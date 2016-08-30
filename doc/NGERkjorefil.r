@@ -8,7 +8,7 @@ library(tools)
 
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 setwd('C:/ResultattjenesteGIT/nger/inst/')
-#knit('NGERmonthlyReport.Rnw')
+knit('NGERmonthlyReport.Rnw')
 #tools:: texi2pdf('NGERmonthlyReport.tex')
 knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
 tools::texi2pdf('NGERSamleRapp.tex')

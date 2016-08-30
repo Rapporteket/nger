@@ -57,7 +57,7 @@
 #' @param hentData Gjør spørring mot database
 #'                 0: Nei, RegData gis som input til funksjonen (Standard)
 #'                 1: Ja
-#' @param OpMetode  1: Laparoskopi
+#' @param MCEType  1: Laparoskopi
 #'                 2: Hysteroskopi
 #'                 3: Begge
 #'                 99: Alle

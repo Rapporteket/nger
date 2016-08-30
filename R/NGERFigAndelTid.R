@@ -149,13 +149,13 @@ if (valgtVar=='KomplIntra') {
 	# Komplikasjoner ved operasjon. Må kombinere HysKomplikasjoner og LapKomplikasjoner
 	#Kode 0: Nei, 1:Ja, tomme
 	RegData$KomplIntra <- with(RegData, HysKomplikasjoner + LapKomplikasjoner) #Får mange tomme!!!
-  	indMed <- switch(as.character(OpMetode),
+  	indMed <- switch(as.character(MCEType),
 					'1' = which(RegData$LapKomplikasjoner %in% 0:1),
 					'2' = which(RegData$HysKomplikasjoner %in% 0:1),
 					'3' = which(RegData$KomplIntra %in% 0:1),	#Få tomme for dette valget
 					'99' = union(which(is.finite(RegData$HysKomplikasjoner)), which(is.finite(RegData$LapKomplikasjoner))))
 	RegData <- RegData[indMed, ]
-  	indVar <- switch(as.character(OpMetode),
+  	indVar <- switch(as.character(MCEType),
 					'1' = which(RegData$LapKomplikasjoner == 1),
 					'2' = which(RegData$HysKomplikasjoner == 1),
 					'3' = which(RegData$KomplIntra == 1),

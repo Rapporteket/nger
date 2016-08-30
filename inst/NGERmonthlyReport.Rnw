@@ -21,7 +21,11 @@ dato <- as.POSIXlt(datoTil)
 datoFra <- as.Date(paste0(1900+dato$year-1,'-', '0', dato$mon, '-', '01'))
 #I månedsfigurene er datoFra automatisk satt til 13 mnd før dagens dato.
 
-RegData <- NGERRegDataSQL(datoFra=datoFra, datoTil=datoTil)
+if (!exists('RegData')){
+      RegData <- NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil)
+}
+
+#RegData <- NGERRegDataSQL(datoFra=datoFra, datoTil=datoTil)
 RegData <- NGERPreprosess(RegData=RegData)
 @
 
@@ -43,7 +47,7 @@ hentData <- 0
 variable <- c('KomplIntra', 'KomplPostop', 'Opf0Status')
 for (valgtVar in variable) {
 	outfile <- paste0(valgtVar, '_Alle', tidsenhet, '.pdf')
-	NGERFigAndelerGrVar(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra,
+	NGERFigAndelerGrVar(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra,MCEType = MCEType,
                 datoTil=datoTil, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg,
                 hentData=0, preprosess=preprosess)
 }
@@ -54,7 +58,7 @@ variable <- c('Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf
 for (valgtVar in variable) {
 	outfile <- paste0(valgtVar, '_', tidsenhet, '.pdf')
 	NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
-              reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,
+              reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile, MCEType = MCEType,
               tidsenhet=tidsenhet, preprosess=preprosess)
 			  }
 @
