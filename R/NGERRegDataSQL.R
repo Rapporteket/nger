@@ -91,6 +91,7 @@ if (varUtvalg==0) {
   ,ForlopsOversikt.OppflgRegStatus
   ,ForlopsOversikt.OppflgStatus
   ,ForlopsOversikt.PasientID
+  ,ForlopsOversikt.PasientAlder
   ,ForlopsOversikt.Sivilstatus
   ,ForlopsOversikt.SykehusNavn
   ,ForlopsOversikt.Utdanning
