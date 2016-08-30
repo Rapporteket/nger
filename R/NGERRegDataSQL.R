@@ -15,12 +15,15 @@ NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = '2099-01-01', varUt
   dbType <- "mysql"
 
 if (varUtvalg==0) {
-  varUtvalg <-
-    'HysBlodning,
+  varUtvalg <- '
+  HysBlodning,
   HysFluidOverload,
   HysGjforingsGrad,
   HysKomplikasjoner,
   HysPerforasjon,
+  HysDiagnose1,
+  HysDiagnose2,
+  HysDiagnose3,
   HysProsedyre1,
   HysProsedyre2,
   HysProsedyre3,
@@ -43,6 +46,9 @@ if (varUtvalg==0) {
   LapNerv,
   LapNett,
   LapNumHjelpeinnstikk,
+  LapDiagnose1,
+  LapDiagnose2,
+  LapDiagnose3,
   LapProsedyre1,
   LapProsedyre2,
   LapProsedyre3,
