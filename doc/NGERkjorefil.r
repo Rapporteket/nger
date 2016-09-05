@@ -39,7 +39,7 @@ MCEType <- 1
 Hastegrad <- ''
 AlvorlighetKompl <- ''#c('2','3')
 hentData <- 0
-enhetsUtvalg <- 1 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
+enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
 valgtVar <- 'LapEkstrautstyr'	#Må velge... Alder,... NY: Diagnoser, Prosedyrer
 
