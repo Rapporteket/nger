@@ -348,6 +348,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
 
       if (valgtVar=='HysKomplikasjoner') {
         #Hysteroskopi intrapoerative komplikasjoner:
+		#Avventer til avklar hva egentlig skal gjøre
         Var <- c('HysTilgang',
                  'HysPerforasjon',
                  'HysTeknisk',
@@ -357,7 +358,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
                    'Fluid overload', 'Blødning')
         Tittel <- 'Intraoperative komplikasjoner ved hysteroskopi'
         indMed <- which(RegData$OpMetode==2) %i% which(RegData$HysKomplikasjoner %in% 0:1)	#
-        AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
+        #AntVar <- colSums(RegData[indMed ,Var], na.rm=T) #GIR INGEN MENING!!
         NVar <- length(indMed)
         N <- NVar
       }
