@@ -35,13 +35,13 @@ maxald <- 130	#alder, til og med
 datoFra <- '2013-01-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2016-12-31'
 preprosess <- 1
-MCEType <- 1
+MCEType <- ''
 Hastegrad <- ''
 AlvorlighetKompl <- ''#c('2','3')
 hentData <- 0
 enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
-valgtVar <- 'LapEkstrautstyr'	#Må velge... Alder,... NY: Diagnoser, Prosedyrer
+valgtVar <- 'HysKomplikasjoner'	#Må velge... Alder,... NY: Diagnoser, Prosedyrer
 
 outfile <- paste(valgtVar, '_ford.png', sep='')	#Navn angis av Jasper
 setwd("C:/ResultattjenesteGIT/nger/")
@@ -50,11 +50,15 @@ NGERFigAndeler(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=dat
 	reshID=reshID, enhetsUtvalg=enhetsUtvalg, MCEType = MCEType, outfile=outfile, preprosess = preprosess,
   minald=minald, maxald=maxald, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
 
+#NB: Tar ut 'LapKomplikasjoner' og 'HysKomplikasjoner', fra jrxml.
+#Husk å ta inn disse når fikset figurer.
+
+
 #Teste variable
-variable <- c('Alder','Diagnoser',  'HysGjforingsGrad', 'HysKomplikasjoner','KomplPost',
+variable <- c('Alder','Diagnoser',  'HysGjforingsGrad', 'KomplPost',
               'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr', 'LapTilgangsMetode',
-              'LapKomplikasjoner', 'LapIntraabdominell', 'LapNumHjelpeinnstikk',
-              'Sivilstatus', 'MCEType', 'Norsktalende', 'OpAnestesi', 'OpASA',
+               'LapIntraabdominell', 'LapNumHjelpeinnstikk',
+              'Sivilstatus', 'OpMetode', 'Norsktalende', 'OpAnestesi', 'OpASA',
               'OpBMI', 'OpKategori', 'OpDagkirurgi','Opf0AlvorlighetsGrad',
               'OpTidlVagInngrep', 'OpTidlLapsko',
               'OpTidlLaparotomi', 'OpIVaktTid', 'OpType', 'Prosedyrer', 'Utdanning')

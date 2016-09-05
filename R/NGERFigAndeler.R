@@ -254,7 +254,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   if (valgtVar == 'LapNumHjelpeinnstikk') {
     # Velge antall fra 0 til 6
     #IKKE gjort noen utvalg. (StatusLap==1?, LapHjelpeinnstikk==1?)
-    Tittel <- 'Antall hjelpeinnstikk'
+    Tittel <- 'Antall hjelpeinnstikk, laparaskopi'
     grtxt <- 0:6 #Kategoriser: 0,1,2,3,4+
     RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = grtxt)
   }
@@ -333,36 +333,16 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
       #  Variablene kjøres for angitt indeks, dvs. to ganger hvis vi skal ha sammenligning med Resten.
       RegData <- RegDataLand[switch(utvalg[teller], Hoved = indHoved, Rest=indRest), ]
 
-      if (valgtVar=='LapKomplikasjoner') {
-        #Laparoskopiske intrapoerative komplikasjoner:
-        Var <- c('LapUterusmanipulator',
-                 'LapTilgang',
-                 'LapHjelpeinnstikk',
-                 'LapIntraabdominell',
-                 'LapTekniskUtstyr',
-                 'LapPostoperativ',
-                 'LapKonvertert')
-        grtxt <- c('Uterusmanipulator', 'Tilgangsmetode', 'Hjelpeinnstikk',
-                   'Intraabdominal', 'Utstyr', 'Postoperativ', 'Konvertert')
-        Tittel <- 'Intraoperative komplikasjoner ved laparoskopi'
-        indMed <- which(RegData$LapKomplikasjoner %in% 0:1)	#
-        AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
-        NVar <- length(indMed)
-      }
-
-
-      if (valgtVar=='LapIntraabdominell') {
-        #Laparoskopiske intraabdominale komplikasjoner:
-        Var <- c('LapNerv',
-                 'LapUreter',
-                 'LapTarm',
-                 'LapBlare',
-                 'LapKarBlodning')
-        grtxt <- c('Nerve', 'Ureter', 'Tarm', 'Blære', 'Kar')
-        Tittel <- 'Intraabdominelle komplikasjoner ved laparoskopi'
-        indMed <- which(RegData$LapIntraabdominell %in% 0:1)	#
-        AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
-        NVar <- length(indMed)
+      if (valgtVar=='Diagnoser') {
+        DiagLap <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3')
+        DiagHys <- c('HysDiagnose1', 'HysDiagnose2', 'HysDiagnose3')
+        AlleDiag <- sort(table(toupper(as.vector(as.matrix(RegData[ ,c(DiagHys, DiagLap)])))), decreasing = TRUE)
+        ant <- 20
+        grtxt <- names(AlleDiag)[1:ant+1]	#Evt. 2:11..
+        Tittel <- 'Hyppigst forekommende diagnoser'
+        AntVar <- AlleDiag[1:ant+1] #Må fjerne tomme. Starter derfor på 2. Hva om vi ikke har tomme...?
+        NVar <- dim(RegData)[1]
+		N <- NVar
       }
 
 
@@ -376,9 +356,10 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         grtxt <- c('Ved tilgang', 'Perforasjon', 'Teknisk/utstyr',
                    'Fluid overload', 'Blødning')
         Tittel <- 'Intraoperative komplikasjoner ved hysteroskopi'
-        indMed <- which(RegData$HysKomplikasjoner %in% 0:1)	#
+        indMed <- which(RegData$OpMetode==2) %i% which(RegData$HysKomplikasjoner %in% 0:1)	#
         AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
         NVar <- length(indMed)
+        N <- NVar
       }
 
       if (valgtVar=='KomplPost') {
@@ -389,6 +370,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         indMed <- intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1))
         AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
         NVar <- length(indMed)
+        N <- NVar
       }
 
       if (valgtVar == 'KomplPostUtd') {		#Evt. ReopUtd
@@ -404,7 +386,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         RegData$Utdanning <- factor(RegData$Utdanning, levels=1:5)
         AntVar <- table(RegData$Utdanning[which(RegData$Opf0Komplikasjoner ==1)])
         NVar <- table(RegData$Utdanning)
-        #100*AntVar/NVar
+        N <- sum(NVar, na.rm = T)
       }
       if (valgtVar == 'KomplReopUtd') {		#Evt. ReopUtd
         #Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper.
@@ -412,13 +394,11 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
         Tittel <- 'Reoperasjon (grunnet komplikasjon) i utdanningsgrupper'
         grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år')
-        RegData <- RegData[which(RegData$Opf0Status == 1) %i% which(RegData$Utdanning %in% 1:5) %i% which(RegData$Opf0Komplikasjoner %in% 0:1), ] #Antar at tomme Opf0Reoperasjon er nei. & which(RegData$Opf0Reoperasjon %in% 0:1)
-        #RegData <- RegData[intersect(which(RegData$Utdanning %in% 1:5), which(RegData$Opf0Komplikasjoner %in% 0:1)), ] #Antar at tomme Opf0Reoperasjon er nei. & which(RegData$Opf0Reoperasjon %in% 0:1)
+        RegData <- RegData[which(RegData$Utdanning %in% 1:5) %i% which(RegData$Opf0Komplikasjoner %in% 0:1), ] #Antar at tomme Opf0Reoperasjon er nei. 
         RegData$Utdanning <- factor(RegData$Utdanning, levels=1:5)
         AntVar <- table(RegData$Utdanning[which(RegData$Opf0Reoperasjon ==1)])
-        #AntVar <- table(RegData$Utdanning[which(RegData$OpType ==2)])
         NVar <- table(RegData$Utdanning)
-        #100*AntVar/NVar
+        N <- sum(NVar, na.rm = T)
         retn <- 'H'
       }
       if (valgtVar=='LapEkstrautstyr') {
@@ -456,10 +436,45 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         varBytt <- c('LapMorcellatorUtenPose', 'LapMorcellatorMedPose')
         varByttind <- which(Var %in% varBytt)
         AntVar[varBytt] <- colSums(RegData[indinnfDato,varBytt], na.rm=T)
-        NVar <- rep(length(indMed), length(Var))
+        N <- length(indMed)
+		NVar <- rep(N, length(Var))
         NVar[varByttind] <- length(indinnfDato)
               }
 
+      if (valgtVar=='LapKomplikasjoner') {
+        #Laparoskopiske intrapoerative komplikasjoner:
+		#Andel komplikasjoner ved bruk av de ulike utstyrstypene?
+		#!!!!!!!!!!! AVVENTER KLARGJØRING AV HVA FIGUREN SKAL VISE.
+        Var <- c('LapUterusmanipulator', #0,1
+                 'LapTilgang',	#1,2,NA
+                 'LapHjelpeinnstikk', #0,1
+                 'LapIntraabdominell',  #0,1
+                 'LapTekniskUtstyr', #0,1
+                 'LapPostoperativ', #0,1
+                 'LapKonvertert') #0,1
+        grtxt <- c('Uterusmanipulator', 'Tilgangsmetode', 'Hjelpeinnstikk',
+                   'Intraabdominal', 'Utstyr', 'Postoperativ', 'Konvertert')
+        Tittel <- 'Intraoperative komplikasjoner ved laparoskopi'
+        indMed <- which(RegData$LapKomplikasjoner %in% 0:1)	#
+		#Tror vi skal summere komplikasjoner for hver variabel
+        #AntVar <- colSums(RegData[indMed ,Var], na.rm=T) FEIL
+        NVar <- length(indMed)
+        N <- NVar
+      }
+      if (valgtVar=='LapIntraabdominell') {
+        #Laparoskopiske intraabdominale komplikasjoner:
+        Var <- c('LapNerv',
+                 'LapUreter',
+                 'LapTarm',
+                 'LapBlare',
+                 'LapKarBlodning')
+        grtxt <- c('Nerve', 'Ureter', 'Tarm', 'Blære', 'Kar')
+        Tittel <- 'Intraabdominelle komplikasjoner ved laparoskopi'
+        indMed <- which(RegData$LapIntraabdominell %in% 0:1)	#
+        AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
+        NVar <- length(indMed)
+        N <- NVar
+      }
       if (valgtVar=='Prosedyrer') {
         #Hyppigst forekommende prosedyrer
         #RegData$Opf0Status == 1 OK
@@ -471,29 +486,20 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         Tittel <- 'Hyppigst forekommende prosedyrer'
         AntVar <- AllePros[1:ant+1] #Må fjerne tomme. Starter derfor på 2. Hva om vi ikke har tomme...?
         NVar <- dim(RegData)[1]
+        N <- NVar 
       }
 
-      if (valgtVar=='Diagnoser') {
-        DiagLap <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3')
-        DiagHys <- c('HysDiagnose1', 'HysDiagnose2', 'HysDiagnose3')
-        AlleDiag <- sort(table(toupper(as.vector(as.matrix(RegData[ ,c(DiagHys, DiagLap)])))), decreasing = TRUE)
-        ant <- 20
-        grtxt <- names(AlleDiag)[1:ant+1]	#Evt. 2:11..
-        Tittel <- 'Hyppigst forekommende diagnoser'
-        AntVar <- AlleDiag[1:ant+1] #Må fjerne tomme. Starter derfor på 2. Hva om vi ikke har tomme...?
-        NVar <- dim(RegData)[1]
-      }
 
 
       #Generell beregning for alle figurer med sammensatte variable:
       if (teller == 1) {
         AntHoved <- AntVar
-        NHoved <- sum(NVar, na.rm=T)	#feil: max(NVar, na.rm=T)
+        NHoved <- N #sum(NVar, na.rm=T)	#feil: max(NVar, na.rm=T)
         Andeler$Hoved <- 100*AntVar/NVar
       }
       if (teller == 2) {
         AntRest <- AntVar
-        NRest <- sum(NVar,na.rm=T)	#length(indRest)- Kan inneholde NA
+        NRest <- N #sum(NVar,na.rm=T)	#length(indRest)- Kan inneholde NA
         Andeler$Rest <- 100*AntVar/NVar
       }
     } #end medSml (med sammenligning)
