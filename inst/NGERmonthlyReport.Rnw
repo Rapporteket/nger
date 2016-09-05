@@ -29,20 +29,23 @@ if (!exists('RegData')){
 RegData <- NGERPreprosess(RegData=RegData)
 @
 
-<<'defineHospitalName', include=FALSE>>=
-shtxt <- as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)])
-@
 
-<<'makeFigs', include=FALSE>>=
+<<'SetteParametreOgLageFig', include=FALSE>>=
 minald <- 0
 maxald <- 130
 MCEType <- 99
 Hastegrad <- ""
 AlvorlighetKompl <- ""
-enhetsUtvalg <- 1
+enhetsUtvalg <- 0
 tidsenhet <- 'Mnd'
 preprosess <- 0
 hentData <- 0
+
+shtxt <- switch(as.character(enhetsUtvalg),
+                     '0' = 'Hele landet',
+                     '1' = as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)]),
+                     '2' = as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)]))
+#shtxt <- as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)])
 
 variable <- c('KomplIntra', 'KomplPostop', 'Opf0Status')
 for (valgtVar in variable) {

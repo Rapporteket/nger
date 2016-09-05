@@ -9,7 +9,7 @@ library(tools)
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 setwd('C:/ResultattjenesteGIT/nger/inst/')
 knit('NGERmonthlyReport.Rnw')
-#tools:: texi2pdf('NGERmonthlyReport.tex')
+tools:: texi2pdf('NGERmonthlyReport.tex')
 knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
 tools::texi2pdf('NGERSamleRapp.tex')
 
@@ -41,7 +41,7 @@ AlvorlighetKompl <- ''#c('2','3')
 hentData <- 0
 enhetsUtvalg <- 1 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
-valgtVar <- 'OpBMI'	#Må velge... Alder,... NY: Diagnoser, Prosedyrer
+valgtVar <- 'LapEkstrautstyr'	#Må velge... Alder,... NY: Diagnoser, Prosedyrer
 
 outfile <- paste(valgtVar, '_ford.png', sep='')	#Navn angis av Jasper
 setwd("C:/ResultattjenesteGIT/nger/")
