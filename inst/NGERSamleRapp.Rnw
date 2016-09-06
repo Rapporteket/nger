@@ -298,15 +298,30 @@ print(xtable::xtable( ASALapHys[ ,max(1,dim(ASALapHys)[2]-4):dim(ASALapHys)[2]],
 #LapSingelPort = portioadapter??
 #LapIntKombo = Thunderbeat
 
-Instr <- c('LapMorcellatorUtenPose', 'LapMorcellatorMedPose', 'LapHarmonicS',
-	'LapSingelPort', 'LapIntKombo', 'LapRobotKirurgi')
-RegDataUtvalg <- RegData[which(RegData$OpMetode==1), c('SykehusNavn', Instr)]
+if (datoTil == '2015-12-31'){
+  Instr <- c('LapMorcellatorUtenPose', 'LapHarmonicS',
+  	'LapSingelPort', 'LapIntKombo', 'LapRobotKirurgi')
+  NavnInstr <- c('Morcellator', 'Harmoisk Scalp.', 'Portioad.', 'IntKombo', 'Robotkir.')
+} else {
+  Instr <- c('LapMorcellatorUtenPose', 'LapMorcellatorMedPose', 'LapHarmonicS',
+  	'LapSingelPort', 'LapIntKombo', 'LapRobotKirurgi')
+  NavnInstr <- c('Morc.u/pose', 'Morc. m/pose', 'Harmoisk Scalp.', 'Portioad.', 'IntKombo', 'Robotkir.')
+}
 
-InstrTab <- plyr::daply(RegDataUtvalg[ ,Instr], .(RegDataUtvalg$SykehusNavn),colwise(sum), na.rm=T)  #Liste m/6dim
-colnames(InstrTab) <- c('Morc.u/pose', 'Morc. m/pose', 'Harmoisk Scalp.', 'Portioad.', 'IntKombo', 'Robotkir.')
+RegDataUtvalg <- RegData[which(RegData$OpMetode==1), c('SykehusNavn', Instr)]
+InstrTab <- plyr::daply(RegDataUtvalg[ ,Instr], .(RegDataUtvalg$SykehusNavn), colwise(sum), na.rm=T)  #Liste m/6dim
+
+ShNavn <- rownames((InstrTab))
+colnames(InstrTab) <- NavnInstr
+
+as.data.frame(InstrTab)
+colSums(as.data.frame(InstrTab)[,2:6])
+
 
 InstrTab <- plyr::ddply(RegDataUtvalg[ ,Instr], .(RegDataUtvalg$SykehusNavn),colwise(sum), na.rm=T)  #Dataramme m/7dim
-addmargins(InstrTab, margin = 2)
+colSums(as.data.frame(InstrTab)[,2:7])
+
+
 @
 
 <<'DivFig1', results='asis', echo=FALSE, eval=T>>=
