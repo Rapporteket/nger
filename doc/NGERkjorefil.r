@@ -99,8 +99,8 @@ NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=da
 
 
 #Teste variable
-variable <- c('Alder', 'Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan', 'Opf0Reoperasjon',
-              'Opf0AlvorlighetsGrad', 'KomplIntra', 'KomplPostop', 'OpAntibProfylakse',
+variable <- c('Alder', 'Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan',
+              'Opf0Reoperasjon','Opf0AlvorlighetsGrad', 'KomplIntra', 'KomplPostop', 'OpAntibProfylakse',
               'OpASA', 'OpBMI', 'Opf0Status')
 
 for (valgtVar in variable) {
