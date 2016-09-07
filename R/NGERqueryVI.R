@@ -2,7 +2,7 @@
 #'
 #' Provides NGER data for tab vi from staging
 #'
-#' @inheritParams FigAndeler
+#' @inheritParams NGERFigAndeler
 #'
 #' @return RegData data frame
 #' @export
@@ -19,11 +19,11 @@ SELECT
   v.OpParities,
   v.OpPregnancies,
   v.OpOptimeCount,
-  v.Opcat,
+  v.OpKategori,
   v.OpType,
-  v.MCEType,
+  v.OpMetode,
   f.BasisRegStatus,
-  v.PatientID,
+  v.PasientID,
   YEAR(f.HovedDato) AS year,
   f.SykehusNavn
 FROM
