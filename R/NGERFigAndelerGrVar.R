@@ -3,40 +3,43 @@
 #' Funksjon som genererer en figur med andeler av en variabel for grupperingsvariabelen sykehus.
 #' Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus
 #'
-#'  Variable funksjonen benytter: Alder (beregnes), ComplExist, ComplReop, ComplAfterBleed, ComplEquipment,
-#'  ComplInfection, ComplOrganEducation, FollowupSeriousness
-#'  HypComplications, LapComplications, MCEType, OpAntibioticProphylaxis, OpASA, OpBMI, StatusFollowup.
+#'  Variable funksjonen benytter: Alder (beregnes), Opf0Komplikasjoner, Opf0Reoperasjon, Opf0KomplBlodning, Opf0KomplUtstyr,
+#'  Opf0KomplInfeksjon, Opf0KomplOrganUtdanning, Opf0AlvorlighetsGrad
+#'  HysKomplikasjoner, LapKomplikasjoner, OpMetode, OpAntibProfylakse, OpASA, OpBMI, Opf0Status.
 #'  Det benyttes også andre variable til utvalg osv.
 #'
-#' @inheritParams FigAndelTid
-#' @param valgtVar Velg hvilken variabel du ønsker å se resultat for
-#'		Alder: Andel pasienter over 70 år.
-#'		ComplAfterBleed: Postop. komplikasjon: Blødning
-#'		ComplEquipment: Postop. komplikasjon: Problemer med ustyr
-#'		ComplInfection: Postop. komplikasjon: Infeksjon
-#'		ComplOrgan: Postop. komplikasjon: Organskade
-#'		ComplReop: Reoperasjon som følge av komplikasjon
-#'		Education: Pasienter med høyere utdanning
-#'		FollowupSeriousness: Alvorlige komplikasjoner (grad 3 og 4)
-#'		KomplIntra: Komplikasjoner under operasjon (intraoperativt)
-#'		KomplPostop: Postoperative komplikasjoner
-#'		OpAntibioticProphylaxis: Fått antibiotikaprofylakse
-#'		OpASA: ASA-grad > II
-#'		OpBMI: Pasienter med fedme (BMI>30)
-#'		StatusFollowup: Fått postoperativ oppfølging
+#' Argumentet \emph{valgtVar} har følgende valgmuligheter:
+#'    \itemize{
+#'		\item Alder: Andel pasienter over 70 år.
+#'		\item KomplIntra: Komplikasjoner under operasjon (intraoperativt)
+#'		\item KomplPostop: Postoperative komplikasjoner
+#'		\item OpAntibProfylakse: Fått antibiotikaprofylakse
+#'		\item OpASA: ASA-grad > II
+#'		\item OpBMI: Pasienter med fedme (BMI>30)
+#'		\item Opf0AlvorlighetsGrad: Alvorlige komplikasjoner (grad 3 og 4)
+#'		\item Opf0KomplBlodning: Postop. komplikasjon: Blødning
+#'		\item Opf0KomplUtstyr: Postop. komplikasjon: Problemer med ustyr
+#'		\item Opf0KomplInfeksjon: Postop. komplikasjon: Infeksjon
+#'		\item Opf0KomplOrgan: Postop. komplikasjon: Organskade
+#'		\item Opf0Reoperasjon: Reoperasjon som følge av komplikasjon
+#'		\item Opf0Status: Fått postoperativ oppfølging
+#'		\item Utdanning: Pasienter med høyere utdanning
+#'    }
+#'
+#' @inheritParams NGERFigAndeler
 #' @export
 
-FigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
+NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
                         minald=0, maxald=130, MCEType=99, Hastegrad='', AlvorlighetKompl='', reshID, outfile='',
-                        enhetsUtvalg=1, preprosess=TRUE, hentData=0) {
+                        enhetsUtvalg=1, preprosess=0, hentData=0) {
 
   ## Hvis spørring skjer fra R på server. ######################
   if(hentData == 1){
-    RegData <- NGERHentRegData(datoFra = datoFra, datoTil = datoTil)
+    RegData <- NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil)
   }
 
   # Hvis RegData ikke har blitt preprosessert
-  if (preprosess){
+  if (preprosess==1){
     RegData <- NGERPreprosess(RegData=RegData)
   }
 
@@ -67,10 +70,10 @@ if (valgtVar == 'Alder') {
 	Tittel <- 'Pasienter over 70 år'
 }
 
-if (valgtVar=='OpAntibioticProphylaxis') {
+if (valgtVar=='OpAntibProfylakse') {
 	#Andel som får antibiotika
 	#Kode 0,1: Nei, Ja (ingen tomme per 22.feb.2016)
-	RegData <- RegData[which(RegData$OpAntibioticProphylaxis %in% 0:1), ]
+	RegData <- RegData[which(RegData$OpAntibProfylakse %in% 0:1), ]
 	RegData$Variabel <- RegData[ ,valgtVar]
 	Tittel <- 'Fått antibiotikaprofylakse'
 }
@@ -93,88 +96,88 @@ if (valgtVar == 'OpBMI') {
 if (valgtVar=='KomplPostop') {
 	# Andel postoperative komplikasjoner
 	#Kode 0: Nei, 1:Ja, tomme
-	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$StatusFollowup == 1)), ]
-	RegData$Variabel <- RegData$ComplExist
+	RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
+	RegData$Variabel <- RegData$Opf0Komplikasjoner
 	Tittel <- 'Komplikasjoner, postoperativt'
 }
 
-if (valgtVar=='ComplAfterBleed') {
+if (valgtVar=='Opf0KomplBlodning') {
 	#Kode 0: Nei, 1:Ja
-	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$StatusFollowup == 1)), ]
-	RegData$Variabel[which(RegData$ComplAfterBleed == 1)] <- 1
+	RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
+	RegData$Variabel[which(RegData$Opf0KomplBlodning == 1)] <- 1
 	Tittel <- 'Postop. komplikasjon: Blødning'
 }
-if (valgtVar=='ComplEquipment') {
+if (valgtVar=='Opf0KomplUtstyr') {
 	#Kode 0: Nei, 1:Ja
-	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$StatusFollowup == 1)), ]
-	RegData$Variabel[which(RegData$ComplEquipment == 1)] <- 1
+	RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
+	RegData$Variabel[which(RegData$Opf0KomplUtstyr == 1)] <- 1
 	Tittel <- 'Postop. komplikasjon: Problemer med ustyr'
 }
-if (valgtVar=='ComplInfection') {
+if (valgtVar=='Opf0KomplInfeksjon') {
 	#Kode 0: Nei, 1:Ja
-	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$StatusFollowup == 1)), ]
-	RegData$Variabel[which(RegData$ComplInfection == 1)] <- 1
+	RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
+	RegData$Variabel[which(RegData$Opf0KomplInfeksjon == 1)] <- 1
 	Tittel <- 'Postop. komplikasjon: Infeksjon'
 }
-if (valgtVar=='ComplOrgan') {
+if (valgtVar=='Opf0KomplOrgan') {
 	#Kode 0: Nei, 1:Ja
-	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$StatusFollowup == 1)), ]
-	RegData$Variabel[which(RegData$ComplOrgan == 1)] <- 1
+	RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
+	RegData$Variabel[which(RegData$Opf0KomplOrgan == 1)] <- 1
 	Tittel <- 'Postop. komplikasjon: Organskade'
 }
 
-if (valgtVar=='ComplReop') {
+if (valgtVar=='Opf0Reoperasjon') {
 	#Kode 0: Nei, 1:Ja
-	RegData <- RegData[intersect(which(RegData$ComplExist %in% 0:1), which(RegData$StatusFollowup == 1)), ]
-	RegData$Variabel[which(RegData$ComplReop == 1)] <- 1
+	RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
+	RegData$Variabel[which(RegData$Opf0Reoperasjon == 1)] <- 1
 	Tittel <- 'Postop. komplikasjon: Reoperasjon'
 }
 
-if (valgtVar=='FollowupSeriousness') {
+if (valgtVar=='Opf0AlvorlighetsGrad') {
 	#Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
 	#Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
-	RegData <- RegData[which(RegData$ComplExist %in% 0:1) %i% which(RegData$StatusFollowup == 1), ]
-	#RegData <- RegData[which(RegData$FollowupSeriousness %in% 1:4), ]
-	RegData$Variabel[which(RegData$FollowupSeriousness %in% 3:4)] <- 1
+	RegData <- RegData[which(RegData$Opf0Komplikasjoner %in% 0:1) %i% which(RegData$Opf0Status == 1), ]
+	#RegData <- RegData[which(RegData$Opf0AlvorlighetsGrad %in% 1:4), ]
+	RegData$Variabel[which(RegData$Opf0AlvorlighetsGrad %in% 3:4)] <- 1
 	Tittel <- 'Alvorlige komplikasjoner (grad 3 og 4)'
 }
 
 if (valgtVar=='KomplIntra') {
-	# Komplikasjoner ved operasjon. Må kombinere HypComplications og LapComplications
+	# Komplikasjoner ved operasjon. Må kombinere HysKomplikasjoner og LapKomplikasjoner
 	#Kode 0: Nei, 1:Ja, tomme
-	RegData$KomplIntra <- with(RegData, HypComplications + LapComplications) #Får mange tomme!!!
+	RegData$KomplIntra <- with(RegData, HysKomplikasjoner + LapKomplikasjoner) #Får mange tomme!!!
   	indMed <- switch(as.character(MCEType),
-					'1' = which(RegData$LapComplications %in% 0:1),
-					'2' = which(RegData$HypComplications %in% 0:1),
+					'1' = which(RegData$LapKomplikasjoner %in% 0:1),
+					'2' = which(RegData$HysKomplikasjoner %in% 0:1),
 					'3' = which(RegData$KomplIntra %in% 0:1),	#Få tomme for dette valget
-					'99' = union(which(is.finite(RegData$HypComplications)), which(is.finite(RegData$LapComplications))))
+					'99' = union(which(is.finite(RegData$HysKomplikasjoner)), which(is.finite(RegData$LapKomplikasjoner))))
 	RegData <- RegData[indMed, ]
   	indVar <- switch(as.character(MCEType),
-					'1' = which(RegData$LapComplications == 1),
-					'2' = which(RegData$HypComplications == 1),
+					'1' = which(RegData$LapKomplikasjoner == 1),
+					'2' = which(RegData$HysKomplikasjoner == 1),
 					'3' = which(RegData$KomplIntra == 1),
-					'99' = union(which(RegData$HypComplications == 1), which(RegData$LapComplications==1)))
+					'99' = union(which(RegData$HysKomplikasjoner == 1), which(RegData$LapKomplikasjoner==1)))
 	RegData$Variabel[indVar] <- 1
 	Tittel <- 'Komplikasjoner, intraoperativt'
 }
 
-if (valgtVar=='StatusFollowup') {
-	#Andel med StatusFollowup=1 (av samtlige, også tomme reg.)
+if (valgtVar=='Opf0Status') {
+	#Andel med Opf0Status=1 (av samtlige, også tomme reg.)
 	#Kode: tomme, -1,0,1
-  #Tar ut hendelser siste 6 uker:
+  #Tar ut hendelser siste 8 uker:
   datoTil <- min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 8*7))
-  RegData$Variabel[RegData$StatusFollowup==1] <- 1
+  RegData$Variabel[RegData$Opf0Status==1] <- 1
   VarTxt <- 'av postoperativ oppfølging'
-	Tittel <- 'Pasienter som har fått postoperativ oppfølging'
+	Tittel <- 'Pasienter som har fått oppfølging etter 6-8 uker'
 }
 #Lag figur for ett års oppfølging
 
 
-if (valgtVar == 'Education') {
+if (valgtVar == 'Utdanning') {
 	#PasientSkjema. Andel med Utdanning 4 el 5
 	#Kode 1:5,9: 'Grunnskole++, 7-10år','Real-, yrkes- el vg skole', 'Allmennfaglig vg skole',
 			#Høyskole/universitet, <4 år', 'Høyskole/universitet, 4år+', 'Ukjent'
-	RegData <- RegData[which(RegData$Education %in% 1:5), ]		#which(RegData$PasientSkjemaStatus ==1)), ]
+	RegData <- RegData[which(RegData$Utdanning %in% 1:5), ]		#which(RegData$PasientSkjemaStatus ==1)), ]
 	RegData$Variabel[which(RegData[ ,valgtVar] %in% 1:3)] <- 1
   	VarTxt <- 'uten høyere utdanning'
 	Tittel <- 'Andel uten høyere utdanning'
@@ -182,8 +185,8 @@ if (valgtVar == 'Education') {
 
 
 #Gjør utvalg
-NGERUtvalg <- NGERLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-                            MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
+NGERUtvalg <- NGERUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
+                         MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
 RegData <- NGERUtvalg$RegData
 utvalgTxt <- NGERUtvalg$utvalgTxt
 

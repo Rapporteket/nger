@@ -2,7 +2,7 @@
 #'
 #' Provides NGER data for tab xxi from staging
 #'
-#' @inheritParams FigAndeler
+#' @inheritParams NGERFigAndeler
 #'
 #' @return RegData data frame
 #' @export
@@ -15,51 +15,51 @@ NGERHentRegDataXXI <- function(datoFra = '2014-01-01', datoTil = '2099-01-01') {
   query <- paste0(
 '
 SELECT
-  v.OpDate,
+  v.OpDato,
   f.AvdRESH,
-  v.BirthDate,
-  v.FollowupSeriousness,
-  v.Education,
-  v.MaritalStatus,
-  v.OpAnesthetic,
+  v.FodselsDato,
+  v.Opf0AlvorlighetsGrad,
+  v.Utdanning,
+  v.Sivilstatus,
+  v.OpAnestesi,
   v.OpASA,
-  v.HypCompleteness,
-  v.PatientNorwegian,
-  v.OpBMICategory,
-  v.Opcat,
+  v.HysGjforingsGrad,
+  v.Norsktalende,
+  v.OpBMIKategori,
+  v.OpKategori,
   v.OpType,
-  v.OpEarlierVaginal,
-  v.OpEarlierLaparoscopy,
-  v.OpEarlierPaparotomy,
-  v.OpOpcatOutsideDaytime,
-  v.OpDaySurgery,
-  v.MCEType,
+  v.OpTidlVagInngrep,
+  v.OpTidlLapsko,
+  v.OpTidlLaparotomi,
+  v.OpIVaktTid,
+  v.OpDagkirurgi,
+  v.OpMetode,
   f.BasisRegStatus,
-  v.PatientID,
+  v.PasientID,
   f.HovedDato,
   f.SykehusNavn,
-  v.ComplExist,
-  v.ComplReop,
-  v.ComplReopLaparoscopy,
-  v.ComplReopHysteroscopy,
-  v.ComplReopLaparotomy,
-  v.ComplInfection,
+  v.Opf0Komplikasjoner,
+  v.Opf0Reoperasjon,
+  v.Opf0ReoperasjonLaparoscopy,
+  v.Opf0ReoperasjonHysteroscopy,
+  v.Opf0ReoperasjonLaparotomy,
+  v.Opf0KomplInfeksjon,
   v.ComplInfSurg,
   v.ComplInfIntra,
   v.ComplInfEndoSalpin,
   v.ComplInfUVI,
   v.ComplInfOther,
-  v.ComplAfterBleed,
-  v.ComplAfterBleedAbdom,
-  v.ComplAfterBleedVaginal,
-  v.ComplAfterBleedIntra,
-  v.ComplOrgan,
-  v.ComplOrganIntestinal,
-  v.ComplOrganBladder,
-  v.ComplOrganUreter,
-  v.ComplOrganKar,
-  v.ComplOrganOther,
-  v.ComplEquipment,
+  v.Opf0KomplBlodning,
+  v.Opf0KomplBlodningAbdom,
+  v.Opf0KomplBlodningVaginal,
+  v.Opf0KomplBlodningIntra,
+  v.Opf0KomplOrgan,
+  v.Opf0KomplOrganIntestinal,
+  v.Opf0KomplOrganBladder,
+  v.Opf0KomplOrganUreter,
+  v.Opf0KomplOrganKar,
+  v.Opf0KomplOrganOther,
+  v.LapAdherProfylakse,
   v.ComplEquipNet,
   v.ComplEquipInstruments,
   v.ComplEquipSuture
@@ -67,7 +67,7 @@ FROM
   AlleVarNum v
 INNER JOIN ForlopsOversikt f ON v.MCEID = f.ForlopsID
 WHERE
-  v.MCEType = 1 AND
+  v.OpMetode = 1 AND
   f.HovedDato >= \'', datoFra, '\' AND
   f.HovedDato < \'', datoTil, '\'
 '
