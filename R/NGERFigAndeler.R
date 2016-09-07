@@ -348,7 +348,6 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
 
       if (valgtVar=='HysKomplikasjoner') {
         #Hysteroskopi intrapoerative komplikasjoner:
-		#Avventer til avklar hva egentlig skal gjøre
         Var <- c('HysTilgang',
                  'HysPerforasjon',
                  'HysTeknisk',
@@ -357,15 +356,14 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         grtxt <- c('Ved tilgang', 'Perforasjon', 'Teknisk/utstyr',
                    'Fluid overload', 'Blødning')
         Tittel <- 'Intraoperative komplikasjoner ved hysteroskopi'
-        indMed <- which(RegData$OpMetode==2) %i% which(RegData$HysKomplikasjoner %in% 0:1)	#
-        #AntVar <- colSums(RegData[indMed ,Var], na.rm=T) #GIR INGEN MENING!!
+        indMed <- which(RegData$HysKomplikasjoner %in% 0:1)	#Velger ikke ut på OpMetode=2 siden ønsker også de som har begge
+        AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
         NVar <- length(indMed)
         N <- NVar
       }
-
       if (valgtVar=='KomplPost') {
         #Postoperative komplikasjoner. Bare registreringer hvor Opf0Komplikasjoner er 0 el. 1
-        Var <- c('Opf0KomplBlodning', 'LapAdherProfylakse', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan')
+        Var <- c('Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan')
         grtxt <- c('Blødning', 'Med utstyr', 'Infeksjon', 'Organskade')
         Tittel <- 'Postoperative komplikasjoner'
         indMed <- intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1))
@@ -395,7 +393,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
         Tittel <- 'Reoperasjon (grunnet komplikasjon) i utdanningsgrupper'
         grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år')
-        RegData <- RegData[which(RegData$Utdanning %in% 1:5) %i% which(RegData$Opf0Komplikasjoner %in% 0:1), ] #Antar at tomme Opf0Reoperasjon er nei. 
+        RegData <- RegData[which(RegData$Utdanning %in% 1:5) %i% which(RegData$Opf0Komplikasjoner %in% 0:1), ] #Antar at tomme Opf0Reoperasjon er nei.
         RegData$Utdanning <- factor(RegData$Utdanning, levels=1:5)
         AntVar <- table(RegData$Utdanning[which(RegData$Opf0Reoperasjon ==1)])
         NVar <- table(RegData$Utdanning)
@@ -487,7 +485,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         Tittel <- 'Hyppigst forekommende prosedyrer'
         AntVar <- AllePros[1:ant+1] #Må fjerne tomme. Starter derfor på 2. Hva om vi ikke har tomme...?
         NVar <- dim(RegData)[1]
-        N <- NVar 
+        N <- NVar
       }
 
 

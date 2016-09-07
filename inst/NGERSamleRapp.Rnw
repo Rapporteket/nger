@@ -166,8 +166,9 @@ minald <- 0
 maxald <- 130
 MCEType<-99
 Hastegrad <- ''
+tidsenhet <- 'Aar'
 outfile= 'test.pdf'
-figKrymp1 <- 0.9	#Skaleringsparameter for enkeltfigurer
+figKrymp1 <- 0.8	#Skaleringsparameter for enkeltfigurer
 figKrymp2 <- 0.7
 @
 
@@ -204,12 +205,12 @@ print(xtable::xtable(tabAvdN, digits=0, align=c('l', rep('r', max(c(1,ncol(tabAv
 <<'Tabell:Pasientkarakterisika', results='asis', echo=FALSE, eval=T, >>=
 # Får feilmelding med duplikate radnavn. Be Are se på koden sin.
 
-#TabPasKar <- NGERtabVI(RegData)
+TabPasKar <- NGERtabVI(RegData)
 
-#print(xtable::xtable(TabPasKar, digits=0, align=c('l', rep('r', max(c(1,ncol(TabPasKar)), na.rm=T))),
-#                     caption='Pasientkarakterisika og operasjonstid.',
-#                     label='tab:TabPasKar'),
-#					 include.rownames=TRUE, include.colnames=TRUE)
+print(xtable::xtable(TabPasKar, digits=0, align=c('l', rep('r', max(c(1,ncol(TabPasKar)), na.rm=T))),
+                     caption='Pasientkarakterisika og operasjonstid.',
+                     label='tab:TabPasKar'),
+					 include.rownames=TRUE, include.colnames=TRUE, check.names = FALSE)
 
 @
 
@@ -221,13 +222,15 @@ print(xtable::xtable(tabAvdN, digits=0, align=c('l', rep('r', max(c(1,ncol(tabAv
 %  \label{fig:Alder}
 %\end{figure}
 
+
+
 <<'ProsedyrerDiagnoser', results='asis', echo=FALSE, eval=T, >>=
 #Tabell med de 20 vanligste prosedyrer og diagnoser for egen avdeling og hele landet
 
 ProsHys <- c('HysProsedyre1', 'HysProsedyre2', 'HysProsedyre3')
 ProsLap <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3')
-DiagLap <- c('LapDiag1', 'LapDiag2', 'LapDiag3')
-DiagHys <- c('HypDiag1', 'HypDiag2', 'HypDiag3')
+DiagLap <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3')
+DiagHys <- c('HysDiagnose1', 'HysDiagnose2', 'HysDiagnose3')
 
 
 Allepros <- sort(table(toupper(as.vector(as.matrix(RegData[ ,c(ProsHys, ProsLap)])))), decreasing = TRUE)
@@ -284,17 +287,17 @@ ASALapHys <- addmargins(table(RegData[which(RegData$OpMetode == met), c('OpASA',
 
 
 
-print(xtable::xtable( ASALapHys[ ,max(1,dim(ASALapHys)[2]-4):dim(ASALapHys)[2]],
+print(xtable::xtable(ASALapHys[ ,max(1,dim(ASALapHys)[2]-4):dim(ASALapHys)[2]], digits=0,
                      align=c('l', rep('r', max(c(1,ncol(ASALapHys)), na.rm=T))),
                      caption=paste0('ASA-grad ved ', Metode[met], ', hele landet.'),
-                     label='tab:ASA'), digits=0,
+                     label='tab:ASA'),
 					 include.rownames=TRUE, include.colnames=TRUE)
 }
 
 @
 
 <<'Instrumenter', results='asis', echo=FALSE, eval=T>>=
-
+#!!!!!!!!!!!Denne må oppdateres slik at det fra mars 2016 blir med og uten pose.
 #LapSingelPort = portioadapter??
 #LapIntKombo = Thunderbeat
 
@@ -309,32 +312,89 @@ if (datoTil == '2015-12-31'){
 }
 
 RegDataUtvalg <- RegData[which(RegData$OpMetode==1), c('SykehusNavn', Instr)]
-InstrTab <- plyr::daply(RegDataUtvalg[ ,Instr], .(RegDataUtvalg$SykehusNavn), colwise(sum), na.rm=T)  #Liste m/6dim
 
-ShNavn <- rownames((InstrTab))
-colnames(InstrTab) <- NavnInstr
-
-as.data.frame(InstrTab)
-colSums(as.data.frame(InstrTab)[,2:6])
-
+#InstrTab <- plyr::daply(.data=RegDataUtvalg[ ,Instr], .(RegDataUtvalg$SykehusNavn), .fun=colwise(sum), na.rm=T)  #Liste m/6dim
+#Får trøbbel med at InstrTab blir liste
 
 InstrTab <- plyr::ddply(RegDataUtvalg[ ,Instr], .(RegDataUtvalg$SykehusNavn),colwise(sum), na.rm=T)  #Dataramme m/7dim
-colSums(as.data.frame(InstrTab)[,2:7])
+Tot <- colSums(InstrTab[,2:7])
+ShNavn <- levels(InstrTab[,1])
+
+InstrTab <- rbind(InstrTab[,2:7],
+                Sum = Tot)
+
+colnames(InstrTab) <- NavnInstr
+rownames(InstrTab) <- c(ShNavn, 'Totalt')
+
+xtable(InstrTab, digits=0, align=c('l', rep('r', max(c(1,ncol(InstrTab)), na.rm=T))),
+                     caption='Antall ganger ulike instrumenter er benyttet.',
+                     label='tab:Instr', include.rownames=TRUE, include.colnames=TRUE)
 
 
 @
+
+
+<<'LapKompl', results='asis', echo=FALSE, eval=T>>=
+#??? Ett forløp har reoperasjon til både laparoskopi og laparatomi. Er det mulig? [Fdato: 08.06.1975	ForlopsID=9252]
+#Må legge til egetSh
+
+
+#Blødning:
+BlodTxt <- c('Blødning', '...I abdominal vegg', '...Intraabdominal', '... Vaginal')
+Blod <- c('Opf0KomplBlodning', 'Opf0BlodningAbdom', 'Opf0BlodningIntraabdominal', 'Opf0BlodningVaginal')
+
+#Utstyr
+UtstyrTxt <- c('Problemer m/utstyr','...Instrumenter', '...Nett', '...Sutur')
+Utstyr <- c('Opf0KomplUtstyr', 'Opf0UtstyrInstrumenter', 'Opf0UtstyrNett', 'Opf0UtstyrSutur')
+
+#Infeksjon:
+# Opf0InfEndometritt = Salpingitt JA, ok.
+InfTxt <- c('Infeksjon', '...Urinveisinf.', '...I operasjonssår', '...Intraabdominal', '... Salpingitt', '...Andre inf.')
+Infeksjon <- c('Opf0KomplInfeksjon', 'Opf0InfUVI', 'Opf0InfOpSaar'  , 'Opf0InfIntraabdominal',
+    'Opf0InfEndometritt', 'Opf0InfAnnen')
+
+#Organskade
+OrganTxt <- c('Organskade', '...Blære', '...Tarm', '...Ureter', '...Kar', '...Andre')
+Organ <- c('Opf0KomplOrgan', 'Opf0OrganBlare', 'Opf0OrganTarm', 'Opf0OrganUreter', 'Opf0OrganKar', 'Opf0OrganAnnen')
+
+#Reoperasjon
+ReopTxt <- c('Reoperasjon', '...til laparoskopi', '...laparotomi')
+Reop <- c("Opf0Reoperasjon", "Opf0ReopLaparoskopi", "Opf0ReopLaparotomi")
+
+
+indMed <- intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$OpType %in% c(1,3)))
+LapKomplVar <- c(Blod, Utstyr, Infeksjon, Organ, Reop)
+LapKomplTxt <- c(BlodTxt, UtstyrTxt, InfTxt, OrganTxt, ReopTxt)
+RegDataLapKompl <- RegData[indMed, c(LapKomplVar, "Opf0Komplikasjoner")]
+
+AntLap <- length(which(RegData$OpType==1))
+AndelLapKompl <- colSums(RegDataLapKompl, na.rm=T)/length(indMed)*100
+AndelLapKomplTab
+#AndelLapKomplTab <- cbind('Laparoskopisk kompl.' = c(LapKomplTxt, 'Totalt'),
+#      'Andel' = AndelLapKompl)
+#names(AndelLapKompl)<- LapKomplTxt
+
+print(xtable(AndelLapKomplTab, digits=c(0,0,1), align=c('l', 'l', rep('r', max(c(1,ncol(AndelLapKomplTab)-1), na.rm=T))),
+                     caption=paste0('Hyppighet av laparoskopiske komplikasjoner blant ', AntLap, ' utførte laparoskopier'),
+                     label='tab:LapKompl'), include.rownames=FALSE, include.colnames=TRUE)
+
+@
+
+
+
 
 <<'DivFig1', results='asis', echo=FALSE, eval=T>>=
 dum <- NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar='Opf0Status', datoTil=datoTil,
             reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='StatusOppf0Aar.pdf',
             minald=minald, maxald=maxald, MCEType=MCEType, Hastegrad=Hastegrad)
 
-dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='OpAnesthetic', datoTil=datoTil,
-	reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='OpAnestheticLap.pdf', MCEType = 1,
+dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='OpAnestesi', datoTil=datoTil,
+	reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='OpAnestesiLap.pdf', MCEType = 1,
   minald=minald, maxald=maxald, Hastegrad=Hastegrad)
 
-dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='OpAnesthetic', datoTil=datoTil,
-	reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='OpAnestheticHyp.pdf', MCEType = 2,
+
+dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='OpAnestesi', datoTil=datoTil,
+	reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='OpAnestesiHyp.pdf', MCEType = 2,
   minald=minald, maxald=maxald, Hastegrad=Hastegrad)
 
 dum <-  NGERFigAndelerGrVar(RegData=RegData, datoFra=datoFra, datoTil=datoTil, valgtVar='OpAntibProfylakse',
@@ -350,13 +410,13 @@ dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='LapTilgangsMet
 	reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='LapTilgangsMetode.pdf', MCEType = 1,
   minald=minald, maxald=maxald, Hastegrad=Hastegrad)
 
-dum <- NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar='KomplIntra', datoTil=datoTil,
+dum <- NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar='KomplIntra', datoTil=datoTil,
             reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplIntraLapAar.pdf',
-            minald=minald, maxald=maxald, MCEType=1,tidsenhet=tidsenhet, preprosess=0)
+            minald=minald, maxald=maxald, MCEType=1, preprosess=0)
 
-dum <- NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar='KomplIntra', datoTil=datoTil,
+dum <- NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar='KomplIntra', datoTil=datoTil,
             reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplIntraHysAar.pdf',
-            minald=minald, maxald=maxald, MCEType=1,tidsenhet=tidsenhet, preprosess=0)
+            minald=minald, maxald=maxald, MCEType=1, preprosess=0)
 
 dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='KomplPost', datoTil=datoTil,
 	reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostLap.pdf', MCEType = 1,
@@ -366,22 +426,22 @@ dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='KomplPost', da
 	reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostHys.pdf', MCEType = 2,
   minald=minald, maxald=maxald, Hastegrad=Hastegrad)
 
-dum <- NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar='KomplPostop', datoTil=datoTil,
-            reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostopLapAar.pdf',
-            minald=minald, maxald=maxald, MCEType=1,tidsenhet=tidsenhet, preprosess=0)
+dum <- NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar='KomplPostop', datoTil=datoTil,
+            reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostLapAar.pdf',
+            minald=minald, maxald=maxald, MCEType=1, preprosess=0)
 
-dum <- NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar='KomplPostop', datoTil=datoTil,
-            reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostopHysAar.pdf',
-            minald=minald, maxald=maxald, MCEType=2, tidsenhet=tidsenhet, preprosess=0)
+dum <- NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar='KomplPostop', datoTil=datoTil,
+            reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostHysAar.pdf',
+            minald=minald, maxald=maxald, MCEType=2,  preprosess=0)
 
 
-dum <- NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar='Opf0Reoperasjon', datoTil=datoTil,
+dum <- NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar='Opf0Reoperasjon', datoTil=datoTil,
             reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='Opf0ReoperasjonLapAar.pdf',
-            minald=minald, maxald=maxald, MCEType=1, tidsenhet=tidsenhet, preprosess=0)
+            minald=minald, maxald=maxald, MCEType=1,  preprosess=0)
 
-dum <- NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar='Opf0Reoperasjon', datoTil=datoTil,
+dum <- NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar='Opf0Reoperasjon', datoTil=datoTil,
             reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='Opf0ReoperasjonHysAar.pdf',
-            minald=minald, maxald=maxald, MCEType=2, tidsenhet=tidsenhet, preprosess=0)
+            minald=minald, maxald=maxald, MCEType=2,  preprosess=0)
 
 dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='Opf0AlvorlighetsGrad', datoTil=datoTil,
 	reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='Opf0AlvorLap.pdf', MCEType = 1,
@@ -390,6 +450,16 @@ dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='Opf0Alvorlighe
 dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='Opf0AlvorlighetsGrad', datoTil=datoTil,
 	reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='Opf0AlvorHys.pdf', MCEType = 2,
   minald=minald, maxald=maxald, Hastegrad=Hastegrad)
+
+
+dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='LapIntraabdominell', datoTil=datoTil,
+	reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='LapIntraabdominell.pdf', MCEType = '',
+  minald=minald, maxald=maxald, Hastegrad=Hastegrad)
+
+dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='HysKomplikasjoner', datoTil=datoTil,
+	reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='HysKompl.pdf', MCEType = '',
+  minald=minald, maxald=maxald, Hastegrad=Hastegrad)
+
 
   @
 
@@ -400,8 +470,8 @@ dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='Opf0Alvorlighe
 
 
 \begin{figure}[ht]
-  \centering \includegraphics[width= \Sexpr{figKrymp2}\textwidth]{OpAnestheticLap.pdf}
-  \centering \includegraphics[width= \Sexpr{figKrymp2}\textwidth]{OpAnestheticHyp.pdf}
+  \centering \includegraphics[width= \Sexpr{figKrymp2}\textwidth]{OpAnestesiLap.pdf}
+  \centering \includegraphics[width= \Sexpr{figKrymp2}\textwidth]{OpAnestesiHyp.pdf}
   \caption{\label{fig:OpAnesthetic} Anestesitype ved endoskopiske inngrep.}
 \end{figure}
 
@@ -420,6 +490,10 @@ dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='Opf0Alvorlighe
   \caption{\label{fig:LapTilgangsMetode} Teknikk for laparoskopisk tilgang.}
 \end{figure}
 
+\begin{figure}[ht]
+  \centering \includegraphics[width= \Sexpr{figKrymp1}\textwidth]{LapIntraabdominell.pdf}
+  \caption{\label{fig:LapIntraabdominell.pdf} Fordeling av intraabdominale komplikasjoner ved laparoskopi.}
+\end{figure}
 
 \begin{figure}[ht]
   \centering \includegraphics[width= \Sexpr{figKrymp2}\textwidth]{KomplIntraLapAar.pdf}
@@ -433,11 +507,14 @@ dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='Opf0Alvorlighe
   \caption{\label{fig:KomplPostLapHys} Postoperative komplikasjoner.}
 \end{figure}
 
+\clearpage
+
 \begin{figure}[ht]
-  \centering \includegraphics[width= \Sexpr{figKrymp2}\textwidth]{KomplPostopLapAar.pdf}
+  \centering \includegraphics[width= \Sexpr{figKrymp2}\textwidth]{KomplPostLapAar.pdf}
   \centering \includegraphics[width= \Sexpr{figKrymp2}\textwidth]{KomplPostHysAar.pdf}
   \caption{\label{fig:KomplPostLapHysAar} Postoperative komplikasjoner, utvikling over tid.}
 \end{figure}
+
 
 \begin{figure}[ht]
   \centering \includegraphics[width= \Sexpr{figKrymp2}\textwidth]{Opf0ReoperasjonLapAar.pdf}
@@ -453,6 +530,10 @@ dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='Opf0Alvorlighe
   \caption{\label{fig:Opf0Alvor} Alvorlighetsgrad av postoperativekomplikasjoner.}
 \end{figure}
 
+\begin{figure}[ht]
+  \centering \includegraphics[width= \Sexpr{figKrymp1}\textwidth]{HysKompl.pdf}
+  \caption{\label{fig:HysKompl} Hyppighet atv intraoperative komplikasjoner ved hysteroskopi.}
+\end{figure}
 
 \clearpage
 
@@ -466,11 +547,11 @@ dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='KomplReopUtd',
   minald=minald, maxald=maxald, Hastegrad=Hastegrad)
 
 dum <- NGERFigAndelerGrVar(RegData=RegData, datoFra=datoFra, datoTil=datoTil, valgtVar='KomplPostop',
-            reshID=reshID, outfile='KomplPostopLapShus.pdf', MCEType=1,
+            reshID=reshID, outfile='KomplPostLapShus.pdf', MCEType=1,
             minald=minald, maxald=maxald, Hastegrad = Hastegrad, preprosess = 0)
 
 dum <- NGERFigAndelerGrVar(RegData=RegData, datoFra=datoFra, datoTil=datoTil, valgtVar='KomplPostop',
-            reshID=reshID, outfile='KomplPostopHysShus.pdf', MCEType=2,
+            reshID=reshID, outfile='KomplPostHysShus.pdf', MCEType=2,
             minald=minald, maxald=maxald, Hastegrad = Hastegrad, preprosess = 0)
 
 
@@ -495,9 +576,9 @@ dum <- NGERFigAndelerGrVar(RegData=RegData, datoFra=datoFra, datoTil=datoTil, va
 \end{figure}
 
 \begin{figure}[ht]
-  \centering \includegraphics[width= \Sexpr{figKrymp2}\textwidth]{KomplPostopLapShus.pdf}
-  \centering \includegraphics[width= \Sexpr{figKrymp2}\textwidth]{KomplPostopHysShus.pdf}
-  \caption{\label{fig:KomplPostopShus} Postoperative komplikasjoner ved registrerende enheter.}
+  \centering \includegraphics[width= \Sexpr{figKrymp2}\textwidth]{KomplPostLapShus.pdf}
+  \centering \includegraphics[width= \Sexpr{figKrymp2}\textwidth]{KomplPostHysShus.pdf}
+  \caption{\label{fig:KomplPostShus} Postoperative komplikasjoner ved registrerende enheter.}
 \end{figure}
 
 \begin{figure}[ht]
