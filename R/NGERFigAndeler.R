@@ -478,12 +478,13 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
 		#Ny kategori, dvs. ny variabel: Palmers point, neste prod.setting, etterreg. fra 1.1.2016(?)
 		RegData <- RegData[which(RegData$OpMetode %in% c(1,3)), ]
 		Tittel <- 'Laparoskopisk tilgang, teknikk og metode' #'Teknikk for laparaskopisk tilgang'
-		grtxt <- c('Åpent', 'Veress-nål', 'Annet','Palmers point [fra 1/3-16]', 'Navlen[fra 1/3-16]') #LapTilgangsMetode
+		grtxt <- c('Åpent', 'Veress-nål', 'Annet','Palmers point [fra 1/3-16]', 'Navlen [fra 1/3-16]') #LapTilgangsMetode
 		RegData$LapTilgangsMetode <- factor(RegData$LapTilgangsMetode, levels=0:2)
 		RegData$LapTilgang <- factor(RegData$LapTilgang, levels=1:2)
-		AntVar <- c(table(RegData$LapTilgangsMetode), table(RegData$LapTilgang[which(as.Date(RegData$HovedDato)>='2016-03-01')])
+		indMar16 <- which(as.Date(RegData$HovedDato)>='2016-03-01')
+		AntVar <- c(table(RegData$LapTilgangsMetode), table(RegData$LapTilgang[indMar16]))
 		N <- dim(RegData)[1]
-		NVar <- c(rep(N,3), length(which(as.Date(RegData$HovedDato)>='2016-03-01')))
+		NVar <- c(rep(N,3), rep(length(indMar16),2))
 		}
       if (valgtVar=='Prosedyrer') {
         #Hyppigst forekommende prosedyrer
