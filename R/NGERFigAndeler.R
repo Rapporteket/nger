@@ -17,7 +17,7 @@
 #'     \item LapEkstrautstyr: Laparaskopisk ekstrautstyr - Kommer, NY variabel: koagulasjon og klipping
 #'     \item LapIntraabdominell: Laparoskopiske intraabdominale komplikasjoner
 #'     \item LapNumHjelpeinnstikk: Antall hjelpeinnstikk
-#'     \item LapTeknikk: Laparaskopisk tilgang, teknikk og metode
+#'     \item LapTeknikk: Laparaskopisk tilgang, teknikk og metode (Tidl LapTilgangsMetode)
 #'     \item Norsktalende: Pasientens norskkunnskaper
 #'     \item OpAnestesi: Anestesitype
 #'     \item OpASA: ASA-grad
@@ -433,8 +433,6 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
       if (valgtVar=='LapKomplikasjoner') {
         #Laparoskopiske intrapoerative komplikasjoner:
 		#Andel komplikasjoner ved bruk av de ulike utstyrstypene? OK. Variablene angir komplikasjonsårsak.
-		#"konvertering til laparotomi" - eget spm. Bare aktuelt når komplikasjon?
-		#Eller er spm. hvor ofte det oppstår komplikasjon når man konverterer?
 #		LAPAROSCOPY_PORTIOADAPTER_CHECK: LapUterusmanipulator
 #		LAPAROSCOPY_TILGANG_CHECK: LapKompTilgang
 #		LAPAROSCOPY_HJELPEINSTIKK_CHECK: LapHjelpeinnstikk
@@ -548,7 +546,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     antDesTxt <- paste('%.', antDes, 'f', sep='')
     if (length(grtxt2) == 1) {grtxt2 <- paste('(', sprintf(antDesTxt, Andeler$Hoved), '%)', sep='')}
     grtxtpst <- paste(rev(grtxt), ' (', rev(sprintf(antDesTxt, Andeler$Hoved)), '%)', sep='')
-    vmarg <- switch(retn, V=0, H=max(0, strwidth(grtxtpst, units='figure', cex=cexgr)*0.7))
+    vmarg <- switch(retn, V=0, H=max(0, strwidth(grtxtpst, units='figure', cex=cexgr)*0.65))
     par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1)))	#Har alltid datoutvalg med
 
     farger <- FigTypUt$farger
