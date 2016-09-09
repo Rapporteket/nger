@@ -17,7 +17,7 @@
 #'     \item LapEkstrautstyr: Laparaskopisk ekstrautstyr - Kommer, NY variabel: koagulasjon og klipping
 #'     \item LapIntraabdominell: Laparoskopiske intraabdominale komplikasjoner
 #'     \item LapNumHjelpeinnstikk: Antall hjelpeinnstikk
-#'     \item LapTilgangsMetode: Teknikk for laparaskopisk tilgang
+#'     \item LapTeknikk: Laparaskopisk tilgang, teknikk og metode (Tidl LapTilgangsMetode)
 #'     \item Norsktalende: Pasientens norskkunnskaper
 #'     \item OpAnestesi: Anestesitype
 #'     \item OpASA: ASA-grad
@@ -119,14 +119,6 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     grtxt <- c('Fullstendig', 'Ufullstendig', 'Mislykket', 'Ukjent')
     Tittel <- 'Gjennomføringsgrad av hysteroskopi'
     koder <- 1:3
-  }
-  if (valgtVar == 'LapTilgangsMetode') {
-    # 0: Åpent, 1: Veress-nål, 2: Annet
-    #Bare laparoskopi og begge
-    RegData <- RegData[which(RegData$OpMetode %in% c(1,3)), ]
-    Tittel <- 'Teknikk for laparaskopisk tilgang'
-    grtxt <- c('Åpent', 'Veress-nål', 'Annet', 'Ukjent') #Ny kategori: Palmers point, neste prod.setting, etterreg. fra 1.1.2016(?)
-    koder <- 0:2
   }
   if (valgtVar == 'Norsktalende') {
     # 0:Nei, 1:Ja, 2:Delvis, 9:Ukjent
@@ -321,7 +313,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   #FIGURER SATT SAMMEN AV FLERE VARIABLE, ULIKT TOTALUTVALG
   if (valgtVar %in% c('Diagnoser', 'KomplPost', 'HysKomplikasjoner', 'LapKomplikasjoner',
                       'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr',
-                      'LapIntraabdominell', 'Prosedyrer')){
+                      'LapIntraabdominell', 'LapTeknikk', 'Prosedyrer')){
     #flerevar <-  1
     retn <- 'H'
     utvalg <- c('Hoved', 'Rest')	#Hoved vil angi enhet, evt. hele landet hvis ikke gjøre sml, 'Rest' utgjør sammenligningsgruppa
@@ -344,11 +336,8 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         NVar <- dim(RegData)[1]
 		N <- NVar
       }
-
-
       if (valgtVar=='HysKomplikasjoner') {
         #Hysteroskopi intrapoerative komplikasjoner:
-		#Avventer til avklar hva egentlig skal gjøre
         Var <- c('HysTilgang',
                  'HysPerforasjon',
                  'HysTeknisk',
@@ -357,15 +346,14 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         grtxt <- c('Ved tilgang', 'Perforasjon', 'Teknisk/utstyr',
                    'Fluid overload', 'Blødning')
         Tittel <- 'Intraoperative komplikasjoner ved hysteroskopi'
-        indMed <- which(RegData$OpMetode==2) %i% which(RegData$HysKomplikasjoner %in% 0:1)	#
-        #AntVar <- colSums(RegData[indMed ,Var], na.rm=T) #GIR INGEN MENING!!
+        indMed <- which(RegData$HysKomplikasjoner %in% 0:1)	#Velger ikke ut på OpMetode=2 siden ønsker også de som har begge
+        AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
         NVar <- length(indMed)
         N <- NVar
       }
-
       if (valgtVar=='KomplPost') {
         #Postoperative komplikasjoner. Bare registreringer hvor Opf0Komplikasjoner er 0 el. 1
-        Var <- c('Opf0KomplBlodning', 'LapAdherProfylakse', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan')
+        Var <- c('Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan')
         grtxt <- c('Blødning', 'Med utstyr', 'Infeksjon', 'Organskade')
         Tittel <- 'Postoperative komplikasjoner'
         indMed <- intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1))
@@ -395,7 +383,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
         Tittel <- 'Reoperasjon (grunnet komplikasjon) i utdanningsgrupper'
         grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år')
-        RegData <- RegData[which(RegData$Utdanning %in% 1:5) %i% which(RegData$Opf0Komplikasjoner %in% 0:1), ] #Antar at tomme Opf0Reoperasjon er nei. 
+        RegData <- RegData[which(RegData$Utdanning %in% 1:5) %i% which(RegData$Opf0Komplikasjoner %in% 0:1), ] #Antar at tomme Opf0Reoperasjon er nei.
         RegData$Utdanning <- factor(RegData$Utdanning, levels=1:5)
         AntVar <- table(RegData$Utdanning[which(RegData$Opf0Reoperasjon ==1)])
         NVar <- table(RegData$Utdanning)
@@ -426,7 +414,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
                  'LapIntKoagOgKlipp',
                  'LapUnipolarDiatermi')
         grtxt <- c('Adheranseprofylakse', 'Bipolar Diatermi', 'Clips', 'Harmonic skalpell',
-                   'Morc. u/pose [01.03.2016]', 'Morc. m/pose [01.03.2016]',
+                   'Morc. u/pose [1/3-16]', 'Morc. m/pose [1/3-16]',
                    'Nett', 'Preparatpose', 'Uterusmanipulator', 'Robotkirurgi', 'Singel port',
                    'Stapler/endoGIA', 'Sutur', 'Bipolar og ultralyd', 'Bipolar koag. og klipping',
                    'Unipolar Diatermi')
@@ -444,21 +432,24 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
 
       if (valgtVar=='LapKomplikasjoner') {
         #Laparoskopiske intrapoerative komplikasjoner:
-		#Andel komplikasjoner ved bruk av de ulike utstyrstypene?
-		#!!!!!!!!!!! AVVENTER KLARGJØRING AV HVA FIGUREN SKAL VISE.
+		#Andel komplikasjoner ved bruk av de ulike utstyrstypene? OK. Variablene angir komplikasjonsårsak.
+#		LAPAROSCOPY_PORTIOADAPTER_CHECK: LapUterusmanipulator
+#		LAPAROSCOPY_TILGANG_CHECK: LapKompTilgang
+#		LAPAROSCOPY_HJELPEINSTIKK_CHECK: LapHjelpeinnstikk
+#		LAPAROSCOPY_INTRAABDOMINAL_CHECK: LapIntraabdominell
+#		LAPAROSCOPY_TEKNISK_UTSTYR_CHECK: LapTekniskUtstyr
+#		LAPAROSCOPY_POSTOPERATIV_CHECK: LapPostoperativ
         Var <- c('LapUterusmanipulator', #0,1
-                 'LapTilgang',	#1,2,NA
+                 'LapKompTilgang',	#
                  'LapHjelpeinnstikk', #0,1
                  'LapIntraabdominell',  #0,1
                  'LapTekniskUtstyr', #0,1
-                 'LapPostoperativ', #0,1
-                 'LapKonvertert') #0,1
+                 'LapPostoperativ') #0,1 Hører denne med?
         grtxt <- c('Uterusmanipulator', 'Tilgangsmetode', 'Hjelpeinnstikk',
-                   'Intraabdominal', 'Utstyr', 'Postoperativ', 'Konvertert')
+                   'Intraabdominal', 'Utstyr', 'Postoperativ')
         Tittel <- 'Intraoperative komplikasjoner ved laparoskopi'
         indMed <- which(RegData$LapKomplikasjoner %in% 0:1)	#
-		#Tror vi skal summere komplikasjoner for hver variabel
-        #AntVar <- colSums(RegData[indMed ,Var], na.rm=T) FEIL
+        AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
         NVar <- length(indMed)
         N <- NVar
       }
@@ -476,6 +467,23 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         NVar <- length(indMed)
         N <- NVar
       }
+	  if (valgtVar == 'LapTeknikk') { #Tidl: LapTilgangsMetode
+	#		LapTilgangsMetode: LAPAROSCOPY_ACCESS_METHOD_TEXT: 1,2,NA
+	#		LapTilgang: LAPAROSCOPY_ACCESS_TEXT
+		#LapTilgangsMetode 0: Åpent, 1: Veress-nål, 2: Annet
+		#LapTilgang, fra 1/3-16: 1-Venstre Palmers point
+		#Bare laparoskopi og begge
+		#Ny kategori, dvs. ny variabel: Palmers point, neste prod.setting, etterreg. fra 1.1.2016(?)
+		RegData <- RegData[which(RegData$OpMetode %in% c(1,3)), ]
+		Tittel <- 'Laparoskopisk tilgang, teknikk og metode' #'Teknikk for laparaskopisk tilgang'
+		grtxt <- c('Åpent', 'Veress-nål', 'Annet','Palmers point [1/3-16]', 'Navlen [1/3-16]') #LapTilgangsMetode
+		RegData$LapTilgangsMetode <- factor(RegData$LapTilgangsMetode, levels=0:2)
+		RegData$LapTilgang <- factor(RegData$LapTilgang, levels=1:2)
+		indMar16 <- which(as.Date(RegData$HovedDato)>='2016-03-01')
+		AntVar <- c(table(RegData$LapTilgangsMetode), table(RegData$LapTilgang[indMar16]))
+		N <- dim(RegData)[1]
+		NVar <- c(rep(N,3), rep(length(indMar16),2))
+		}
       if (valgtVar=='Prosedyrer') {
         #Hyppigst forekommende prosedyrer
         #RegData$Opf0Status == 1 OK
@@ -487,7 +495,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         Tittel <- 'Hyppigst forekommende prosedyrer'
         AntVar <- AllePros[1:ant+1] #Må fjerne tomme. Starter derfor på 2. Hva om vi ikke har tomme...?
         NVar <- dim(RegData)[1]
-        N <- NVar 
+        N <- NVar
       }
 
 
@@ -538,7 +546,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     antDesTxt <- paste('%.', antDes, 'f', sep='')
     if (length(grtxt2) == 1) {grtxt2 <- paste('(', sprintf(antDesTxt, Andeler$Hoved), '%)', sep='')}
     grtxtpst <- paste(rev(grtxt), ' (', rev(sprintf(antDesTxt, Andeler$Hoved)), '%)', sep='')
-    vmarg <- switch(retn, V=0, H=max(0, strwidth(grtxtpst, units='figure', cex=cexgr)*0.7))
+    vmarg <- switch(retn, V=0, H=max(0, strwidth(grtxtpst, units='figure', cex=cexgr)*0.65))
     par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1)))	#Har alltid datoutvalg med
 
     farger <- FigTypUt$farger

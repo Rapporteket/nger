@@ -7,8 +7,8 @@
 #'
 #' @export
 #'
-NGERUtvalg <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', minald, maxald,
-                       MCEType, AlvorlighetKompl, Hastegrad)
+NGERUtvalg <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', minald=0, maxald=130,
+                       MCEType='', AlvorlighetKompl='', Hastegrad='')
 {
   # Definer intersect-operator
   "%i%" <- intersect

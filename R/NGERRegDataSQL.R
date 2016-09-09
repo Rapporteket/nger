@@ -40,6 +40,7 @@ if (varUtvalg==0) {
   LapIntraabdominell,
   LapKarBlodning,
   LapKomplikasjoner,
+  LapKompTilgang,
   LapKonvertert,
   LapMorcellatorMedPose,
   LapMorcellatorUtenPose,
@@ -87,6 +88,7 @@ if (varUtvalg==0) {
   ,FollowupsNum.Opf0Komplikasjoner
   ,FollowupsNum.Opf0KomplInfeksjon
   ,FollowupsNum.Opf0KomplOrgan
+  ,FollowupsNum.Opf0KomplUtstyr
   ,FollowupsNum.Opf0Reoperasjon
   ,FollowupsNum.Opf0Status
   ,ForlopsOversikt.AvdRESH

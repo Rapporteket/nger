@@ -8,18 +8,19 @@ library(tools)
 
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 setwd('C:/ResultattjenesteGIT/nger/inst/')
-knit('NGERmonthlyReport.Rnw')
-tools:: texi2pdf('NGERmonthlyReport.tex')
 knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
 tools::texi2pdf('NGERSamleRapp.tex')
+
+#knit('NGERmonthlyReport.Rnw')
+#tools:: texi2pdf('NGERmonthlyReport.tex')
 
 #--------------------------------Datakobling--------------------------
 #Vil "snart" endre spørringa slik at det i hvert tilfelle spørres etter de variablene man trenger.
 
 rm(list=ls())
-NGERBasis <- read.table('C:/Registre/NGER/data/AlleVarNum2016-08-24.csv', sep=';', header=T) #,
-NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-08-24.csv', sep=';', header=T)
-NGEROppf <- read.table('C:/Registre/NGER/data/FollowupsNum2016-08-24.csv', sep=';', header=T)
+NGERBasis <- read.table('C:/Registre/NGER/data/AlleVarNum2016-08-24.csv', sep=';', header=T, fileEncoding = 'UTF-8') #,
+NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-08-24.csv', sep=';', header=T, fileEncoding = 'UTF-8')
+NGEROppf <- read.table('C:/Registre/NGER/data/FollowupsNum2016-08-24.csv', sep=';', header=T, fileEncoding = 'UTF-8')
 NGERData <- merge(NGERForlop, NGERBasis, by = "ForlopsID", suffixes = c('','xx'), all = FALSE)
 NGERData <- merge(NGERData, NGEROppf, by = "ForlopsID", suffixes = c('','YY'),all.x = TRUE)
 #write.table(NGERData, file = "NGERData.csv", row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
@@ -41,7 +42,7 @@ AlvorlighetKompl <- ''#c('2','3')
 hentData <- 0
 enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
-valgtVar <- 'HysKomplikasjoner'	#Må velge... Alder,... NY: Diagnoser, Prosedyrer
+valgtVar <- 'LapKomplikasjoner'	#Må velge... Alder,... NY: Diagnoser, Prosedyrer
 
 outfile <- paste(valgtVar, '_ford.png', sep='')	#Navn angis av Jasper
 setwd("C:/ResultattjenesteGIT/nger/")
@@ -50,13 +51,10 @@ NGERFigAndeler(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=dat
 	reshID=reshID, enhetsUtvalg=enhetsUtvalg, MCEType = MCEType, outfile=outfile, preprosess = preprosess,
   minald=minald, maxald=maxald, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
 
-#NB: Tar ut 'LapKomplikasjoner' og 'HysKomplikasjoner', fra jrxml.
-#Husk å ta inn disse når fikset figurer.
-
 
 #Teste variable
-variable <- c('Alder','Diagnoser',  'HysGjforingsGrad', 'KomplPost',
-              'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr', 'LapTilgangsMetode',
+variable <- c('Alder','Diagnoser',  'HysGjforingsGrad', 'HysKomplikasjoner','KomplPost',
+              'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr', 'LapKomplikasjoner','LapTeknikk',
                'LapIntraabdominell', 'LapNumHjelpeinnstikk',
               'Sivilstatus', 'OpMetode', 'Norsktalende', 'OpAnestesi', 'OpASA',
               'OpBMI', 'OpKategori', 'OpDagkirurgi','Opf0AlvorlighetsGrad',
@@ -88,13 +86,13 @@ Hastegrad <- ''
 AlvorlighetKompl <- ''
 enhetsUtvalg <- 1 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
-valgtVar <- 'Opf0Status' #
+valgtVar <- 'KomplIntra' #
 outfile <- paste(valgtVar, '_', tidsenhet, '.png', sep='')
 
 NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
             reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,
             minald=minald, maxald=maxald, MCEType=MCEType, Hastegrad=Hastegrad,
-            AlvorlighetKompl=AlvorlighetKompl, tidsenhet=tidsenhet, preprosess=1)
+            AlvorlighetKompl=AlvorlighetKompl, preprosess=1) #
 
 
 
