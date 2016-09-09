@@ -414,7 +414,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
                  'LapIntKoagOgKlipp',
                  'LapUnipolarDiatermi')
         grtxt <- c('Adheranseprofylakse', 'Bipolar Diatermi', 'Clips', 'Harmonic skalpell',
-                   'Morc. u/pose [01.03.2016]', 'Morc. m/pose [01.03.2016]',
+                   'Morc. u/pose [1/3-16]', 'Morc. m/pose [1/3-16]',
                    'Nett', 'Preparatpose', 'Uterusmanipulator', 'Robotkirurgi', 'Singel port',
                    'Stapler/endoGIA', 'Sutur', 'Bipolar og ultralyd', 'Bipolar koag. og klipping',
                    'Unipolar Diatermi')
@@ -476,7 +476,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
 		#Ny kategori, dvs. ny variabel: Palmers point, neste prod.setting, etterreg. fra 1.1.2016(?)
 		RegData <- RegData[which(RegData$OpMetode %in% c(1,3)), ]
 		Tittel <- 'Laparoskopisk tilgang, teknikk og metode' #'Teknikk for laparaskopisk tilgang'
-		grtxt <- c('Åpent', 'Veress-nål', 'Annet','Palmers point [fra 1/3-16]', 'Navlen [fra 1/3-16]') #LapTilgangsMetode
+		grtxt <- c('Åpent', 'Veress-nål', 'Annet','Palmers point [1/3-16]', 'Navlen [1/3-16]') #LapTilgangsMetode
 		RegData$LapTilgangsMetode <- factor(RegData$LapTilgangsMetode, levels=0:2)
 		RegData$LapTilgang <- factor(RegData$LapTilgang, levels=1:2)
 		indMar16 <- which(as.Date(RegData$HovedDato)>='2016-03-01')
