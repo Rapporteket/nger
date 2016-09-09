@@ -42,7 +42,7 @@ AlvorlighetKompl <- ''#c('2','3')
 hentData <- 0
 enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
-valgtVar <- 'OpAnestesi'	#Må velge... Alder,... NY: Diagnoser, Prosedyrer
+valgtVar <- 'LapKomplikasjoner'	#Må velge... Alder,... NY: Diagnoser, Prosedyrer
 
 outfile <- paste(valgtVar, '_ford.png', sep='')	#Navn angis av Jasper
 setwd("C:/ResultattjenesteGIT/nger/")
@@ -51,13 +51,10 @@ NGERFigAndeler(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=dat
 	reshID=reshID, enhetsUtvalg=enhetsUtvalg, MCEType = MCEType, outfile=outfile, preprosess = preprosess,
   minald=minald, maxald=maxald, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
 
-#NB: Tar ut 'LapKomplikasjoner' og 'HysKomplikasjoner', fra jrxml.
-#Husk å ta inn disse når fikset figurer.
-
 
 #Teste variable
-variable <- c('Alder','Diagnoser',  'HysGjforingsGrad', 'KomplPost',
-              'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr', 'LapTeknikk',
+variable <- c('Alder','Diagnoser',  'HysGjforingsGrad', 'HysKomplikasjoner','KomplPost',
+              'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr', 'LapKomplikasjoner','LapTeknikk',
                'LapIntraabdominell', 'LapNumHjelpeinnstikk',
               'Sivilstatus', 'OpMetode', 'Norsktalende', 'OpAnestesi', 'OpASA',
               'OpBMI', 'OpKategori', 'OpDagkirurgi','Opf0AlvorlighetsGrad',
