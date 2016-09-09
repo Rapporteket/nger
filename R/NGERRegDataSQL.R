@@ -13,7 +13,7 @@ NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = '2099-01-01', varUt
 
   registryName <- "nger"
   dbType <- "mysql"
-LapKompTilgang
+
 if (varUtvalg==0) {
   varUtvalg <- '
   HysBlodning,
