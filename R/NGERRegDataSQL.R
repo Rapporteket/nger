@@ -79,7 +79,9 @@ if (varUtvalg==0) {
   OpTidlLaparotomi,
   OpTidlLapsko,
   OpTidlVagInngrep,
-  OpType'
+  OpType,
+  Sivilstatus,
+  Utdanning'
 }
 
   query <- paste0('SELECT ', varUtvalg,
@@ -100,9 +102,7 @@ if (varUtvalg==0) {
   ,ForlopsOversikt.OppflgStatus
   ,ForlopsOversikt.PasientID
   ,ForlopsOversikt.PasientAlder
-  ,ForlopsOversikt.Sivilstatus
   ,ForlopsOversikt.SykehusNavn
-  ,ForlopsOversikt.Utdanning
   FROM AlleVarNum
   INNER JOIN ForlopsOversikt
   ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID
