@@ -80,12 +80,13 @@ if (varUtvalg==0) {
   OpTidlLapsko,
   OpTidlVagInngrep,
   OpType,
-  Sivilstatus,
+  SivilStatus,
   Utdanning'
 }
 
-  query <- paste0('SELECT ', varUtvalg,
-  ',FollowupsNum.Opf0AlvorlighetsGrad
+  query <- paste0('SELECT ',
+  paste0('AlleVarNum.',varUtvalg,suffix=',\n'),
+  'FollowupsNum.Opf0AlvorlighetsGrad
   ,FollowupsNum.Opf0KomplBlodning
   ,FollowupsNum.Opf0Komplikasjoner
   ,FollowupsNum.Opf0KomplInfeksjon
