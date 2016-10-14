@@ -18,9 +18,9 @@ tools::texi2pdf('NGERSamleRapp.tex')
 #Vil "snart" endre spørringa slik at det i hvert tilfelle spørres etter de variablene man trenger.
 
 rm(list=ls())
-NGERBasis <- read.table('C:/Registre/NGER/data/AlleVarNum2016-08-24.csv', sep=';', header=T, fileEncoding = 'UTF-8') #,
-NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-08-24.csv', sep=';', header=T, fileEncoding = 'UTF-8')
-NGEROppf <- read.table('C:/Registre/NGER/data/FollowupsNum2016-08-24.csv', sep=';', header=T, fileEncoding = 'UTF-8')
+NGERBasis <- read.table('C:/Registre/NGER/data/AlleVarNum2016-10-14.csv', sep=';', header=T, fileEncoding = 'UTF-8') #,
+NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-10-14.csv', sep=';', header=T, fileEncoding = 'UTF-8')
+NGEROppf <- read.table('C:/Registre/NGER/data/FollowupsNum2016-10-14.csv', sep=';', header=T, fileEncoding = 'UTF-8')
 NGERData <- merge(NGERForlop, NGERBasis, by = "ForlopsID", suffixes = c('','xx'), all = FALSE)
 NGERData <- merge(NGERData, NGEROppf, by = "ForlopsID", suffixes = c('','YY'),all.x = TRUE)
 #write.table(NGERData, file = "NGERData.csv", row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
