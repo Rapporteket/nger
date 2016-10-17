@@ -17,7 +17,7 @@ datoFra <- '2013-01-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2015-12-31'
 preprosess <- 1
 hentData <- 0
-MCEType <- ''
+MCEType <- 99
 tidsenhet <- 'Aar'
 Hastegrad <- ''
 AlvorlighetKompl <- ''
