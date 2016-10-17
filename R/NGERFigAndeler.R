@@ -33,7 +33,7 @@
 #'     \item OpTidlLaparotomi: Tidligere laparatomi
 #'     \item OpType: Primæroperasjon eller reoperasjon
 #'     \item Prosedyrer: Hyppigst forekommende prosedyrer
-#'     \item Sivilstatus: Sivilstand
+#'     \item SivilStatus: Sivilstand
 #'     \item Utdanning: Pasientens utdanning (1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent)
 #'    }
 #'
@@ -191,7 +191,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     grtxt <- c('Primærinngrep', 'Reoperasjon', 'Ukjent')
     koder <- 1:2
   }
-  if (valgtVar == 'Sivilstatus') {
+  if (valgtVar == 'SivilStatus') {
     # 1:Enslig, 2:Særboer, 3:Samboer, 4:Gift, 5:Skilt, 6:Enke, 9:Ukjent
     Tittel <- 'Sivilstatus'
     grtxt <- c('Enslig', 'Særboer', 'Samboer', 'Gift', 'Skilt', 'Enke', 'Ukjent')
