@@ -36,6 +36,30 @@ for (valgtVar in variable) {
 		minald=minald, maxald=maxald)
 }
 
+valgtVar <- 'Diagnoser'
+outfile <- paste0(valgtVar, '_ford.pdf')
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
+               reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,preprosess = 1,
+               minald=minald, maxald=maxald)
+MCEType <- 1
+outfile <- paste0(valgtVar, '_fordLap.pdf')
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil, MCEType = MCEType,
+               reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,preprosess = 1,
+               minald=minald, maxald=maxald)
+MCEType <- 2
+outfile <- paste0(valgtVar, '_fordHys.pdf')
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,MCEType = MCEType,
+               reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,preprosess = 1,
+               minald=minald, maxald=maxald)
+
+for (valgtVar in c('Diagnoser', 'Prosedyrer')) {
+  for (MCEType in c(1:2,99)) {
+  outfile <- paste0(valgtVar, '_fordOpType',MCEType, '.pdf')
+  NGERFigAndeler(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,MCEType = MCEType,
+                 reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,preprosess = 1,
+                 minald=minald, maxald=maxald)
+  }
+}
 
 #------------------------------ Andeler per år --------------------------
 #------------------------------ (AndelTid) --------------------------

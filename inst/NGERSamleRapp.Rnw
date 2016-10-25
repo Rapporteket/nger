@@ -144,7 +144,7 @@ og kan genereres av gynekologiregisterets databasebrukerne på \textit{helseregi
 
 <<LasteData, echo=FALSE, eval=T>>=
 datoFra <- '2013-01-01' 	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2015-12-31'
+datoTil <- Sys.Date()	#'2015-12-31'
 if (!exists('RegData')){
   RegData <- NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil)
 }
@@ -155,6 +155,7 @@ if (!exists('RegData')){
 RegData <- NGERPreprosess(RegData)
 
 library(xtable)
+library(plyr)
 outfile <- ''
 enhetsUtvalg <- 0
 minald <- 0
@@ -188,7 +189,7 @@ Denne samlerapporten er basert på registreringer som er lagret og ferdigstilt i
 
 
 
-<<'Tabell:RegistrerendeAvd', results='asis', echo=FALSE, eval=T, >>=
+<<'Tabell:RegistrerendeAvd', results='asis', echo=FALSE, eval=T >>=
 ## VIDERE: Max 5 år i tabellen
 if (dim(table(RegData$OpAar)) > 1) {
   tabAvdN <- addmargins(as.table(ftable(RegData[ ,c('SykehusNavn', 'OpAar')])))
@@ -207,7 +208,7 @@ print(xtable::xtable(tabAvdN, digits=0, align=c('l', rep('r', max(c(1,ncol(tabAv
 
 
 
-<<'Tabell:Pasientkarakterisika', results='asis', echo=FALSE, eval=T, >>=
+<<'Tabell:Pasientkarakterisika', results='asis', warnings=FALSE, echo=FALSE, eval=T >>=
 # Får feilmelding med duplikate radnavn. Be Are se på koden sin.
 
 TabPasKar <- NGERtabVI(RegData)
@@ -248,28 +249,40 @@ ProsLap <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3')
 DiagLap <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3')
 DiagHys <- c('HysDiagnose1', 'HysDiagnose2', 'HysDiagnose3')
 
+#Må fjerne tomme. Tomme behandles som tomme lokalt, men NA på server.
+AllePros <- toupper(as.vector(as.matrix(RegData[ , c(ProsHys, ProsLap)])))
+AlleProsSort <- sort(table(AllePros[which(AllePros != '')]), decreasing = TRUE)
+#AlleprosSort <- sort(table(toupper(as.vector(as.matrix(RegData[ ,c(ProsHys, ProsLap)])))), decreasing = TRUE)
 
-Allepros <- sort(table(toupper(as.vector(as.matrix(RegData[ ,c(ProsHys, ProsLap)])))), decreasing = TRUE)
-AlleprosEget <- sort(table(toupper(as.vector(as.matrix(RegData[indEget ,c(ProsHys, ProsLap)])))), decreasing = TRUE)
+AlleProsEget <- toupper(as.vector(as.matrix(RegData[indEget, c(ProsHys, ProsLap)])))
+AlleProsEgetSort <- sort(table(AlleProsEget[which(AlleProsEget != '')]), decreasing = TRUE)
+#AlleprosEget <- sort(table(toupper(as.vector(as.matrix(RegData[indEget ,c(ProsHys, ProsLap)])))), decreasing = TRUE)
+
 ant <- 20
 Proc <- cbind( #Må fjerne tomme
-  Andel = (Allepros[2:ant+1])/N*100 ,
-  Antall = Allepros[2:ant+1] )
+  Andel = (AlleProsSort[1:ant])/N*100 ,
+  Antall = AlleProsSort[1:ant] )
 
 ProcEget <- cbind( #Må fjerne tomme
-  Andel = (AlleprosEget[2:ant+1])/Neget*100 ,
-  Antall = AlleprosEget[2:ant+1] )
+  Andel = (AlleProsEgetSort[1:ant])/Neget*100 ,
+  Antall = AlleProsEgetSort[1:ant] )
 
-Allediag <- sort(table(toupper(as.vector(as.matrix(RegData[ ,c(DiagHys, DiagLap)])))), decreasing = TRUE)
-AllediagEget <- sort(table(toupper(as.vector(as.matrix(RegData[indEget ,c(DiagHys, DiagLap)])))), decreasing = TRUE)
+#Allediag <- sort(table(toupper(as.vector(as.matrix(RegData[ ,c(DiagHys, DiagLap)])))), decreasing = TRUE)
+#AllediagEget <- sort(table(toupper(as.vector(as.matrix(RegData[indEget ,c(DiagHys, DiagLap)])))), decreasing = TRUE)
+AlleDiag <- toupper(as.vector(as.matrix(RegData[ , c(DiagHys,DiagLap)])))
+AlleDiagSort <- sort(table(AlleDiag[which(AlleDiag != '')]), decreasing = TRUE)
+AlleDiagEget <- toupper(as.vector(as.matrix(RegData[indEget , c(DiagHys,DiagLap)])))
+AlleDiagEgetSort <- sort(table(AlleDiagEget[which(AlleDiagEget != '')]), decreasing = TRUE)
+
+
 ant <- 20
 Diag <- cbind( #Må fjerne tomme
-  Andel = (Allediag[2:ant+1])/N*100 ,
-  Antall = Allediag[2:ant+1] )
+  Andel = (AlleDiagSort[1:ant])/N*100 ,
+  Antall = AlleDiagSort[1:ant] )
 
 DiagEget <- cbind( #Må fjerne tomme
-  Andel = (AllediagEget[2:ant+1])/Neget*100 ,
-  Antall = AllediagEget[2:ant+1] )
+  Andel = (AlleDiagEgetSort[1:ant])/Neget*100 ,
+  Antall = AlleDiagEgetSort[1:ant] )
 
 
 xtable(Proc, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(Proc)), na.rm=T))),
@@ -452,7 +465,7 @@ dum <- NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar='KomplIntra', 
 
 dum <- NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar='KomplIntra', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplIntraHysAar.pdf',
-                       minald=minald, maxald=maxald, MCEType=1, preprosess=0)
+                       minald=minald, maxald=maxald, MCEType=2, preprosess=0)
 
 dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='KomplPost', datoTil=datoTil,
                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostLap.pdf', MCEType = 1,
@@ -607,7 +620,7 @@ dum <- NGERFigAndelerGrVar(RegData=RegData, datoFra=datoFra, datoTil=datoTil, va
 \end{figure}
 
 \begin{figure}[ht]
-\centering \includegraphics[width= \Sexpr{figKrymp1}\textwidth]{KomplPostUtd.pdf}
+\centering \includegraphics[width= \Sexpr{figKrymp1}\textwidth]{KomplReopUtd.pdf}
 \caption{\label{fig:KomplReopUtd} Grad av reoperasjon for ulike utdanningsnivå.}
 \end{figure}
 
