@@ -5,10 +5,11 @@ rm(list=ls())
 library(nger)
 library(knitr)
 library(tools)
+library(plyr)
 
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 setwd('C:/ResultattjenesteGIT/nger/inst/')
-knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
+knitr::knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
 tools::texi2pdf('NGERSamleRapp.tex')
 
 #knit('NGERmonthlyReport.Rnw')
@@ -34,7 +35,7 @@ reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
 datoFra <- '2013-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2016-12-31'
+datoTil <- '2015-12-31'
 preprosess <- 1
 MCEType <- ''
 Hastegrad <- ''
@@ -42,7 +43,7 @@ AlvorlighetKompl <- ''#c('2','3')
 hentData <- 0
 enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
-valgtVar <- 'LapKomplikasjoner'	#Må velge... Alder,... NY: Diagnoser, Prosedyrer
+valgtVar <- 'Diagnoser'	#Må velge... Alder,... NY: Diagnoser, Prosedyrer
 
 outfile <- paste(valgtVar, '_ford.png', sep='')	#Navn angis av Jasper
 setwd("C:/ResultattjenesteGIT/nger/")

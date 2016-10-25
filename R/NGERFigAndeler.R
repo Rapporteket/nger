@@ -326,13 +326,15 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
       RegData <- RegDataLand[switch(utvalg[teller], Hoved = indHoved, Rest=indRest), ]
 
       if (valgtVar=='Diagnoser') {
+        #Må fjerne tomme.
         DiagLap <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3')
         DiagHys <- c('HysDiagnose1', 'HysDiagnose2', 'HysDiagnose3')
-        AlleDiag <- sort(table(toupper(as.vector(as.matrix(RegData[ ,c(DiagHys, DiagLap)])))), decreasing = TRUE)
+        AlleDiag <- toupper(as.vector(as.matrix(RegData[ , c(DiagHys,DiagLap)])))
+        AlleDiagSort <- sort(table(AlleDiag[which(AlleDiag != '')]), decreasing = TRUE)
         ant <- 20
-        grtxt <- names(AlleDiag)[1:ant+1]	#Evt. 2:11..
+        grtxt <- names(AlleDiagSort)[1:ant]	#
         Tittel <- 'Hyppigst forekommende diagnoser'
-        AntVar <- AlleDiag[1:ant+1] #Må fjerne tomme. Starter derfor på 2. Hva om vi ikke har tomme...?
+        AntVar <- AlleDiagSort[1:ant]
         NVar <- dim(RegData)[1]
 		N <- NVar
       }
@@ -489,11 +491,13 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         #RegData$Opf0Status == 1 OK
         ProsHys <- c('HysProsedyre1', 'HysProsedyre2', 'HysProsedyre3')
         ProsLap <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3')
-        AllePros <- sort(table(toupper(as.vector(as.matrix(RegData[ ,c(ProsHys, ProsLap)])))), decreasing = TRUE)
+        #Må fjerne tomme. Tomme behandles som tomme lokalt, men NA på server.
+        AllePros <- toupper(as.vector(as.matrix(RegData[ , c(ProsHys, ProsLap)])))
+        AlleProsSort <- sort(table(AllePros[which(AllePros != '')]), decreasing = TRUE)
         ant <- 20
-        grtxt <- names(AllePros)[1:ant+1]
+        grtxt <- names(AlleProsSort)[1:ant]
         Tittel <- 'Hyppigst forekommende prosedyrer'
-        AntVar <- AllePros[1:ant+1] #Må fjerne tomme. Starter derfor på 2. Hva om vi ikke har tomme...?
+        AntVar <- AlleProsSort[1:ant]
         NVar <- dim(RegData)[1]
         N <- NVar
       }
