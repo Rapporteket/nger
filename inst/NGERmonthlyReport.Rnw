@@ -18,7 +18,7 @@ knitr::opts_knit$set(root.dir = './')
 <<'getData', include=FALSE>>=
 datoTil <- Sys.Date()
 dato <- as.POSIXlt(datoTil)
-datoFra <- as.Date(paste0(1900+dato$year-1,'-', '0', dato$mon, '-', '01'))
+datoFra <- as.Date(paste0(1900+dato$year-1,'-', dato$mon, '-', '01'))
 #I månedsfigurene er datoFra automatisk satt til 13 mnd før dagens dato.
 
 if (!exists('RegData')){

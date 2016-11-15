@@ -9,11 +9,11 @@ library(plyr)
 
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 setwd('C:/ResultattjenesteGIT/nger/inst/')
-knitr::knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
-tools::texi2pdf('NGERSamleRapp.tex')
+#knitr::knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
+#tools::texi2pdf('NGERSamleRapp.tex')
 
-#knit('NGERmonthlyReport.Rnw')
-#tools:: texi2pdf('NGERmonthlyReport.tex')
+knit('NGERmonthlyReport.Rnw')
+tools:: texi2pdf('NGERmonthlyReport.tex')
 
 #--------------------------------Datakobling--------------------------
 #Vil "snart" endre spørringa slik at det i hvert tilfelle spørres etter de variablene man trenger.
