@@ -76,6 +76,7 @@ if (varUtvalg==0) {
   'OpIVaktTid',
   'OpKategori',
   'OpMetode',
+  'OpTid',
   'OpTidlLaparotomi',
   'OpTidlLapsko',
   'OpTidlVagInngrep',

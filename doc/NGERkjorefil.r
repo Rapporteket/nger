@@ -28,6 +28,7 @@ NGERData <- merge(NGERBasis, NGERForlop, by = "ForlopsID", suffixes = c('','YY')
 #write.table(NGERData, file = "NGERData.csv", row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
 RegData <- NGERData
 
+library(nger)
 #--------------------------------------------------------
 #------------------------------ Andeler flere var --------------------------
 #------------------------------ (erstatter Fordelinger) --------------------------
@@ -36,7 +37,7 @@ reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
 datoFra <- '2013-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2015-12-31'
+datoTil <- '2017-12-31'
 preprosess <- 1
 MCEType <- ''
 Hastegrad <- ''
@@ -44,9 +45,9 @@ AlvorlighetKompl <- ''#c('2','3')
 hentData <- 0
 enhetsUtvalg <- 1 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
-valgtVar <- 'Diagnoser'	#Må velge... Alder,... NY: Diagnoser, Prosedyrer
+valgtVar <- 'OpTid'	#Må velge... Alder,... Diagnoser, Prosedyrer, NY: OpTid
 
-outfile <- paste(valgtVar, '_ford.png', sep='')	#Navn angis av Jasper
+outfile <- paste0(valgtVar, '_ford.png')	#Navn angis av Jasper
 setwd("C:/ResultattjenesteGIT/nger/")
 
 NGERFigAndeler(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
