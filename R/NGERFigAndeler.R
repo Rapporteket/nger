@@ -28,6 +28,7 @@
 #'     \item OpIVaktTid: Operasjon i legens vakttid
 #'     \item OpKategori: Hastegrad av operasjon
 #'     \item OpMetode: Operasjonsmetode
+#'     \item OpTid: Operasjonstid (minutter)
 #'     \item OpTidlVagInngrep: Tidligere vaginale inngrep
 #'     \item OpTidlLapsko: Tidligere laparoskopi
 #'     \item OpTidlLaparotomi: Tidligere laparatomi
@@ -185,6 +186,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     grtxt <- c('Nei', 'Ja', 'Vet ikke/Ukjent')
     koder <- 0:1
   }
+
   if (valgtVar == 'OpType') {
     # 1:Primærinngrep, 2:Reoperasjon
     Tittel <- 'Operasjonstype'
@@ -251,6 +253,16 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = grtxt)
   }
 
+  if (valgtVar == 'OpTid') {
+    #0-20, 21-40, 41-60, 61-80, 81-100, 101-120, 121-140, 141-160, 161-180, 181-200, 201-220, 221-240, > 240
+    Tittel <- 'Operasjonstid'
+    gr <- c(seq(0, 180, 20), 1000) #c(seq(0, 180, 30), 1000) #
+    RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = FALSE)
+    grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-2)], '180+')
+    subtxt <- 'minutter'
+    cexgr <- 0.9
+    retn <- 'V'
+  }
 
   ###Gjør utvalg (NGERUtvalg)
   ###Kjører denne etter variabeldefinisjon for at utvalgTxt skal bli riktig
@@ -547,9 +559,9 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     FigTypUt <- figtype(outfile, fargepalett=NGERUtvalg$fargepalett)
     #Tilpasse marger for å kunne skrive utvalgsteksten
     NutvTxt <- length(utvalgTxt)
-    antDesTxt <- paste('%.', antDes, 'f', sep='')
-    if (length(grtxt2) == 1) {grtxt2 <- paste('(', sprintf(antDesTxt, Andeler$Hoved), '%)', sep='')}
-    grtxtpst <- paste(rev(grtxt), ' (', rev(sprintf(antDesTxt, Andeler$Hoved)), '%)', sep='')
+    antDesTxt <- paste0('%.', antDes, 'f')
+    if (length(grtxt2) == 1) {grtxt2 <- paste0('(', sprintf(antDesTxt, Andeler$Hoved), '%)')}
+    grtxtpst <- paste0(rev(grtxt), ' (', rev(sprintf(antDesTxt, Andeler$Hoved)), '%)')
     vmarg <- switch(retn, V=0, H=max(0, strwidth(grtxtpst, units='figure', cex=cexgr)*0.65))
     par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1)))	#Har alltid datoutvalg med
 

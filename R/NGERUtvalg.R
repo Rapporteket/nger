@@ -41,7 +41,7 @@ NGERUtvalg <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', minald=
   utvalgTxt <- c(paste('Operasjonsdato: ', if (N>0) {min(RegData$InnDato, na.rm=T)} else {datoFra},
                        ' til ', if (N>0) {max(RegData$InnDato, na.rm=T)} else {datoTil}, sep='' ),
                  if ((minald>0) | (maxald<130))
-                 {paste('Pasienter fra ', if (N>0) {min(RegData$Alder, na.rm=T)} else {minald},
+                    {paste('Pasienter fra ', if (N>0) {min(RegData$Alder, na.rm=T)} else {minald},
                         ' til ', if (N>0) {max(RegData$Alder, na.rm=T)} else {maxald}, ' år', sep='')},
                  if (MCEType %in% c(1:3)){paste('Operasjonsmetode: ', c('Laparoskopi', 'Hysteroskopi', 'Begge')[MCEType], sep='')},
                  if (Hastegrad[1] != ''){paste('Hastegrad: ', paste(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','), sep='')},

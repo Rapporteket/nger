@@ -237,7 +237,7 @@ FigTypUt <- figtype(outfile, fargepalett=NGERUtvalg$fargepalett)	#height=3*800,
 farger <- FigTypUt$farger
 #Tilpasse marger for å kunne skrive utvalgsteksten
 NutvTxt <- length(utvalgTxt)
-vmarg <- max(0, strwidth(GrNavnSort, units='figure', cex=cexShNavn)*0.7)
+vmarg <- max(0, strwidth(GrNavnSort, units='figure', cex=cexShNavn)*0.75)
 		#NB: strwidth oppfører seg ulikt avh. av device...
 par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1)))	#Har alltid datoutvalg med
 
