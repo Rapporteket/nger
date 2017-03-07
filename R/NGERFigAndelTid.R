@@ -284,6 +284,17 @@ axis(side=1, at = xskala, labels = Tidtxt, cex.axis=0.9)
 title(Tittel, line=1, font.main=1)
 text(xskala, AndelHoved, pos=3, NTidHendHoved, cex=0.9, col=fargeHoved)#pos=1,
 
+#Legge på linjer i plottet. Denne kan nok gjøres mer elegant...
+if ((ymax > 10) & (ymax < 40)) {lines(range(xskala),rep(10,2), col=farger[4])}
+if (ymax > 20) {lines(range(xskala),rep(20,2), col=farger[4])}
+if ((ymax > 30) & (ymax < 40)) {lines(range(xskala),rep(30,2), col=farger[4])}
+if (ymax > 40) {lines(range(xskala),rep(40,2), col=farger[4])}
+if (ymax > 60) {lines(range(xskala),rep(60,2), col=farger[4])}
+if (ymax > 80) {lines(range(xskala),rep(80,2), col=farger[4])}
+if (ymax > 100) {lines(range(xskala),rep(100,2), col=farger[4])}
+#		axis(2, at=c(0,20,40,60,80,100), pos=0),
+
+
 Ttxt <- paste('(Tall ved punktene angir antall ', VarTxt, ')', sep='')
 if (medSml == 1) {
   lines(xskala, AndelRest, col=fargeRest, lwd=3)
@@ -297,15 +308,6 @@ if (medSml == 1) {
 		col=c(fargeHoved, NA), lwd=3, bty='n')
 	}
 
-#Legge på linjer i plottet. Denne kan nok gjøres mer elegant...
-if ((ymax > 10) & (ymax < 40)) {lines(range(xskala),rep(10,2), col=farger[4])}
-if (ymax > 20) {lines(range(xskala),rep(20,2), col=farger[4])}
-if ((ymax > 30) & (ymax < 40)) {lines(range(xskala),rep(30,2), col=farger[4])}
-if (ymax > 40) {lines(range(xskala),rep(40,2), col=farger[4])}
-if (ymax > 60) {lines(range(xskala),rep(60,2), col=farger[4])}
-if (ymax > 80) {lines(range(xskala),rep(80,2), col=farger[4])}
-if (ymax > 100) {lines(range(xskala),rep(100,2), col=farger[4])}
-#		axis(2, at=c(0,20,40,60,80,100), pos=0),
 
 #Tekst som angir hvilket utvalg som er gjort
 mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=fargeRest, line=c(3+0.8*((NutvTxt-1):0)))
