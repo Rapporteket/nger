@@ -14,7 +14,7 @@ NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = '2099-01-01', varUt
   registryName <- "nger"
   dbType <- "mysql"
 
-if (varUtvalg==0) {
+if (varUtvalg==1) {
   varUtvalg <-
   c('HysBlodning',
   'HysFluidOverload',
@@ -148,6 +148,7 @@ query <- paste0('SELECT
     OpIVaktTid,
     OpKategori,
     OpMetode,
+    OpTid,
     OpTidlLaparotomi,
     OpTidlLapsko,
     OpTidlVagInngrep,
