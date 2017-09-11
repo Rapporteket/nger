@@ -61,10 +61,14 @@ NGERUtvalg <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', minald=
                  if ((minald>0) | (maxald<130))
                     {paste('Pasienter fra ', if (N>0) {min(RegData$Alder, na.rm=T)} else {minald},
                         ' til ', if (N>0) {max(RegData$Alder, na.rm=T)} else {maxald}, ' år', sep='')},
-                 if (MCEType %in% c(1:3)){paste('Operasjonsmetode: ', c('Laparoskopi', 'Hysteroskopi', 'Begge')[MCEType], sep='')},
-                 if (Hastegrad[1] != ''){paste('Hastegrad: ', paste(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','), sep='')},
-                 if (AlvorlighetKompl[1] != ''){paste('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
-                                                         [as.numeric(AlvorlighetKompl)], collapse=','), sep='')})
+                 if (MCEType %in% c(1:6)){paste0('Operasjonsmetode: ',
+                                                c('Laparoskopi', 'Hysteroskopi', 'Begge',
+                                                  'Tot. lap. hysterektomi (LCD01/LCD04)',
+                                                  'Lap. subtotal hysterektomi (LCC11)',
+                                                  'Lap. ass. vag. hysterektomi (LCD11)')[MCEType])},
+                 if (Hastegrad[1] != ''){paste0('Hastegrad: ', paste0(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','))},
+                 if (AlvorlighetKompl[1] != ''){paste0('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
+                                                         [as.numeric(AlvorlighetKompl)], collapse=','))})
 
   UtData <- list(RegData=RegData, utvalgTxt=utvalgTxt, fargepalett=fargepalett) #GronnHNpms624,
   return(invisible(UtData))
