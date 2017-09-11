@@ -21,13 +21,31 @@ NGERUtvalg <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', minald=
   indDato <- which(RegData$InnDato >= as.Date(datoFra) & RegData$InnDato <= as.Date(datoTil))
   #Operasjonstype:
   indMCE <- if (MCEType %in% c(1:3)){which(RegData$OpMetode %in% c(MCEType,3))
-  } else {indMCE <- 1:Ninn}
+    } else {indMCE <- 1:Ninn}
+  if (MCEType %in% 4:6) {
+      ProsLap <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3')
+      RegData$LapProsedyre1 <- toupper(RegData$LapProsedyre1)
+      RegData$LapProsedyre2 <- toupper(RegData$LapProsedyre2)
+      RegData$LapProsedyre3 <- toupper(RegData$LapProsedyre3)
+      indMCE <- switch(as.character(MCEType),
+              '4' = unique(c(which(RegData[,ProsLap] == 'LCD01', arr.ind = TRUE)[,1],
+                                         which(RegData[,ProsLap] == 'LCD04', arr.ind = TRUE)[,1])), #LCD01 + LCD04: total laparoskopisk hysterektomi
+              '5' = which(RegData[,ProsLap] == 'LCC11', arr.ind = TRUE)[,1], #LCC11: laparoskopisk subtotal hysterektomi)
+
+              '6' = which(RegData[,ProsLap] == 'LCD11', arr.ind = TRUE)[,1] #LCD11: laparoskopisk assistert vaginal hysterektomi).
+      )
+  }
+
+
   #Alvorlighetsgrad, flervalgsutvalg
   indAlvor <- if (AlvorlighetKompl[1] != '') {which(RegData$Opf0AlvorlighetsGrad %in% as.numeric(AlvorlighetKompl)) %i%
       which(RegData$Opf0Status == 1)} else {indAlvor <- 1:Ninn}
   #Hastegrad  1:3 'Elektiv', 'Akutt', 'Ø-hjelp'
   indHastegrad <- if (Hastegrad[1] != '') {which(RegData$OpKategori %in% as.numeric(Hastegrad))
                   } else {indHastegrad <- 1:Ninn}
+
+
+
 
 
   #utvalg:
