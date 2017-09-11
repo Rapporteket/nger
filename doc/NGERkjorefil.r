@@ -19,8 +19,9 @@ tools:: texi2pdf('NGERmonthlyReport.tex')
 #Vil "snart" endre spørringa slik at det i hvert tilfelle spørres etter de variablene man trenger.
 
 rm(list=ls())
-NGERBasis <- read.table('C:/Registre/NGER/data/AlleVarNum2017-02-15.csv', sep=';', header=T, fileEncoding = 'UTF-8') #,
-NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2017-02-15.csv', sep=';', header=T, fileEncoding = 'UTF-8')
+dato <- '2017-09-11'
+NGERBasis <- read.table(paste0('A:/NGER/AlleVarNum', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #,
+NGERForlop <- read.table(paste0('A:/NGER/ForlopsOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
 #NGEROppf <- read.table('C:/Registre/NGER/data/FollowupsNum2016-10-14.csv', sep=';', header=T, fileEncoding = 'UTF-8')
 #NGERData <- merge(NGERForlop, NGERBasis, by = "ForlopsID", suffixes = c('','xx'), all = FALSE)
 #NGERData <- merge(NGERData, NGEROppf, by = "ForlopsID", suffixes = c('','YY'),all.x = TRUE)
@@ -80,17 +81,17 @@ reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
 datoFra <- '2013-02-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- Sys.Date() #'2016-03-01'
+datoTil <- '2017-12-01' #Sys.Date() #'2016-03-01'
 preprosess <- 1
 hentData <- 0
-MCEType <- 1
+MCEType <- 0
 tidsenhet <- 'Aar'
 Hastegrad <- ''
 AlvorlighetKompl <- ''
-enhetsUtvalg <- 1 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
+enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
-valgtVar <- 'KomplIntra' #
-outfile <- paste(valgtVar, '_', tidsenhet, '.png', sep='')
+valgtVar <- 'KomplPostop' #
+outfile <- paste0(valgtVar, '_', tidsenhet, '.png')
 
 NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
             reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,
