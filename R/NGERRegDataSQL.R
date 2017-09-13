@@ -82,6 +82,12 @@ if (varUtvalg==1) {
   'OpTidlVagInngrep',
   'OpType',
   'SivilStatus',
+  'Tss2Mott',
+  'Tss2Behandling',
+  'Tss2Lytte',
+  'Tss2Behandlere',
+  'Tss2Enighet',
+  'Tss2Generelt',
   'Utdanning')
 }
 
@@ -153,6 +159,12 @@ query <- paste0('SELECT
     OpTidlLapsko,
     OpTidlVagInngrep,
     OpType,
+    Tss2Mott,
+    Tss2Behandling,
+    Tss2Lytte,
+    Tss2Behandlere,
+    Tss2Enighet,
+    Tss2Generelt,
     AlleVarNum.SivilStatus,
     Utdanning,
     Opf0AlvorlighetsGrad,

@@ -26,4 +26,3 @@ For the query these conditions apply:
 \item{SkjemaNavn = "Operasjon"}{use only registry form 'Operasjon'}
 }
 }
-

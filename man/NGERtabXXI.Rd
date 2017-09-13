@@ -17,4 +17,3 @@ list $personsWithMultipleCompl number of persons
 \description{
 Yes, generate tab XXI
 }
-

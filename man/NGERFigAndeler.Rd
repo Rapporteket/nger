@@ -33,6 +33,14 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 1: Egen enhet mot resten av landet (Standard)
 2: Egen enhet}
 
+\item{MCEType}{1: Laparoskopi
+2: Hysteroskopi
+3: Begge
+4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
+5: LCC11 (laparoskopisk subtotal hysterektomi)
+6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
+99: Alle}
+
 \item{Hastegrad}{Hastegrad av operasjon.
 1: Elektiv
 2: Akutt
@@ -54,11 +62,6 @@ Detajer: Her bør man liste opp hvilke variable funksjonen benytter.}
 \item{preprosess}{Preprosesser data
 0: Nei (Standard)
 1: Ja}
-
-\item{OpMetode}{1: Laparoskopi
-2: Hysteroskopi
-3: Begge
-99: Alle}
 }
 \value{
 En figur med søylediagram (fordeling) av ønsket variabel
@@ -82,7 +85,7 @@ Argumentet \emph{valgtVar} har følgende valgmuligheter:
     \item LapEkstrautstyr: Laparaskopisk ekstrautstyr - Kommer, NY variabel: koagulasjon og klipping
     \item LapIntraabdominell: Laparoskopiske intraabdominale komplikasjoner
     \item LapNumHjelpeinnstikk: Antall hjelpeinnstikk
-    \item LapTilgangsMetode: Teknikk for laparaskopisk tilgang
+    \item LapTeknikk: Laparaskopisk tilgang, teknikk og metode (Tidl LapTilgangsMetode)
     \item Norsktalende: Pasientens norskkunnskaper
     \item OpAnestesi: Anestesitype
     \item OpASA: ASA-grad
@@ -93,13 +96,19 @@ Argumentet \emph{valgtVar} har følgende valgmuligheter:
     \item OpIVaktTid: Operasjon i legens vakttid
     \item OpKategori: Hastegrad av operasjon
     \item OpMetode: Operasjonsmetode
+    \item OpTid: Operasjonstid (minutter)
     \item OpTidlVagInngrep: Tidligere vaginale inngrep
     \item OpTidlLapsko: Tidligere laparoskopi
     \item OpTidlLaparotomi: Tidligere laparatomi
     \item OpType: Primæroperasjon eller reoperasjon
     \item Prosedyrer: Hyppigst forekommende prosedyrer
-    \item Sivilstatus: Sivilstand
+    \item SivilStatus: Sivilstand
+    \item Tss2Mott: Hvordan du ble mottatt på avd.
+    \item Tss2Behandling:
+    \item Tss2Lytte:
+    \item Tss2Behandlere:
+    \item Tss2Enighet:
+    \item Tss2Generelt:
     \item Utdanning: Pasientens utdanning (1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent)
    }
 }
-

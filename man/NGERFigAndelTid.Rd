@@ -22,6 +22,14 @@ NGERFigAndelTid(RegData = 0, valgtVar, datoFra = "2013-01-01",
 
 \item{maxald}{Alder, til og med (Standardverdi: 130)}
 
+\item{MCEType}{1: Laparoskopi
+2: Hysteroskopi
+3: Begge
+4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
+5: LCC11 (laparoskopisk subtotal hysterektomi)
+6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
+99: Alle}
+
 \item{Hastegrad}{Hastegrad av operasjon.
 1: Elektiv
 2: Akutt
@@ -83,4 +91,3 @@ Argumentet \emph{valgtVar} har følgende valgmuligheter:
 	\item Opf0Status: Pasienter som har fått postoperativ oppfølging
    }
 }
-

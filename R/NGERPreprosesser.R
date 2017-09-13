@@ -34,10 +34,12 @@ NGERPreprosess <- function(RegData=RegData)
   #RegData$FodselsDato <- as.Date(RegData$FodselsDato, format="%Y-%m-%d")
   RegData$InnDato <- as.Date(RegData$OpDato, format="%Y-%m-%d")
   RegData$HovedDato <- as.Date(RegData$HovedDato, format="%Y-%m-%d")
+  RegData$SykehusNavn <- trimws(as.character(RegData$SykehusNavn)) #Fjerner mellomrom (før) og etter navn
 
   #Riktig navn på resh-variabel:
   names(RegData)[which(names(RegData)=='AvdRESH')] <- 'ReshId' #Change var name
   names(RegData)[which(names(RegData)=='PasientAlder')] <- 'Alder' #Change var name
+  names(RegData)[which(names(RegData)=='SykehusNavn')] <- 'ShNavn' #Change var name
 
 
   return(invisible(RegData))

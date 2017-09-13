@@ -30,9 +30,8 @@ NGERData <- merge(NGERBasis, NGERForlop, by = "ForlopsID", suffixes = c('','YY')
 RegData <- NGERData
 
 library(nger)
-#--------------------------------------------------------
-#------------------------------ Andeler flere var --------------------------
-#------------------------------ (erstatter Fordelinger) --------------------------
+#-----------------------------------PARAMETRE------------------------------
+setwd("C:/ResultattjenesteGIT/nger/")
 # Inndata til funksjon:
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 minald <- 0	#alder, fra og med
@@ -44,12 +43,24 @@ MCEType <- ''
 Hastegrad <- ''
 AlvorlighetKompl <- ''#c('2','3')
 hentData <- 0
-enhetsUtvalg <- 1 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
+enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
-valgtVar <- 'OpTid'	#Må velge... Alder,... Diagnoser, Prosedyrer, NY: OpTid
 
-outfile <- paste0(valgtVar, '_ford.png')	#Navn angis av Jasper
-setwd("C:/ResultattjenesteGIT/nger/")
+tidsenhet <- 'Aar'
+grVar <- 'ShNavn'
+Ngrense <- 10
+valgtMaal <- 'Gjsn'
+
+#------------------------------ Andeler flere var --------------------------
+#------------------------------ (erstatter Fordelinger) --------------------------
+
+
+valgtVar <- 'R0ScoreGeneral'	#Må velge... Alder,... Diagnoser, Prosedyrer, OpTid
+                    #Tss2Mott	Tss2Behandling	Tss2Lytte	Tss2Behandlere	Tss2Enighet	Tss2Generelt
+                    #R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,	R0ScoreEmo,
+                    #R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral
+
+outfile <- '' #paste0(valgtVar, '_ford.png')	#Navn angis av Jasper
 
 NGERFigAndeler(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
 	reshID=reshID, enhetsUtvalg=enhetsUtvalg, MCEType = MCEType, outfile=outfile, preprosess = preprosess,
@@ -65,8 +76,11 @@ variable <- c('Alder','Diagnoser',  'HysGjforingsGrad', 'HysKomplikasjoner','Kom
               'OpTidlVagInngrep', 'OpTidlLapsko',
               'OpTidlLaparotomi', 'OpIVaktTid', 'OpType', 'Prosedyrer', 'Utdanning')
 
+variable <- c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',	'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')
+variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
+              'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')
 for (valgtVar in variable) {
-	outfile <- paste(valgtVar, '_ford.png', sep='')
+	outfile <- paste0(valgtVar, '_ford.png')
 	NGERFigAndeler(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
 		reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,preprosess = 1,
 		minald=minald, maxald=maxald)
@@ -76,20 +90,6 @@ for (valgtVar in variable) {
 
 #------------------------------ Andeler per år --------------------------
 #------------------------------ (AndelTid) --------------------------
-# Inndata til funksjon:
-reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
-minald <- 0	#alder, fra og med
-maxald <- 130	#alder, til og med
-datoFra <- '2013-02-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2017-12-01' #Sys.Date() #'2016-03-01'
-preprosess <- 1
-hentData <- 0
-MCEType <- 0
-tidsenhet <- 'Aar'
-Hastegrad <- ''
-AlvorlighetKompl <- ''
-enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
-#					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
 valgtVar <- 'KomplPostop' #
 outfile <- paste0(valgtVar, '_', tidsenhet, '.png')
 
@@ -116,26 +116,11 @@ for (valgtVar in variable) {
 
 #------------------------------ Andeler per sykehus --------------------------
 #------------------------------ (AndelGrVar) --------------------------
-# Inndata til funksjon:
-reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
-minald <- 0	#alder, fra og med
-maxald <- 130	#alder, til og med
-datoFra <- '2013-02-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2016-10-01'
-preprosess <- 1
-Hastegrad <- ''
-#if (preprosess){RegData <- NGERPreprosess(RegData=RegData, reshID=reshID)}
+valgtVar <- 'Tss2Generelt' #Må velge... Alder, Opf0Reoperasjon, Education, Opf0AlvorlighetsGrad,
+      #KomplIntra, KomplPostop, OpAntibProfylakse, OpASA, OpBMI, Opf0Status,
+      #Tss2Mott, Tss2Behandling,	Tss2Lytte, Tss2Behandlere, Tss2Enighet,	Tss2Generelt
 
-MCEType <- ''
-enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
-#					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
-valgtVar <- 'Alder'	#Må velge... Alder, Opf0Reoperasjon, Education, Opf0AlvorlighetsGrad, KomplIntra, KomplPostop,
-      #OpAntibProfylakse, OpASA, OpBMI, Opf0Status
-
-
-outfile <- paste(valgtVar, '_Shus.png', sep='')	#Navn angis av Jasper
-setwd("C:/ResultattjenesteGIT/nger/")
-
+outfile <- '' #paste0(valgtVar, '_Shus.png')	#Navn angis av Jasper
 
 NGERFigAndelerGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
             reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile, MCEType=MCEType,
@@ -145,13 +130,40 @@ NGERFigAndelerGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil
 #Teste variable
 variable <- c('Alder', 'KomplIntra', 'KomplPostop', 'Opf0Reoperasjon', 'Opf0AlvorlighetsGrad',
               'OpAntibProfylakse', 'OpASA', 'OpBMI', 'Opf0Status', 'Utdanning')
+variable <- c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',	'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')
 
 for (valgtVar in variable) {
-  outfile <- paste(valgtVar, '_Shus.png', sep='')
+  outfile <- paste0(valgtVar, '_Shus.png')
   NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
               reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,
               minald=minald, maxald=maxald, preprosess = 1)
 }
+
+
+#------------------------------ Sentralmål per sykehus --------------------------
+#------------------------------ (GjsnGrVar) --------------------------
+
+valgtVar <- 'R0ScoreGeneral'	#Må velge... R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
+                            #R0ScoreEmo, R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral
+
+outfile <- '' #paste0(valgtVar, '_ford.png')	#Navn angis av Jasper
+
+
+NGERFigGjsnGrVar(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
+                             MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
+                             valgtMaal='Gjsn', hentData=0, preprosess=1, grVar=grVar, Ngrense=10,
+                             medKI=1, reshID=0, outfile='')
+
+variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
+              'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')
+for (valgtVar in variable) {
+  outfile <- paste0(valgtVar, '_ShusMed.png')
+  NGERFigGjsnGrVar(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
+                      valgtMaal='Med',outfile=outfile)
+}
+
+
+
 
 
 ######################### LITT LEKING ##############################

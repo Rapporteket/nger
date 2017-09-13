@@ -15,4 +15,3 @@ list $tabVI data frame of table data
 \description{
 Yes, generate tab VI
 }
-

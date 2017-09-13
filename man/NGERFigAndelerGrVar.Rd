@@ -6,8 +6,8 @@
 \usage{
 NGERFigAndelerGrVar(RegData = 0, valgtVar, datoFra = "2013-01-01",
   datoTil = "3000-12-31", minald = 0, maxald = 130, MCEType = 99,
-  Hastegrad = "", AlvorlighetKompl = "", reshID, outfile = "",
-  enhetsUtvalg = 1, preprosess = 0, hentData = 0)
+  Hastegrad = "", AlvorlighetKompl = "", Ngrense = 10, reshID,
+  outfile = "", enhetsUtvalg = 1, preprosess = 0, hentData = 0)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -21,6 +21,14 @@ NGERFigAndelerGrVar(RegData = 0, valgtVar, datoFra = "2013-01-01",
 \item{minald}{Alder, fra og med (Standardverdi: 0)}
 
 \item{maxald}{Alder, til og med (Standardverdi: 130)}
+
+\item{MCEType}{1: Laparoskopi
+2: Hysteroskopi
+3: Begge
+4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
+5: LCC11 (laparoskopisk subtotal hysterektomi)
+6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
+99: Alle}
 
 \item{Hastegrad}{Hastegrad av operasjon.
 1: Elektiv
@@ -80,7 +88,12 @@ Argumentet \emph{valgtVar} har følgende valgmuligheter:
 	\item Opf0KomplOrgan: Postop. komplikasjon: Organskade
 	\item Opf0Reoperasjon: Reoperasjon som følge av komplikasjon
 	\item Opf0Status: Fått postoperativ oppfølging
+   \item Tss2Mott: Hvordan du ble mottatt på avd.
+   \item Tss2Behandling:
+   \item Tss2Lytte:
+   \item Tss2Behandlere:
+   \item Tss2Enighet:
+   \item Tss2Generelt:
 	\item Utdanning: Pasienter med høyere utdanning
    }
 }
-

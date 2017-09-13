@@ -12,4 +12,3 @@ RegData data frame
 \description{
 Provides NGER data for tab vi from staging
 }
-

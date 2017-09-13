@@ -15,4 +15,3 @@ RegData En data.frame med det preprosesserte datasettet
 \description{
 Denne funksjonen definerer variabler og fjerner ikke-ferdigstilte registreringer
 }
-
