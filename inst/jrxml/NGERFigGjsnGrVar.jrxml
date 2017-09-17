@@ -64,9 +64,6 @@
 	<parameter name="AlvorlighetKompl" class="java.util.List">
 		<defaultValueExpression><![CDATA[[""]]]></defaultValueExpression>
 	</parameter>
-	<parameter name="orgUnitSelection" class="java.lang.Integer">
-		<defaultValueExpression><![CDATA[new Integer(1)]]></defaultValueExpression>
-	</parameter>
 	<queryString language="SQL">
 		<![CDATA[]]>
 	</queryString>

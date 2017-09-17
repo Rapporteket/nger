@@ -175,6 +175,7 @@ query <- paste0('SELECT
     R0ScoreSosial,
     R0ScoreRoleLmtEmo,
     R0ScoreEmo,
+    R0Spm2,
     Tss2Mott,
     Tss2Behandling,
     Tss2Lytte,
