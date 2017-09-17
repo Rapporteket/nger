@@ -26,7 +26,7 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
                              valgtVar, minald=0, maxald=130,
                              MCEType=99, AlvorlighetKompl=99, Hastegrad=99,
                              valgtMaal='Gjsn', hentData=0, preprosess=1, grVar='ShNavn', Ngrense=10,
-                             medKI=1, outfile='') {     #aar=0,
+                             medKI=1, lagFig=1, outfile='') {     #aar=0,
 
 if (hentData == 1) {
   RegData <- NGERRegDataSQL(datoFra, datoTil)
@@ -155,7 +155,7 @@ GjsnGrVarData <- list(AggVerdier=AggVerdier, #Endres til Soyleverdi? Evt. AggVer
 
 
 #FigDataParam skal inn som enkeltparametre i funksjonskallet
-lagFig <- 1
+#lagFig <- 1
 if (lagFig == 1) {
 cexgr <- 1-ifelse(length(soyletxt)>20, 0.25*length(soyletxt)/60, 0)
 AggTot <- MidtHele
