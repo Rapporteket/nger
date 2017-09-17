@@ -85,11 +85,11 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ktr=0, figurtype='
       }
 
       if (valgtVar == 'R0ScorePhys') { #GjsnGrVar
-        RegData <- RegData[which(RegData$R0Status==1) %i% which(RegData[,valgtVar] > -1), ]
-        RegData$Variabel <- RegData[ ,valgtVar]
+        RegData <- RegData[which(RegData$R0Status==1) %i% which(RegData$Variabel > -1), ]
+        RegData$Variabel <- RegData$R0ScorePhys
         tittel <- 'Fysisk funksjon'
         gr <- c(seq(0, 90, 10), 100) #c(seq(0, 180, 30), 1000) #
-        RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
+        RegData$VariabelGr <- cut(RegData$Variabel, breaks = gr, include.lowest = TRUE, right = TRUE)
         grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-1)])
       }
 
