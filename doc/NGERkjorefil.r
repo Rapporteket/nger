@@ -36,8 +36,8 @@ setwd("C:/ResultattjenesteGIT/nger/")
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
-datoFra <- '2013-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2017-12-31'
+datoFra <- '2016-01-01'	 # min og max dato i utvalget vises alltid i figuren.
+datoTil <- '2016-12-31'
 preprosess <- 1
 MCEType <- ''
 Hastegrad <- ''

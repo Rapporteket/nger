@@ -14,45 +14,45 @@ NGERFigGjsnGrVar <- function(RegData) {
 
 
 RegData <- RegData[which(RegData$R0Status ==1),]
+library(plyr)
 
 #Definerer variabelnavn
- RAND36 <- data.frame('r1'= 1:dim(RegData)[1])
- RAND36$r1 <- RegData$R0Spm1
- RAND36$Endring <- RegData$R0Spm2
- RAND36$r3a <- RegData$R0Spm3a
- RAND36$r3b <- RegData$R0Spm3b
- RAND36$r3c <- RegData$R0Spm3c
- RAND36$r3d <- RegData$R0Spm3d
- RAND36$r3e <- RegData$R0Spm3e
- RAND36$r3f <- RegData$R0Spm3f
- RAND36$r3g <- RegData$R0Spm3g
- RAND36$r3h <- RegData$R0Spm3h
- RAND36$r3i <- RegData$R0Spm3i
- RAND36$r3j <- RegData$R0Spm3j
- RAND36$r4a <- RegData$R0Spm4a
- RAND36$r4b <- RegData$R0Spm4b
- RAND36$r4c <- RegData$R0Spm4c
- RAND36$r4d <- RegData$R0Spm4d
- RAND36$r5a <- RegData$R0Spm5a
- RAND36$r5b <- RegData$R0Spm5b
- RAND36$r5c <- RegData$R0Spm5c
- RAND36$r6 <- RegData$R0Spm6
- RAND36$r7 <- RegData$R0Spm7
- RAND36$r8 <- RegData$R0Spm8
- RAND36$r9a <- RegData$R0Spm9a
- RAND36$r9b <- RegData$R0Spm9b
- RAND36$r9c <- RegData$R0Spm9c
- RAND36$r9d <- RegData$R0Spm9d
- RAND36$r9e <- RegData$R0Spm9e
- RAND36$r9f <- RegData$R0Spm9f
- RAND36$r9g <- RegData$R0Spm9g
- RAND36$r9h <- RegData$R0Spm9h
- RAND36$r9i <- RegData$R0Spm9i
- RAND36$r10 <- RegData$R0Spm10
- RAND36$r11a <- RegData$R0Spm11a
- RAND36$r11b <- RegData$R0Spm11b
- RAND36$r11c <- RegData$R0Spm11c
- RAND36$r11d <- RegData$R0Spm11d
+ RAND36 <- data.frame('r1'= RegData$R0Spm1,
+ 'Endring' = RegData$R0Spm2,
+ 'r3a' = RegData$R0Spm3a,
+ 'r3b' = RegData$R0Spm3b,
+ 'r3c' = RegData$R0Spm3c,
+ 'r3d' = RegData$R0Spm3d,
+ 'r3e' = RegData$R0Spm3e,
+ 'r3f' = RegData$R0Spm3f,
+ 'r3g' = RegData$R0Spm3g,
+ 'r3h' = RegData$R0Spm3h,
+ 'r3i' = RegData$R0Spm3i,
+ 'r3j' = RegData$R0Spm3j,
+ 'r4a' = RegData$R0Spm4a,
+ 'r4b' = RegData$R0Spm4b,
+ 'r4c' = RegData$R0Spm4c,
+ 'r4d' = RegData$R0Spm4d,
+ 'r5a' = RegData$R0Spm5a,
+ 'r5b' = RegData$R0Spm5b,
+ 'r5c' = RegData$R0Spm5c,
+ 'r6' = RegData$R0Spm6,
+ 'r7' = RegData$R0Spm7,
+ 'r8' = RegData$R0Spm8,
+ 'r9a' = RegData$R0Spm9a,
+ 'r9b' = RegData$R0Spm9b,
+ 'r9c' = RegData$R0Spm9c,
+ 'r9d' = RegData$R0Spm9d,
+ 'r9e' = RegData$R0Spm9e,
+ 'r9f' = RegData$R0Spm9f,
+ 'r9g' = RegData$R0Spm9g,
+ 'r9h' = RegData$R0Spm9h,
+ 'r9i' = RegData$R0Spm9i,
+ 'r10' = RegData$R0Spm10,
+ 'r11a' = RegData$R0Spm11a,
+ 'r11b' = RegData$R0Spm11b,
+ 'r11c' = RegData$R0Spm11c,
+ 'r11d' = RegData$R0Spm11d)
 
  RANDvar <- c('R0Spm1', 'R0Spm2', 'R0Spm3a', 'R0Spm3b', 'R0Spm3c', 'R0Spm3d', 'R0Spm3e', 'R0Spm3f', 'R0Spm3g',
               'R0Spm3h', 'R0Spm3i', 'R0Spm3j', 'R0Spm4a', 'R0Spm4b', 'R0Spm4c', 'R0Spm4d', 'R0Spm5a', 'R0Spm5b',
@@ -99,17 +99,31 @@ RegData <- RegData[which(RegData$R0Status ==1),]
  RAND36$Mentalt = rowMeans(RAND36[,c('r9b','r9c','r9d','r9f','r9h')]) #6svaralt.
 
 
-test <- colSums(RAND36[ ,c('Fysisk','FysRolle','Smerte',"Generelt",
-                           "Vitalitet","Sosialt", "MentalRolle","Mentalt")]
+(test <- colSums(floor(RAND36[ ,c('Fysisk','FysRolle','Smerte',"Generelt",
+                           "Vitalitet","Sosialt", "MentalRolle","Mentalt")])
                 - RegData[ ,c('R0ScorePhys', 'R0ScoreRoleLmtPhy', 'R0ScorePain',	'R0ScoreGeneral',
-                              'R0ScoreEnergy','R0ScoreSosial','R0ScoreRoleLmtEmo',   'R0ScoreEmo')], na.rm = T)
+                              'R0ScoreEnergy','R0ScoreSosial','R0ScoreRoleLmtEmo',   'R0ScoreEmo')], na.rm = T))
+Smerte <- sum(floor(RAND36$Smerte)-RegData$R0ScorePain, na.rm=T)
+Sosialt <- sum(floor(RAND36$Sosialt)-RegData$R0ScoreSosial, na.rm=T)
+MentalRolle <- sum(floor(RAND36$MentalRolle)-RegData$R0ScoreRoleLmtEmo, na.rm=T)
+Mental <- sum(floor(RAND36$Mentalt)-RegData$R0ScoreEmo, na.rm=T)
+sum(round(RAND36$MentalRolle), na.rm = T)
+sum(RegData$R0ScoreRoleLmtEmo, na.rm = T)
+
 #ind <- which(RAND36$Fysisk>-1)
 #c('Fysisk','FysRolle','Smerte',"Generelt","Vitalitet","Sosialt", "MentalRolle","Mentalt")
-testRAND36 <- data.frame(RAND36,
-                       RegData[ ,c('R0ScorePhys', 'R0ScoreRoleLmtPhy', 'R0ScorePain',	'R0ScoreGeneral',
-                                   'R0ScoreEnergy','R0ScoreSosial','R0ScoreRoleLmtEmo',   'R0ScoreEmo')])
+skaarer <- c('R0ScorePhys', 'R0ScoreRoleLmtPhy', 'R0ScorePain',	'R0ScoreGeneral',
+             'R0ScoreEnergy','R0ScoreSosial','R0ScoreRoleLmtEmo',   'R0ScoreEmo')
+for (var in skaarer) {table(RegData[,var])}
+
+
+testRAND36 <- data.frame(RegData[ ,c('PasientID',	'OpDato',	'ForlopsID',	'AvdRESH',RANDvar,
+                         'R0ScorePhys', 'R0ScoreRoleLmtPhy', 'R0ScorePain',	'R0ScoreGeneral',
+                         'R0ScoreEnergy','R0ScoreSosial','R0ScoreRoleLmtEmo',   'R0ScoreEmo')],
+                         RAND36)
 
 write.table(testRAND36, file = "testRAND36.csv", row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
+write.table(data.frame(RAND36$MentalRolle, RegData$R0ScoreRoleLmtEmo), file = "testRAND36.csv", row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
 
 #return(invisible(RAND36))
 }

@@ -365,6 +365,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     retn <- 'V'
   }
   if (valgtVar == 'R0ScorePhys') {
+    #Verdier: 0:5:100
     RegData <- RegData[which(RegData$R0Status==1), ]
     tittel <- 'Fysisk funksjon'
     gr <- c(seq(0, 90, 10), 100) #c(seq(0, 180, 30), 1000) #
@@ -373,55 +374,62 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   }
 
   if (valgtVar == 'R0ScoreRoleLmtPhy') {
+    #Verdier: 0:25:100
     RegData <- RegData[which(RegData$R0Status==1), ]
     tittel <- 'Rollebegrensning grunnet fysisk helse'
-    gr <- c(0,25,50,75,100) #seq(0, 100, 25) #c(seq(0, 100, 25), 100) #c(seq(0, 180, 30), 1000) #
-    RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
-    grtxt <- gr #c(levels(RegData$VariabelGr)[1:(length(gr)-1)])
+    grtxt <- c(0,25,50,75,100) #seq(0, 100, 25) #c(seq(0, 100, 25), 100) #c(seq(0, 180, 30), 1000) #
+    RegData$VariabelGr <- factor(RegData$R0ScoreRoleLmtPhy, levels=grtxt) #cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
   }
 
   if (valgtVar == 'R0ScoreRoleLmtEmo') {
+    #Verdier: 0:33.3:100
     RegData <- RegData[which(RegData$R0Status==1), ]
     tittel <- 'Følelsesmessig rollebegrensning'
-    gr <-c(0,33,66,100) #seq(0, 100, 33) #c(seq(0, 90, 10), 100) #c(seq(0, 180, 30), 1000) #
-    RegData$VariabelGr <- RegData[ ,valgtVar] #cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
-    grtxt <- gr #c(levels(RegData$VariabelGr)[1:(length(gr)-1)])
-  }
+    #gr <-c(0,35,70,100) #seq(0, 100, 33) #c(seq(0, 90, 10), 100) #c(seq(0, 180, 30), 1000) #
+    grtxt <- c(0,33,67,100) #c(levels(RegData$VariabelGr)[1:(length(gr)-1)])
+    RegData$VariabelGr <- as.factor(RegData$R0ScoreRoleLmtEmo) #, levels=grtxt) #cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
+    levels(RegData$VariabelGr) <- grtxt
+    }
 
   if (valgtVar == 'R0ScoreEnergy') {
+    #Verdier: 0:5:100
     RegData <- RegData[which(RegData$R0Status==1), ]
     tittel <- 'Energinivå/fatigue'
-    gr <- c(seq(0, 90, 10), 100) #c(seq(0, 180, 30), 1000) #
+    gr <- seq(0, 100, 20)
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
-    grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-1)])
+    grtxt <- levels(RegData$VariabelGr)
   }
   if (valgtVar == 'R0ScoreEmo') {
+    #Verdier: 0:4:100
     RegData <- RegData[which(RegData$R0Status==1), ]
     tittel <- 'Følelsesmessig velvære'
-    gr <- c(seq(0, 90, 10), 100) #c(seq(0, 180, 30), 1000) #
+    gr <- seq(0, 100, 20)
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
     grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-1)])
   }
   if (valgtVar == 'R0ScoreSosial') {
+    #Verdier: 0:12.5:100
     RegData <- RegData[which(RegData$R0Status==1), ]
     tittel <- 'Sosial tilpassethet'
-    gr <- c(seq(0, 75, 25), 100) #c(seq(0, 180, 30), 1000) #
+    gr <- seq(0, 100, 25)
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
-    grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-1)])
+    grtxt <- levels(RegData$VariabelGr)
   }
   if (valgtVar == 'R0ScorePain') {
+    #Verdier: 0:2.5?:100
     RegData <- RegData[which(RegData$R0Status==1), ]
     tittel <- 'Smerte'
-    gr <- c(seq(0, 90, 10), 100) #c(seq(0, 180, 30), 1000) #
+    gr <- seq(0, 100, 20)
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
-    grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-1)])
+    grtxt <- levels(RegData$VariabelGr)
   }
   if (valgtVar == 'R0ScoreGeneral') {
+    #Verdier: 0:5:100
     RegData <- RegData[which(RegData$R0Status==1), ]
     tittel <- 'Generell helsetilstand'
-    gr <- c(seq(0, 90, 10), 100) #c(seq(0, 180, 30), 1000) #
+    gr <- seq(0, 100, 20)
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
-    grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-1)])
+    grtxt <- levels(RegData$VariabelGr)
   }
 
   ###Gjør utvalg (NGERUtvalg)
