@@ -4,12 +4,11 @@
 \alias{NGERFigGjsnGrVar}
 \title{Søylediagram med gjennomsnitt/median for hver grupperingsenhet (sykehus, RHF, ...)}
 \usage{
-NGERFigGjsnGrVar(RegData = RegData, datoFra = "2013-01-01",
-  datoTil = "3000-12-31", minald = 0, maxald = 130, MCEType = MCEType,
-  AlvorlighetKompl = AlvorlighetKompl, Hastegrad = Hastegrad,
-  valgtMaal = "Gjsn", hentData = 0, preprosess = 1,
-  grVar = "SykehusNavn", Ngrense = 10, medKI = 1, reshID = 0,
-  outfile = "")
+NGERFigGjsnGrVar(RegData, datoFra = "2013-01-01", datoTil = "3000-12-31",
+  valgtVar, minald = 0, maxald = 130, MCEType = 99,
+  AlvorlighetKompl = 99, Hastegrad = 99, valgtMaal = "Gjsn",
+  hentData = 0, preprosess = 1, grVar = "ShNavn", Ngrense = 10,
+  medKI = 1, outfile = "")
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -17,6 +16,8 @@ NGERFigGjsnGrVar(RegData = RegData, datoFra = "2013-01-01",
 \item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}
 
 \item{datoTil}{Seneste dato i utvalget (vises alltid i figuren).}
+
+\item{valgtVar}{Hvilken variabel som skal visualiseres}
 
 \item{minald}{Alder, fra og med (Standardverdi: 0)}
 
@@ -60,9 +61,6 @@ Detajer: Her bør man liste opp hvilke variable funksjonen benytter.}
 \item{preprosess}{Preprosesser data
 0: Nei (Standard)
 1: Ja}
-
-\item{reshID}{Parameter følger fra innlogging helseregister.no og angir
-hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 
 \item{outfile}{Navn på fil figuren skrives til. Standard: '' (Figur skrives
 til systemets standard utdataenhet (som regel skjerm))}

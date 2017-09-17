@@ -101,6 +101,14 @@ Argumentet \emph{valgtVar} har følgende valgmuligheter:
     \item OpTidlLapsko: Tidligere laparoskopi
     \item OpTidlLaparotomi: Tidligere laparatomi
     \item OpType: Primæroperasjon eller reoperasjon
+    \item R0ScoreEmo:
+    \item R0ScoreEnergy:
+    \item R0ScoreGeneral:
+    \item R0ScorePain:
+    \item R0ScorePhys:
+    \item R0ScoreRoleLmtPhy:
+    \item R0ScoreRoleLmtEmo:
+    \item R0ScoreSosial:
     \item Prosedyrer: Hyppigst forekommende prosedyrer
     \item SivilStatus: Sivilstand
     \item Tss2Mott: Hvordan du ble mottatt på avd.

@@ -26,7 +26,7 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
                              valgtVar, minald=0, maxald=130,
                              MCEType=99, AlvorlighetKompl=99, Hastegrad=99,
                              valgtMaal='Gjsn', hentData=0, preprosess=1, grVar='ShNavn', Ngrense=10,
-                             medKI=1, reshID=0, outfile='') {     #aar=0,
+                             medKI=1, outfile='') {     #aar=0,
 
 if (hentData == 1) {
   RegData <- NGERRegDataSQL(datoFra, datoTil)
@@ -34,7 +34,7 @@ if (hentData == 1) {
 
 # Hvis RegData ikke har blitt preprosessert. (I samledokument gjøres dette i samledokumentet)
 if (preprosess == 1){
-       RegData <- NGERPreprosess(RegData=RegData) #, reshID=reshID)
+       RegData <- NGERPreprosess(RegData=RegData)
      }
 
 #------- Tilrettelegge variable
@@ -165,7 +165,7 @@ KImaal <- NGERVarSpes$KImaal
 #Hvis for få observasjoner..
 
 if (dim(RegData)[1] < 10 )
-    #|(grVar=='' & length(which(RegData$ReshId == reshID))<5 & enhetsUtvalg %in% c(1,3)))
+    #|(grVar=='' & length(enhetsUtvalg %in% c(1,3)))
     {
 	#-----------Figur---------------------------------------
       FigTypUt <-figtype(outfile)  #FigTypUt <- figtype(outfile)

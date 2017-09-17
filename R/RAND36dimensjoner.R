@@ -1,16 +1,11 @@
 #' Beregning og test av tidligere beregnede dimensjoner i RAND36
 #'
-#'
-#' @param valgtMaal 'Med' = median. Alt annet gir gjennomsnitt
-#'
-#' Detajer: Her bør man liste opp hvilke variable funksjonen benytter.
-#'
 #' @return RAND36
 #'
 #' @export
 
 
-NGERFigGjsnGrVar <- function(RegData) {
+NGERRAND36sjekk <- function(RegData) {
 
 
 RegData <- RegData[which(RegData$R0Status ==1),]
