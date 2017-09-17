@@ -16,7 +16,7 @@
 #' @export
 #'
 
-NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ktr=0, figurtype='andeler'){
+NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler'){
 
 
       "%i%" <- intersect

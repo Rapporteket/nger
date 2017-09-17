@@ -38,7 +38,7 @@ if (preprosess == 1){
      }
 
 #------- Tilrettelegge variable
-NGERVarSpes <- NGERVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, ktr=ktr, figurtype = 'gjsnGrVar')
+NGERVarSpes <- NGERVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'gjsnGrVar')
 RegData <- NGERVarSpes$RegData
 
 #------- Gjøre utvalg
