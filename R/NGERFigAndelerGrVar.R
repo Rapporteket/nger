@@ -23,12 +23,12 @@
 #'		\item Opf0KomplOrgan: Postop. komplikasjon: Organskade
 #'		\item Opf0Reoperasjon: Reoperasjon som følge av komplikasjon
 #'		\item Opf0Status: Fått postoperativ oppfølging
-#'    \item Tss2Mott: Hvordan du ble mottatt på avd.
-#'    \item Tss2Behandling:
-#'    \item Tss2Lytte:
-#'    \item Tss2Behandlere:
-#'    \item Tss2Enighet:
-#'    \item Tss2Generelt:
+#'    \item Tss2Mott: Møtet med gynekologisk avdeling var mindre godt
+#'    \item Tss2Behandling: Behandlingens opplegg og innhold passet ikke pasienten
+#'    \item Tss2Lytte: Pasientens behandlere lyttet- og forsto ikke det som ble tatt opp
+#'    \item Tss2Behandlere: Pasienten hadde ikke tillit til sine behandlere
+#'    \item Tss2Enighet: Pasient og behandlere ikke enige om målsetn. for behandlinga
+#'    \item Tss2Generelt: Negativ eller svært negativ oppfatning om gyn. avd.
 #'		\item Utdanning: Pasienter med høyere utdanning
 #'    }
 #'
@@ -63,7 +63,7 @@ if (enhetsUtvalg == 7) {
 		cexShNavn <- 1
 	}
 
-grVar <- 'SykehusNavn'
+grVar <- 'ShNavn'
 RegData[ ,grVar] <- factor(RegData[ ,grVar])
 #Ngrense <- 10		#Minste antall registreringer for at ei gruppe skal bli vist
 
@@ -169,7 +169,7 @@ if (valgtVar == 'Tss2Lytte') {
 if (valgtVar == 'Tss2Behandlere') {
   #0:Nei, 1:Ja, til en viss grad, 2:Ja, i ganske stor grad, 3:Ja, i svært stor grad
   RegData <- RegData[which(RegData$Tss2Status == 1), ]
-  tittel <- 'Pasienten hadde ikke tillit til sine behandlere?'
+  tittel <- 'Pasienten hadde ikke tillit til sine behandlere'
   RegData$Variabel[which(RegData$Tss2Behandlere == 0)] <- 1
 }
 if (valgtVar == 'Tss2Enighet') {
