@@ -66,6 +66,7 @@ NGERFigAndeler(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=dat
 	reshID=reshID, enhetsUtvalg=enhetsUtvalg, MCEType = MCEType, outfile=outfile, preprosess = preprosess,
   minald=minald, maxald=maxald, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
 
+ind <- which(RegData$InnDato<as.Date('2017-01-01') & RegData$InnDato>as.Date('2015-12-31'))
 
 #Teste variable
 variable <- c('Alder','Diagnoser',  'HysGjforingsGrad', 'HysKomplikasjoner','KomplPost',
@@ -80,7 +81,7 @@ variable <- c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',	'Tss2Behandlere',	'Tss2
 variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
               'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')
 for (valgtVar in variable) {
-	outfile <- paste0(valgtVar, '_ford.png')
+	outfile <- paste0(valgtVar, '_ford.pdf')
 	NGERFigAndeler(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
 		reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,preprosess = 1,
 		minald=minald, maxald=maxald)
