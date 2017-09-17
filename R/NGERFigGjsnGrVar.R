@@ -202,7 +202,9 @@ if (dim(RegData)[1] < 10 )
 
 	#Definerer disse i beregningsfunksjonen?
       xmax <- max(c(AggVerdier$Hoved, AggVerdier$Rest),na.rm=T)*1.2
-      xmax <- ifelse(valgtMaal=='Andel', min(xmax, 100), xmax) 	#100 som maks bare hvis andelsfigur..
+      xmax <- ifelse(valgtVar %in% c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',
+                                     'R0ScoreEmo', 'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral'),
+                     min(xmax, 100), xmax)
 	  ymin <- 0.3 #0.5/cexgr^4	#0.05*antGr #Fordi avstand til x-aksen av en eller annen grunn øker når antall sykehus øker
 	  ymax <- 0.4+1.25*length(AggVerdier$Hoved) #c(0.3/xkr^4,  0.3+1.25*length(Midt)), 0.2+1.2*length(AggVerdier$Hoved)
 
@@ -217,7 +219,7 @@ if (dim(RegData)[1] < 10 )
 	  posOK <- pos[indOK]
 	  minpos <- min(posOK)-0.7
 	  maxpos <- max(posOK)+0.7
-    if (max(AggVerdier$Hoved) == 0 ){medKI <- 0}
+    if (max(AggVerdier$Hoved, na.rm=T) == 0 ){medKI <- 0}
 
 	  if (medKI == 1) {	#Legge på konf.int for hele populasjonen
 	        #options(warn=-1)	#Unngå melding om KI med lengde 0
@@ -244,10 +246,10 @@ if (dim(RegData)[1] < 10 )
 
 
 	if (medKI == 1) {	#Legge på konf.int for hver enkelt gruppe/sykehus
-	      arrows(x0=AggVerdier$Hoved, y0=pos, x1=AggVerdier$KIopp, y1=pos,
-	             length=0.5/max(pos), code=2, angle=90, lwd=1, col=farger[1])
-	      arrows(x0=AggVerdier$Hoved, y0=pos, x1=AggVerdier$KIned, y1=pos,
-	             length=0.5/max(pos), code=2, angle=90, lwd=1, col=farger[1])
+	  suppressWarnings(arrows(x0=AggVerdier$Hoved, y0=pos, x1=AggVerdier$KIopp, y1=pos,
+	             length=0.5/max(pos), code=2, angle=90, lwd=1, col=farger[1]))
+	  suppressWarnings(arrows(x0=AggVerdier$Hoved, y0=pos, x1=AggVerdier$KIned, y1=pos,
+	             length=0.5/max(pos), code=2, angle=90, lwd=1, col=farger[1]))
 	}
 	#------Tegnforklaring (legend)--------
 	  if (medKI == 0) { #Hopper over hvis ikke valgtMaal er oppfylt

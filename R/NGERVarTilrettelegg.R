@@ -56,13 +56,13 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ktr=0, figurtype='
 
       #-------------------------------------
 
-      if (valgtVar=='alderRygg') {	#Fordeling, GjsnGrVar, GjsnTid
+      if (valgtVar=='alder') {	#Fordeling, GjsnGrVar, GjsnTid
             RegData <- RegData[which(RegData$Alder>=0), ]    #Tar bort alder<0
             RegData$Variabel <- RegData$Alder  	#GjsnTid, GjsnGrVar
             xAkseTxt <- 'alder (år)'
             tittel <- 'Alder ved innleggelse'
             if (figurtype %in% c('gjsnGrVar', 'gjsnTid')) {
-                  tittel <- 'alder ved innleggelse'}
+                  tittel <- 'Alder ved innleggelse'}
             if (grVar == '') {	#Fordelingsfigur
                   gr <- c(seq(0, 100, 10),150)
                   RegData$VariabelGr <- cut(RegData$Alder, breaks=gr, include.lowest=TRUE, right=FALSE)

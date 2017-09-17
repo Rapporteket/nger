@@ -47,10 +47,10 @@ NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', mina
 
 
   #Alvorlighetsgrad, flervalgsutvalg
-  indAlvor <- if (AlvorlighetKompl[1] != '') {which(RegData$Opf0AlvorlighetsGrad %in% as.numeric(AlvorlighetKompl)) %i%
+  indAlvor <- if (AlvorlighetKompl[1] %in% 1:3) {which(RegData$Opf0AlvorlighetsGrad %in% as.numeric(AlvorlighetKompl)) %i%
       which(RegData$Opf0Status == 1)} else {indAlvor <- 1:Ninn}
   #Hastegrad  1:3 'Elektiv', 'Akutt', 'Ø-hjelp'
-  indHastegrad <- if (Hastegrad[1] != '') {which(RegData$OpKategori %in% as.numeric(Hastegrad))
+  indHastegrad <- if (Hastegrad[1] %in% 1:3) {which(RegData$OpKategori %in% as.numeric(Hastegrad))
                   } else {indHastegrad <- 1:Ninn}
 
 
@@ -75,8 +75,8 @@ NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', mina
                                                   'Tot. lap. hysterektomi (LCD01/LCD04)',
                                                   'Lap. subtotal hysterektomi (LCC11)',
                                                   'Lap. ass. vag. hysterektomi (LCD11)')[MCEType])},
-                 if (Hastegrad[1] != ''){paste0('Hastegrad: ', paste0(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','))},
-                 if (AlvorlighetKompl[1] != ''){paste0('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
+                 if (Hastegrad[1] %in% 1:3){paste0('Hastegrad: ', paste0(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','))},
+                 if (AlvorlighetKompl[1] %in% 1:3){paste0('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
                                                          [as.numeric(AlvorlighetKompl)], collapse=','))})
   #Generere hovedgruppe og sammenlikningsgruppe
   #Trenger indeksene før genererer tall for figurer med flere variable med ulike utvalg

@@ -144,27 +144,24 @@ for (valgtVar in variable) {
 #------------------------------ Sentralmål per sykehus --------------------------
 #------------------------------ (GjsnGrVar) --------------------------
 
-valgtVar <- 'R0ScoreGeneral'	#Må velge... R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
+valgtVar <- 'alder'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
                             #R0ScoreEmo, R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral
 
-outfile <- '' #paste0(valgtVar, '_ford.png')	#Navn angis av Jasper
+outfile <- '' #paste0(valgtVar, '_sh.pdf')
 
 
 NGERFigGjsnGrVar(RegData=RegData,valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-                             MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
-                             valgtMaal='Gjsn', hentData=0, preprosess=1, grVar=grVar, Ngrense=10,
-                             medKI=1, outfile='')
+                 MCEType=MCEType, valgtMaal='Med', hentData=0,  grVar=grVar, Ngrense=10,
+                 medKI=1, outfile=outfile)#AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
+
 
 variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
               'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')
 for (valgtVar in variable) {
-  outfile <- paste0(valgtVar, '_ShusMed.pdf')
-  NGERFigGjsnGrVar(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
+  outfile <- paste0(valgtVar, '_ShMed.pdf')
+  NGERFigGjsnGrVar(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra,datoTil=datoTil,
                       valgtMaal='Med',outfile=outfile)
 }
-
-
-
 
 
 ######################### LITT LEKING ##############################
