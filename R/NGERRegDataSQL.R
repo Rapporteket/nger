@@ -183,6 +183,7 @@ query <- paste0('SELECT
     Tss2Behandlere,
     Tss2Enighet,
     Tss2Generelt,
+    Tss2Status,
     AlleVarNum.SivilStatus,
     Utdanning,
     Opf0AlvorlighetsGrad,
