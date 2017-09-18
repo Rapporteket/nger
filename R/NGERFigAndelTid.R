@@ -14,6 +14,7 @@
 #'		\item Opf0AlvorlighetsGrad: Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
 #'		\item KomplIntra: Komplikasjoner ved operasjon. (kombinerer variablene HysKomplikasjoner og LapKomplikasjoner)
 #'		\item KomplPostop: Andel postoperative komplikasjoner
+#'		\item LapKonvertert: Konvertert til laparoromi?
 #'		\item OpAntibProfylakse: Andel som får antibiotika
 #'		\item OpASA: ASA-grad > II
 #'		\item OpBMI: Pasienter med fedme (BMI>30)
@@ -217,7 +218,7 @@ RegData$TidsEnhet <- factor(RegData$TidsEnhet, levels=Tidtxt)
 #Trenger indeksene før genererer tall for figurer med flere variable med ulike utvalg
 indEgen1 <- match(reshID, RegData$ReshId)
 if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet
-		shtxt <- as.character(RegData$SykehusNavn[indEgen1]) } else {
+		shtxt <- as.character(RegData$ShNavn[indEgen1]) } else {
 		shtxt <- 'Hele landet'
 			}
 

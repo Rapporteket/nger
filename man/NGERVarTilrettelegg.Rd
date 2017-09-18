@@ -4,8 +4,7 @@
 \alias{NGERVarTilrettelegg}
 \title{Funksjon for å tilrettelegge variable for beregning.}
 \usage{
-NGERVarTilrettelegg(RegData, valgtVar, grVar = "", ktr = 0,
-  figurtype = "andeler")
+NGERVarTilrettelegg(RegData, valgtVar, grVar = "", figurtype = "andeler")
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}

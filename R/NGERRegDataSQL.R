@@ -205,7 +205,7 @@ query <- paste0('SELECT
     ,ForlopsOversikt.OppflgRegStatus
     ,ForlopsOversikt.OppflgStatus
     ,ForlopsOversikt.PasientAlder
-    ,ForlopsOversikt.SykehusNavn
+    ,ForlopsOversikt.ShNavn
     FROM AlleVarNum
     INNER JOIN ForlopsOversikt
     ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID

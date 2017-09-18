@@ -36,14 +36,14 @@ setwd("C:/ResultattjenesteGIT/nger/")
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
-datoFra <- '2016-01-01'	 # min og max dato i utvalget vises alltid i figuren.
+datoFra <- '2013-01-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2017-12-31'
 preprosess <- 1
 MCEType <- ''
 Hastegrad <- ''
 AlvorlighetKompl <- ''#c('2','3')
 hentData <- 0
-enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
+enhetsUtvalg <- 1 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
 
 tidsenhet <- 'Aar'
@@ -91,7 +91,7 @@ for (valgtVar in variable) {
 
 #------------------------------ Andeler per år --------------------------
 #------------------------------ (AndelTid) --------------------------
-valgtVar <- 'Alder' #LapKonvertert
+valgtVar <- 'LapKonvertert' #LapKonvertert
 outfile <- '' #paste0(valgtVar, '_', tidsenhet, '.png')
 
 NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,

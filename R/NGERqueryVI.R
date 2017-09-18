@@ -25,7 +25,7 @@ SELECT
   f.BasisRegStatus,
   v.PasientID,
   YEAR(f.HovedDato) AS year,
-  f.SykehusNavn
+  f.ShNavn
 FROM
   AlleVarNum v
 INNER JOIN ForlopsOversikt f ON v.MCEID = f.ForlopsID

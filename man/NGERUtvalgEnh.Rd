@@ -6,7 +6,7 @@
 \usage{
 NGERUtvalgEnh(RegData, datoFra, datoTil, fargepalett = "BlaaOff",
   minald = 0, maxald = 130, MCEType = "", AlvorlighetKompl = "",
-  Hastegrad = "")
+  Hastegrad = "", enhetsUtvalg = 0)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -42,6 +42,11 @@ Detajer: Her bør man liste opp hvilke variable funksjonen benytter.}
 1: Elektiv
 2: Akutt
 3: Ø-hjelp}
+
+\item{enhetsUtvalg}{Lag figur for
+0: Hele landet
+1: Egen enhet mot resten av landet (Standard)
+2: Egen enhet}
 }
 \value{
 UtData En liste bestående av det filtrerte datasettet, utvalgstekst for figur og tekststreng som angir fargepalett

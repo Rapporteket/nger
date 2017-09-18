@@ -85,6 +85,7 @@ Argumentet \emph{valgtVar} har følgende valgmuligheter:
 	\item Opf0AlvorlighetsGrad: Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
 	\item KomplIntra: Komplikasjoner ved operasjon. (kombinerer variablene HysKomplikasjoner og LapKomplikasjoner)
 	\item KomplPostop: Andel postoperative komplikasjoner
+	\item LapKonvertert: Konvertert til laparoromi?
 	\item OpAntibProfylakse: Andel som får antibiotika
 	\item OpASA: ASA-grad > II
 	\item OpBMI: Pasienter med fedme (BMI>30)

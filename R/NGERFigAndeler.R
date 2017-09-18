@@ -452,8 +452,8 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
 
   shtxt <- switch(as.character(enhetsUtvalg),
                   '0' = 'Hele landet',
-                  '1' = as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)]),
-                  '2' = as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)]))
+                  '1' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]),
+                  '2' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]))
 
   if (enhetsUtvalg == 2) {RegData <- RegData[which(RegData$ReshId == reshID), ]}
 
@@ -461,7 +461,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   #Generere hovedgruppe og sammenlikningsgruppe
   #Trenger indeksene før genererer tall for figurer med flere variable med ulike utvalg
   if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet
-    shtxt <- as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)])
+    shtxt <- as.character(RegData$ShNavn[match(reshID, RegData$ReshId)])
   } else {shtxt <- 'Hele landet'}
 
   if (enhetsUtvalg %in% c(0,2)) {		#Ikke sammenlikning

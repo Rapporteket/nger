@@ -88,12 +88,12 @@ Argumentet \emph{valgtVar} har følgende valgmuligheter:
 	\item Opf0KomplOrgan: Postop. komplikasjon: Organskade
 	\item Opf0Reoperasjon: Reoperasjon som følge av komplikasjon
 	\item Opf0Status: Fått postoperativ oppfølging
-   \item Tss2Mott: Hvordan du ble mottatt på avd.
-   \item Tss2Behandling:
-   \item Tss2Lytte:
-   \item Tss2Behandlere:
-   \item Tss2Enighet:
-   \item Tss2Generelt:
+   \item Tss2Mott: Møtet med gynekologisk avdeling var mindre godt
+   \item Tss2Behandling: Behandlingens opplegg og innhold passet ikke pasienten
+   \item Tss2Lytte: Pasientens behandlere lyttet- og forsto ikke det som ble tatt opp
+   \item Tss2Behandlere: Pasienten hadde ikke tillit til sine behandlere
+   \item Tss2Enighet: Pasient og behandlere ikke enige om målsetn. for behandlinga
+   \item Tss2Generelt: Negativ eller svært negativ oppfatning om gyn. avd.
 	\item Utdanning: Pasienter med høyere utdanning
    }
 }
