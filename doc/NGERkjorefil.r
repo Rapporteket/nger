@@ -37,7 +37,7 @@ reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
 datoFra <- '2016-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2016-12-31'
+datoTil <- '2017-12-31'
 preprosess <- 1
 MCEType <- ''
 Hastegrad <- ''
@@ -55,7 +55,7 @@ valgtMaal <- 'Gjsn'
 #------------------------------ (erstatter Fordelinger) --------------------------
 
 
-valgtVar <- 'R0ScoreGeneral'	#Må velge... Alder,... Diagnoser, Prosedyrer, OpTid
+valgtVar <- 'OpKategori'	#Må velge... Alder,... Diagnoser, Prosedyrer, OpTid
                     #Tss2Mott	Tss2Behandling	Tss2Lytte	Tss2Behandlere	Tss2Enighet	Tss2Generelt
                     #R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,	R0ScoreEmo,
                     #R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral
@@ -91,8 +91,8 @@ for (valgtVar in variable) {
 
 #------------------------------ Andeler per år --------------------------
 #------------------------------ (AndelTid) --------------------------
-valgtVar <- 'KomplPostop' #
-outfile <- paste0(valgtVar, '_', tidsenhet, '.png')
+valgtVar <- 'Alder' #LapKonvertert
+outfile <- '' #paste0(valgtVar, '_', tidsenhet, '.png')
 
 NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
             reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,
@@ -102,7 +102,7 @@ NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=da
 
 
 #Teste variable
-variable <- c('Alder', 'Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan',
+variable <- c('Alder', 'LapKonvertert','Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan',
               'Opf0Reoperasjon','Opf0AlvorlighetsGrad', 'KomplIntra', 'KomplPostop', 'OpAntibProfylakse',
               'OpASA', 'OpBMI', 'Opf0Status')
 
@@ -134,9 +134,9 @@ variable <- c('Alder', 'KomplIntra', 'KomplPostop', 'Opf0Reoperasjon', 'Opf0Alvo
 variable <- c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',	'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')
 
 for (valgtVar in variable) {
-  outfile <- paste0(valgtVar, '_Shus.png')
+  outfile <- paste0(valgtVar, '_Shus.pdf')
   NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
-              reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,
+              reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,Ngrense=20,
               minald=minald, maxald=maxald, preprosess = 1)
 }
 
@@ -158,9 +158,9 @@ NGERFigGjsnGrVar(RegData=RegData,valgtVar=valgtVar, datoFra=datoFra, datoTil=dat
 variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
               'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')
 for (valgtVar in variable) {
-  outfile <- paste0(valgtVar, '_ShMed.pdf')
+  outfile <- paste0(valgtVar, '_ShGjsn.pdf')
   NGERFigGjsnGrVar(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra,datoTil=datoTil,
-                      valgtMaal='Med',outfile=outfile)
+                      valgtMaal='Gjsn',outfile=outfile)
 }
 
 

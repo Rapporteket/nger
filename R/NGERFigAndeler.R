@@ -204,11 +204,11 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   if (valgtVar == 'OpKategori') {
     # 1:Elektiv, 2:Akutt, 3:Øyeblikkelig hjelp
     tittel <- 'Operasjonskategori'
-    grtxt <- c('Elektiv', 'Akutt', 'Ø-hjelp', 'Ukjent')
+    grtxt <- c('Elektiv', 'Akutt', 'Ø-hjelp')
     koder <- 1:3
     indVar <- which(RegData[ ,valgtVar] %in% koder)	#Må definere koder eks <- 1:5 i variabeldef.
     RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
-    RegData$VariabelGr <- factor(RegData$Variabel, levels=c(koder,99), labels = grtxt) #levels=c(nivaa,9)
+    RegData$VariabelGr <- factor(RegData$Variabel, levels=koder, labels = grtxt) #levels=c(nivaa,9)
   }
   if (valgtVar == 'OpMetode') {
     #1:Laparoskopi, 2:Hysteroskopi, 3:Begge

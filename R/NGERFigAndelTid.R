@@ -82,6 +82,13 @@ if (valgtVar=='OpBMI') {
   VarTxt <- 'med BMI>30'
   tittel <- 'Pasienter med fedme'
 }
+
+if (valgtVar=='LapKonvertert') {
+  RegData <- RegData[intersect(which(RegData$LapKonvertert %in% 0:1), which(RegData$LapStatus == 1)), ]
+  RegData$Variabel <- RegData$LapKonvertert
+  VarTxt <- 'konverterterte'
+  tittel <- 'Konvertert til laparotomi?'
+}
 if (valgtVar=='Opf0AlvorlighetsGrad') {
   #Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
   #Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
@@ -277,34 +284,35 @@ xaksetxt <- switch(tidsenhet, Aar='Operasjonsår', Mnd='Operasjonsår og -måned
 ymax <- min(119, 1.25*max(Andeler,na.rm=T))
 
 plot(AndelHoved,  font.main=1,  type='o', pch="'", col=fargeHoved, xaxt='n',
-		 frame.plot = FALSE,  xaxp=c(1,length(Tidtxt),length(Tidtxt)-1),xlim = c(1,length(Tidtxt)),
+		 frame.plot = FALSE,  xlim = c(1,length(Tidtxt)), #xaxp=c(1,length(Tidtxt),length(Tidtxt)-1),
 		cex=2, lwd=3, xlab=xaksetxt, ylab="Andel (%)", ylim=c(0,ymax), yaxs = 'i')
 
 axis(side=1, at = xskala, labels = Tidtxt, cex.axis=0.9)
 title(tittel, line=1, font.main=1)
 text(xskala, AndelHoved, pos=3, NTidHendHoved, cex=0.9, col=fargeHoved)#pos=1,
 
-#Legge på linjer i plottet. Denne kan nok gjøres mer elegant...
-if ((ymax > 10) & (ymax < 40)) {lines(range(xskala),rep(10,2), col=farger[4])}
-if (ymax > 20) {lines(range(xskala),rep(20,2), col=farger[4])}
-if ((ymax > 30) & (ymax < 40)) {lines(range(xskala),rep(30,2), col=farger[4])}
-if (ymax > 40) {lines(range(xskala),rep(40,2), col=farger[4])}
-if (ymax > 60) {lines(range(xskala),rep(60,2), col=farger[4])}
-if (ymax > 80) {lines(range(xskala),rep(80,2), col=farger[4])}
-if (ymax > 100) {lines(range(xskala),rep(100,2), col=farger[4])}
+#Legge på linjer i plottet.
+grid(nx = NA, ny = NULL, col = farger[4], lty = "solid")
+# if ((ymax > 10) & (ymax < 40)) {lines(range(xskala),rep(10,2), col=farger[4])}
+# if (ymax > 20) {lines(range(xskala),rep(20,2), col=farger[4])}
+# if ((ymax > 30) & (ymax < 40)) {lines(range(xskala),rep(30,2), col=farger[4])}
+# if (ymax > 40) {lines(range(xskala),rep(40,2), col=farger[4])}
+# if (ymax > 60) {lines(range(xskala),rep(60,2), col=farger[4])}
+# if (ymax > 80) {lines(range(xskala),rep(80,2), col=farger[4])}
+# if (ymax > 100) {lines(range(xskala),rep(100,2), col=farger[4])}
 #		axis(2, at=c(0,20,40,60,80,100), pos=0),
 
 
-Ttxt <- paste('(Tall ved punktene angir antall ', VarTxt, ')', sep='')
+Ttxt <- paste0('(Tall ved punktene angir antall ', VarTxt, ')')
 if (medSml == 1) {
   lines(xskala, AndelRest, col=fargeRest, lwd=3)
   points(xskala, AndelRest, pch="'", cex=2, col=fargeRest)	#}
   text(xskala, AndelRest, pos=3, NTidHendRest, cex=0.9, col=fargeRest)
-	legend('topleft', border=NA, c(paste(shtxt, ' (N=', NHovedRes, ')', sep=''),
-		paste(smltxt, ' (N=', NSmlRes, ')', sep=''), Ttxt), bty='n', ncol=1, cex=cexleg,
+	legend('topleft', border=NA, c(paste0(shtxt, ' (N=', NHovedRes, ')'),
+		paste0(smltxt, ' (N=', NSmlRes, ')'), Ttxt), bty='n', ncol=1, cex=cexleg,
 		col=c(fargeHoved, fargeRest, NA), lwd=3)
 	} else {
-		legend('top', c(paste(shtxt, ' (N=', NHovedRes, ')', sep=''), Ttxt),
+		legend('top', c(paste0(shtxt, ' (N=', NHovedRes, ')'), Ttxt),
 		col=c(fargeHoved, NA), lwd=3, bty='n')
 	}
 
