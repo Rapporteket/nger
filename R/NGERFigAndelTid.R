@@ -156,22 +156,25 @@ if (valgtVar=='KomplPostop') {
 if (valgtVar=='KomplIntra') {
 	# Komplikasjoner ved operasjon. Må kombinere HysKomplikasjoner og LapKomplikasjoner
 	#Kode 0: Nei, 1:Ja, tomme
-	RegData$KomplIntra <- with(RegData, HysKomplikasjoner + LapKomplikasjoner) #Får mange tomme!!!
-  	indMed <- switch(as.character(MCEType),
-					'1' = which(RegData$LapKomplikasjoner %in% 0:1),
-					'2' = which(RegData$HysKomplikasjoner %in% 0:1),
-					'3' = which(RegData$KomplIntra %in% 0:1),	#Få tomme for dette valget
-					'99' = union(which(is.finite(RegData$HysKomplikasjoner)), which(is.finite(RegData$LapKomplikasjoner))))
-	RegData <- RegData[indMed, ]
-  	indVar <- switch(as.character(MCEType),
-					'1' = which(RegData$LapKomplikasjoner == 1),
-					'2' = which(RegData$HysKomplikasjoner == 1),
-					'3' = which(RegData$KomplIntra == 1),
-					'99' = union(which(RegData$HysKomplikasjoner == 1), which(RegData$LapKomplikasjoner==1)))
-	RegData$Variabel[indVar] <- 1
-	VarTxt <- 'komplikasjoner'
+  if (MCEType %in% c(1,4:6)) {indMed <- which(RegData$LapKomplikasjoner %in% 0:1)
+  indVar <- which(RegData$LapKomplikasjoner == 1)
+  } else {
+    indMed <- switch(as.character(MCEType),
+                     '2' = which(RegData$HysKomplikasjoner %in% 0:1),
+                     '3' = which(RegData$KomplIntra %in% 0:1),	#Få tomme for dette valget
+                     '99' = union(which(is.finite(RegData$HysKomplikasjoner)), which(is.finite(RegData$LapKomplikasjoner))))
+    indVar <- switch(as.character(MCEType),
+                     #'1' = which(RegData$LapKomplikasjoner == 1),
+                     '2' = which(RegData$HysKomplikasjoner == 1),
+                     '3' = which(RegData$KomplIntra %in% 1:2),
+                     '99' = union(which(RegData$HysKomplikasjoner == 1), which(RegData$LapKomplikasjoner==1)))
+  }
+  RegData$Variabel[indVar] <- 1
+  RegData <- RegData[indMed, ]
+  VarTxt <- 'komplikasjoner'
 	tittel <- 'Komplikasjoner, intraoperativt '
 }
+
 
 
 

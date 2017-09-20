@@ -333,7 +333,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = FALSE)
     grtxt <- c('<15', levels(RegData$VariabelGr)[2:(length(gr)-2)], '80+')
     subtxt <- 'Aldersgrupper'
-    retn <- 'H'
+    retn <- 'V'
   }
   if (valgtVar == 'OpBMI') {
     # 1:Alvorlig undervekt,2:moderat undervekt, 3:mild undervekt, 4:normal vekt, 5:overvekt,
@@ -352,7 +352,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     RegData$VariabelGr <- cut(RegData$Variabel, breaks=gr, include.lowest=TRUE, right=FALSE)
     grtxt <- c('Ukjent', 'Undervekt','Normalvekt', 'Overvekt', 'Fedme kl.I', 'Fedme kl.II&III')
     #       koder <- as.character(1:5)
-    retn <- 'H'
+    retn <- 'V'
   }
   if (valgtVar == 'LapNumHjelpeinnstikk') {
     # Velge antall fra 0 til 6

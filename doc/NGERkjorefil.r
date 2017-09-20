@@ -39,7 +39,10 @@ maxald <- 130	#alder, til og med
 datoFra <- '2013-01-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2017-12-31'
 preprosess <- 1
-MCEType <- ''
+MCEType <- 4 #1: Laparoskopi, 2: Hysteroskopi, 3: Begge,  99: Alle
+#'                 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
+#'                 5: LCC11 (laparoskopisk subtotal hysterektomi)
+#'                 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
 Hastegrad <- ''
 AlvorlighetKompl <- ''#c('2','3')
 hentData <- 0
@@ -117,7 +120,7 @@ for (valgtVar in variable) {
 
 #------------------------------ Andeler per sykehus --------------------------
 #------------------------------ (AndelGrVar) --------------------------
-valgtVar <- 'Tss2Generelt' #Må velge... Alder, Opf0Reoperasjon, Education, Opf0AlvorlighetsGrad,
+valgtVar <- 'KomplPostop' #Må velge... Alder, Opf0Reoperasjon, Education, Opf0AlvorlighetsGrad,
       #KomplIntra, KomplPostop, OpAntibProfylakse, OpASA, OpBMI, Opf0Status,
       #Tss2Mott, Tss2Behandling,	Tss2Lytte, Tss2Behandlere, Tss2Enighet,	Tss2Generelt
 

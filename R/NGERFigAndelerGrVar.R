@@ -54,18 +54,17 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoT
 
 #Når bare skal sammenlikne med sykehusgruppe eller region, eller ikke sammenlikne,
 #trengs ikke data for hele landet:
-reshID <- as.numeric(reshID)
-indEgen1 <- match(reshID, RegData$ReshId)
-smltxt <- 'Hele landet'
-if (enhetsUtvalg == 7) {
-		smltxt <- as.character(RegData$Region[indEgen1])
-		RegData <- RegData[which(RegData$Region == smltxt), ]	#kun egen region
-		cexShNavn <- 1
-	}
+#reshID <- as.numeric(reshID)
+#indEgen1 <- match(reshID, RegData$ReshId)
+#smltxt <- 'Hele landet'
+#if (enhetsUtvalg == 7) {
+#		smltxt <- as.character(RegData$Region[indEgen1])
+#		RegData <- RegData[which(RegData$Region == smltxt), ]	#kun egen region
+#		cexShNavn <- 1
+#	}
 
 grVar <- 'ShNavn'
 RegData[ ,grVar] <- factor(RegData[ ,grVar])
-#Ngrense <- 10		#Minste antall registreringer for at ei gruppe skal bli vist
 
 
 RegData$Variabel <- 0
@@ -189,19 +188,22 @@ if (valgtVar=='KomplIntra') {
 	# Komplikasjoner ved operasjon. Må kombinere HysKomplikasjoner og LapKomplikasjoner
 	#Kode 0: Nei, 1:Ja, tomme
 	RegData$KomplIntra <- with(RegData, HysKomplikasjoner + LapKomplikasjoner) #Får mange tomme!!!
-  	indMed <- switch(as.character(MCEType),
-					'1' = which(RegData$LapKomplikasjoner %in% 0:1),
+	if (MCEType %in% c(1,4:6)) {indMed <- which(RegData$LapKomplikasjoner %in% 0:1)
+	                            indVar <- which(RegData$LapKomplikasjoner == 1)
+	                   } else {
+	  indMed <- switch(as.character(MCEType),
 					'2' = which(RegData$HysKomplikasjoner %in% 0:1),
 					'3' = which(RegData$KomplIntra %in% 0:1),	#Få tomme for dette valget
 					'99' = union(which(is.finite(RegData$HysKomplikasjoner)), which(is.finite(RegData$LapKomplikasjoner))))
-	RegData <- RegData[indMed, ]
   	indVar <- switch(as.character(MCEType),
-					'1' = which(RegData$LapKomplikasjoner == 1),
+					#'1' = which(RegData$LapKomplikasjoner == 1),
 					'2' = which(RegData$HysKomplikasjoner == 1),
-					'3' = which(RegData$KomplIntra == 1),
+					'3' = which(RegData$KomplIntra %in% 1:2),
 					'99' = union(which(RegData$HysKomplikasjoner == 1), which(RegData$LapKomplikasjoner==1)))
-	RegData$Variabel[indVar] <- 1
-	tittel <- 'Komplikasjoner, intraoperativt'
+	                   }
+  	RegData$Variabel[indVar] <- 1
+  	RegData <- RegData[indMed, ]
+  	tittel <- 'Komplikasjoner, intraoperativt'
 }
 
 if (valgtVar=='Opf0Status') {
@@ -228,7 +230,7 @@ if (valgtVar == 'Utdanning') {
 
 
 #Gjør utvalg
-NGERUtvalg <- NGERUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
+NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
                          MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
 RegData <- NGERUtvalg$RegData
 utvalgTxt <- NGERUtvalg$utvalgTxt
@@ -291,7 +293,7 @@ ybunn <- 0.1
 ytopp <- pos[AntGr]+1	#-length(indGrUt)]
 lines(x=rep(AndelHele, 2), y=c(ybunn, ytopp), col=farger[2], lwd=2)
 legend('topright', xjust=1, cex=1, lwd=2, col=farger[2],
-	legend=paste0(smltxt, ' (', sprintf('%.1f',AndelHele), '%), ', 'N=', N),
+	legend=paste0(NGERUtvalg$hovedgrTxt, ' (', sprintf('%.1f',AndelHele), '%), ', 'N=', N),
 	bty='o', bg='white', box.col='white')
 mtext(at=max(pos)+0.35*log(max(pos)), paste0('(N)' ), side=2, las=1, cex=cexShNavn, adj=1, line=0.25)
 mtext(at=pos+max(pos)*0.0045, GrNavnSort, side=2, las=1, cex=cexShNavn, adj=1, line=0.25)	#Legge på navn som eget steg
