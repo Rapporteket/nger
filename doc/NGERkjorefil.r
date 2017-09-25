@@ -58,7 +58,7 @@ valgtMaal <- 'Gjsn'
 #------------------------------ (erstatter Fordelinger) --------------------------
 
 
-valgtVar <- 'Utdanning'	#Må velge... Alder,... Diagnoser, Prosedyrer, OpTid
+valgtVar <- 'Alder'	#Må velge... Alder,... Diagnoser, Prosedyrer, OpTid
                     #Tss2Mott	Tss2Behandling	Tss2Lytte	Tss2Behandlere	Tss2Enighet	Tss2Generelt
                     #R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,	R0ScoreEmo,
                     #R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral
@@ -80,14 +80,13 @@ variable <- c('Alder','Diagnoser',  'HysGjforingsGrad', 'HysKomplikasjoner','Kom
               'OpTidlVagInngrep', 'OpTidlLapsko',
               'OpTidlLaparotomi', 'OpIVaktTid', 'OpType', 'Prosedyrer', 'Utdanning')
 
-variable <- c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',	'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')
+variable <- 'Tss2Generelt' #c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',	'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')
 variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
               'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')
 for (valgtVar in variable) {
 	outfile <- paste0(valgtVar, '_ford.pdf')
 	NGERFigAndeler(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
-		reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,preprosess = 1,
-		minald=minald, maxald=maxald)
+		reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,preprosess = 1)
 }
 
 #Opf0KomplUtstyr - LapAdherProfylakse

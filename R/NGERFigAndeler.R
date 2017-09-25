@@ -339,7 +339,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     grtxt <- c('<15', levels(RegData$VariabelGr)[2:(length(gr)-2)], '80+')
     subtxt <- 'Aldersgrupper'
     retn <- 'V'
-    cexgr <- 0.9
+    cexgr <- 0.8
   }
   if (valgtVar == 'OpBMI') {
     # 1:Alvorlig undervekt,2:moderat undervekt, 3:mild undervekt, 4:normal vekt, 5:overvekt,
@@ -615,7 +615,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
                    'Nett', 'Preparatpose', 'Uterusmanipulator', 'Robotkirurgi', 'Singel port',
                    'Stapler/endoGIA', 'Sutur', 'Bipolar og ultralyd', 'Bipolar koag. og klipping',
                    'Unipolar Diatermi')
-        cexgr <- 0.85
+        cexgr <- 0.8
         tittel <- 'Laparaskopisk ekstrautstyr'
         indMed <- which(RegData$OpMetode %in% c(1,3))
         AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
