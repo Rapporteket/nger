@@ -168,6 +168,9 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     subtxt <- 'Sykdomsgrad'
     tittel <-  'ASA-gruppe'
     retn <- 'H'
+    indVar <- which(RegData[ ,valgtVar] %in% koder)	#Må definere koder eks <- 1:5 i variabeldef.
+    RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
+    RegData$VariabelGr <- factor(RegData$Variabel, levels=c(koder,99), labels = grtxt) #levels=c(nivaa,9)
   }
   if (valgtVar == 'OpDagkirurgi') {
     #0: Nei, 1: Ja Manglende:Ukjent
@@ -238,6 +241,8 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     tittel <- 'Operasjonstype'
     grtxt <- c('Primærinngrep', 'Reoperasjon') #, 'Ukjent')
     koder <- 1:2
+    indVar <- which(RegData[ ,valgtVar] %in% koder)	#Må definere koder eks <- 1:5 i variabeldef.
+    RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
     RegData <- RegData[which(RegData[ ,valgtVar] %in% koder), ]
     RegData$VariabelGr <- factor(RegData$Variabel, levels=koder, labels = grtxt) #levels=c(nivaa,9)
   }
@@ -310,10 +315,10 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
     tittel <- 'Utdanningsnivå'
     grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år', 'Ukjent')
-    koder <- 1:5
+    koder <- c(1:5,9)
     retn <- 'H'
-    RegData <- RegData[which(RegData[ ,valgtVar] %in% koder), ]
-    RegData$VariabelGr <- factor(RegData$Variabel, levels=c(koder,99), labels = grtxt) #levels=c(nivaa,9)
+    RegData <- RegData[which(RegData$Utdanning %in% koder), ]
+    RegData$VariabelGr <- factor(RegData$Utdanning, levels=koder, labels = grtxt) #levels=c(nivaa,9)
   }
 
 
@@ -334,6 +339,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     grtxt <- c('<15', levels(RegData$VariabelGr)[2:(length(gr)-2)], '80+')
     subtxt <- 'Aldersgrupper'
     retn <- 'V'
+    cexgr <- 0.9
   }
   if (valgtVar == 'OpBMI') {
     # 1:Alvorlig undervekt,2:moderat undervekt, 3:mild undervekt, 4:normal vekt, 5:overvekt,
@@ -521,6 +527,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         AlleDiagSort <- sort(table(AlleDiag[which(AlleDiag != '')]), decreasing = TRUE)
         ant <- 20
         grtxt <- names(AlleDiagSort)[1:ant]	#
+        cexgr <- 1-0.018*ant
         tittel <- 'Hyppigst forekommende diagnoser'
         AntVar <- AlleDiagSort[1:ant]
         NVar <- dim(RegData)[1]
@@ -608,6 +615,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
                    'Nett', 'Preparatpose', 'Uterusmanipulator', 'Robotkirurgi', 'Singel port',
                    'Stapler/endoGIA', 'Sutur', 'Bipolar og ultralyd', 'Bipolar koag. og klipping',
                    'Unipolar Diatermi')
+        cexgr <- 0.85
         tittel <- 'Laparaskopisk ekstrautstyr'
         indMed <- which(RegData$OpMetode %in% c(1,3))
         AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
@@ -637,6 +645,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
                  'LapPostoperativ') #0,1 Hører denne med?
         grtxt <- c('Uterusmanipulator', 'Tilgangsmetode', 'Hjelpeinnstikk',
                    'Intraabdominal', 'Utstyr', 'Postoperativ')
+        cexgr <- 0.85
         tittel <- 'Intraoperative komplikasjoner ved laparoskopi'
         indMed <- which(RegData$LapKomplikasjoner %in% 0:1)	#
         AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
@@ -684,6 +693,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         AlleProsSort <- sort(table(AllePros[which(AllePros != '')]), decreasing = TRUE)
         ant <- 20
         grtxt <- names(AlleProsSort)[1:ant]
+        cexgr <- 1-ant*0.018
         tittel <- 'Hyppigst forekommende prosedyrer'
         AntVar <- AlleProsSort[1:ant]
         NVar <- dim(RegData)[1]
@@ -738,6 +748,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     antDesTxt <- paste0('%.', antDes, 'f')
     if (length(grtxt2) == 1) {grtxt2 <- paste0('(', sprintf(antDesTxt, Andeler$Hoved), '%)')}
     grtxtpst <- paste0(rev(grtxt), '\n (', rev(sprintf(antDesTxt, Andeler$Hoved)), '%)')
+    #grtxtpst <- paste0(rev(grtxt), ' (', rev(sprintf(antDesTxt, Andeler$Hoved)), '%)')
     vmarg <- switch(retn, V=0, H=max(0, strwidth(grtxtpst, units='figure', cex=cexgr)*0.65))
     par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1)))	#Har alltid datoutvalg med
 

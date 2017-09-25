@@ -39,7 +39,7 @@ maxald <- 130	#alder, til og med
 datoFra <- '2013-01-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2017-12-31'
 preprosess <- 1
-MCEType <- 4 #1: Laparoskopi, 2: Hysteroskopi, 3: Begge,  99: Alle
+MCEType <- 99 #1: Laparoskopi, 2: Hysteroskopi, 3: Begge,  99: Alle
 #'                 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
 #'                 5: LCC11 (laparoskopisk subtotal hysterektomi)
 #'                 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
@@ -58,7 +58,7 @@ valgtMaal <- 'Gjsn'
 #------------------------------ (erstatter Fordelinger) --------------------------
 
 
-valgtVar <- 'OpKategori'	#Må velge... Alder,... Diagnoser, Prosedyrer, OpTid
+valgtVar <- 'Utdanning'	#Må velge... Alder,... Diagnoser, Prosedyrer, OpTid
                     #Tss2Mott	Tss2Behandling	Tss2Lytte	Tss2Behandlere	Tss2Enighet	Tss2Generelt
                     #R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,	R0ScoreEmo,
                     #R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral
