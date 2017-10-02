@@ -58,7 +58,7 @@ valgtMaal <- 'Gjsn'
 #------------------------------ (erstatter Fordelinger) --------------------------
 
 
-valgtVar <- 'Diagnoser'	#Må velge... Alder,... Diagnoser, Prosedyrer, OpTid
+valgtVar <- 'Prosedyrer'	#Må velge... Alder,... Diagnoser, Prosedyrer, OpTid
                     #Tss2Mott	Tss2Behandling	Tss2Lytte	Tss2Behandlere	Tss2Enighet	Tss2Generelt
                     #R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,	R0ScoreEmo,
                     #R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral

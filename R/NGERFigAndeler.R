@@ -527,7 +527,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         AlleDiagSort <- sort(table(AlleDiag[which(AlleDiag != '')]), decreasing = TRUE)
         ant <- 20
         grtxt <- names(AlleDiagSort)[1:ant]	#
-        cexgr <- 1-0.015*ant
+        cexgr <- 1-0.005*ant
         tittel <- 'Hyppigst forekommende diagnoser'
         AntVar <- AlleDiagSort[1:ant]
         NVar <- dim(RegData)[1]
@@ -693,7 +693,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         AlleProsSort <- sort(table(AllePros[which(AllePros != '')]), decreasing = TRUE)
         ant <- 20
         grtxt <- names(AlleProsSort)[1:ant]
-        cexgr <- 1-ant*0.015
+        cexgr <- 1-0.005*ant
         tittel <- 'Hyppigst forekommende prosedyrer'
         AntVar <- AlleProsSort[1:ant]
         NVar <- dim(RegData)[1]
