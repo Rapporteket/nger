@@ -94,14 +94,14 @@ library(plyr)
  RAND36$Mentalt = rowMeans(RAND36[,c('r9b','r9c','r9d','r9f','r9h')]) #6svaralt.
 
 
-(test <- colSums(floor(RAND36[ ,c('Fysisk','FysRolle','Smerte',"Generelt",
-                           "Vitalitet","Sosialt", "MentalRolle","Mentalt")])
+(test <- colSums(round(RAND36[ ,c('Fysisk','FysRolle','Smerte',"Generelt",
+                           "Vitalitet","Sosialt", "MentalRolle","Mentalt")],2)
                 - RegData[ ,c('R0ScorePhys', 'R0ScoreRoleLmtPhy', 'R0ScorePain',	'R0ScoreGeneral',
                               'R0ScoreEnergy','R0ScoreSosial','R0ScoreRoleLmtEmo',   'R0ScoreEmo')], na.rm = T))
 Smerte <- sum(floor(RAND36$Smerte)-RegData$R0ScorePain, na.rm=T)
 Sosialt <- sum(floor(RAND36$Sosialt)-RegData$R0ScoreSosial, na.rm=T)
 MentalRolle <- sum(floor(RAND36$MentalRolle)-RegData$R0ScoreRoleLmtEmo, na.rm=T)
-Mental <- sum(floor(RAND36$Mentalt)-RegData$R0ScoreEmo, na.rm=T)
+#Mental <- sum(floor(RAND36$Mentalt)-RegData$R0ScoreEmo, na.rm=T)
 sum(round(RAND36$MentalRolle), na.rm = T)
 sum(RegData$R0ScoreRoleLmtEmo, na.rm = T)
 
