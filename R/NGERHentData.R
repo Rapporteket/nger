@@ -81,7 +81,7 @@ NGERHentRegData <- function(datoFra = '2014-01-01', datoTil = '2099-01-01') {
 	ForlopsOversikt.HovedDato,
 	ForlopsOversikt.OppflgRegStatus,
 	ForlopsOversikt.OppflgStatus,
-	ForlopsOversikt.SykehusNavn
+	ForlopsOversikt.ShNavn
 FROM alleVarNum INNER JOIN ForlopsOversikt ON alleVarNum.MCEID = ForlopsOversikt.ForlopsID
                   WHERE HovedDato >= \'', datoFra, '\' AND HovedDato <= \'', datoTil, '\'')
 

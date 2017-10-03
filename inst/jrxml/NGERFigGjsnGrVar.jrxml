@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="NGERFigAndelerAsRPackage" language="groovy" pageWidth="595" pageHeight="595" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" scriptletClass="no.skde.report.nger.NGERCommonScriptletRPackage" isIgnorePagination="true" uuid="9ca92060-e90f-4e3c-acec-23662a03f059">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="NGERFigGjsnGrVar" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" scriptletClass="no.skde.report.nger.NGERCommonScriptletRPackage" isIgnorePagination="true" uuid="9ca92060-e90f-4e3c-acec-23662a03f059">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<property name="ireport.jasperserver.url" value="https://test.helseregister.no/rapporteket_test/"/>
-	<property name="ireport.jasperserver.report.resource" value="/organizations/NGER/Reports/NGERFigAndelerAsRPackage_files/main_jrxml"/>
-	<property name="ireport.jasperserver.reportUnit" value="/organizations/NGER/Reports/NGERFigAndelerAsRPackage"/>
+	<property name="ireport.jasperserver.report.resource" value="/organizations/NGER/Reports/NGERgjsnGrVar_files/Main_Jrxml"/>
+	<property name="ireport.jasperserver.reportUnit" value="/organizations/NGER/Reports/NGERgjsnGrVar"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
@@ -31,16 +31,16 @@
 		<defaultValueExpression><![CDATA[$P{LoggedInUserAttribute_AVD_RESH}]]></defaultValueExpression>
 	</parameter>
 	<parameter name="reportName" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new String("NGERFigAndeler")]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new String("NGERFigAndelGrVar")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="rPackageName" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA[new String("nger")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="rFunctionCallString" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new String("NGERFigAndeler(RegData=0, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad, MCEType=MCEType, hentData=1, preprosess=1)")]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new String("NGERFigGjsnGrVar(RegData=0, valgtVar=valgtVar, valgtMaal=valgtMaal, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, outfile=outfile, MCEType=MCEType, Hastegrad=Hastegrad, AlvorlighetKompl=AlvorlighetKompl, hentData=1, preprosess=1)")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="varName" class="java.lang.String">
-		<defaultValueExpression><![CDATA[new String("Alder")]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new String("alder")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="beginDate" class="java.util.Date">
 		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").parse("2016-01-01")]]></defaultValueExpression>
@@ -58,14 +58,14 @@
 	<parameter name="MCEType" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[new java.lang.Integer(99)]]></defaultValueExpression>
 	</parameter>
-	<parameter name="AlvorlighetKompl" class="java.util.List">
-		<defaultValueExpression><![CDATA[[""]]]></defaultValueExpression>
-	</parameter>
 	<parameter name="Hastegrad" class="java.util.List">
 		<defaultValueExpression><![CDATA[[""]]]></defaultValueExpression>
 	</parameter>
-	<parameter name="orgUnitSelection" class="java.lang.Integer">
-		<defaultValueExpression><![CDATA[new Integer(1)]]></defaultValueExpression>
+	<parameter name="AlvorlighetKompl" class="java.util.List">
+		<defaultValueExpression><![CDATA[[""]]]></defaultValueExpression>
+	</parameter>
+	<parameter name="statMeasureMethod" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new String("Gjsn")]]></defaultValueExpression>
 	</parameter>
 	<queryString language="SQL">
 		<![CDATA[]]>

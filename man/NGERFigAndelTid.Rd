@@ -22,6 +22,14 @@ NGERFigAndelTid(RegData = 0, valgtVar, datoFra = "2013-01-01",
 
 \item{maxald}{Alder, til og med (Standardverdi: 130)}
 
+\item{MCEType}{1: Laparoskopi
+2: Hysteroskopi
+3: Begge
+4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
+5: LCC11 (laparoskopisk subtotal hysterektomi)
+6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
+99: Alle}
+
 \item{Hastegrad}{Hastegrad av operasjon.
 1: Elektiv
 2: Akutt
@@ -77,10 +85,10 @@ Argumentet \emph{valgtVar} har følgende valgmuligheter:
 	\item Opf0AlvorlighetsGrad: Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
 	\item KomplIntra: Komplikasjoner ved operasjon. (kombinerer variablene HysKomplikasjoner og LapKomplikasjoner)
 	\item KomplPostop: Andel postoperative komplikasjoner
+	\item LapKonvertert: Konvertert til laparoromi?
 	\item OpAntibProfylakse: Andel som får antibiotika
 	\item OpASA: ASA-grad > II
 	\item OpBMI: Pasienter med fedme (BMI>30)
 	\item Opf0Status: Pasienter som har fått postoperativ oppfølging
    }
 }
-

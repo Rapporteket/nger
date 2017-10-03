@@ -33,8 +33,22 @@
 #'     \item OpTidlLapsko: Tidligere laparoskopi
 #'     \item OpTidlLaparotomi: Tidligere laparatomi
 #'     \item OpType: Primæroperasjon eller reoperasjon
+#'     \item R0ScoreEmo:
+#'     \item R0ScoreEnergy:
+#'     \item R0ScoreGeneral:
+#'     \item R0ScorePain:
+#'     \item R0ScorePhys:
+#'     \item R0ScoreRoleLmtPhy:
+#'     \item R0ScoreRoleLmtEmo:
+#'     \item R0ScoreSosial:
 #'     \item Prosedyrer: Hyppigst forekommende prosedyrer
 #'     \item SivilStatus: Sivilstand
+#'     \item Tss2Mott: Hvordan du ble mottatt på avd.
+#'     \item Tss2Behandling:
+#'     \item Tss2Lytte:
+#'     \item Tss2Behandlere:
+#'     \item Tss2Enighet:
+#'     \item Tss2Generelt:
 #'     \item Utdanning: Pasientens utdanning (1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent)
 #'    }
 #'
@@ -61,6 +75,9 @@
 #' @param MCEType  1: Laparoskopi
 #'                 2: Hysteroskopi
 #'                 3: Begge
+#'                 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
+#'                 5: LCC11 (laparoskopisk subtotal hysterektomi)
+#'                 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
 #'                 99: Alle
 #' @param Hastegrad Hastegrad av operasjon.
 #'                1: Elektiv
@@ -112,40 +129,57 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   grtxt <- ''
   koder <- NULL
 
+  RegData$Variabel <- 99
 
   if (valgtVar=='HysGjforingsGrad') {
     #Gjennomføringsgrad av hysteroskopi
     #Kode •	1-Fullstendig, 2-Ufullstendig, 3-Mislykket
     RegData <- RegData[which(RegData$OpMetode == 2), ]
+
     grtxt <- c('Fullstendig', 'Ufullstendig', 'Mislykket', 'Ukjent')
-    Tittel <- 'Gjennomføringsgrad av hysteroskopi'
+    tittel <- 'Gjennomføringsgrad av hysteroskopi'
     koder <- 1:3
+    indVar <- which(RegData[ ,valgtVar] %in% koder)	#Må definere koder eks <- 1:5 i variabeldef.
+    RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
+    RegData$VariabelGr <- factor(RegData$Variabel, levels=c(koder,99), labels = grtxt) #levels=c(nivaa,9)
   }
   if (valgtVar == 'Norsktalende') {
     # 0:Nei, 1:Ja, 2:Delvis, 9:Ukjent
-    Tittel <- 'Patient forstår og gjør seg forstått på norsk'
+    tittel <- 'Patient forstår og gjør seg forstått på norsk'
     grtxt <- c('Nei', 'Ja', 'Delvis', 'Ukjent')
     koder <- 0:2
+    indVar <- which(RegData[ ,valgtVar] %in% koder)	#Må definere koder eks <- 1:5 i variabeldef.
+    RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
+    RegData$VariabelGr <- factor(RegData$Variabel, levels=c(koder,99), labels = grtxt) #levels=c(nivaa,9)
   }
   if (valgtVar == 'OpAnestesi') {
     # 1-Ingen, 2-Lokal, 3-Generell, 4-Spinal, 5-Annet
-    Tittel <- 'Anestesitype ved endoskopiske inngrep'
+    tittel <- 'Anestesitype ved endoskopiske inngrep'
     grtxt <- c('Ingen', 'Lokal', 'Generell', 'Spinal', 'Annet', 'Ukjent')
     koder <- 1:5
     retn <- 'H'
+    indVar <- which(RegData[ ,valgtVar] %in% koder)	#Må definere koder eks <- 1:5 i variabeldef.
+    RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
+    RegData$VariabelGr <- factor(RegData$Variabel, levels=c(koder,99), labels = grtxt) #levels=c(nivaa,9)
   }
   if (valgtVar == 'OpASA') {
     koder <- 1:5
     grtxt <- c('I:Ingen','II:Moderat', 'III:Alvorlig', 'IV:Livstruende', 'V:Døende', 'Ukjent')
     subtxt <- 'Sykdomsgrad'
-    Tittel <-  'ASA-gruppe'
+    tittel <-  'ASA-gruppe'
     retn <- 'H'
+    indVar <- which(RegData[ ,valgtVar] %in% koder)	#Må definere koder eks <- 1:5 i variabeldef.
+    RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
+    RegData$VariabelGr <- factor(RegData$Variabel, levels=c(koder,99), labels = grtxt) #levels=c(nivaa,9)
   }
   if (valgtVar == 'OpDagkirurgi') {
     #0: Nei, 1: Ja Manglende:Ukjent
-    Tittel <- 'Dagkirurgiske Inngrep'
+    tittel <- 'Dagkirurgiske Inngrep'
     grtxt <- c('Nei', 'Ja', 'Ukjent')
     koder <- 0:1
+    indVar <- which(RegData[ ,valgtVar] %in% koder)	#Må definere koder eks <- 1:5 i variabeldef.
+    RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
+    RegData$VariabelGr <- factor(RegData$Variabel, levels=c(koder,99), labels = grtxt) #levels=c(nivaa,9)
   }
   if (valgtVar=='Opf0AlvorlighetsGrad') {
     #Postoperative komplikasjoner
@@ -153,83 +187,164 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     #		RegData <- RegData[which(RegData$Opf0Status == 1) %i% which(RegData$Opf0Komplikasjoner == 1), ]
     RegData <- RegData[(which(RegData$Opf0Status == 1) %i% which(RegData$Opf0Komplikasjoner %in% 0:1)), ]
     grtxt <- c('Lite alvorlig', 'Middels alvorlig', 'Alvorlig', 'Dødelig', 'Ingen kompl.')
-    Tittel <- 'Alvorlighetsgrad av komplikasjoner'
+    tittel <- 'Alvorlighetsgrad av komplikasjoner'
     koder <- 1:4
     retn <- 'H'
+    indVar <- which(RegData[ ,valgtVar] %in% koder)	#Må definere koder eks <- 1:5 i variabeldef.
+    RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
+    RegData$VariabelGr <- factor(RegData$Variabel, levels=c(koder,99), labels = grtxt) #levels=c(nivaa,9)
   }
   if (valgtVar == 'OpIVaktTid') {
     #0: Nei, 1: Ja Manglende:Ukjent
     Hastegrad <- as.character(2:3)
-    Tittel <- 'Operasjon i vakttid'
+    tittel <- 'Operasjon i vakttid'
     grtxt <- c('Nei', 'Ja', 'Ukjent')
     koder <- 0:1
+    indVar <- which(RegData[ ,valgtVar] %in% koder)	#Må definere koder eks <- 1:5 i variabeldef.
+    RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
+    RegData$VariabelGr <- factor(RegData$Variabel, levels=c(koder,99), labels = grtxt) #levels=c(nivaa,9)
   }
   if (valgtVar == 'OpKategori') {
     # 1:Elektiv, 2:Akutt, 3:Øyeblikkelig hjelp
-    Tittel <- 'Operasjonskategori'
-    grtxt <- c('Elektiv', 'Akutt', 'Ø-hjelp', 'Ukjent')
+    tittel <- 'Operasjonskategori'
+    grtxt <- c('Elektiv', 'Akutt', 'Ø-hjelp')
     koder <- 1:3
+    indVar <- which(RegData[ ,valgtVar] %in% koder)	#Må definere koder eks <- 1:5 i variabeldef.
+    RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
+    RegData$VariabelGr <- factor(RegData$Variabel, levels=koder, labels = grtxt) #levels=c(nivaa,9)
   }
   if (valgtVar == 'OpMetode') {
     #1:Laparoskopi, 2:Hysteroskopi, 3:Begge
-    Tittel <- 'Operasjonsmetode'
+    tittel <- 'Operasjonsmetode'
     koder <- 1:3
     grtxt <- c('Laparoskopi', 'Hysteroskopi', 'Begge', 'Ukjent')
     retn <- 'H'
+    indVar <- which(RegData[ ,valgtVar] %in% koder)	#Må definere koder eks <- 1:5 i variabeldef.
+    RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
+    RegData$VariabelGr <- factor(RegData$Variabel, levels=c(koder,99), labels = grtxt) #levels=c(nivaa,9)
   }
   if (valgtVar %in% c('OpTidlVagInngrep', 'OpTidlLapsko', 'OpTidlLaparotomi')) {
     # 0: Nei, 1: Ja, 9: Vet ikke
-    Tittel <- sprintf('Tidligere %s', switch(as.character(valgtVar),
+    tittel <- sprintf('Tidligere %s', switch(as.character(valgtVar),
                                              'OpTidlVagInngrep' = 'vaginale inngrep',
                                              'OpTidlLapsko' = 'laparoskopiske inngrep',
                                              'OpTidlLaparotomi' = 'laparatomi'))
     grtxt <- c('Nei', 'Ja', 'Vet ikke/Ukjent')
     koder <- 0:1
-  }
-
-  if (valgtVar == 'OpType') {
-    # 1:Primærinngrep, 2:Reoperasjon
-    Tittel <- 'Operasjonstype'
-    grtxt <- c('Primærinngrep', 'Reoperasjon', 'Ukjent')
-    koder <- 1:2
-  }
-  if (valgtVar == 'SivilStatus') {
-    # 1:Enslig, 2:Særboer, 3:Samboer, 4:Gift, 5:Skilt, 6:Enke, 9:Ukjent
-    Tittel <- 'Sivilstatus'
-    grtxt <- c('Enslig', 'Særboer', 'Samboer', 'Gift', 'Skilt', 'Enke', 'Ukjent')
-    koder <- 1:6
-    retn <- 'H'
-  }
-  if (valgtVar == 'Utdanning') {
-    # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
-    Tittel <- 'Utdanningsnivå'
-    grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år', 'Ukjent')
-    koder <- 1:5
-    retn <- 'H'
-  }
-
-
-  #Likt for alle kategoriske variable
-  if (length(koder)>0) {
-    RegData$Variabel <- 99
     indVar <- which(RegData[ ,valgtVar] %in% koder)	#Må definere koder eks <- 1:5 i variabeldef.
     RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
     RegData$VariabelGr <- factor(RegData$Variabel, levels=c(koder,99), labels = grtxt) #levels=c(nivaa,9)
   }
+
+  if (valgtVar == 'OpType') {
+    # 1:Primærinngrep, 2:Reoperasjon
+    tittel <- 'Operasjonstype'
+    grtxt <- c('Primærinngrep', 'Reoperasjon') #, 'Ukjent')
+    koder <- 1:2
+    indVar <- which(RegData[ ,valgtVar] %in% koder)	#Må definere koder eks <- 1:5 i variabeldef.
+    RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
+    RegData <- RegData[which(RegData[ ,valgtVar] %in% koder), ]
+    RegData$VariabelGr <- factor(RegData$Variabel, levels=koder, labels = grtxt) #levels=c(nivaa,9)
+  }
+
+  if (valgtVar == 'SivilStatus') {
+    # 1:Enslig, 2:Særboer, 3:Samboer, 4:Gift, 5:Skilt, 6:Enke, 9:Ukjent
+    tittel <- 'Sivilstatus'
+    grtxt <- c('Enslig', 'Særboer', 'Samboer', 'Gift', 'Skilt', 'Enke', 'Ukjent')
+    koder <- 1:6
+    retn <- 'H'
+    indVar <- which(RegData[ ,valgtVar] %in% koder)	#Må definere koder eks <- 1:5 i variabeldef.
+    RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
+    RegData$VariabelGr <- factor(RegData$Variabel, levels=c(koder,99), labels = grtxt) #levels=c(nivaa,9)
+  }
+
+#Tss2Type  FOLLOWUP_TYPE	Oppfølgingsmetode	["Oppfølging pr post/brev","Oppfølging pr telefonintervju","Oppfølging ikke mulig"]
+  if (valgtVar == 'Tss2Mott') {
+    tittel <- 'Hvordan ble du møtt på gynekologisk avdeling?'
+    grtxt <- c('Mindre godt','Ingen mening','Ganske godt','Svært godt')
+    koder <- 0:3
+    retn <- 'H'
+    RegData <- RegData[which(RegData[ ,valgtVar] %in% koder), ]
+    RegData$VariabelGr <- factor(RegData$Tss2Mott, levels=koder, labels = grtxt) #levels=c(nivaa,9)
+  }
+
+  if (valgtVar == 'Tss2Behandling') {
+    tittel <- '	Hvordan passet behandlingens opplegg og innhold for deg?	'
+    grtxt <- c('Paset ikke','Verken eller','Ganske bra','Svært bra')
+    koder <- 0:3
+    retn <- 'H'
+    RegData <- RegData[which(RegData[ ,valgtVar] %in% koder), ]
+    RegData$VariabelGr <- factor(RegData$Tss2Behandling, levels=koder, labels = grtxt) #levels=c(nivaa,9)
+  }
+  if (valgtVar == 'Tss2Lytte') {
+    #		[]
+    tittel <- 'Lyttet og forsto dine behandlere det du tok opp?'
+    grtxt <- c("Nei","Ja, til en viss grad","Ja, i ganske stor grad","Ja, i svært stor grad")
+    koder <- 0:3
+    retn <- 'H'
+    RegData <- RegData[which(RegData[ ,valgtVar] %in% koder), ]
+    RegData$VariabelGr <- factor(RegData$Tss2Lytte, levels=koder, labels = grtxt) #levels=c(nivaa,9)
+  }
+  if (valgtVar == 'Tss2Behandlere') {
+    #	["Nei, ikke tilstrekkelig","Ja, til en viss grad","Ja, i ganske stor grad","Ja, i svært stor grad"]
+    tittel <- 'Hadde du tillit til dine behandlere på gynekologisk avd.?'
+    grtxt <- c("Nei, ikke tilstrekkelig","Ja, til en viss grad","Ja, i ganske stor grad","Ja, i svært stor grad")
+    koder <- 0:3
+    retn <- 'H'
+    RegData <- RegData[which(RegData[ ,valgtVar] %in% koder), ]
+    RegData$VariabelGr <- factor(RegData$Tss2Behandlere, levels=koder, labels = grtxt) #levels=c(nivaa,9)
+  }
+  if (valgtVar == 'Tss2Enighet') {
+    #		["Nei","Ja, til en viss grad","Ja, i ganske stor grad","Ja, i svært stor grad"]
+    tittel <- 'Var du og dine behandlere enige om målsettingen for din behandling?'
+    grtxt <- c("Nei","Ja, til en viss grad","Ja, i ganske stor grad","Ja, i svært stor grad")
+    koder <- 0:3
+    retn <- 'H'
+    RegData <- RegData[which(RegData[ ,valgtVar] %in% koder), ]
+    RegData$VariabelGr <- factor(RegData$Tss2Enighet, levels=koder, labels = grtxt) #levels=c(nivaa,9)
+  }
+  if (valgtVar == 'Tss2Generelt') {
+    tittel <- '	Hvilken oppfatning har du om gynekologisk avdeling generelt?'
+    grtxt <- c("Svært negativ","Negativ","Nøytral","Positiv","Svært positiv")
+    koder <- 0:4
+    retn <- 'H'
+    RegData <- RegData[which(RegData[ ,valgtVar] %in% koder), ]
+    RegData$VariabelGr <- factor(RegData$Tss2Generelt, levels=koder, labels = grtxt) #levels=c(nivaa,9)
+  }
+  if (valgtVar == 'Utdanning') {
+    # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
+    tittel <- 'Utdanningsnivå'
+    grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år', 'Ukjent')
+    koder <- c(1:5,9)
+    retn <- 'H'
+    RegData <- RegData[which(RegData$Utdanning %in% koder), ]
+    RegData$VariabelGr <- factor(RegData$Utdanning, levels=koder, labels = grtxt) #levels=c(nivaa,9)
+  }
+
+
+  #Likt for alle kategoriske variable
+#  if (length(koder)>0) {
+#    RegData$Variabel <- 99
+#    indVar <- which(RegData[ ,valgtVar] %in% koder)	#Må definere koder eks <- 1:5 i variabeldef.
+    #    RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
+#    RegData <- RegData[indVar, ]
+#    RegData$VariabelGr <- factor(RegData$Variabel, levels=c(koder,99), labels = grtxt) #levels=c(nivaa,9)
+#  }
   ### Numeriske variable:
 
   if (valgtVar == 'Alder') {
-    Tittel <- 'Aldersfordeling'
+    tittel <- 'Aldersfordeling'
     gr <- c(0, seq(15, 80, 5), 120)
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = FALSE)
     grtxt <- c('<15', levels(RegData$VariabelGr)[2:(length(gr)-2)], '80+')
     subtxt <- 'Aldersgrupper'
-    retn <- 'H'
+    retn <- 'V'
+    cexgr <- 0.8
   }
   if (valgtVar == 'OpBMI') {
     # 1:Alvorlig undervekt,2:moderat undervekt, 3:mild undervekt, 4:normal vekt, 5:overvekt,
     # 6:fedme kl.I, 7:fedme kl.II, 8:fedme kl.III
-    Tittel <- 'BMI-kategorier' #, Slå sammen undervekt, fedme 2 og 3.
+    tittel <- 'BMI-kategorier' #, Slå sammen undervekt, fedme 2 og 3.
     #grtxtAlle <- c('Undervekt','Undervekt','Undervekt','Normal vekt', 'Overvekt', 'Fedme kl.I',
     #	'Fedme kl.II&III', 'Fedme kl.II&III' 'Ukjent')
     #mapvalues(RegData$OpBMIKategori, from = 1:8, to = grtxtAlle)
@@ -243,25 +358,100 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     RegData$VariabelGr <- cut(RegData$Variabel, breaks=gr, include.lowest=TRUE, right=FALSE)
     grtxt <- c('Ukjent', 'Undervekt','Normalvekt', 'Overvekt', 'Fedme kl.I', 'Fedme kl.II&III')
     #       koder <- as.character(1:5)
-    retn <- 'H'
+    retn <- 'V'
   }
   if (valgtVar == 'LapNumHjelpeinnstikk') {
     # Velge antall fra 0 til 6
     #IKKE gjort noen utvalg. (StatusLap==1?, LapHjelpeinnstikk==1?)
-    Tittel <- 'Antall hjelpeinnstikk, laparaskopi'
+    tittel <- 'Antall hjelpeinnstikk, laparaskopi'
     grtxt <- 0:6 #Kategoriser: 0,1,2,3,4+
     RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = grtxt)
   }
 
   if (valgtVar == 'OpTid') {
     #0-20, 21-40, 41-60, 61-80, 81-100, 101-120, 121-140, 141-160, 161-180, 181-200, 201-220, 221-240, > 240
-    Tittel <- 'Operasjonstid'
+    tittel <- 'Operasjonstid'
     gr <- c(seq(0, 180, 20), 1000) #c(seq(0, 180, 30), 1000) #
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = FALSE)
     grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-2)], '180+')
     subtxt <- 'minutter'
     cexgr <- 0.9
     retn <- 'V'
+  }
+  if (valgtVar == 'R0ScorePhys') {
+    #Verdier: 0:5:100
+    RegData <- RegData[which(RegData$R0Status==1), ]
+    tittel <- 'Fysisk funksjon'
+    subtxt <- 'sumskår (høyest er best)'
+    gr <- c(seq(0, 90, 10), 100) #c(seq(0, 180, 30), 1000) #
+    RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
+    grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-1)])
+  }
+
+  if (valgtVar == 'R0ScoreRoleLmtPhy') {
+    #Verdier: 0:25:100
+    RegData <- RegData[which(RegData$R0Status==1), ]
+    tittel <- 'Rollebegrensning grunnet fysisk helse'
+    subtxt <- 'sumskår (høyest er best)'
+    grtxt <- c(0,25,50,75,100) #seq(0, 100, 25) #c(seq(0, 100, 25), 100) #c(seq(0, 180, 30), 1000) #
+    RegData$VariabelGr <- factor(RegData$R0ScoreRoleLmtPhy, levels=grtxt) #cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
+  }
+
+  if (valgtVar == 'R0ScoreRoleLmtEmo') {
+    #Verdier: 0:33.3:100
+    RegData <- RegData[which(RegData$R0Status==1), ]
+    tittel <- 'Følelsesmessig rollebegrensning'
+    subtxt <- 'sumskår (høyest er best)'
+    #gr <-c(0,35,70,100) #seq(0, 100, 33) #c(seq(0, 90, 10), 100) #c(seq(0, 180, 30), 1000) #
+    grtxt <- c(0,33,67,100) #c(levels(RegData$VariabelGr)[1:(length(gr)-1)])
+    RegData$VariabelGr <- as.factor(RegData$R0ScoreRoleLmtEmo) #, levels=grtxt) #cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
+    levels(RegData$VariabelGr) <- grtxt
+    }
+
+  if (valgtVar == 'R0ScoreEnergy') {
+    #Verdier: 0:5:100
+    RegData <- RegData[which(RegData$R0Status==1), ]
+    tittel <- 'Energinivå/fatigue'
+    subtxt <- 'sumskår (høyest er best)'
+    gr <- seq(0, 100, 20)
+    RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
+    grtxt <- levels(RegData$VariabelGr)
+  }
+  if (valgtVar == 'R0ScoreEmo') {
+    #Verdier: 0:4:100
+    RegData <- RegData[which(RegData$R0Status==1), ]
+    tittel <- 'Følelsesmessig velvære'
+    subtxt <- 'sumskår (høyest er best)'
+    gr <- seq(0, 100, 20)
+    RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
+    grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-1)])
+  }
+  if (valgtVar == 'R0ScoreSosial') {
+    #Verdier: 0:12.5:100
+    RegData <- RegData[which(RegData$R0Status==1), ]
+    tittel <- 'Sosial tilpassethet'
+    subtxt <- 'sumskår (høyest er best)'
+    gr <- seq(0, 100, 25)
+    RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
+    grtxt <- levels(RegData$VariabelGr)
+  }
+  if (valgtVar == 'R0ScorePain') {
+    #Verdier: 0:2.5?:100
+    RegData <- RegData[which(RegData$R0Status==1), ]
+    tittel <- 'Smerte'
+    subtxt <- 'sumskår (høyest er best)'
+    gr <- seq(0, 100, 20)
+    RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
+    grtxt <- levels(RegData$VariabelGr)
+  }
+  if (valgtVar == 'R0ScoreGeneral') {
+    #Verdier: 0:5:100
+    RegData <- RegData[which(RegData$R0Status==1), ]
+    tittel <- 'Generell helsetilstand'
+    subtxt <- 'sumskår (høyest er best)'
+    gr <- seq(0, 100, 20)
+    RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
+    grtxt <- levels(RegData$VariabelGr)
   }
 
   ###Gjør utvalg (NGERUtvalg)
@@ -276,8 +466,8 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
 
   shtxt <- switch(as.character(enhetsUtvalg),
                   '0' = 'Hele landet',
-                  '1' = as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)]),
-                  '2' = as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)]))
+                  '1' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]),
+                  '2' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]))
 
   if (enhetsUtvalg == 2) {RegData <- RegData[which(RegData$ReshId == reshID), ]}
 
@@ -285,7 +475,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   #Generere hovedgruppe og sammenlikningsgruppe
   #Trenger indeksene før genererer tall for figurer med flere variable med ulike utvalg
   if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet
-    shtxt <- as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)])
+    shtxt <- as.character(RegData$ShNavn[match(reshID, RegData$ReshId)])
   } else {shtxt <- 'Hele landet'}
 
   if (enhetsUtvalg %in% c(0,2)) {		#Ikke sammenlikning
@@ -345,7 +535,8 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         AlleDiagSort <- sort(table(AlleDiag[which(AlleDiag != '')]), decreasing = TRUE)
         ant <- 20
         grtxt <- names(AlleDiagSort)[1:ant]	#
-        Tittel <- 'Hyppigst forekommende diagnoser'
+        cexgr <- 1-0.005*ant
+        tittel <- 'Hyppigst forekommende diagnoser'
         AntVar <- AlleDiagSort[1:ant]
         NVar <- dim(RegData)[1]
 		N <- NVar
@@ -359,7 +550,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
                  'HysBlodning')
         grtxt <- c('Ved tilgang', 'Perforasjon', 'Teknisk/utstyr',
                    'Fluid overload', 'Blødning')
-        Tittel <- 'Intraoperative komplikasjoner ved hysteroskopi'
+        tittel <- 'Intraoperative komplikasjoner ved hysteroskopi'
         indMed <- which(RegData$HysKomplikasjoner %in% 0:1)	#Velger ikke ut på OpMetode=2 siden ønsker også de som har begge
         AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
         NVar <- length(indMed)
@@ -369,7 +560,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         #Postoperative komplikasjoner. Bare registreringer hvor Opf0Komplikasjoner er 0 el. 1
         Var <- c('Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan')
         grtxt <- c('Blødning', 'Med utstyr', 'Infeksjon', 'Organskade')
-        Tittel <- 'Postoperative komplikasjoner'
+        tittel <- 'Postoperative komplikasjoner'
         indMed <- intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1))
         AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
         NVar <- length(indMed)
@@ -381,7 +572,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         #Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper.
         ####!!!Usikker på hvilke variable som skal inngå, dvs. om tomme burde være med i N.
         # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 9:Ukjent
-        Tittel <- 'Postop. komplikasjon i utdanningsgrupper'
+        tittel <- 'Postop. komplikasjon i utdanningsgrupper'
         grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år')
         #RegData <- RegData[which(RegData$Utdanning %in% 1:5), ] #Antar at tomme Opf0Reoperasjon er nei. & which(RegData$Opf0Reoperasjon %in% 0:1)
         RegData <- RegData[which(RegData$Opf0Status == 1) %i% which(RegData$Utdanning %in% 1:5)
@@ -395,7 +586,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         #Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper.
         ####!!!Usikker på hvilke variable som skal inngå. Eks Opf0Reoperasjon=1, OpType=2, tomme?
         # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
-        Tittel <- 'Reoperasjon (grunnet komplikasjon) i utdanningsgrupper'
+        tittel <- 'Reoperasjon (grunnet komplikasjon) i utdanningsgrupper'
         grtxt <- c('Grunnskole', 'Videregående', 'Fagskole', 'Universitet < 4 år', 'Universitet > 4 år')
         RegData <- RegData[which(RegData$Utdanning %in% 1:5) %i% which(RegData$Opf0Komplikasjoner %in% 0:1), ] #Antar at tomme Opf0Reoperasjon er nei.
         RegData$Utdanning <- factor(RegData$Utdanning, levels=1:5)
@@ -432,7 +623,8 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
                    'Nett', 'Preparatpose', 'Uterusmanipulator', 'Robotkirurgi', 'Singel port',
                    'Stapler/endoGIA', 'Sutur', 'Bipolar og ultralyd', 'Bipolar koag. og klipping',
                    'Unipolar Diatermi')
-        Tittel <- 'Laparaskopisk ekstrautstyr'
+        cexgr <- 0.8
+        tittel <- 'Laparaskopisk ekstrautstyr'
         indMed <- which(RegData$OpMetode %in% c(1,3))
         AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
         indinnfDato <- which(as.Date(RegData$HovedDato) >= as.Date('2016-03-01'))
@@ -461,7 +653,8 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
                  'LapPostoperativ') #0,1 Hører denne med?
         grtxt <- c('Uterusmanipulator', 'Tilgangsmetode', 'Hjelpeinnstikk',
                    'Intraabdominal', 'Utstyr', 'Postoperativ')
-        Tittel <- 'Intraoperative komplikasjoner ved laparoskopi'
+        cexgr <- 0.85
+        tittel <- 'Intraoperative komplikasjoner ved laparoskopi'
         indMed <- which(RegData$LapKomplikasjoner %in% 0:1)	#
         AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
         NVar <- length(indMed)
@@ -475,7 +668,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
                  'LapBlare',
                  'LapKarBlodning')
         grtxt <- c('Nerve', 'Ureter', 'Tarm', 'Blære', 'Kar')
-        Tittel <- 'Intraabdominelle komplikasjoner ved laparoskopi'
+        tittel <- 'Intraabdominelle komplikasjoner ved laparoskopi'
         indMed <- which(RegData$LapIntraabdominell %in% 0:1)	#
         AntVar <- colSums(RegData[indMed ,Var], na.rm=T)
         NVar <- length(indMed)
@@ -489,7 +682,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
 		#Bare laparoskopi og begge
 		#Ny kategori, dvs. ny variabel: Palmers point, neste prod.setting, etterreg. fra 1.1.2016(?)
 		RegData <- RegData[which(RegData$OpMetode %in% c(1,3)), ]
-		Tittel <- 'Laparoskopisk tilgang, teknikk og metode' #'Teknikk for laparaskopisk tilgang'
+		tittel <- 'Laparoskopisk tilgang, teknikk og metode' #'Teknikk for laparaskopisk tilgang'
 		grtxt <- c('Åpent', 'Veress-nål', 'Annet','Palmers point [1/3-16]', 'Navlen [1/3-16]') #LapTilgangsMetode
 		RegData$LapTilgangsMetode <- factor(RegData$LapTilgangsMetode, levels=0:2)
 		RegData$LapTilgang <- factor(RegData$LapTilgang, levels=1:2)
@@ -508,7 +701,8 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
         AlleProsSort <- sort(table(AllePros[which(AllePros != '')]), decreasing = TRUE)
         ant <- 20
         grtxt <- names(AlleProsSort)[1:ant]
-        Tittel <- 'Hyppigst forekommende prosedyrer'
+        cexgr <- 1-0.005*ant
+        tittel <- 'Hyppigst forekommende prosedyrer'
         AntVar <- AlleProsSort[1:ant]
         NVar <- dim(RegData)[1]
         N <- NVar
@@ -547,7 +741,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     FigTypUt <- figtype(outfile)
     farger <- FigTypUt$farger
     plot.new()
-    title(main=Tittel)	#
+    title(main=tittel)	#
     legend('topleft',utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
     text(0.5, 0.6, 'Færre enn 5 "egne" registreringer eller færre enn 10 totalt', cex=1.2)
     if ( outfile != '') {dev.off()}
@@ -555,13 +749,15 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   } else {
 
 
-    ###Innparametre til evt. funksjon: subtxt, grtxt, grtxt2, Tittel, Andeler, utvalgTxt, retn, cexgr
+    ###Innparametre til evt. funksjon: subtxt, grtxt, grtxt2, tittel, Andeler, utvalgTxt, retn, cexgr
     FigTypUt <- figtype(outfile, fargepalett=NGERUtvalg$fargepalett)
     #Tilpasse marger for å kunne skrive utvalgsteksten
     NutvTxt <- length(utvalgTxt)
     antDesTxt <- paste0('%.', antDes, 'f')
     if (length(grtxt2) == 1) {grtxt2 <- paste0('(', sprintf(antDesTxt, Andeler$Hoved), '%)')}
-    grtxtpst <- paste0(rev(grtxt), ' (', rev(sprintf(antDesTxt, Andeler$Hoved)), '%)')
+    grtxtpst <- paste0(rev(grtxt), '\n (', rev(sprintf(antDesTxt, Andeler$Hoved)), '%)')
+    if (valgtVar %in% c('Diagnoser', 'Prosedyrer') ) {
+    grtxtpst <- paste0(rev(grtxt), ' (', rev(sprintf(antDesTxt, Andeler$Hoved)), '%)')}
     vmarg <- switch(retn, V=0, H=max(0, strwidth(grtxtpst, units='figure', cex=cexgr)*0.65))
     par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1)))	#Har alltid datoutvalg med
 
@@ -575,7 +771,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     #Horisontale søyler
     if (retn == 'H') {
       xmax <- max(c(Andeler$Hoved, Andeler$Rest),na.rm=T)*1.15
-      pos <- barplot(rev(as.numeric(Andeler$Hoved)), horiz=TRUE, beside=TRUE, las=1, xlab="Andel pasienter (%)", #main=Tittel,
+      pos <- barplot(rev(as.numeric(Andeler$Hoved)), horiz=TRUE, beside=TRUE, las=1, xlab="Andel pasienter (%)", #main=tittel,
                      col=fargeHoved, border='white', font.main=1, xlim=c(0, xmax), ylim=c(0.05,1.4)*antGr)	#
       if (NHoved>0) {mtext(at=pos+0.05, text=grtxtpst, side=2, las=1, cex=cexgr, adj=1, line=0.25)}
 
@@ -600,7 +796,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
       mtext(at=pos, grtxt2, side=1, las=1, cex=cexgr, adj=0.5, line=1.5)
       if (medSml == 1) {
         points(pos, as.numeric(Andeler$Rest), col=fargeRest,  cex=2, pch=18) #c("p","b","o"),
-        legend('top', c(paste(shtxt, ' (N=', NHoved,')', sep=''), paste(smltxt, ' (N=', NRest,')', sep='')),
+        legend('top', c(paste0(shtxt, ' (N=', NHoved,')'), paste0(smltxt, ' (N=', NRest,')')),
                border=c(fargeHoved,NA), col=c(fargeHoved,fargeRest), bty='n', pch=c(15,18), pt.cex=2, lty=c(NA,NA),
                lwd=lwdRest, ncol=2, cex=cexleg)
       } else {
@@ -610,7 +806,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     }
 
 
-    title(Tittel, line=1, font.main=1)
+    title(tittel, line=1, font.main=1)
 
     #Tekst som angir hvilket utvalg som er gjort
     mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))
@@ -624,7 +820,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   AntallUt <- rbind(AntHoved, AntRest)
   rownames(AntallUt) <- c('Hoved', 'Rest')
 
-  UtData <- list(paste(toString(Tittel),'.', sep=''), AndelerUt, AntallUt, grtxt )
-  names(UtData) <- c('Tittel', 'Andeler', 'Antall', 'GruppeTekst')
+  UtData <- list(paste(toString(tittel),'.', sep=''), AndelerUt, AntallUt, grtxt )
+  names(UtData) <- c('tittel', 'Andeler', 'Antall', 'GruppeTekst')
   return(invisible(UtData))
 }

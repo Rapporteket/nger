@@ -37,7 +37,7 @@ SELECT
   f.BasisRegStatus,
   v.PasientID,
   f.HovedDato,
-  f.SykehusNavn,
+  f.ShNavn,
   v.Opf0Komplikasjoner,
   v.Opf0Reoperasjon,
   v.Opf0ReoperasjonLaparoscopy,

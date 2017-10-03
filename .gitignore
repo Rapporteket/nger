@@ -18,9 +18,13 @@ testing
 *.gitignore
 *NGERSamledok-concordance.tex
 inst/doc
+*.csv
 figure
 NGERmonthlyReport.pdf
 NGERmonthlyReport.tex
 config
 nger.Rproj
 aarsrapp
+*.pdf
+testRAND36.csv
+testRAND36.xlsx

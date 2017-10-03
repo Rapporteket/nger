@@ -17,4 +17,3 @@ RegData data frame
 \description{
 Provides NGER data for tab xxi from staging
 }
-

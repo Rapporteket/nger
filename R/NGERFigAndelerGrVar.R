@@ -23,6 +23,12 @@
 #'		\item Opf0KomplOrgan: Postop. komplikasjon: Organskade
 #'		\item Opf0Reoperasjon: Reoperasjon som følge av komplikasjon
 #'		\item Opf0Status: Fått postoperativ oppfølging
+#'    \item Tss2Mott: Møtet med gynekologisk avdeling var mindre godt
+#'    \item Tss2Behandling: Behandlingens opplegg og innhold passet ikke pasienten
+#'    \item Tss2Lytte: Pasientens behandlere lyttet- og forsto ikke det som ble tatt opp
+#'    \item Tss2Behandlere: Pasienten hadde ikke tillit til sine behandlere
+#'    \item Tss2Enighet: Pasient og behandlere ikke enige om målsetn. for behandlinga
+#'    \item Tss2Generelt: Negativ eller svært negativ oppfatning om gyn. avd.
 #'		\item Utdanning: Pasienter med høyere utdanning
 #'    }
 #'
@@ -30,8 +36,8 @@
 #' @export
 
 NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
-                        minald=0, maxald=130, MCEType=99, Hastegrad='', AlvorlighetKompl='', reshID, outfile='',
-                        enhetsUtvalg=1, preprosess=0, hentData=0) {
+                        minald=0, maxald=130, MCEType=99, Hastegrad='', AlvorlighetKompl='', Ngrense=10,
+                        reshID, outfile='', enhetsUtvalg=1, preprosess=0, hentData=0) {
 
   ## Hvis spørring skjer fra R på server. ######################
   if(hentData == 1){
@@ -48,18 +54,17 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoT
 
 #Når bare skal sammenlikne med sykehusgruppe eller region, eller ikke sammenlikne,
 #trengs ikke data for hele landet:
-reshID <- as.numeric(reshID)
-indEgen1 <- match(reshID, RegData$ReshId)
-smltxt <- 'Hele landet'
-if (enhetsUtvalg == 7) {
-		smltxt <- as.character(RegData$Region[indEgen1])
-		RegData <- RegData[which(RegData$Region == smltxt), ]	#kun egen region
-		cexShNavn <- 1
-	}
+#reshID <- as.numeric(reshID)
+#indEgen1 <- match(reshID, RegData$ReshId)
+#smltxt <- 'Hele landet'
+#if (enhetsUtvalg == 7) {
+#		smltxt <- as.character(RegData$Region[indEgen1])
+#		RegData <- RegData[which(RegData$Region == smltxt), ]	#kun egen region
+#		cexShNavn <- 1
+#	}
 
-grVar <- 'SykehusNavn'
+grVar <- 'ShNavn'
 RegData[ ,grVar] <- factor(RegData[ ,grVar])
-Ngrense <- 10		#Minste antall registreringer for at ei gruppe skal bli vist
 
 
 RegData$Variabel <- 0
@@ -67,7 +72,7 @@ RegData$Variabel <- 0
 if (valgtVar == 'Alder') {
 #Andel over 70 år
 	RegData$Variabel[which(RegData[ ,valgtVar] >= 70)] <- 1
-	Tittel <- 'Pasienter over 70 år'
+	tittel <- 'Pasienter over 70 år'
 }
 
 if (valgtVar=='OpAntibProfylakse') {
@@ -75,20 +80,20 @@ if (valgtVar=='OpAntibProfylakse') {
 	#Kode 0,1: Nei, Ja (ingen tomme per 22.feb.2016)
 	RegData <- RegData[which(RegData$OpAntibProfylakse %in% 0:1), ]
 	RegData$Variabel <- RegData[ ,valgtVar]
-	Tittel <- 'Fått antibiotikaprofylakse'
+	tittel <- 'Fått antibiotikaprofylakse'
 }
 
 if (valgtVar == 'OpASA') {
 	#Andel med ASA-grad>2
 	RegData <- RegData[which(RegData[,valgtVar] %in% 1:5), ]
 	RegData$Variabel[which(RegData[ ,valgtVar] > 2)] <- 1
-	Tittel <- 'ASA-grad > II'
+	tittel <- 'ASA-grad > II'
 }
 if (valgtVar == 'OpBMI') {
 #BMI > 30
 	RegData <- RegData[which(RegData[,valgtVar] >10), ]
 	RegData$Variabel[which(RegData[ ,valgtVar] > 30)] <- 1
-	Tittel <- 'Pasienter med fedme (BMI > 30)'
+	tittel <- 'Pasienter med fedme (BMI > 30)'
 }
 
 
@@ -98,39 +103,39 @@ if (valgtVar=='KomplPostop') {
 	#Kode 0: Nei, 1:Ja, tomme
 	RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
 	RegData$Variabel <- RegData$Opf0Komplikasjoner
-	Tittel <- 'Komplikasjoner, postoperativt'
+	tittel <- 'Komplikasjoner, postoperativt'
 }
 
 if (valgtVar=='Opf0KomplBlodning') {
 	#Kode 0: Nei, 1:Ja
 	RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
 	RegData$Variabel[which(RegData$Opf0KomplBlodning == 1)] <- 1
-	Tittel <- 'Postop. komplikasjon: Blødning'
+	tittel <- 'Postop. komplikasjon: Blødning'
 }
 if (valgtVar=='Opf0KomplUtstyr') {
 	#Kode 0: Nei, 1:Ja
 	RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
 	RegData$Variabel[which(RegData$Opf0KomplUtstyr == 1)] <- 1
-	Tittel <- 'Postop. komplikasjon: Problemer med ustyr'
+	tittel <- 'Postop. komplikasjon: Problemer med ustyr'
 }
 if (valgtVar=='Opf0KomplInfeksjon') {
 	#Kode 0: Nei, 1:Ja
 	RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
 	RegData$Variabel[which(RegData$Opf0KomplInfeksjon == 1)] <- 1
-	Tittel <- 'Postop. komplikasjon: Infeksjon'
+	tittel <- 'Postop. komplikasjon: Infeksjon'
 }
 if (valgtVar=='Opf0KomplOrgan') {
 	#Kode 0: Nei, 1:Ja
 	RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
 	RegData$Variabel[which(RegData$Opf0KomplOrgan == 1)] <- 1
-	Tittel <- 'Postop. komplikasjon: Organskade'
+	tittel <- 'Postop. komplikasjon: Organskade'
 }
 
 if (valgtVar=='Opf0Reoperasjon') {
 	#Kode 0: Nei, 1:Ja
 	RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
 	RegData$Variabel[which(RegData$Opf0Reoperasjon == 1)] <- 1
-	Tittel <- 'Postop. komplikasjon: Reoperasjon'
+	tittel <- 'Postop. komplikasjon: Reoperasjon'
 }
 
 if (valgtVar=='Opf0AlvorlighetsGrad') {
@@ -139,26 +144,66 @@ if (valgtVar=='Opf0AlvorlighetsGrad') {
 	RegData <- RegData[which(RegData$Opf0Komplikasjoner %in% 0:1) %i% which(RegData$Opf0Status == 1), ]
 	#RegData <- RegData[which(RegData$Opf0AlvorlighetsGrad %in% 1:4), ]
 	RegData$Variabel[which(RegData$Opf0AlvorlighetsGrad %in% 3:4)] <- 1
-	Tittel <- 'Alvorlige komplikasjoner (grad 3 og 4)'
+	tittel <- 'Alvorlige komplikasjoner (grad 3 og 4)'
+}
+if (valgtVar == 'Tss2Mott') {
+  #0:Mindre godt, 1:Ingen mening, 2:Ganske godt, 3:Svært godt
+  RegData <- RegData[which(RegData$Tss2Status == 1), ]
+  #tittel <- 'Hvordan ble du møtt på gynekologisk avdeling?'
+  tittel <- 'Møtet med gynekologisk avdeling var mindre godt'
+  RegData$Variabel[which(RegData$Tss2Mott == 0)] <- 1
+}
+if (valgtVar == 'Tss2Behandling') {
+  #0:Passet ikke, 1:Verken eller, 2:Ganske bra, 3:Svært bra
+  RegData <- RegData[which(RegData$Tss2Status == 1), ]
+  tittel <- 'Behandlingens opplegg og innhold passet ikke pasienten'
+  RegData$Variabel[which(RegData$Tss2Behandling == 0)] <- 1
+}
+if (valgtVar == 'Tss2Lytte') {
+  #0:Nei, 1:Ja, til en viss grad, 2:Ja, i ganske stor grad, 3:Ja, i svært stor grad
+  RegData <- RegData[which(RegData$Tss2Status == 1), ]
+  tittel <- 'Pasientens behandlere lyttet- og forsto ikke det som ble tatt opp'
+  RegData$Variabel[which(RegData$Tss2Lytte == 0)] <- 1
+}
+if (valgtVar == 'Tss2Behandlere') {
+  #0:Nei, 1:Ja, til en viss grad, 2:Ja, i ganske stor grad, 3:Ja, i svært stor grad
+  RegData <- RegData[which(RegData$Tss2Status == 1), ]
+  tittel <- 'Pasienten hadde ikke tillit til sine behandlere'
+  RegData$Variabel[which(RegData$Tss2Behandlere == 0)] <- 1
+}
+if (valgtVar == 'Tss2Enighet') {
+  #0:Nei, 1:Ja, til en viss grad, 2:Ja, i ganske stor grad, 3:Ja, i svært stor grad
+  RegData <- RegData[which(RegData$Tss2Status == 1), ]
+  tittel <- 'Pasient og behandlere ikke enige om målsetn. for behandlinga'
+  RegData$Variabel[which(RegData$Tss2Enighet == 0)] <- 1
+}
+if (valgtVar == 'Tss2Generelt') {
+  #0:Svært negativ, 1:Negativ, 2:Nøytral, 3:Positiv, 4:Svært positiv
+  RegData <- RegData[which(RegData$Tss2Status == 1), ]
+  tittel <- 'Negativ eller svært negativ oppfatning om gyn. avd.'
+  RegData$Variabel[which(RegData$Tss2Generelt == 0)] <- 1
 }
 
 if (valgtVar=='KomplIntra') {
 	# Komplikasjoner ved operasjon. Må kombinere HysKomplikasjoner og LapKomplikasjoner
 	#Kode 0: Nei, 1:Ja, tomme
 	RegData$KomplIntra <- with(RegData, HysKomplikasjoner + LapKomplikasjoner) #Får mange tomme!!!
-  	indMed <- switch(as.character(MCEType),
-					'1' = which(RegData$LapKomplikasjoner %in% 0:1),
+	if (MCEType %in% c(1,4:6)) {indMed <- which(RegData$LapKomplikasjoner %in% 0:1)
+	                            indVar <- which(RegData$LapKomplikasjoner == 1)
+	                   } else {
+	  indMed <- switch(as.character(MCEType),
 					'2' = which(RegData$HysKomplikasjoner %in% 0:1),
 					'3' = which(RegData$KomplIntra %in% 0:1),	#Få tomme for dette valget
 					'99' = union(which(is.finite(RegData$HysKomplikasjoner)), which(is.finite(RegData$LapKomplikasjoner))))
-	RegData <- RegData[indMed, ]
   	indVar <- switch(as.character(MCEType),
-					'1' = which(RegData$LapKomplikasjoner == 1),
+					#'1' = which(RegData$LapKomplikasjoner == 1),
 					'2' = which(RegData$HysKomplikasjoner == 1),
-					'3' = which(RegData$KomplIntra == 1),
+					'3' = which(RegData$KomplIntra %in% 1:2),
 					'99' = union(which(RegData$HysKomplikasjoner == 1), which(RegData$LapKomplikasjoner==1)))
-	RegData$Variabel[indVar] <- 1
-	Tittel <- 'Komplikasjoner, intraoperativt'
+	                   }
+  	RegData$Variabel[indVar] <- 1
+  	RegData <- RegData[indMed, ]
+  	tittel <- 'Komplikasjoner, intraoperativt'
 }
 
 if (valgtVar=='Opf0Status') {
@@ -168,7 +213,7 @@ if (valgtVar=='Opf0Status') {
   datoTil <- min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 8*7))
   RegData$Variabel[RegData$Opf0Status==1] <- 1
   VarTxt <- 'av postoperativ oppfølging'
-	Tittel <- 'Pasienter som har fått oppfølging etter 6-8 uker'
+	tittel <- 'Pasienter som har fått oppfølging etter 6-8 uker'
 }
 #Lag figur for ett års oppfølging
 
@@ -180,12 +225,12 @@ if (valgtVar == 'Utdanning') {
 	RegData <- RegData[which(RegData$Utdanning %in% 1:5), ]		#which(RegData$PasientSkjemaStatus ==1)), ]
 	RegData$Variabel[which(RegData[ ,valgtVar] %in% 1:3)] <- 1
   	VarTxt <- 'uten høyere utdanning'
-	Tittel <- 'Andel uten høyere utdanning'
+	tittel <- 'Andel uten høyere utdanning'
 }
 
 
 #Gjør utvalg
-NGERUtvalg <- NGERUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
+NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
                          MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
 RegData <- NGERUtvalg$RegData
 utvalgTxt <- NGERUtvalg$utvalgTxt
@@ -202,15 +247,15 @@ utvalgTxt <- NGERUtvalg$utvalgTxt
 	if (length(indGrUt)==0) { indGrUt <- 0}
 	AndelerGr[indGrUt] <- dummy0
 	sortInd <- order(as.numeric(AndelerGr), decreasing=TRUE)
-	Ngrtxt <- paste('N=', as.character(Ngr), sep='')	#
-	Ngrtxt[indGrUt] <- paste('N<', Ngrense,sep='')	#paste(' (<', Ngrense,')',sep='')	#
+	Ngrtxt <- as.character(Ngr)
+	Ngrtxt[indGrUt] <- paste0('<', Ngrense)	#paste(' (<', Ngrense,')',sep='')	#
 
 	AndelerGrSort <- AndelerGr[sortInd]
 	AndelHele <- round(100*sum(RegData$Variabel)/N, 2)
 	GrNavnSort <- paste0(names(Ngr)[sortInd], ' (',Ngrtxt[sortInd], ')')
 #	GrNavnSort <- names(Ngr)[sortInd]
 
-	andeltxt <- paste(sprintf('%.1f',AndelerGrSort), '%',sep='') 	#round(as.numeric(AndelerGrSort),1)
+	andeltxt <- paste0(sprintf('%.1f',AndelerGrSort), '%') 	#round(as.numeric(AndelerGrSort),1)
 	if (length(indGrUt)>0) {andeltxt[(AntGr+1):(AntGr+length(indGrUt))] <- ''}
 
 
@@ -220,9 +265,9 @@ FigTypUt <- figtype(outfile)
 farger <- FigTypUt$farger
 	plot.new()
 	if (dim(RegData)[1]>0) {
-	tekst <- paste('Færre enn ', Ngrense, ' registreringer ved hvert av sykehusene', sep='')
+	tekst <- paste0('Færre enn ', Ngrense, ' registreringer ved hvert av sykehusene')
 	} else {tekst <- 'Ingen registrerte data for dette utvalget'}
-	title(main=Tittel)
+	title(main=tittel)
 	text(0.5, 0.6, tekst, cex=1.2)
 	legend('topleft',utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
 if ( outfile != '') {dev.off()}
@@ -242,17 +287,18 @@ vmarg <- max(0, strwidth(GrNavnSort, units='figure', cex=cexShNavn)*0.75)
 par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1)))	#Har alltid datoutvalg med
 
 xmax <- min(max(AndelerGrSort),100)*1.15
-pos <- barplot(as.numeric(AndelerGrSort), horiz=T, border=NA, col=farger[3], #main=Tittel,
+pos <- barplot(as.numeric(AndelerGrSort), horiz=T, border=NA, col=farger[3], #main=tittel,
 	xlim=c(0,xmax), ylim=c(0.05, 1.25)*length(Ngr), font.main=1, xlab='Andel (%)', las=1, cex.names=0.7)
 ybunn <- 0.1
 ytopp <- pos[AntGr]+1	#-length(indGrUt)]
 lines(x=rep(AndelHele, 2), y=c(ybunn, ytopp), col=farger[2], lwd=2)
 legend('topright', xjust=1, cex=1, lwd=2, col=farger[2],
-	legend=paste(smltxt, ' (', sprintf('%.1f',AndelHele), '%), ', 'N=', N,sep='' ),
+	legend=paste0(NGERUtvalg$hovedgrTxt, ' (', sprintf('%.1f',AndelHele), '%), ', 'N=', N),
 	bty='o', bg='white', box.col='white')
+mtext(at=max(pos)+0.35*log(max(pos)), paste0('(N)' ), side=2, las=1, cex=cexShNavn, adj=1, line=0.25)
 mtext(at=pos+max(pos)*0.0045, GrNavnSort, side=2, las=1, cex=cexShNavn, adj=1, line=0.25)	#Legge på navn som eget steg
 #text(x=0.005*xmax, y=pos, Ngrtxt[sortInd], las=1, cex=cexShNavn, adj=0, col=farger[4], lwd=3)	#Legge til N
-title(Tittel, line=1, font.main=1, cex.main=1.2)
+title(tittel, line=1, font.main=1, cex.main=1.2)
 
 text(x=AndelerGrSort+xmax*0.01, y=pos+0.1, andeltxt,
 		las=1, cex=0.8, adj=0, col=farger[1])	#Andeler, hvert sykehus

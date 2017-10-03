@@ -30,11 +30,6 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 1: Egen enhet mot resten av landet (Standard)
 2: Egen enhet}
 
-\item{OpMetode}{1: Laparoskopi
-2: Hysteroskopi
-3: Begge
-99: Alle}
-
 \item{preprosess}{Preprosesser data
 0: Nei (Standard)
 1: Ja}
@@ -50,4 +45,3 @@ Tabell med de 20 vanligste operasjonsindikatorene
 Denne funksjonen lager en figur over de 20 vanligste operasjonsindikatorene.
 I tellingen slås variablene OpInd1, OpInd2 og OpInd3 sammen.
 }
-

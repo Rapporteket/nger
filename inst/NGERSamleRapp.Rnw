@@ -173,7 +173,7 @@ figKrymp1 <- 0.8	#Skaleringsparameter for enkeltfigurer
 figKrymp2 <- 0.7
 '%i%' <- intersect
 indEget <- which(RegData$ReshId == reshID)
-egetSh <- RegData$SykehusNavn[match(reshID,RegData$ReshId)]
+egetSh <- RegData$ShNavn[match(reshID,RegData$ReshId)]
 N <- dim(RegData)[1]
 Neget <- length(indEget)
 
@@ -192,14 +192,14 @@ Denne samlerapporten er basert på registreringer som er lagret og ferdigstilt i
 <<'Tabell:RegistrerendeAvd', results='asis', echo=FALSE, eval=T >>=
 ## VIDERE: Max 5 år i tabellen
 if (dim(table(RegData$OpAar)) > 1) {
-  tabAvdN <- addmargins(as.table(ftable(RegData[ ,c('SykehusNavn', 'OpAar')])))
+  tabAvdN <- addmargins(as.table(ftable(RegData[ ,c('ShNavn', 'OpAar')])))
   colnames(tabAvdN)[dim(tabAvdN)[2] ]<- 'Alle år'
 } else {
   tabAvdN <- addmargins(table(RegData$ShNavn))
 }
 rownames(tabAvdN)[dim(tabAvdN)[1] ]<- 'TOTALT, alle sykehus:'
 
-#Tabell <- table(RegData[,c('SykehusNavn', 'OpAar')])
+#Tabell <- table(RegData[,c('ShNavn', 'OpAar')])
 print(xtable::xtable(tabAvdN, digits=0, align=c('l', rep('r', max(c(1,ncol(tabAvdN)), na.rm=T))),
                      caption='Avdelinger som registrerer pasienter i NGER.',
                      label='tab:RegistrenrendeAvd'),
@@ -340,12 +340,12 @@ if (datoTil == '2015-12-31'){
   NavnInstr <- c('Morc.u/pose', 'Morc. m/pose', 'Harm. Scalp.', 'Portioad.', 'IntKombo', 'Robotkir.')
 }
 
-RegDataUtvalg <- RegData[which(RegData$OpMetode==1), c('SykehusNavn', Instr)]
+RegDataUtvalg <- RegData[which(RegData$OpMetode==1), c('ShNavn', Instr)]
 
-#InstrTab <- plyr::daply(.data=RegDataUtvalg[ ,Instr], .(RegDataUtvalg$SykehusNavn), .fun=colwise(sum), na.rm=T)  #Liste m/6dim
+#InstrTab <- plyr::daply(.data=RegDataUtvalg[ ,Instr], .(RegDataUtvalg$ShNavn), .fun=colwise(sum), na.rm=T)  #Liste m/6dim
 #Får trøbbel med at InstrTab blir liste
 
-InstrTabDum <- plyr::ddply(RegDataUtvalg[ ,Instr], .(RegDataUtvalg$SykehusNavn), .drop=F, colwise(sum), na.rm=T)  #Dataramme m/7dim
+InstrTabDum <- plyr::ddply(RegDataUtvalg[ ,Instr], .(RegDataUtvalg$ShNavn), .drop=F, colwise(sum), na.rm=T)  #Dataramme m/7dim
 Tot <- colSums(InstrTabDum[,2:(length(Instr)+1)])
 ShNavn <- levels(InstrTabDum[,1])
 

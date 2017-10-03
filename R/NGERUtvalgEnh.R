@@ -7,11 +7,20 @@
 #'
 #' @export
 #'
-NGERUtvalg <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', minald=0, maxald=130,
-                       MCEType='', AlvorlighetKompl='', Hastegrad='')
+NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', minald=0, maxald=130,
+                       MCEType='', AlvorlighetKompl='', Hastegrad='', enhetsUtvalg=0)
 {
   # Definer intersect-operator
   "%i%" <- intersect
+
+
+ hovedgrTxt <- switch(as.character(enhetsUtvalg),
+                  '0' = 'Hele landet',
+                  '1' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]),
+                  '2' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]))
+
+  if (enhetsUtvalg == 2) {RegData <- RegData[which(RegData$ReshId == reshID), ]}
+
 
   Ninn <- dim(RegData)[1]
 
@@ -38,10 +47,10 @@ NGERUtvalg <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', minald=
 
 
   #Alvorlighetsgrad, flervalgsutvalg
-  indAlvor <- if (AlvorlighetKompl[1] != '') {which(RegData$Opf0AlvorlighetsGrad %in% as.numeric(AlvorlighetKompl)) %i%
+  indAlvor <- if (AlvorlighetKompl[1] %in% 1:3) {which(RegData$Opf0AlvorlighetsGrad %in% as.numeric(AlvorlighetKompl)) %i%
       which(RegData$Opf0Status == 1)} else {indAlvor <- 1:Ninn}
   #Hastegrad  1:3 'Elektiv', 'Akutt', 'Ø-hjelp'
-  indHastegrad <- if (Hastegrad[1] != '') {which(RegData$OpKategori %in% as.numeric(Hastegrad))
+  indHastegrad <- if (Hastegrad[1] %in% 1:3) {which(RegData$OpKategori %in% as.numeric(Hastegrad))
                   } else {indHastegrad <- 1:Ninn}
 
 
@@ -56,20 +65,43 @@ NGERUtvalg <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', minald=
   N <- dim(RegData)[1]
 
 
-  utvalgTxt <- c(paste('Operasjonsdato: ', if (N>0) {min(RegData$InnDato, na.rm=T)} else {datoFra},
-                       ' til ', if (N>0) {max(RegData$InnDato, na.rm=T)} else {datoTil}, sep='' ),
+  utvalgTxt <- c(paste0('Operasjonsdato: ', if (N>0) {min(RegData$InnDato, na.rm=T)} else {datoFra},
+                       ' til ', if (N>0) {max(RegData$InnDato, na.rm=T)} else {datoTil}),
                  if ((minald>0) | (maxald<130))
-                    {paste('Pasienter fra ', if (N>0) {min(RegData$Alder, na.rm=T)} else {minald},
-                        ' til ', if (N>0) {max(RegData$Alder, na.rm=T)} else {maxald}, ' år', sep='')},
+                    {paste0('Pasienter fra ', if (N>0) {min(RegData$Alder, na.rm=T)} else {minald},
+                        ' til ', if (N>0) {max(RegData$Alder, na.rm=T)} else {maxald}, ' år')},
                  if (MCEType %in% c(1:6)){paste0('Operasjonsmetode: ',
                                                 c('Laparoskopi', 'Hysteroskopi', 'Begge',
                                                   'Tot. lap. hysterektomi (LCD01/LCD04)',
                                                   'Lap. subtotal hysterektomi (LCC11)',
                                                   'Lap. ass. vag. hysterektomi (LCD11)')[MCEType])},
-                 if (Hastegrad[1] != ''){paste0('Hastegrad: ', paste0(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','))},
-                 if (AlvorlighetKompl[1] != ''){paste0('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
+                 if (Hastegrad[1] %in% 1:3){paste0('Hastegrad: ', paste0(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','))},
+                 if (AlvorlighetKompl[1] %in% 1:3){paste0('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
                                                          [as.numeric(AlvorlighetKompl)], collapse=','))})
+  #Generere hovedgruppe og sammenlikningsgruppe
+  #Trenger indeksene før genererer tall for figurer med flere variable med ulike utvalg
+  if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet
+    hovedgrTxt <- as.character(RegData$ShNavn[match(reshID, RegData$ReshId)])
+  } else {hovedgrTxt <- 'Hele landet'}
 
-  UtData <- list(RegData=RegData, utvalgTxt=utvalgTxt, fargepalett=fargepalett) #GronnHNpms624,
+    ind <- list(Hoved=0, Rest=0)
+	if (enhetsUtvalg %in% c(0,2)) {		#Ikke sammenlikning
+    medSml <- 0
+	smltxt <- 'Ingen sml'
+    ind$Hoved <- 1:dim(RegData)[1]	#Tidligere redusert datasettet for 2,4,7. (+ 3og6)
+    ind$Rest <- NULL
+  } else {						#Skal gjøre sammenlikning
+    medSml <- 1
+    if (enhetsUtvalg == 1) {
+      ind$Hoved <-which(as.numeric(RegData$ReshId)==reshID)
+      smltxt <- 'Landet forøvrig'
+      ind$Rest <- which(as.numeric(RegData$ReshId) != reshID)
+    }
+  }
+
+
+
+  UtData <- list(RegData=RegData, utvalgTxt=utvalgTxt, fargepalett=fargepalett,
+				ind=ind, medSml=medSml, hovedgrTxt=hovedgrTxt, smltxt=smltxt)
   return(invisible(UtData))
 }

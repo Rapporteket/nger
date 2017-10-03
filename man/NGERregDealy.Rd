@@ -15,4 +15,3 @@ data frame with registry name and values for each year
 \description{
 Provide registration delay in median number of days grouped by years
 }
-
