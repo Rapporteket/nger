@@ -382,6 +382,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     #Verdier: 0:5:100
     RegData <- RegData[which(RegData$R0Status==1), ]
     tittel <- 'Fysisk funksjon'
+    subtxt <- 'sumskår'
     gr <- c(seq(0, 90, 10), 100) #c(seq(0, 180, 30), 1000) #
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
     grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-1)])
@@ -391,6 +392,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     #Verdier: 0:25:100
     RegData <- RegData[which(RegData$R0Status==1), ]
     tittel <- 'Rollebegrensning grunnet fysisk helse'
+    subtxt <- 'sumskår'
     grtxt <- c(0,25,50,75,100) #seq(0, 100, 25) #c(seq(0, 100, 25), 100) #c(seq(0, 180, 30), 1000) #
     RegData$VariabelGr <- factor(RegData$R0ScoreRoleLmtPhy, levels=grtxt) #cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
   }
@@ -409,6 +411,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     #Verdier: 0:5:100
     RegData <- RegData[which(RegData$R0Status==1), ]
     tittel <- 'Energinivå/fatigue'
+    subtxt <- 'sumskår'
     gr <- seq(0, 100, 20)
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
     grtxt <- levels(RegData$VariabelGr)
@@ -417,6 +420,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     #Verdier: 0:4:100
     RegData <- RegData[which(RegData$R0Status==1), ]
     tittel <- 'Følelsesmessig velvære'
+    subtxt <- 'sumskår'
     gr <- seq(0, 100, 20)
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
     grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-1)])
@@ -425,6 +429,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     #Verdier: 0:12.5:100
     RegData <- RegData[which(RegData$R0Status==1), ]
     tittel <- 'Sosial tilpassethet'
+    subtxt <- 'sumskår'
     gr <- seq(0, 100, 25)
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
     grtxt <- levels(RegData$VariabelGr)
@@ -433,6 +438,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     #Verdier: 0:2.5?:100
     RegData <- RegData[which(RegData$R0Status==1), ]
     tittel <- 'Smerte'
+    subtxt <- 'sumskår'
     gr <- seq(0, 100, 20)
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
     grtxt <- levels(RegData$VariabelGr)
@@ -441,6 +447,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     #Verdier: 0:5:100
     RegData <- RegData[which(RegData$R0Status==1), ]
     tittel <- 'Generell helsetilstand'
+    subtxt <- 'sumskår'
     gr <- seq(0, 100, 20)
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
     grtxt <- levels(RegData$VariabelGr)
@@ -788,7 +795,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
       mtext(at=pos, grtxt2, side=1, las=1, cex=cexgr, adj=0.5, line=1.5)
       if (medSml == 1) {
         points(pos, as.numeric(Andeler$Rest), col=fargeRest,  cex=2, pch=18) #c("p","b","o"),
-        legend('top', c(paste(shtxt, ' (N=', NHoved,')', sep=''), paste(smltxt, ' (N=', NRest,')', sep='')),
+        legend('top', c(paste0(shtxt, ' (N=', NHoved,')'), paste0(smltxt, ' (N=', NRest,')')),
                border=c(fargeHoved,NA), col=c(fargeHoved,fargeRest), bty='n', pch=c(15,18), pt.cex=2, lty=c(NA,NA),
                lwd=lwdRest, ncol=2, cex=cexleg)
       } else {
