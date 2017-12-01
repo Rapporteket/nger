@@ -30,12 +30,12 @@ RegData <- RegData[which(RegData$ReshId %in% reshID),] #Bare Ullevål, Haukeland
 
 DiagVar <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3')
 ind <- NULL
-#var <- DiagVar[2]
+#var <- DiagVar[3]
 for (var in DiagVar) {
   RegData[ ,var] <- toupper(RegData[ ,var])
   ind <- union(ind, grep('N80',RegData[ ,var]))
 }
-#759, 248, 265
+#759, 248, 71
 RegDataN80 <- RegData[ind, c('ShNavn', "OpDato", 'Aar', DiagVar,  "LapProsedyre1", "LapProsedyre2", "LapProsedyre3")]
 table(RegData$Aar, RegData$ShNavn)
 write.table(RegDataN80, file = "A:/NGER/RegDataN80.csv", row.names= FALSE, sep = ';') #, fileEncoding = 'UTF-8') #
