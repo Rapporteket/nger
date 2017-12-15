@@ -33,6 +33,7 @@
 #'    }
 #'
 #' @inheritParams NGERFigAndeler
+#' @inheritParams NGERUtvalgEnh
 #' @export
 
 NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',

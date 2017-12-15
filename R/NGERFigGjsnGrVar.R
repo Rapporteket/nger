@@ -8,6 +8,7 @@
 #'
 #' @inheritParams NGERFigAndeler
 #' @inheritParams NGERFigAndelerGrVar
+#' @inheritParams NGERUtvalgEnh
 #' @param valgtMaal 'Med' = median. Alt annet gir gjennomsnitt
 #'
 #' Argumentet \emph{valgtVar} har følgende valgmuligheter:

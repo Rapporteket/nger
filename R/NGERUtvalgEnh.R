@@ -1,6 +1,28 @@
 #' Funksjon som gjør utvalg av dataene, returnerer det filtrerte datasettet og utvalgsteksten.
 #'
 #' @inheritParams NGERFigAndeler
+#' @param datoFra Tidligste dato i utvalget (vises alltid i figuren).
+#' @param datoTil Seneste dato i utvalget (vises alltid i figuren).
+#' @param minald Alder, fra og med (Standardverdi: 0)
+#' @param maxald Alder, til og med (Standardverdi: 130)
+#' @param MCEType  1: Laparoskopi
+#'                 2: Hysteroskopi
+#'                 3: Begge
+#'                 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
+#'                 5: LCC11 (laparoskopisk subtotal hysterektomi)
+#'                 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
+#'                 7: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
+#'                 8: Endometriose, livmorvegg (N80.0)
+#'                 9: Endometriose, unntatt livmorvegg.
+#'                 99: Alle
+#' @param Hastegrad Hastegrad av operasjon.
+#'                1: Elektiv
+#'                2: Akutt
+#'                3: Ø-hjelp
+#' @param enhetsUtvalg Lag figur for
+#'                 0: Hele landet
+#'                 1: Egen enhet mot resten av landet (Standard)
+#'                 2: Egen enhet
 #' @param fargepalett Hvilken fargepalett skal brukes i figurer (Default: BlaaRapp)
 #'
 #' @return UtData En liste bestående av det filtrerte datasettet, utvalgstekst for figur og tekststreng som angir fargepalett
@@ -27,7 +49,7 @@ NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', mina
   #Utvalg på alder:
   indAld <- which(RegData$Alder >= minald & RegData$Alder <= maxald)
   #Utvalg på dato:
-  indDato <- which(RegData$InnDato >= as.Date(datoFra) & RegData$InnDato <= as.Date(datoTil))
+  indDato <- which(RegData$InnDato >= datoFra & RegData$InnDato <= datoTil)  #as.Date(datoFra)
   #Operasjonstype:
   indMCE <- if (MCEType %in% c(1:3)){which(RegData$OpMetode %in% c(MCEType,3))
     } else {indMCE <- 1:Ninn}
@@ -70,11 +92,14 @@ NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', mina
                  if ((minald>0) | (maxald<130))
                     {paste0('Pasienter fra ', if (N>0) {min(RegData$Alder, na.rm=T)} else {minald},
                         ' til ', if (N>0) {max(RegData$Alder, na.rm=T)} else {maxald}, ' år')},
-                 if (MCEType %in% c(1:6)){paste0('Operasjonsmetode: ',
+                 if (MCEType %in% c(1:8)){paste0('Operasjonsmetode: ',
                                                 c('Laparoskopi', 'Hysteroskopi', 'Begge',
                                                   'Tot. lap. hysterektomi (LCD01/LCD04)',
                                                   'Lap. subtotal hysterektomi (LCC11)',
-                                                  'Lap. ass. vag. hysterektomi (LCD11)')[MCEType])},
+                                                  'Lap. ass. vag. hysterektomi (LCD11)',
+                                                  'Ovarialcyster',
+                                                  'Endometriose, livmorvegg',
+                                                  'Endometriose unntatt livmorvegg')[MCEType])},
                  if (Hastegrad[1] %in% 1:3){paste0('Hastegrad: ', paste0(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','))},
                  if (AlvorlighetKompl[1] %in% 1:3){paste0('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
                                                          [as.numeric(AlvorlighetKompl)], collapse=','))})

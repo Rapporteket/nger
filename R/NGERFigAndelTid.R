@@ -22,6 +22,7 @@
 #'    }
 
 #' @inheritParams NGERFigAndeler
+#' @inheritParams NGERUtvalgEnh
 #' @param tidsenhet Oppløsning på tidsaksen. Verdier: 'Aar' (standard), 'Mnd'
 #'    NB: Når tidsenhet='Mnd', settes datoFra lik X måneder før datoTil.
 #' @return Figur med ...
