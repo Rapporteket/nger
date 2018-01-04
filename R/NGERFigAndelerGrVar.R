@@ -64,128 +64,20 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoT
 #		cexShNavn <- 1
 #	}
 
+NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, grVar='', figurtype='andelerGrVar')
+  RegData <- NGERVarSpes$RegData
+  flerevar <- NGERVarSpes$flerevar
+  subtxt <- NGERVarSpes$subtxt
+  grtxt <- NGERVarSpes$grtxt
+
 grVar <- 'ShNavn'
 RegData[ ,grVar] <- factor(RegData[ ,grVar])
 
 
 RegData$Variabel <- 0
 
-if (valgtVar == 'Alder') {
-#Andel over 70 år
-	RegData$Variabel[which(RegData[ ,valgtVar] >= 70)] <- 1
-	tittel <- 'Pasienter over 70 år'
-}
 
-if (valgtVar=='OpAntibProfylakse') {
-	#Andel som får antibiotika
-	#Kode 0,1: Nei, Ja (ingen tomme per 22.feb.2016)
-	RegData <- RegData[which(RegData$OpAntibProfylakse %in% 0:1), ]
-	RegData$Variabel <- RegData[ ,valgtVar]
-	tittel <- 'Fått antibiotikaprofylakse'
-}
-
-if (valgtVar == 'OpASA') {
-	#Andel med ASA-grad>2
-	RegData <- RegData[which(RegData[,valgtVar] %in% 1:5), ]
-	RegData$Variabel[which(RegData[ ,valgtVar] > 2)] <- 1
-	tittel <- 'ASA-grad > II'
-}
-if (valgtVar == 'OpBMI') {
-#BMI > 30
-	RegData <- RegData[which(RegData[,valgtVar] >10), ]
-	RegData$Variabel[which(RegData[ ,valgtVar] > 30)] <- 1
-	tittel <- 'Pasienter med fedme (BMI > 30)'
-}
-
-
-### Komplikasjoner
-if (valgtVar=='KomplPostop') {
-	# Andel postoperative komplikasjoner
-	#Kode 0: Nei, 1:Ja, tomme
-	RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
-	RegData$Variabel <- RegData$Opf0Komplikasjoner
-	tittel <- 'Komplikasjoner, postoperativt'
-}
-
-if (valgtVar=='Opf0KomplBlodning') {
-	#Kode 0: Nei, 1:Ja
-	RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
-	RegData$Variabel[which(RegData$Opf0KomplBlodning == 1)] <- 1
-	tittel <- 'Postop. komplikasjon: Blødning'
-}
-if (valgtVar=='Opf0KomplUtstyr') {
-	#Kode 0: Nei, 1:Ja
-	RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
-	RegData$Variabel[which(RegData$Opf0KomplUtstyr == 1)] <- 1
-	tittel <- 'Postop. komplikasjon: Problemer med ustyr'
-}
-if (valgtVar=='Opf0KomplInfeksjon') {
-	#Kode 0: Nei, 1:Ja
-	RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
-	RegData$Variabel[which(RegData$Opf0KomplInfeksjon == 1)] <- 1
-	tittel <- 'Postop. komplikasjon: Infeksjon'
-}
-if (valgtVar=='Opf0KomplOrgan') {
-	#Kode 0: Nei, 1:Ja
-	RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
-	RegData$Variabel[which(RegData$Opf0KomplOrgan == 1)] <- 1
-	tittel <- 'Postop. komplikasjon: Organskade'
-}
-
-if (valgtVar=='Opf0Reoperasjon') {
-	#Kode 0: Nei, 1:Ja
-	RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
-	RegData$Variabel[which(RegData$Opf0Reoperasjon == 1)] <- 1
-	tittel <- 'Postop. komplikasjon: Reoperasjon'
-}
-
-if (valgtVar=='Opf0AlvorlighetsGrad') {
-	#Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
-	#Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
-	RegData <- RegData[which(RegData$Opf0Komplikasjoner %in% 0:1) %i% which(RegData$Opf0Status == 1), ]
-	#RegData <- RegData[which(RegData$Opf0AlvorlighetsGrad %in% 1:4), ]
-	RegData$Variabel[which(RegData$Opf0AlvorlighetsGrad %in% 3:4)] <- 1
-	tittel <- 'Alvorlige komplikasjoner (grad 3 og 4)'
-}
-if (valgtVar == 'Tss2Mott') {
-  #0:Mindre godt, 1:Ingen mening, 2:Ganske godt, 3:Svært godt
-  RegData <- RegData[which(RegData$Tss2Status == 1), ]
-  #tittel <- 'Hvordan ble du møtt på gynekologisk avdeling?'
-  tittel <- 'Møtet med gynekologisk avdeling var mindre godt'
-  RegData$Variabel[which(RegData$Tss2Mott == 0)] <- 1
-}
-if (valgtVar == 'Tss2Behandling') {
-  #0:Passet ikke, 1:Verken eller, 2:Ganske bra, 3:Svært bra
-  RegData <- RegData[which(RegData$Tss2Status == 1), ]
-  tittel <- 'Behandlingens opplegg og innhold passet ikke pasienten'
-  RegData$Variabel[which(RegData$Tss2Behandling == 0)] <- 1
-}
-if (valgtVar == 'Tss2Lytte') {
-  #0:Nei, 1:Ja, til en viss grad, 2:Ja, i ganske stor grad, 3:Ja, i svært stor grad
-  RegData <- RegData[which(RegData$Tss2Status == 1), ]
-  tittel <- 'Pasientens behandlere lyttet- og forsto ikke det som ble tatt opp'
-  RegData$Variabel[which(RegData$Tss2Lytte == 0)] <- 1
-}
-if (valgtVar == 'Tss2Behandlere') {
-  #0:Nei, 1:Ja, til en viss grad, 2:Ja, i ganske stor grad, 3:Ja, i svært stor grad
-  RegData <- RegData[which(RegData$Tss2Status == 1), ]
-  tittel <- 'Pasienten hadde ikke tillit til sine behandlere'
-  RegData$Variabel[which(RegData$Tss2Behandlere == 0)] <- 1
-}
-if (valgtVar == 'Tss2Enighet') {
-  #0:Nei, 1:Ja, til en viss grad, 2:Ja, i ganske stor grad, 3:Ja, i svært stor grad
-  RegData <- RegData[which(RegData$Tss2Status == 1), ]
-  tittel <- 'Pasient og behandlere ikke enige om målsetn. for behandlinga'
-  RegData$Variabel[which(RegData$Tss2Enighet == 0)] <- 1
-}
-if (valgtVar == 'Tss2Generelt') {
-  #0:Svært negativ, 1:Negativ, 2:Nøytral, 3:Positiv, 4:Svært positiv
-  RegData <- RegData[which(RegData$Tss2Status == 1), ]
-  tittel <- 'Negativ eller svært negativ oppfatning om gyn. avd.'
-  RegData$Variabel[which(RegData$Tss2Generelt == 0)] <- 1
-}
-
-if (valgtVar=='KomplIntra') {
+if (valgtVar=='KomplIntra') { #andelerGrVar
 	# Komplikasjoner ved operasjon. Må kombinere HysKomplikasjoner og LapKomplikasjoner
 	#Kode 0: Nei, 1:Ja, tomme
 	RegData$KomplIntra <- with(RegData, HysKomplikasjoner + LapKomplikasjoner) #Får mange tomme!!!
@@ -207,7 +99,7 @@ if (valgtVar=='KomplIntra') {
   	tittel <- 'Komplikasjoner, intraoperativt'
 }
 
-if (valgtVar=='Opf0Status') {
+if (valgtVar=='Opf0Status') { #andelerGrVar
 	#Andel med Opf0Status=1 (av samtlige, også tomme reg.)
 	#Kode: tomme, -1,0,1
   #Tar ut hendelser siste 8 uker:
@@ -219,15 +111,6 @@ if (valgtVar=='Opf0Status') {
 #Lag figur for ett års oppfølging
 
 
-if (valgtVar == 'Utdanning') {
-	#PasientSkjema. Andel med Utdanning 4 el 5
-	#Kode 1:5,9: 'Grunnskole++, 7-10år','Real-, yrkes- el vg skole', 'Allmennfaglig vg skole',
-			#Høyskole/universitet, <4 år', 'Høyskole/universitet, 4år+', 'Ukjent'
-	RegData <- RegData[which(RegData$Utdanning %in% 1:5), ]		#which(RegData$PasientSkjemaStatus ==1)), ]
-	RegData$Variabel[which(RegData[ ,valgtVar] %in% 1:3)] <- 1
-  	VarTxt <- 'uten høyere utdanning'
-	tittel <- 'Andel uten høyere utdanning'
-}
 
 
 #Gjør utvalg

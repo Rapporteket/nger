@@ -98,7 +98,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   grtxt2 <- ''	#Spesifiseres evt. for hver enkelt variabel
   subtxt <- ''	#Benevning
   flerevar <- 0
-  antDes <- 1
+  antDes <- ifelse(valgtVar %in% c('HysKomplikasjoner', 'LapIntraabdominell', 'LapKomplikasjoner'),2, 1)
   '%i%' <- intersect
  #koder <- NULL
 
@@ -197,7 +197,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     FigTypUt <- figtype(outfile)
     farger <- FigTypUt$farger
     plot.new()
-    title(main=tittel)	#
+    title(main=NGERVarSpes$tittel)	#
     legend('topleft',utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
     text(0.5, 0.6, 'Færre enn 5 "egne" registreringer eller færre enn 10 totalt', cex=1.2)
     if ( outfile != '') {dev.off()}
