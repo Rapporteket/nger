@@ -32,7 +32,7 @@ RegData <- NGERData
 load(paste0('A:/NGER/NGER', dato, '.Rdata'))
 
 library(nger)
-#-----------------------------------PARAMETRE------------------------------
+#----------------------------------- PARAMETRE ------------------------------
 setwd("C:/ResultattjenesteGIT/nger/")
 # Inndata til funksjon:
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon

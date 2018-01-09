@@ -18,7 +18,7 @@ knitr::opts_knit$set(root.dir = './')
 <<'getData', include=FALSE>>=
 datoTil <- Sys.Date()
 dato <- as.POSIXlt(datoTil)
-datoFra <- as.Date(paste0(1900+dato$year-1,'-', dato$mon, '-', '01'))
+datoFra <- as.Date(paste0(1900+dato$year-1,'-', dato$mon+1, '-', '01'))
 #I månedsfigurene er datoFra automatisk satt til 13 mnd før dagens dato.
 
 if (!exists('RegData')){
@@ -43,9 +43,8 @@ hentData <- 0
 
 shtxt <- switch(as.character(enhetsUtvalg),
                      '0' = 'Hele landet',
-                     '1' = as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)]),
-                     '2' = as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)]))
-#shtxt <- as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)])
+                     '1' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]),
+                     '2' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]))
 
 variable <- c('KomplIntra', 'KomplPostop', 'Opf0Status')
 for (valgtVar in variable) {

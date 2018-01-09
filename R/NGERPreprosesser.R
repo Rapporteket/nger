@@ -36,7 +36,7 @@ NGERPreprosess <- function(RegData=RegData)
   #RegData$InnDato <- as.Date(RegData$OpDato, format="%Y-%m-%d")
   RegData$HovedDato <- as.Date(RegData$HovedDato, format="%Y-%m-%d")
 
-  RegData$InnDato <- as.POSIXlt(RegData$OpDato, format="%Y-%m-%d")
+  RegData$InnDato <- as.POSIXlt(RegData$OpDato, format="%Y-%m-%d") #
   RegData$Mnd <- RegData$InnDato$mon +1
   RegData$Kvartal <- ceiling(RegData$Mnd/3)
   RegData$Halvaar <- ceiling(RegData$Mnd/6)

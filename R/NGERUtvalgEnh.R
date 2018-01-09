@@ -49,7 +49,7 @@ NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', mina
   #Utvalg på alder:
   indAld <- which(RegData$Alder >= minald & RegData$Alder <= maxald)
   #Utvalg på dato:
-  indDato <- which(RegData$InnDato >= datoFra & RegData$InnDato <= datoTil)  #as.Date(datoFra)
+  indDato <- which(as.Date(RegData$InnDato) >= datoFra & as.Date(RegData$InnDato) <= datoTil)  #as.Date(datoFra)
   #Operasjonstype:
   indMCE <- if (MCEType %in% c(1:3)){which(RegData$OpMetode %in% c(MCEType,3))
     } else {indMCE <- 1:Ninn}
