@@ -70,7 +70,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     RegData$VariabelGr <- cut(RegData$Alder, breaks=gr, include.lowest=TRUE, right=FALSE)
     grtxt <- c('<15', levels(RegData$VariabelGr)[2:(length(gr)-2)], '80+')
     subtxt <- 'Aldersgrupper (år)'
-	VarTxt <- 'pasienter >=70år'
+	varTxt <- 'pasienter >=70år'
     RegData$Variabel[which(RegData$Alder >= 70)] <- 1
     retn <- 'V'
     sortAvtagende <- FALSE
@@ -106,7 +106,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     }
     RegData$Variabel[indVar] <- 1
     RegData <- RegData[indMed, ]
-	VarTxt <- 'komplikasjoner'
+	varTxt <- 'komplikasjoner'
     tittel <- 'Komplikasjoner, intraoperativt'
   }
   if (valgtVar=='KomplPostop') { #andelGrVar, andelTid
@@ -114,7 +114,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     #Kode 0: Nei, 1:Ja, tomme
     RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
     RegData$Variabel <- RegData$Opf0Komplikasjoner
-	VarTxt <- 'komplikasjoner'
+	varTxt <- 'komplikasjoner'
     tittel <- 'Komplikasjoner, postoperativt'
   }
 
@@ -140,7 +140,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     #Kode 0,1: Nei, Ja (ingen tomme per 22.feb.2016)
     RegData <- RegData[which(RegData$OpAntibProfylakse %in% 0:1), ]
     RegData$Variabel <- RegData[ ,valgtVar]
-	VarTxt <- 'profylakser'
+	varTxt <- 'profylakser'
     tittel <- 'Andel som får antibiotikaprofylakse'
   }
 
@@ -183,38 +183,30 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     if (figurtype %in% c('andelGrVar', 'andelTid')) {
       #Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
       RegData$Variabel[which(RegData$Opf0AlvorlighetsGrad %in% 3:4)] <- 1
-	  VarTxt <- 'alvorlige komplikasjoner'
+	  varTxt <- 'alvorlige komplikasjoner'
       tittel <- 'Alvorlige komplikasjoner (grad 3 og 4)'
     }
   }
-  
+
   if (valgtVar=='Opf0KomplBlodning') { #andelGrVar, andelTid
     #Kode 0: Nei, 1:Ja
     RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
     RegData$Variabel[which(RegData$Opf0KomplBlodning == 1)] <- 1
-	VarTxt <- 'blødninger'
+	varTxt <- 'blødninger'
     tittel <- 'Postop. komplikasjon: Blødning'
   }
   if (valgtVar=='Opf0KomplUtstyr') { #andelGrVar, andelTid
     #Kode 0: Nei, 1:Ja
     RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
     RegData$Variabel[which(RegData$Opf0KomplUtstyr == 1)] <- 1
-	VarTxt <- 'tilfeller av problem med utstyr'
+	varTxt <- 'tilfeller av problem med utstyr'
     tittel <- 'Postop. komplikasjon: Problemer med ustyr'
   }
-  if (valgtVar=='Opf0KomplInfeksjon') { #andelTid
-	#Kode 0: Nei, 1:Ja
-	RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
-	RegData$Variabel[which(RegData$Opf0KomplInfeksjon == 1)] <- 1
-	VarTxt <- 'infeksjoner'
-	tittel <- 'Postop. komplikasjon: Infeksjon'
-}
-
   if (valgtVar=='Opf0KomplOrgan') { #andelGrVar, andelTid
     #Kode 0: Nei, 1:Ja
     RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
     RegData$Variabel[which(RegData$Opf0KomplOrgan == 1)] <- 1
-	VarTxt <- 'organskader'
+	varTxt <- 'organskader'
     tittel <- 'Postop. komplikasjon: Organskade'
   }
 
@@ -223,7 +215,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     #Kode 0: Nei, 1:Ja
     RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
     RegData$Variabel[which(RegData$Opf0Reoperasjon == 1)] <- 1
-	VarTxt <- 'reoperasjoner'
+	varTxt <- 'reoperasjoner'
     tittel <- 'Postop. komplikasjon: Reoperasjon'
   }
   if (valgtVar == 'OpIVaktTid') {   #Andeler
@@ -309,7 +301,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
 		  #BMI > 30
 		  RegData <- RegData[which(RegData[,valgtVar] >10), ]
 		  RegData$Variabel[which(RegData[ ,valgtVar] > 30)] <- 1
-		  VarTxt <- 'med BMI>30'
+		  varTxt <- 'med BMI>30'
 		  tittel <- 'Pasienter med fedme (BMI > 30)'
 		}
     retn <- 'V'
@@ -317,7 +309,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
   if (valgtVar=='LapKonvertert') { #andelTid
     RegData <- RegData[intersect(which(RegData$LapKonvertert %in% 0:1), which(RegData$LapStatus == 1)), ]
     RegData$Variabel <- RegData$LapKonvertert
-    VarTxt <- 'konverterterte'
+    varTxt <- 'konverterte'
     tittel <- 'Konvertert til laparotomi?'
   }
 
@@ -334,7 +326,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     #Tar ut hendelser siste 8 uker:
     datoTil <- min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 8*7))
     RegData$Variabel[RegData$Opf0Status==1] <- 1
-    VarTxt <- 'av postoperativ oppfølging'
+    varTxt <- 'av postoperativ oppfølging'
     tittel <- 'Pasienter som har fått oppfølging etter 6-8 uker'
   }
   #Lag figur for ett års oppfølging
@@ -537,7 +529,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     if (figurtype %in% c('andelGrVar', 'andelTid')) {
       RegData <- RegData[which(RegData$Utdanning %in% 1:5), ]		#which(RegData$PasientSkjemaStatus ==1)), ]
       RegData$Variabel[which(RegData[ ,valgtVar] %in% 1:3)] <- 1
-      VarTxt <- 'uten høyere utdanning'
+      varTxt <- 'uten høyere utdanning'
 	  }
   }
 
@@ -767,7 +759,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     #AntVar <- colSums(RegData[indMed ,variable], na.rm=T)
     #NVar <- length(indMed)
     #N <- NVar
-  } 
+  }
   if (valgtVar == 'Opf0KomplInfeksjon') {   #Andeler, andelGrVar, andelTid
     retn <- 'H'
     flerevar <- 1
@@ -777,9 +769,10 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     variable <- c('Opf0InfOpSaar', 'Opf0InfIntraabdominal', 'Opf0InfEndometritt', 'Opf0InfUVI', 'Opf0InfAnnen')
     tittel <- switch(figurtype,
                      andeler = 'Type infeksjon, postoperativt',
-                     andelGrVar = 'Postop. komplikasjon: Infeksjon')
+                     andelGrVar = 'Postop. komplikasjon: Infeksjon',
+                     andelTid = 'Postop. komplikasjon: Infeksjon' )
     grtxt <- c('Operasjonssår', 'Intraabdominal', 'Endometritt/Saplingitt', 'UVI', 'Annet') #, 'Ukjent')
-	VarTxt <- 'infeksjoner'
+	varTxt <- 'infeksjoner'
     RegData$Variabel[which(RegData$Opf0KomplInfeksjon == 1)] <- 1
   }
 

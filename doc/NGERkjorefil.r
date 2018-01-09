@@ -38,8 +38,8 @@ setwd("C:/ResultattjenesteGIT/nger/")
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
-datoFra <- '2013-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2016-12-31'
+datoFra <- '2016-01-01'	 # min og max dato i utvalget vises alltid i figuren.
+datoTil <- '2017-12-31'
 preprosess <- 1
 MCEType <- 99 #1: Laparoskopi, 2: Hysteroskopi, 3: Begge,  99: Alle
 #'                 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
@@ -100,11 +100,11 @@ for (valgtVar in variable) {
 
 #------------------------------ Andeler per år --------------------------
 #------------------------------ (AndelTid) --------------------------
-valgtVar <- 'LapKonvertert' #LapKonvertert
+valgtVar <- 'Alder' #LapKonvertert
 outfile <- '' #paste0(valgtVar, '_', tidsenhet, '.png')
 
-NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
-            reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,
+NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
+            reshID=reshID, enhetsUtvalg=1, outfile=outfile, tidsenhet = 'Mnd',
             minald=minald, maxald=maxald, MCEType=MCEType, Hastegrad=Hastegrad,
             AlvorlighetKompl=AlvorlighetKompl, preprosess=1) #
 
@@ -118,7 +118,7 @@ variable <- c('Alder', 'LapKonvertert','Opf0KomplBlodning', 'Opf0KomplUtstyr', '
 for (valgtVar in variable) {
   outfile <- paste0(valgtVar, '_', tidsenhet, '.png')
   NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
-              reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,
+              reshID=reshID, enhetsUtvalg=1, outfile=outfile,
               minald=minald, maxald=maxald, MCEType=MCEType, Hastegrad=Hastegrad,
               AlvorlighetKompl=AlvorlighetKompl, tidsenhet=tidsenhet, preprosess=TRUE)
 }

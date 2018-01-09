@@ -24,6 +24,7 @@
 #'     \item OpBMI: BMI-kategori
 #'     \item Opf0AlvorlighetsGrad: Alvorlighetsgrad, postoperative komplikasjoner
 #'			  Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
+#'		 \item Opf0KomplInfeksjon: Type infeksjoner
 #'     \item OpDagkirurgi: Dagkirurgiske inngrep
 #'     \item OpIVaktTid: Operasjon i legens vakttid
 #'     \item OpKategori: Hastegrad av operasjon
@@ -134,7 +135,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
 #  }
 #  #    }
 
-#-----------Fra INTENSIV---------------:
+#----------- Beregninger ---------------:
       Andeler <- list(Hoved = 0, Rest =0)
       N <- list(Hoved = 0, Rest =0)
       Nfig <- list(Hoved = 0, Rest =0) #figurtekst: N i legend
@@ -180,19 +181,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
 
 
 
-
-
-
   ###-----------Figur---------------------------------------
-  ##Hvis for få observasjoner..
-  #    if (dim(RegData)[1] < 10 | (length(which(RegData$ReshId == reshID))<5 & enhetsUtvalg == 1)) {
-  #      FigTypUt <- figtype(outfile)
-  #      farger <- FigTypUt$farger
-  #      plot.new()
-  #      title(main=paste('variabel: ', valgtVar, sep=''))	#, line=-6)
-  #      legend('topleft',utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
-  #      text(0.5, 0.6, 'Færre enn 5 egne registreringer eller færre 10 totalt', cex=1.2)
-
   if ( Nfig$Hoved %in% 1:5 | 	(NGERUtvalg$medSml ==1 & Nfig$Rest<10)) {
     FigTypUt <- figtype(outfile)
     farger <- FigTypUt$farger
