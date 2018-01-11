@@ -38,7 +38,7 @@ setwd("C:/ResultattjenesteGIT/nger/")
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
-datoFra <- '2016-01-01'	 # min og max dato i utvalget vises alltid i figuren.
+datoFra <- '2015-01-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2017-12-31'
 preprosess <- 1
 MCEType <- 99 #1: Laparoskopi, 2: Hysteroskopi, 3: Begge,  99: Alle
@@ -61,7 +61,7 @@ valgtMaal <- 'Gjsn'
 #------------------------------ (erstatter Fordelinger) --------------------------
 
 
-valgtVar <- 'R0ScoreEmo'	#Må velge... Alder,... Diagnoser, Prosedyrer, OpTid
+valgtVar <- 'RegForsinkelse'	#Må velge... Alder,... Diagnoser, Prosedyrer, OpTid
                     #Tss2Mott	Tss2Behandling	Tss2Lytte	Tss2Behandlere	Tss2Enighet	Tss2Generelt
                     #R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,	R0ScoreEmo,
                     #R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral
@@ -69,7 +69,7 @@ valgtVar <- 'R0ScoreEmo'	#Må velge... Alder,... Diagnoser, Prosedyrer, OpTid
 outfile <- '' #paste0(valgtVar, '_ford.pdf')	#Navn angis av Jasper
 
 NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
-	reshID=reshID, enhetsUtvalg=0, MCEType = MCEType, outfile=outfile, preprosess = preprosess,
+	reshID=reshID, enhetsUtvalg=1, MCEType = MCEType, outfile=outfile, preprosess = preprosess,
   minald=minald, maxald=maxald, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
 
 ind <- which(RegData$InnDato<as.Date('2017-01-01') & RegData$InnDato>as.Date('2015-12-31'))
@@ -127,15 +127,16 @@ for (valgtVar in variable) {
 
 #------------------------------ Andeler per sykehus --------------------------
 #------------------------------ (AndelGrVar) --------------------------
-valgtVar <- 'Alder' #Må velge... Alder, Opf0Reoperasjon, Education, Opf0AlvorlighetsGrad,
+valgtVar <- 'OpBMI' #Må velge... Alder, Opf0Reoperasjon, Education, Opf0AlvorlighetsGrad,
       #KomplIntra, KomplPostop, OpAntibProfylakse, OpASA, OpBMI, Opf0Status,
       #Tss2Mott, Tss2Behandling,	Tss2Lytte, Tss2Behandlere, Tss2Enighet,	Tss2Generelt
 
 outfile <- '' #paste0(valgtVar, '_Shus.png')	#Navn angis av Jasper
+valgtAvd <- c(108048, 111180, 700404)
 
 NGERFigAndelerGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
             reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile, MCEType=MCEType,
-            minald=minald, maxald=maxald, Hastegrad = Hastegrad, preprosess = 1)
+            minald=minald, maxald=maxald, Hastegrad = Hastegrad, preprosess = 1, valgtAvd =valgtAvd )
 
 
 #Teste variable
@@ -154,7 +155,7 @@ for (valgtVar in variable) {
 #------------------------------ Sentralmål per sykehus --------------------------
 #------------------------------ (GjsnGrVar) --------------------------
 
-valgtVar <- 'alder'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
+valgtVar <- 'R0ScorePain'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
                             #R0ScoreEmo, R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral
 
 outfile <- '' #paste0(valgtVar, '_sh.pdf')
@@ -162,7 +163,7 @@ outfile <- '' #paste0(valgtVar, '_sh.pdf')
 
 NGERFigGjsnGrVar(RegData=RegData,valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
                  MCEType=MCEType, valgtMaal='Med', hentData=0,  grVar=grVar, Ngrense=10,
-                 medKI=1, outfile=outfile)#AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
+                 medKI=1, outfile=outfile, valgtAvd = '')#AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
 
 
 variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
@@ -205,9 +206,19 @@ a <- names(Alleproc)
 
 
 
+################################## REGISTRERINGSFORSINKELSE###########################
+#	PasRegDato, Leveringsdato, OpDato
+RegData$PasRegDato
+RegData$Leveringsdato
+RegData$OpDato
+attach(RegData)
+PasRegDato <- as.Date(PasRegDato)
+Leveringsdato <- as.Date(Leveringsdato)
+OpDato <- as.Date(OpDato)
+diff <-
+  plot(PasRegDato-OpDato)
+plot(Leveringsdato-OpDato)
+barplot(tapply(Leveringsdato-OpDato, SykehusNavn, FUN=mean, na.rm=T), horiz = T)
 
-
-
-
-
+help(barplot)
 

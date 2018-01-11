@@ -36,7 +36,7 @@
 #' @inheritParams NGERUtvalgEnh
 #' @export
 
-NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
+NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31', valgtAvd='',
                                 minald=0, maxald=130, MCEType=99, Hastegrad='', AlvorlighetKompl='', Ngrense=10,
                                 reshID, outfile='', enhetsUtvalg=1, preprosess=0, hentData=0) {
 
@@ -71,11 +71,12 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoT
   grtxt <- NGERVarSpes$grtxt
 
   grVar <- 'ShNavn'
-  RegData[ ,grVar] <- factor(RegData[ ,grVar])
+  #RegData[ ,grVar] <- factor(RegData[ ,grVar])
 
 
   NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-                              MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
+                              MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
+                              valgtAvd=valgtAvd)
   RegData <- NGERUtvalg$RegData
   utvalgTxt <- NGERUtvalg$utvalgTxt
 
@@ -136,7 +137,7 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoT
     ybunn <- 0.1
     ytopp <- pos[AntGr]+1	#-length(indGrUt)]
     lines(x=rep(AndelHele, 2), y=c(ybunn, ytopp), col=farger[2], lwd=2)
-    legend('topright', xjust=1, cex=1, lwd=2, col=farger[2],
+    legend('top', xjust=1, cex=1, lwd=2, col=farger[2],
            legend=paste0(NGERUtvalg$hovedgrTxt, ' (', sprintf('%.1f',AndelHele), '%), ', 'N=', N),
            bty='o', bg='white', box.col='white')
     mtext(at=max(pos)+0.35*log(max(pos)), paste0('(N)' ), side=2, las=1, cex=cexShNavn, adj=1, line=0.25)

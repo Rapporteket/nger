@@ -23,6 +23,8 @@
 #'                 0: Hele landet
 #'                 1: Egen enhet mot resten av landet (Standard)
 #'                 2: Egen enhet
+#' @param valgtAvd Velge hvilke avdelinger som skal vises i figurer med avdelingsvise resultater.
+#' IKKE tatt høyde for sammenlikning mot "resten".
 #' @param fargepalett Hvilken fargepalett skal brukes i figurer (Default: BlaaRapp)
 #'
 #' @return UtData En liste bestående av det filtrerte datasettet, utvalgstekst for figur og tekststreng som angir fargepalett
@@ -30,11 +32,18 @@
 #' @export
 #'
 NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', minald=0, maxald=130,
-                       MCEType='', AlvorlighetKompl='', Hastegrad='', enhetsUtvalg=0)
+                       MCEType='', AlvorlighetKompl='', Hastegrad='', enhetsUtvalg=0, valgtAvd='')
 {
   # Definer intersect-operator
   "%i%" <- intersect
 
+  #Velge hvilke sykehus som skal være med:
+  if (valgtAvd[1] != '') {
+    if (enhetsUtvalg !=0) {stop("enhetsUtvalg må være 0 (alle)")}
+    #Utvalg på avdelinger:
+    RegData <- RegData[which(as.numeric(RegData$ReshId) %in% as.numeric(valgtAvd)),]
+    RegData$ShNavn <- as.factor(RegData$ShNavn)
+  }
 
  hovedgrTxt <- switch(as.character(enhetsUtvalg),
                   '0' = 'Hele landet',
@@ -77,8 +86,6 @@ NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', mina
 
 
 
-
-
   #utvalg:
   indMed <- indAld %i% indDato %i% indMCE %i% indAlvor %i% indHastegrad
 
@@ -102,7 +109,8 @@ NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', mina
                                                   'Endometriose unntatt livmorvegg')[MCEType])},
                  if (Hastegrad[1] %in% 1:3){paste0('Hastegrad: ', paste0(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','))},
                  if (AlvorlighetKompl[1] %in% 1:3){paste0('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
-                                                         [as.numeric(AlvorlighetKompl)], collapse=','))})
+                                                         [as.numeric(AlvorlighetKompl)], collapse=','))},
+                 if (valgtAvd[1] != '') {paste0('Valgte RESH: ', paste(as.character(valgtAvd), collapse=', '))})
   #Generere hovedgruppe og sammenlikningsgruppe
   #Trenger indeksene før genererer tall for figurer med flere variable med ulike utvalg
   if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet
@@ -112,13 +120,13 @@ NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', mina
     ind <- list(Hoved=0, Rest=0)
 	if (enhetsUtvalg %in% c(0,2)) {		#Ikke sammenlikning
     medSml <- 0
-	smltxt <- 'Ingen sml'
+	  smltxt <- 'Ingen sml'
     ind$Hoved <- 1:dim(RegData)[1]	#Tidligere redusert datasettet for 2,4,7. (+ 3og6)
     ind$Rest <- NULL
   } else {						#Skal gjøre sammenlikning
     medSml <- 1
     if (enhetsUtvalg == 1) {
-      ind$Hoved <-which(as.numeric(RegData$ReshId)==reshID)
+      ind$Hoved <-which(as.numeric(RegData$ReshId) == reshID)
       smltxt <- 'Landet forøvrig'
       ind$Rest <- which(as.numeric(RegData$ReshId) != reshID)
     }

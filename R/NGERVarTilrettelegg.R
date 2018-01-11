@@ -57,6 +57,13 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
   #-------------------------------------
   RegData$Variabel <- 0
 
+  TSS0var <- c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',	'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')
+  Rand0var <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
+                'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')
+  if (valgtVar %in% c(TSS0var, Rand0var)) {
+   RegData <- RegData[RegData$InnDato >= '2016-01-01', ]}
+
+
   if (valgtVar=='Alder') {	#Andeler, , #andelGrVar, GjsnGrVar, GjsnTid
     RegData <- RegData[which(RegData$Alder>=0), ]    #Tar bort alder<0
     xAkseTxt <- 'alder (år)'
@@ -341,8 +348,18 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     cexgr <- 0.9
     retn <- 'V'
   }
-
-
+  if (valgtVar == 'RegForsinkelse') {  #Andeler, GjsnGrVar
+    #Verdier: 0-3402
+    RegData$Variabel <- as.numeric(as.Date(RegData$Leveringsdato) - as.Date(RegData$InnDato)) #difftime(RegData$InnDato, RegData$Leveringsdato) #
+    #RegData <- RegData[which(RegData$R0Status==1) %i% which(RegData$R0ScorePhys > -1), ] #Evt. R0Metode in 1:2
+    tittel <- 'Tid fra operasjon til ferdigstilt registrering'
+    subtxt <- 'dager'
+    gr <- c(0,1,7,14,30,90,365,5000) #c(seq(0, 90, 10), 1000)
+    RegData$VariabelGr <- cut(RegData$Variabel, breaks = gr, include.lowest = TRUE, right = TRUE)
+    plot(RegData$VariabelGr)
+    grtxt <- c('< 1 dag', '2d.-1uke', '1-2 uker', '2u.-1 mnd', '1-3 mnd', '3 mnd - 1 år', '>1 år') #c(levels(RegData$VariabelGr)[1:(length(gr)-1)]) #, '>90')
+    cexgr <- 0.9
+  }
   if (valgtVar == 'R0ScorePhys') {  #Andeler, #GjsnGrVar
     #Verdier: 0:5:100
     RegData$Variabel <- RegData$R0ScorePhys
