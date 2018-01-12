@@ -131,12 +131,12 @@ valgtVar <- 'RegForsinkelse' #Må velge... Alder, Opf0Reoperasjon, Education, Op
       #KomplIntra, KomplPostop, OpAntibProfylakse, OpASA, OpBMI, Opf0Status, RegForsinkelse
       #Tss2Mott, Tss2Behandling,	Tss2Lytte, Tss2Behandlere, Tss2Enighet,	Tss2Generelt
 
-outfile <- paste0(valgtVar, '_Shus.png')	#Navn angis av Jasper
-#valgtAvd <- c(108048, 111180, 700404)
+outfile <- '' #paste0(valgtVar, '_Shus.png')	#Navn angis av Jasper
+valgtAvd <- c(108048, 111180, 700404)
 
 NGERFigAndelerGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
             reshID=reshID, outfile=outfile, MCEType=MCEType,
-            minald=minald, maxald=maxald, Hastegrad = Hastegrad, preprosess = 1, valgtAvd='' )
+            minald=minald, maxald=maxald, Hastegrad = Hastegrad, preprosess = 1, valgtAvd=valgtAvd )
 
 
 #Teste variable
