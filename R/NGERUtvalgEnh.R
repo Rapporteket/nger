@@ -23,7 +23,7 @@
 #'                 0: Hele landet
 #'                 1: Egen enhet mot resten av landet (Standard)
 #'                 2: Egen enhet
-#' @param valgtAvd Velge hvilke avdelinger som skal vises i figurer med avdelingsvise resultater.
+#' @param velgAvd Velge hvilke avdelinger som skal vises i figurer med avdelingsvise resultater.
 #' IKKE tatt høyde for sammenlikning mot "resten".
 #' @param fargepalett Hvilken fargepalett skal brukes i figurer (Default: BlaaRapp)
 #'
@@ -32,16 +32,16 @@
 #' @export
 #'
 NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', minald=0, maxald=130,
-                       MCEType='', AlvorlighetKompl='', Hastegrad='', enhetsUtvalg=0, valgtAvd='')
+                       MCEType='', AlvorlighetKompl='', Hastegrad='', enhetsUtvalg=0, velgAvd='')
 {
   # Definer intersect-operator
   "%i%" <- intersect
 
   #Velge hvilke sykehus som skal være med:
-  if (valgtAvd[1] != '') {
+  if (velgAvd[1] != '') {
     if (enhetsUtvalg !=0) {stop("enhetsUtvalg må være 0 (alle)")}
     #Utvalg på avdelinger:
-    RegData <- RegData[which(as.numeric(RegData$ReshId) %in% as.numeric(valgtAvd)),]
+    RegData <- RegData[which(as.numeric(RegData$ReshId) %in% as.numeric(velgAvd)),]
     RegData$ShNavn <- as.factor(RegData$ShNavn)
   }
 
@@ -110,7 +110,7 @@ NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', mina
                  if (Hastegrad[1] %in% 1:3){paste0('Hastegrad: ', paste0(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','))},
                  if (AlvorlighetKompl[1] %in% 1:3){paste0('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
                                                          [as.numeric(AlvorlighetKompl)], collapse=','))},
-                 if (valgtAvd[1] != '') {paste0('Valgte RESH: ', paste(as.character(valgtAvd), collapse=', '))})
+                 if (velgAvd[1] != '') {paste0('Valgte RESH: ', paste(as.character(velgAvd), collapse=', '))})
   #Generere hovedgruppe og sammenlikningsgruppe
   #Trenger indeksene før genererer tall for figurer med flere variable med ulike utvalg
   if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet

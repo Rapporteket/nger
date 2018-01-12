@@ -26,7 +26,7 @@
 NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31',
                              valgtVar, minald=0, maxald=130,
                              MCEType=99, AlvorlighetKompl=99, Hastegrad=99,
-                             valgtMaal='Gjsn', hentData=0, preprosess=1, grVar='ShNavn', valgtAvd='',
+                             valgtMaal='Gjsn', hentData=0, preprosess=1, grVar='ShNavn', velgAvd='',
                              Ngrense=10,medKI=1, lagFig=1, outfile='') {     #aar=0,
 
 if (hentData == 1) {
@@ -45,7 +45,7 @@ RegData <- NGERVarSpes$RegData
 #------- Gjøre utvalg
 NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra,
                            datoTil = datoTil, MCEType = MCEType, AlvorlighetKompl=AlvorlighetKompl,
-                           Hastegrad=Hastegrad, valgtAvd=valgtAvd)
+                           Hastegrad=Hastegrad, velgAvd=velgAvd)
 smltxt <- NGERUtvalg$smltxt
 medSml <- NGERUtvalg$medSml
 utvalgTxt <- NGERUtvalg$utvalgTxt

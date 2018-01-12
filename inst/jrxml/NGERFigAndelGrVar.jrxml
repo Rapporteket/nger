@@ -37,7 +37,7 @@
 		<defaultValueExpression><![CDATA[new String("nger")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="rFunctionCallString" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new String("NGERFigAndelerGrVar(RegData=0, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg, MCEType=MCEType, Hastegrad=Hastegrad, AlvorlighetKompl=AlvorlighetKompl, hentData=1, preprosess=1)")]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new String("NGERFigAndelerGrVar(RegData=0, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg, valgtAvd=velgAvd, MCEType=MCEType, Hastegrad=Hastegrad, AlvorlighetKompl=AlvorlighetKompl, hentData=1, prepreprosess=1)")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="varName" class="java.lang.String">
 		<defaultValueExpression><![CDATA[new String("Alder")]]></defaultValueExpression>
@@ -62,6 +62,9 @@
 		<defaultValueExpression><![CDATA[[""]]]></defaultValueExpression>
 	</parameter>
 	<parameter name="AlvorlighetKompl" class="java.util.List">
+		<defaultValueExpression><![CDATA[[""]]]></defaultValueExpression>
+	</parameter>
+	<parameter name="velgAvd" class="java.util.List">
 		<defaultValueExpression><![CDATA[[""]]]></defaultValueExpression>
 	</parameter>
 	<parameter name="orgUnitSelection" class="java.lang.Integer">

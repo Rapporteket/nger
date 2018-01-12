@@ -37,7 +37,7 @@
 #' @inheritParams NGERUtvalgEnh
 #' @export
 
-NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31', valgtAvd='',
+NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31', velgAvd='',
                                 minald=0, maxald=130, MCEType=99, Hastegrad='', AlvorlighetKompl='', Ngrense=10,
                                 reshID, outfile='', enhetsUtvalg=1, preprosess=0, hentData=0) {
 
@@ -77,7 +77,7 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoT
 
   NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
                               MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
-                              valgtAvd=valgtAvd)
+                              velgAvd=velgAvd)
   RegData <- NGERUtvalg$RegData
   utvalgTxt <- NGERUtvalg$utvalgTxt
 
