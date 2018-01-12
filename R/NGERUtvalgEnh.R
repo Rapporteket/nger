@@ -32,7 +32,7 @@
 #' @export
 #'
 NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', minald=0, maxald=130,
-                       MCEType='', AlvorlighetKompl='', Hastegrad='', enhetsUtvalg=0, velgAvd='')
+                       MCEType='', AlvorlighetKompl='', Hastegrad='', enhetsUtvalg=0, velgAvd='', velgDiag=0)
 {
   # Definer intersect-operator
   "%i%" <- intersect
@@ -64,9 +64,6 @@ NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', mina
     } else {indMCE <- 1:Ninn}
   if (MCEType %in% 4:6) {
       ProsLap <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3')
-      RegData$LapProsedyre1 <- toupper(RegData$LapProsedyre1)
-      RegData$LapProsedyre2 <- toupper(RegData$LapProsedyre2)
-      RegData$LapProsedyre3 <- toupper(RegData$LapProsedyre3)
       indMCE <- switch(as.character(MCEType),
               '4' = unique(c(which(RegData[,ProsLap] == 'LCD01', arr.ind = TRUE)[,1],
                                          which(RegData[,ProsLap] == 'LCD04', arr.ind = TRUE)[,1])), #LCD01 + LCD04: total laparoskopisk hysterektomi
@@ -76,6 +73,23 @@ NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', mina
       )
   }
 
+if (velgDiag !=0) {
+  diagTxt <- c('Godartede ovarialcyster', 'Endometriose, livmorvegg', 'Endometriose utenom livmorvegg')
+  DiagVar <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3', 'HysDiagnose1','HysDiagnose2', 'HysDiagnose3')
+  indDiag <- NULL
+  if (velgDiag ==1) {
+    koder <- c('N830', 'N831', 'N832', 'D27')
+    for (var in DiagVar) {indDiag <- union(indDiag, grep(paste(koder, collapse = "|"), RegData[ ,var]))}  #(Se også på pmatch, carmatch
+  }
+  if (velgDiag==2) { #Endometriose , livmorvegg
+    koder <- 'N800'
+    for (var in DiagVar) {indDiag <- union(indDiag, grep(koder, RegData[ ,var]))}
+  }
+	if (velgDiag == 3) {#endometriose, «u/livmorvegg»: N80.1-N80.9
+	  koder <- paste0('N80', 1:9)
+    for (var in DiagVar) {indDiag <- union(indDiag, grep(paste(koder, collapse = "|"), RegData[ ,var]))}  #(Se også på pmatch, carmatch
+	}
+}
 
   #Alvorlighetsgrad, flervalgsutvalg
   indAlvor <- if (AlvorlighetKompl[1] %in% 1:3) {which(RegData$Opf0AlvorlighetsGrad %in% as.numeric(AlvorlighetKompl)) %i%
@@ -87,7 +101,7 @@ NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', mina
 
 
   #utvalg:
-  indMed <- indAld %i% indDato %i% indMCE %i% indAlvor %i% indHastegrad
+  indMed <- indAld %i% indDato %i% indMCE %i% indAlvor %i% indHastegrad %i% indDiag
 
   RegData <- RegData[indMed,]
 
@@ -110,12 +124,13 @@ NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', mina
                  if (Hastegrad[1] %in% 1:3){paste0('Hastegrad: ', paste0(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','))},
                  if (AlvorlighetKompl[1] %in% 1:3){paste0('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
                                                          [as.numeric(AlvorlighetKompl)], collapse=','))},
-                 if (velgAvd[1] != '') {paste0('Valgte RESH: ', paste(as.character(velgAvd), collapse=', '))})
+                 if (velgDiag != 0) {paste0('Diagnose:', diagTxt[velgDiag])},
+                 if (velgAvd[1] != '') {'Viser valgte sykehus'})
   #Generere hovedgruppe og sammenlikningsgruppe
   #Trenger indeksene før genererer tall for figurer med flere variable med ulike utvalg
   if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet
     hovedgrTxt <- as.character(RegData$ShNavn[match(reshID, RegData$ReshId)])
-  } else {hovedgrTxt <- 'Hele landet'}
+  } else {hovedgrTxt <- ifelse(velgAvd[1] != '', 'Valgte sykehus', 'Hele landet')}
 
     ind <- list(Hoved=0, Rest=0)
 	if (enhetsUtvalg %in% c(0,2)) {		#Ikke sammenlikning

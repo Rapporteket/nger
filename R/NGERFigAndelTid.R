@@ -31,7 +31,7 @@
 
 NGERFigAndelTid <- function(RegData=0, valgtVar, datoFra='2014-01-01', datoTil='3000-12-31',
                             minald=0, maxald=130, MCEType=99, Hastegrad='', AlvorlighetKompl='', reshID, outfile='',
-                            enhetsUtvalg=0, preprosess=0, hentData=0, tidsenhet='Aar') {
+                            enhetsUtvalg=0, velgDiag=0, preprosess=0, hentData=0, tidsenhet='Aar') {
 
 
   ## Hvis spørring skjer fra R på server. ######################
@@ -57,7 +57,7 @@ NGERFigAndelTid <- function(RegData=0, valgtVar, datoFra='2014-01-01', datoTil='
   #                                           strftime(datoTil, format="%m"),'-','01')}
 
   NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, enhetsUtvalg=enhetsUtvalg, datoFra=datoFra, datoTil=datoTil,
-                              minald=minald, maxald=maxald,
+                              minald=minald, maxald=maxald, velgDiag=velgDiag,
                               MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
   RegData <- NGERUtvalg$RegData
   utvalgTxt <- NGERUtvalg$utvalgTxt

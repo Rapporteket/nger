@@ -82,7 +82,7 @@
 #'
 NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050-12-31', minald=0, maxald=130,
                             outfile='', reshID, enhetsUtvalg=0, MCEType=99, Hastegrad='', AlvorlighetKompl='',
-                            hentData=0, preprosess=0)
+                            velgDiag=0, hentData=0, preprosess=0)
 {
 
   ## Hvis spørring skjer fra R på server. ######################
@@ -115,7 +115,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   ###Kjører denne etter variabeldefinisjon for at utvalgTxt skal bli riktig
   NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra,
                            datoTil = datoTil, MCEType = MCEType, AlvorlighetKompl=AlvorlighetKompl,
-                           Hastegrad=Hastegrad, enhetsUtvalg = enhetsUtvalg)
+                           Hastegrad=Hastegrad, velgDiag=velgDiag, enhetsUtvalg = enhetsUtvalg)
   RegData <- NGERUtvalg$RegData
   utvalgTxt <- NGERUtvalg$utvalgTxt
 

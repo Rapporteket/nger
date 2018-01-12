@@ -66,11 +66,11 @@ valgtVar <- 'RegForsinkelse'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Op
                     #R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,	R0ScoreEmo,
                     #R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral
 
-outfile <- paste0(valgtVar, '_2ford.png')	#Navn angis av Jasper
+outfile <- '' #paste0(valgtVar, '_2ford.png')	#Navn angis av Jasper
 
 NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
-	reshID=reshID, enhetsUtvalg=1, MCEType = MCEType, outfile=outfile, preprosess = preprosess,
-  minald=minald, maxald=maxald, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
+	reshID=reshID, enhetsUtvalg=0, MCEType = MCEType, outfile=outfile, preprosess = preprosess,
+  minald=minald, maxald=maxald, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad, velgDiag = 3)
 
 ind <- which(RegData$InnDato<as.Date('2017-01-01') & RegData$InnDato>as.Date('2015-12-31'))
 
@@ -132,11 +132,11 @@ valgtVar <- 'RegForsinkelse' #Må velge... Alder, Opf0Reoperasjon, Education, Op
       #Tss2Mott, Tss2Behandling,	Tss2Lytte, Tss2Behandlere, Tss2Enighet,	Tss2Generelt
 
 outfile <- '' #paste0(valgtVar, '_Shus.png')	#Navn angis av Jasper
-valgtAvd <- c(108048, 111180, 700404)
+velgAvd <- c(108048, 111180, 700404)
 
 NGERFigAndelerGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
             reshID=reshID, outfile=outfile, MCEType=MCEType,
-            minald=minald, maxald=maxald, Hastegrad = Hastegrad, preprosess = 1, valgtAvd=valgtAvd )
+            minald=minald, maxald=maxald, Hastegrad = Hastegrad, preprosess = 1, velgAvd=velgAvd )
 
 
 #Teste variable
@@ -163,7 +163,7 @@ outfile <- '' #paste0(valgtVar, '_sh.pdf')
 
 NGERFigGjsnGrVar(RegData=RegData,valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
                  MCEType=MCEType, valgtMaal='Med', hentData=0,  grVar=grVar, Ngrense=10,
-                 medKI=1, outfile=outfile, valgtAvd = '')#AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
+                 medKI=1, outfile=outfile, velgAvd = velgAvd)#AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
 
 
 variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
