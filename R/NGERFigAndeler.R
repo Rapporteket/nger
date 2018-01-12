@@ -25,6 +25,7 @@
 #'     \item Opf0AlvorlighetsGrad: Alvorlighetsgrad, postoperative komplikasjoner
 #'			  Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
 #'		 \item Opf0KomplInfeksjon: Type infeksjoner
+#'		 \item Opf0metode: Opfølgingsmetode
 #'     \item OpDagkirurgi: Dagkirurgiske inngrep
 #'     \item OpIVaktTid: Operasjon i legens vakttid
 #'     \item OpKategori: Hastegrad av operasjon

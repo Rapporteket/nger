@@ -66,7 +66,7 @@ valgtVar <- 'RegForsinkelse'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Op
                     #R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,	R0ScoreEmo,
                     #R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral
 
-outfile <- paste0(valgtVar, '_1ford.png')	#Navn angis av Jasper
+outfile <- paste0(valgtVar, '_2ford.png')	#Navn angis av Jasper
 
 NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
 	reshID=reshID, enhetsUtvalg=1, MCEType = MCEType, outfile=outfile, preprosess = preprosess,
