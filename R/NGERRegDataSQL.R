@@ -168,6 +168,7 @@ query <- paste0('SELECT
     OpIVaktTid,
     OpKategori,
     OpMetode,
+    OpStatus,
     OpTid,
     OpTidlLaparotomi,
     OpTidlLapsko,
