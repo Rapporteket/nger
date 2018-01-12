@@ -327,6 +327,19 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     grtxt <- 0:6 #Kategoriser: 0,1,2,3,4+
     RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = grtxt)
   }
+
+  if (valgtVar == 'Opf0metode') {   #Andeler, andelGrVar
+    # Oppfølging Post, telefon, ikke mulig
+    tittel <- switch(figurtype,
+                     andeler= 'Oppfølgingsmetode',
+                     andelGrVar = 'Oppfølging: Ikke mulig')
+    gr <- c(1,2,9)
+    grtxt <- c('post', 'telefon', 'ikke mulig')
+    RegData <- RegData[which(RegData$Opf0Status==1) %i% which(RegData$Opf0metode %in% gr), ]
+    RegData$Variabel[RegData$Opf0metode==9] <- 1
+    RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = gr)
+  }
+
   if (valgtVar=='Opf0Status') { #andelGrVar, andelTid
     #Andel med Opf0Status=1 (av samtlige, også tomme reg.)
     #Kode: tomme, -1,0,1
@@ -350,14 +363,19 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
   }
   if (valgtVar == 'RegForsinkelse') {  #Andeler, GjsnGrVar
     #Verdier: 0-3402
-    RegData$Variabel <- as.numeric(as.Date(RegData$Leveringsdato) - as.Date(RegData$InnDato)) #difftime(RegData$InnDato, RegData$Leveringsdato) #
-    #RegData <- RegData[which(RegData$R0Status==1) %i% which(RegData$R0ScorePhys > -1), ] #Evt. R0Metode in 1:2
-    tittel <- 'Tid fra operasjon til ferdigstilt registrering'
+    RegData$Diff <- as.numeric(as.Date(RegData$Leveringsdato) - as.Date(RegData$InnDato)) #difftime(RegData$InnDato, RegData$Leveringsdato) #
+    RegData <- RegData[which(RegData$OpStatus==1) %i% which(RegData$Diff > -1), ]
+    tittel <- switch(figurtype,
+                     andeler='Tid fra operasjon til ferdigstilt registrering',
+                     andelGrVar = 'Mer enn 1 måned fra operasjon til ferdig registrering')
+    RegData$Variabel[RegData$Diff >30] <- 1
     subtxt <- 'dager'
-    gr <- c(0,1,7,14,30,90,365,5000) #c(seq(0, 90, 10), 1000)
-    RegData$VariabelGr <- cut(RegData$Variabel, breaks = gr, include.lowest = TRUE, right = TRUE)
-    plot(RegData$VariabelGr)
-    grtxt <- c('< 1 dag', '2d.-1uke', '1-2 uker', '2u.-1 mnd', '1-3 mnd', '3 mnd - 1 år', '>1 år') #c(levels(RegData$VariabelGr)[1:(length(gr)-1)]) #, '>90')
+    #gr <- c(0,1,7,14,30,90,365,5000) #
+    gr <- c(seq(0, 90, 10), 1000)
+    RegData$VariabelGr <- cut(RegData$Diff, breaks = gr, include.lowest = TRUE, right = TRUE)
+    #plot(RegData$VariabelGr)
+    #grtxt <- c('< 1 dag', '2d.-1uke', '1-2 uker', '2u.-1 mnd', '1-3 mnd', '3 mnd - 1 år', '>1 år')
+    grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-2)], '>90')
     cexgr <- 0.9
   }
   if (valgtVar == 'R0ScorePhys') {  #Andeler, #GjsnGrVar
@@ -370,7 +388,6 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     RegData$VariabelGr <- cut(RegData$R0ScorePhys, breaks = gr, include.lowest = TRUE, right = TRUE)
     grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-1)])
   }
-
   if (valgtVar == 'R0ScoreRoleLmtPhy') { #Andeler, #GjsnGrVar
     #Verdier: 0:25:100
     RegData$Variabel <- RegData[ ,valgtVar]

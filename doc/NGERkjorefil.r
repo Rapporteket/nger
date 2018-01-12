@@ -61,12 +61,12 @@ valgtMaal <- 'Gjsn'
 #------------------------------ (erstatter Fordelinger) --------------------------
 
 
-valgtVar <- 'RegForsinkelse'	#Må velge... Alder,... Diagnoser, Prosedyrer, OpTid
+valgtVar <- 'RegForsinkelse'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid
                     #Tss2Mott	Tss2Behandling	Tss2Lytte	Tss2Behandlere	Tss2Enighet	Tss2Generelt
                     #R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,	R0ScoreEmo,
                     #R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral
 
-outfile <- '' #paste0(valgtVar, '_ford.pdf')	#Navn angis av Jasper
+outfile <- paste0(valgtVar, '_1ford.png')	#Navn angis av Jasper
 
 NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
 	reshID=reshID, enhetsUtvalg=1, MCEType = MCEType, outfile=outfile, preprosess = preprosess,
@@ -81,10 +81,10 @@ Diagnoser
 variable <- c('Alder','HysGjforingsGrad', 'HysKomplikasjoner','KomplPost',
               'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr', 'LapKomplikasjoner','LapTeknikk',
               'LapIntraabdominell', 'LapNumHjelpeinnstikk',
-              'SivilStatus', 'OpMetode', 'Norsktalende', 'OpAnestesi', 'OpASA',
+              'SivilStatus', 'Opf0metode', 'OpMetode', 'Norsktalende', 'OpAnestesi', 'OpASA',
               'OpBMI', 'OpKategori', 'OpDagkirurgi','Opf0AlvorlighetsGrad',
               'OpTidlVagInngrep', 'OpTidlLapsko',
-              'OpTidlLaparotomi', 'OpIVaktTid', 'OpType', 'Utdanning')
+              'OpTidlLaparotomi', 'OpIVaktTid', 'OpType', 'RegForsinkelse', 'Utdanning')
 
 variable <- c('Utdanning','Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',	'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')
 variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
@@ -127,21 +127,21 @@ for (valgtVar in variable) {
 
 #------------------------------ Andeler per sykehus --------------------------
 #------------------------------ (AndelGrVar) --------------------------
-valgtVar <- 'OpBMI' #Må velge... Alder, Opf0Reoperasjon, Education, Opf0AlvorlighetsGrad,
-      #KomplIntra, KomplPostop, OpAntibProfylakse, OpASA, OpBMI, Opf0Status,
+valgtVar <- 'RegForsinkelse' #Må velge... Alder, Opf0Reoperasjon, Education, Opf0AlvorlighetsGrad,
+      #KomplIntra, KomplPostop, OpAntibProfylakse, OpASA, OpBMI, Opf0Status, RegForsinkelse
       #Tss2Mott, Tss2Behandling,	Tss2Lytte, Tss2Behandlere, Tss2Enighet,	Tss2Generelt
 
-outfile <- '' #paste0(valgtVar, '_Shus.png')	#Navn angis av Jasper
-valgtAvd <- c(108048, 111180, 700404)
+outfile <- paste0(valgtVar, '_Shus.png')	#Navn angis av Jasper
+#valgtAvd <- c(108048, 111180, 700404)
 
 NGERFigAndelerGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
-            reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile, MCEType=MCEType,
-            minald=minald, maxald=maxald, Hastegrad = Hastegrad, preprosess = 1, valgtAvd =valgtAvd )
+            reshID=reshID, outfile=outfile, MCEType=MCEType,
+            minald=minald, maxald=maxald, Hastegrad = Hastegrad, preprosess = 1, valgtAvd='' )
 
 
 #Teste variable
 variable <- c('Alder', 'KomplIntra', 'KomplPostop', 'Opf0Reoperasjon', 'Opf0AlvorlighetsGrad',
-              'OpAntibProfylakse', 'OpASA', 'OpBMI', 'Opf0Status', 'Utdanning',
+              'OpAntibProfylakse', 'OpASA', 'OpBMI', 'Opf0metode', 'Opf0Status', 'RegForsinkelse', 'Utdanning',
               'Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',	'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')
 
 for (valgtVar in variable) {

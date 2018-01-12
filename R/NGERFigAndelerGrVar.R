@@ -23,6 +23,7 @@
 #'		\item Opf0KomplOrgan: Postop. komplikasjon: Organskade
 #'		\item Opf0Reoperasjon: Reoperasjon som følge av komplikasjon
 #'		\item Opf0Status: Fått postoperativ oppfølging
+#'    \item RegForsinkelse: Mer enn XX (1mnd?) fra operasjon til ferdigstilt registrering
 #'    \item Tss2Mott: Møtet med gynekologisk avdeling var mindre godt
 #'    \item Tss2Behandling: Behandlingens opplegg og innhold passet ikke pasienten
 #'    \item Tss2Lytte: Pasientens behandlere lyttet- og forsto ikke det som ble tatt opp
