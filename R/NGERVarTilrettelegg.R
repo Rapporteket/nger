@@ -367,15 +367,14 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     RegData <- RegData[which(RegData$OpStatus==1) %i% which(RegData$Diff > -1), ]
     tittel <- switch(figurtype,
                      andeler='Tid fra operasjon til ferdigstilt registrering',
-                     andelGrVar = 'Mer enn 1 måned fra operasjon til ferdig registrering')
-    RegData$Variabel[RegData$Diff >30] <- 1
+                     andelGrVar = 'Mer enn 6 uker fra operasjon til ferdig registrering')
+    RegData$Variabel[RegData$Diff > 6*7] <- 1
     subtxt <- 'dager'
-    #gr <- c(0,1,7,14,30,90,365,5000) #
-    gr <- c(seq(0, 90, 10), 1000)
+    gr <- c(0,1,7,14,30,90,365,5000) #gr <- c(seq(0, 90, 10), 1000)
     RegData$VariabelGr <- cut(RegData$Diff, breaks = gr, include.lowest = TRUE, right = TRUE)
     #plot(RegData$VariabelGr)
-    #grtxt <- c('< 1 dag', '2d.-1uke', '1-2 uker', '2u.-1 mnd', '1-3 mnd', '3 mnd - 1 år', '>1 år')
-    grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-2)], '>90')
+    grtxt <- c('< 1 dag', '2d.-1uke', '1-2 uker', '2u.-1 mnd', '1-3 mnd', '3 mnd - 1 år', '>1 år')
+    #grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-2)], '>90')
     cexgr <- 0.9
   }
   if (valgtVar == 'R0ScorePhys') {  #Andeler, #GjsnGrVar

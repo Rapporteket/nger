@@ -11,10 +11,10 @@
 #'                 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
 #'                 5: LCC11 (laparoskopisk subtotal hysterektomi)
 #'                 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
-#'                 7: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
-#'                 8: Endometriose, livmorvegg (N80.0)
-#'                 9: Endometriose, unntatt livmorvegg.
-#'                 99: Alle
+#' @param velgDiag 0: Alle
+#'                 1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
+#'                 2: Endometriose, livmorvegg (N80.0)
+#'                 3: Endometriose, unntatt livmorvegg.
 #' @param Hastegrad Hastegrad av operasjon.
 #'                1: Elektiv
 #'                2: Akutt
