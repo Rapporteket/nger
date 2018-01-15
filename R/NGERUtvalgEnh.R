@@ -76,7 +76,6 @@ NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', mina
 if (velgDiag !=0) {
   diagTxt <- c('Godartede ovarialcyster', 'Endometriose, livmorvegg', 'Endometriose utenom livmorvegg')
   DiagVar <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3', 'HysDiagnose1','HysDiagnose2', 'HysDiagnose3')
-  indDiag <- 1:Ninn
   if (velgDiag ==1) {
     koder <- c('N830', 'N831', 'N832', 'D27')
     for (var in DiagVar) {indDiag <- union(indDiag, grep(paste(koder, collapse = "|"), RegData[ ,var]))}  #(Se også på pmatch, carmatch
@@ -89,7 +88,7 @@ if (velgDiag !=0) {
 	  koder <- paste0('N80', 1:9)
     for (var in DiagVar) {indDiag <- union(indDiag, grep(paste(koder, collapse = "|"), RegData[ ,var]))}  #(Se også på pmatch, carmatch
 	}
-}
+} else {  indDiag <- 1:Ninn}
 
   #Alvorlighetsgrad, flervalgsutvalg
   indAlvor <- if (AlvorlighetKompl[1] %in% 1:3) {which(RegData$Opf0AlvorlighetsGrad %in% as.numeric(AlvorlighetKompl)) %i%
