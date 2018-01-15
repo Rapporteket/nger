@@ -70,7 +70,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     tittel <- switch(figurtype,
                      andeler = 'Aldersfordeling',
                      andelGrVar = 'Pasienter over 70 år',
-					 andelTid = 'Pasienter over 70 år',
+                     andelTid = 'Pasienter over 70 år',
                      gjsnGrVar = 'Alder ved innleggelse',
                      gjsnTid = 'Alder ved innleggelse')
     gr <- c(0, seq(15, 80, 5), 120)
@@ -79,6 +79,8 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     subtxt <- 'Aldersgrupper (år)'
 	varTxt <- 'pasienter >=70år'
     RegData$Variabel[which(RegData$Alder >= 70)] <- 1
+    if (figurtype == 'gjsnGrVar') {
+      RegData$Variabel <- RegData$Alder}
     retn <- 'V'
     sortAvtagende <- FALSE
     cexgr <- 0.8

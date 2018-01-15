@@ -155,7 +155,7 @@ for (valgtVar in variable) {
 #------------------------------ Sentralmål per sykehus --------------------------
 #------------------------------ (GjsnGrVar) --------------------------
 
-valgtVar <- 'R0ScorePain'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
+valgtVar <- 'Alder'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
                             #R0ScoreEmo, R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral
 
 outfile <- '' #paste0(valgtVar, '_sh.pdf')
@@ -163,7 +163,7 @@ outfile <- '' #paste0(valgtVar, '_sh.pdf')
 
 NGERFigGjsnGrVar(RegData=RegData,valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
                  MCEType=MCEType, valgtMaal='Med', hentData=0,  grVar=grVar, Ngrense=10,
-                 medKI=1, outfile=outfile, velgAvd = velgAvd)#AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
+                 medKI=1, outfile=outfile, velgAvd = '')#AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
 
 
 variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
