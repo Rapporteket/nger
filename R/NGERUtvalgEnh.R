@@ -76,7 +76,7 @@ NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', mina
 if (velgDiag !=0) {
   diagTxt <- c('Godartede ovarialcyster', 'Endometriose, livmorvegg', 'Endometriose utenom livmorvegg')
   DiagVar <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3', 'HysDiagnose1','HysDiagnose2', 'HysDiagnose3')
-  indDiag <- NULL
+  indDiag <- 1:Ninn
   if (velgDiag ==1) {
     koder <- c('N830', 'N831', 'N832', 'D27')
     for (var in DiagVar) {indDiag <- union(indDiag, grep(paste(koder, collapse = "|"), RegData[ ,var]))}  #(Se også på pmatch, carmatch
@@ -124,7 +124,7 @@ if (velgDiag !=0) {
                  if (Hastegrad[1] %in% 1:3){paste0('Hastegrad: ', paste0(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','))},
                  if (AlvorlighetKompl[1] %in% 1:3){paste0('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
                                                          [as.numeric(AlvorlighetKompl)], collapse=','))},
-                 if (velgDiag != 0) {paste0('Diagnose:', diagTxt[velgDiag])},
+                 if (velgDiag != 0) {paste0('Diagnose: ', diagTxt[velgDiag])},
                  if (velgAvd[1] != '') {'Viser valgte sykehus'})
   #Generere hovedgruppe og sammenlikningsgruppe
   #Trenger indeksene før genererer tall for figurer med flere variable med ulike utvalg
