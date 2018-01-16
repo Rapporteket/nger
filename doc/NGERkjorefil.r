@@ -45,6 +45,7 @@ MCEType <- 99 #1: Laparoskopi, 2: Hysteroskopi, 3: Begge,  99: Alle
 #'                 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
 #'                 5: LCC11 (laparoskopisk subtotal hysterektomi)
 #'                 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
+velgDiag <- 0
 Hastegrad <- ''
 AlvorlighetKompl <- ''#c('2','3')
 hentData <- 0
@@ -55,6 +56,7 @@ tidsenhet <- 'Aar'
 grVar <- 'ShNavn'
 Ngrense <- 10
 valgtMaal <- 'Gjsn'
+outfile <- ''
 
 
 #------------------------------ Andeler flere var --------------------------

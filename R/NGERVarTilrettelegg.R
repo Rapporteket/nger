@@ -126,6 +126,20 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
 	varTxt <- 'komplikasjoner'
     tittel <- 'Komplikasjoner, postoperativt'
   }
+  if (valgtVar=='LapKonvertert') { #andelTid
+    RegData <- RegData[intersect(which(RegData$LapKonvertert %in% 0:1), which(RegData$LapStatus == 1)), ]
+    RegData$Variabel <- RegData$LapKonvertert
+    varTxt <- 'konverterte'
+    tittel <- 'Konvertert til laparotomi?'
+  }
+
+  if (valgtVar == 'LapNumHjelpeinnstikk') {   #Andeler
+    # Velge antall fra 0 til 6
+    #IKKE gjort noen utvalg. (StatusLap==1?, LapHjelpeinnstikk==1?)
+    tittel <- 'Antall hjelpeinnstikk, laparaskopi'
+    grtxt <- 0:6 #Kategoriser: 0,1,2,3,4+
+    RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = grtxt)
+  }
 
   if (valgtVar == 'Norsktalende') {   #Andeler
     # 0:Nei, 1:Ja, 2:Delvis, 9:Ukjent
@@ -315,20 +329,6 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
 		}
     retn <- 'V'
   }
-  if (valgtVar=='LapKonvertert') { #andelTid
-    RegData <- RegData[intersect(which(RegData$LapKonvertert %in% 0:1), which(RegData$LapStatus == 1)), ]
-    RegData$Variabel <- RegData$LapKonvertert
-    varTxt <- 'konverterte'
-    tittel <- 'Konvertert til laparotomi?'
-  }
-
-  if (valgtVar == 'LapNumHjelpeinnstikk') {   #Andeler
-    # Velge antall fra 0 til 6
-    #IKKE gjort noen utvalg. (StatusLap==1?, LapHjelpeinnstikk==1?)
-    tittel <- 'Antall hjelpeinnstikk, laparaskopi'
-    grtxt <- 0:6 #Kategoriser: 0,1,2,3,4+
-    RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = grtxt)
-  }
 
   if (valgtVar == 'Opf0metode') {   #Andeler, andelGrVar
     # Oppfølging Post, telefon, ikke mulig
@@ -379,6 +379,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     #grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-2)], '>90')
     cexgr <- 0.9
   }
+
   if (valgtVar == 'R0ScorePhys') {  #Andeler, #GjsnGrVar
     #Verdier: 0:5:100
     RegData$Variabel <- RegData$R0ScorePhys
@@ -399,7 +400,6 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     subtxt <- 'sumskår (høyest er best)'
     RegData$VariabelGr <- factor(RegData$Variabel, levels=grtxt) #cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
   }
-
   if (valgtVar == 'R0ScoreRoleLmtEmo') {  #Andeler, #GjsnGrVar
     #Verdier: 0:33.3:100
     RegData <- RegData[which(RegData$R0Status==1) %i% which(RegData[,valgtVar] > -1), ]
@@ -416,7 +416,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     #Verdier: 0:5:100
     RegData <- RegData[which(RegData$R0Status==1) %i% which(RegData$R0ScoreEnergy > -1), ]
     RegData$Variabel <- RegData$R0ScoreEnergy
-    tittel <- 'Energinivå/fatigue'
+    tittel <- 'Energinivå/vitalitet'
     gr <- seq(0, 100, 20)
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
     grtxt <- levels(RegData$VariabelGr)
@@ -426,7 +426,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     #Verdier: 0:4:100
     RegData <- RegData[which(RegData$R0Status==1) %i% which(RegData[,valgtVar] > -1), ]
     RegData$Variabel <- RegData[ ,valgtVar]
-    tittel <- 'Følelsesmessig velvære'
+    tittel <- 'Mental helse'
     subtxt <- 'sumskår (høyest er best)'
     gr <- seq(0, 100, 20)
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
@@ -436,7 +436,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     #Verdier: 0:12.5:100
     RegData <- RegData[which(RegData$R0Status==1) %i% which(RegData[,valgtVar] > -1), ]
     RegData$Variabel <- RegData[ ,valgtVar]
-    tittel <- 'Sosial tilpassethet'
+    tittel <- 'Sosial funksjon'
     #gr <- c(seq(0, 75, 25), 100) #c(seq(0, 180, 30), 1000) #
     #RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
     subtxt <- 'sumskår (høyest er best)'
@@ -578,6 +578,51 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
   #Vi sender tilbake alle variable som indikatorvariable, dvs. med 0,1,NA
   #(Alternativt kan vi gjøre beregninga her og sende tilbake teller og nevner for den sammensatte variabelen)
 
+  if (valgtVar=='Diagnoser') { #Tilfelle hvor man heller endrer format på variablene...?
+    #PER NÅ FEIL. SAMME DIAGNOSE KAN VÆRE FØRT OPP FLERE GANGER FOR SAMME PASIENT.
+    tittel <- 'Hyppigst forekommende diagnoser'
+    diagnoser <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3','HysDiagnose1', 'HysDiagnose2', 'HysDiagnose3')
+    ant <- 20
+    cexgr <- 1-0.005*ant
+    AlleDiag <- as.vector(as.matrix(RegData[ , diagnoser]))
+    AlleDiagSort <- sort(table(AlleDiag[which(AlleDiag != '')]), decreasing = TRUE)
+    grtxt <- names(AlleDiagSort)[1:ant]	#Alle diagnoser som skal være med. Kan benyttes til å lage indeks...
+    variable <- grtxt
+    nymatr <- as.data.frame(matrix(0,dim(RegData)[1],ant))
+    names(nymatr) <- grtxt
+    test <- nymatr
+    for (k in grtxt) {
+      #nymatr[,k] <- rowSums(RegData[ ,diagnoser]== k)
+      nymatr[rowSums(RegData[ ,diagnoser]== k)>0, k] <- 1
+      test[,k] <- rowSums(RegData[ ,diagnoser]== k)
+    }
+    RegData <- data.frame(RegData,nymatr)
+    #AntVar <- AlleDiagSort[1:ant]
+    #NVar <- dim(RegData)[1]
+    #N <- NVar
+  }
+  if (valgtVar=='Prosedyrer') {
+    #Hyppigst forekommende prosedyrer
+    #RegData$Opf0Status == 1 OK
+    #Hver prosedyre skal telles bare en gang per operasjon - unique på hver linje. Samle alle linjer.
+    prosVar <- c('HysProsedyre1', 'HysProsedyre2', 'HysProsedyre3', 'LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3')
+    #Må fjerne tomme. Tomme behandles som tomme lokalt, men NA på server.
+    AllePros <- toupper(as.vector(as.matrix(RegData[ , prosVar])))
+    AlleProsSort <- sort(table(AllePros[which(AllePros != '')]), decreasing = TRUE)
+    ant <- 20
+    grtxt <- names(AlleProsSort)[1:ant]
+    cexgr <- 1-0.005*ant
+    tittel <- 'Hyppigst forekommende prosedyrer'
+    #Sjekk om hver prosedyre bare forekommer en gang!
+    test <- matrix(0,dim(RegData))
+    #for (k in grtxt) {
+    #  test[,k] <- rowSums(RegData[ ,prosVar]== k)
+    #}
+
+    AntVar <- AlleProsSort[1:ant]
+    NVar <- dim(RegData)[1]
+    N <- NVar
+  }
   if (valgtVar == 'inklKrit' ) {   # Andeler
     tittel <- 'Inklusjonskriterier, Rygg'
     #RegData <- RegData[which(RegData$InnDato>=as.POSIXlt('2016-01-01')), ]
@@ -609,29 +654,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
   #  Variablene kjøres for angitt indeks, dvs. to ganger hvis vi skal ha sammenligning med Resten.
   #RegData <- RegDataLand[switch(utvalg[teller], Hoved = indHoved, Rest=indRest), ]
 
-  if (valgtVar=='Diagnoser') { #Tilfelle hvor man heller endrer format på variablene...?
-    #PER NÅ FEIL. SAMME DIAGNOSE KAN VÆRE FØRT OPP FLERE GANGER FOR SAMME PASIENT.
-    tittel <- 'Hyppigst forekommende diagnoser'
-    diagnoser <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3','HysDiagnose1', 'HysDiagnose2', 'HysDiagnose3')
-    ant <- 20
-    cexgr <- 1-0.005*ant
-    AlleDiag <- as.vector(as.matrix(RegData[ , diagnoser]))
-    AlleDiagSort <- sort(table(AlleDiag[which(AlleDiag != '')]), decreasing = TRUE)
-    grtxt <- names(AlleDiagSort)[1:ant]	#Alle diagnoser som skal være med. Kan benyttes til å lage indeks...
-    variable <- grtxt
-    nymatr <- as.data.frame(matrix(0,dim(RegData)[1],ant))
-    names(nymatr) <- grtxt
-    test <- nymatr
-    for (k in grtxt) {
-      #nymatr[,k] <- rowSums(RegData[ ,diagnoser]== k)
-      nymatr[rowSums(RegData[ ,diagnoser]== k)>0, k] <- 1
-      test[,k] <- rowSums(RegData[ ,diagnoser]== k)
-    }
-    RegData <- data.frame(RegData,nymatr)
-    #AntVar <- AlleDiagSort[1:ant]
-    #NVar <- dim(RegData)[1]
-    #N <- NVar
-  }
+
 
   #  ind01 <- which(RegData[ ,variable] != -1, arr.ind = T) #Alle ja/nei
   #	ind1 <- which(RegData[ ,variable] == 1, arr.ind=T) #Ja i alle variable
@@ -656,22 +679,6 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     #AntVar <- colSums(RegData[indMed ,variable], na.rm=T)
     #NVar <- length(indMed)
     #N <- NVar
-  }
-  if (valgtVar == 'spesTiltak' ) {   # Andeler
-    #INTENSIV!!!!!!!!!
-    tittel <- 'Spesielle tiltak/intervensjoner'
-    RegData <- RegData[which(RegData$InnDato>=as.POSIXlt('2016-01-01')), ]
-    flerevar <- 1
-    variable <- c('TerapetiskHypotermi', 'EcmoEcla', 'Iabp', 'Impella', 'Icp', 'Oscillator', 'No',
-                  'Leverdialyse', 'Hyperbar', 'Eeg')
-    grtxt <- c('Terapetisk hypotermi', 'ECMO/ECLA', 'IABP Aortaballongpumpe', 'Impella/VV-assist',
-               'ICP, intrakranielt trykk', 'Oscillator', 'NO-behandling',
-               'Leverdialyse', 'Hyperbar oksygenbeh.', 'Kontinuerlig EEG')
-    #ind01 <- which(RegData[ ,variable] != -1, arr.ind = T) #Alle ja/nei
-    ind1 <- which(RegData[ ,variable] == TRUE, arr.ind=T) #Ja i alle variable
-    RegData[ ,variable] <- 0
-    RegData[ ,variable][ind1] <- 1
-    xAkseTxt <- 'Andel opphold (%)'
   }
   if (valgtVar=='KomplPost') {
     #Postoperative komplikasjoner. Bare registreringer hvor Opf0Komplikasjoner er 0 el. 1
@@ -770,7 +777,6 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     #NVar <- rep(N, length(variable))
     #NVar[varByttind] <- length(indInnfDato)
   }
-
   if (valgtVar=='LapKomplikasjoner') {
     #Laparoskopiske intrapoerative komplikasjoner:
     #Andel komplikasjoner ved bruk av de ulike utstyrstypene? OK. Variablene angir komplikasjonsårsak.
@@ -795,22 +801,6 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     #NVar <- length(indMed)
     #N <- NVar
   }
-  if (valgtVar == 'Opf0KomplInfeksjon') {   #Andeler, andelGrVar, andelTid
-    retn <- 'H'
-    flerevar <- 1
-    #Opf0metode in 1:2 #9 angir "ikke mulig"
-    #Opf0metode in 1:2 ekvivalent med Opf0Komplikasjoner %in% 0:1
-    RegData <- RegData[(which(RegData$Opf0Status == 1) %i% which(RegData$Opf0Komplikasjoner %in% 0:1)), ]
-    variable <- c('Opf0InfOpSaar', 'Opf0InfIntraabdominal', 'Opf0InfEndometritt', 'Opf0InfUVI', 'Opf0InfAnnen')
-    tittel <- switch(figurtype,
-                     andeler = 'Type infeksjon, postoperativt',
-                     andelGrVar = 'Postop. komplikasjon: Infeksjon',
-                     andelTid = 'Postop. komplikasjon: Infeksjon' )
-    grtxt <- c('Operasjonssår', 'Intraabdominal', 'Endometritt/Saplingitt', 'UVI', 'Annet') #, 'Ukjent')
-	varTxt <- 'infeksjoner'
-    RegData$Variabel[which(RegData$Opf0KomplInfeksjon == 1)] <- 1
-  }
-
   if (valgtVar=='LapIntraabdominell') {
     #Laparoskopiske intraabdominale komplikasjoner:
     variable <- c('LapNerv',
@@ -854,23 +844,21 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     #N <- dim(RegData)[1]
     #NVar <- c(rep(N,3), rep(length(indMar16),2))
   }
-  if (valgtVar=='Prosedyrer') {
-    #Hyppigst forekommende prosedyrer
-    #RegData$Opf0Status == 1 OK
-    ProsHys <- c('HysProsedyre1', 'HysProsedyre2', 'HysProsedyre3')
-    ProsLap <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3')
-    #Må fjerne tomme. Tomme behandles som tomme lokalt, men NA på server.
-    AllePros <- toupper(as.vector(as.matrix(RegData[ , c(ProsHys, ProsLap)])))
-    AlleProsSort <- sort(table(AllePros[which(AllePros != '')]), decreasing = TRUE)
-    ant <- 20
-    grtxt <- names(AlleProsSort)[1:ant]
-    cexgr <- 1-0.005*ant
-    tittel <- 'Hyppigst forekommende prosedyrer'
-    AntVar <- AlleProsSort[1:ant]
-    NVar <- dim(RegData)[1]
-    N <- NVar
+  if (valgtVar == 'Opf0KomplInfeksjon') {   #Andeler, andelGrVar, andelTid
+    retn <- 'H'
+    flerevar <- 1
+    #Opf0metode in 1:2 #9 angir "ikke mulig"
+    #Opf0metode in 1:2 ekvivalent med Opf0Komplikasjoner %in% 0:1
+    RegData <- RegData[(which(RegData$Opf0Status == 1) %i% which(RegData$Opf0Komplikasjoner %in% 0:1)), ]
+    variable <- c('Opf0InfOpSaar', 'Opf0InfIntraabdominal', 'Opf0InfEndometritt', 'Opf0InfUVI', 'Opf0InfAnnen')
+    tittel <- switch(figurtype,
+                     andeler = 'Type infeksjon, postoperativt',
+                     andelGrVar = 'Postop. komplikasjon: Infeksjon',
+                     andelTid = 'Postop. komplikasjon: Infeksjon' )
+    grtxt <- c('Operasjonssår', 'Intraabdominal', 'Endometritt/Saplingitt', 'UVI', 'Annet') #, 'Ukjent')
+    varTxt <- 'infeksjoner'
+    RegData$Variabel[which(RegData$Opf0KomplInfeksjon == 1)] <- 1
   }
-
 
 
   #Generell beregning for alle figurer med sammensatte variable:
