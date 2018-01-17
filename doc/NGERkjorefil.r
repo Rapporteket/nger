@@ -35,7 +35,7 @@ library(nger)
 #----------------------------------- PARAMETRE ------------------------------
 setwd("C:/ResultattjenesteGIT/nger/")
 # Inndata til funksjon:
-reshID <- 700399 # 110734 (Tønsberg)  	700399
+reshID <- 110734 # 110734 (Tønsberg)  	700399
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
 datoFra <- '2015-01-01'	 # min og max dato i utvalget vises alltid i figuren.
@@ -63,19 +63,16 @@ outfile <- ''
 #------------------------------ (erstatter Fordelinger) --------------------------
 
 
-valgtVar <- 'Prosedyrer'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid
+valgtVar <- 'Diagnoser'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid
 
 outfile <- '' #paste0(valgtVar, '_fordDiag3.png')	#Navn angis av Jasper
 
 NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
-	reshID=reshID, enhetsUtvalg=1, MCEType = MCEType, outfile=outfile, preprosess = preprosess,
+	reshID=reshID, enhetsUtvalg=0, MCEType = MCEType, outfile=outfile, preprosess = preprosess,
   minald=minald, maxald=maxald, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad, velgDiag = 3)
 
 ind <- which(RegData$InnDato<as.Date('2017-01-01') & RegData$InnDato>as.Date('2015-12-31'))
 
-#IKKE KLARE:
-
-Diagnoser
 #Teste variable
 variable <- c('Alder','HysGjforingsGrad', 'HysKomplikasjoner','KomplPost',
               'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr', 'LapKomplikasjoner','LapTeknikk',

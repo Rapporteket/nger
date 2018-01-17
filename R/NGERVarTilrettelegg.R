@@ -599,11 +599,8 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     variable <- grtxt
     nymatr <- as.data.frame(matrix(0,dim(RegData)[1],ant))
     names(nymatr) <- grtxt
-    test <- nymatr
     for (k in grtxt) {
-      #nymatr[,k] <- rowSums(RegData[ ,diagnoser]== k)
       nymatr[rowSums(RegData[ ,c(diagLap, diagHys)]== k)>0, k] <- 1
-      test[,k] <- rowSums(RegData[ ,c(diagLap, diagHys)]== k)
     }
     RegData <- data.frame(RegData,nymatr)
     #AntVar <- AlleDiagSort[1:ant]
