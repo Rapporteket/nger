@@ -6,8 +6,8 @@
 \usage{
 NGERFigAndeler(RegData = 0, valgtVar, datoFra = "2013-01-01",
   datoTil = "2050-12-31", minald = 0, maxald = 130, outfile = "",
-  reshID, enhetsUtvalg = 1, MCEType = 99, Hastegrad = "",
-  AlvorlighetKompl = "", hentData = 0, preprosess = 0)
+  reshID, enhetsUtvalg = 0, MCEType = 99, Hastegrad = "",
+  AlvorlighetKompl = "", velgDiag = 0, hentData = 0, preprosess = 0)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -38,8 +38,7 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 3: Begge
 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
 5: LCC11 (laparoskopisk subtotal hysterektomi)
-6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
-99: Alle}
+6: LCD11 (laparoskopisk assistert vaginal hysterektomi)}
 
 \item{Hastegrad}{Hastegrad av operasjon.
 1: Elektiv
@@ -47,13 +46,16 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 3: Ø-hjelp}
 
 \item{AlvorlighetKompl}{Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
-                         Angis som en vektor av tall som tekst, f.eks. c('1','2')
-                         1: Lite alvorlig
-                         2: Middels alvorlig
-                         3: Alvorlig
-                         4: Dødelig
+Angis som en vektor av tall som tekst, f.eks. c('1','2')
+1: Lite alvorlig
+2: Middels alvorlig
+3: Alvorlig
+4: Dødelig}
 
-Detajer: Her bør man liste opp hvilke variable funksjonen benytter.}
+\item{velgDiag}{0: Alle
+1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
+2: Endometriose, livmorvegg (N80.0)
+3: Endometriose, unntatt livmorvegg.}
 
 \item{hentData}{Gjør spørring mot database
 0: Nei, RegData gis som input til funksjonen (Standard)
@@ -92,6 +94,8 @@ Argumentet \emph{valgtVar} har følgende valgmuligheter:
     \item OpBMI: BMI-kategori
     \item Opf0AlvorlighetsGrad: Alvorlighetsgrad, postoperative komplikasjoner
 		  Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
+	 \item Opf0KomplInfeksjon: Type infeksjoner
+	 \item Opf0metode: Opfølgingsmetode
     \item OpDagkirurgi: Dagkirurgiske inngrep
     \item OpIVaktTid: Operasjon i legens vakttid
     \item OpKategori: Hastegrad av operasjon
@@ -109,6 +113,7 @@ Argumentet \emph{valgtVar} har følgende valgmuligheter:
     \item R0ScoreRoleLmtPhy:
     \item R0ScoreRoleLmtEmo:
     \item R0ScoreSosial:
+    \item RegForsinkelse: Tid fra operasjon til ferdigstilt registrering
     \item Prosedyrer: Hyppigst forekommende prosedyrer
     \item SivilStatus: Sivilstand
     \item Tss2Mott: Hvordan du ble mottatt på avd.

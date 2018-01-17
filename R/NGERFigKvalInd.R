@@ -1,28 +1,25 @@
-#' S?ylediagram som viser flere kvalitetsindikatorer
+#' Søylediagram som viser flere kvalitetsindikatorer
 #'
 #' Funksjon som genererer en figurer med ei gruppe kvalitetsindikatorer
 #'
-#' Detajer: Her b?r man liste opp hvilke variable funksjonen benytter...
+#' Argumentet \emph{valgtVar} har følgende valgmuligheter:
+#'    \itemize{
+#'     \item RAND0: Alle dimensjonene i RAND36 ved oppfølging etter 4-6uker. Gjennomsnitt
+#'     \item TSS20: Alle sp?rsm?lene i TSS2 ved oppf?lging etter 4-6uker. Andel av beste svaralternativ
+#'     \item kvalInd: Samling av kvalitetsindikatorer
+#'    }
 #'
 #' @inheritParams NGERFigAndeler
 #' @inheritParams NGERFigAndelerGrVar
 #' @inheritParams NGERUtvalgEnh
 #'
-#' Argumentet \emph{valgtVar} har f?lgende valgmuligheter:
-#'    \itemize{
-#'     \item RAND0: Alle dimensjonene i RAND36 ved oppf?lging etter 4-6uker. Gjennomsnitt
-#'     \item TSS20: Alle sp?rsm?lene i TSS2 ved oppf?lging etter 4-6uker. Andel av beste svaralternativ
-#'     \item kvalInd: Samling av kvalitetsindikatorer
-#'    }
 #'
-#' Detajer: Her b?r man liste opp hvilke variable funksjonen benytter.
-#'
-#' @return S?ylediagram med gjennomsnitt/median av valgt variabel for hvert sykehus
+#' @return Søylediagram med gjennomsnitt/median av valgt variabel for hvert sykehus
 #'
 #' @export
 
 
-NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31',
+NGERFigKvalInd <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31',
                              valgtVar, minald=0, maxald=130, MCEType=99, Hastegrad=99,
                              hentData=0, preprosess=1, velgDiag=0, Ngrense=10,outfile='') {
 
@@ -30,7 +27,7 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
     RegData <- NGERRegDataSQL(datoFra, datoTil)
   }
 
-  # Hvis RegData ikke har blitt preprosessert. (I samledokument gj?res dette i samledokumentet)
+  # Hvis RegData ikke har blitt preprosessert.
   if (preprosess == 1){
     RegData <- NGERPreprosess(RegData=RegData)
   }
@@ -179,8 +176,8 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
     fargeHoved <- farger[1]
     fargeRest <- farger[3]
     antGr <- length(grtxt)
-    lwdRest <- 3	#tykkelse p? linja som repr. landet
-    cexleg <- 1	#St?rrelse p? legendtekst
+    lwdRest <- 3	#tykkelse på linja som repr. landet
+    cexleg <- 1	#Størrelse på legendtekst
     cexgr <- 1
 
       xmax <- 100 #max(c(AggVerdier$Hoved, AggVerdier$Rest),na.rm=T)*1.15
@@ -209,8 +206,8 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
     if ( outfile != '') {dev.off()}
   }
 
-  UtData <- list(paste0(toString(tittel),'.'), AggVerdier, N, grtxt )
-  names(UtData) <- c('tittel', 'AggVerdier', 'Antall', 'GruppeTekst')
-  return(invisible(UtData))
+  #UtData <- list(paste0(toString(tittel),'.'), AggVerdier, N, grtxt )
+  #names(UtData) <- c('tittel', 'AggVerdier', 'Antall', 'GruppeTekst')
+  #return(invisible(UtData))
 }
 

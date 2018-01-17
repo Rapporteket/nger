@@ -27,12 +27,14 @@
 #' IKKE tatt høyde for sammenlikning mot "resten".
 #' @param fargepalett Hvilken fargepalett skal brukes i figurer (Default: BlaaRapp)
 #'
-#' @return UtData En liste bestående av det filtrerte datasettet, utvalgstekst for figur og tekststreng som angir fargepalett
+#' @return UtData En liste bestående av det filtrerte datasettet, utvalgstekst for figur og
+#' tekststreng som angir fargepalett
 #'
 #' @export
 #'
-NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', fargepalett='BlaaOff', minald=0, maxald=130,
-                       MCEType='', AlvorlighetKompl='', Hastegrad='', enhetsUtvalg=0, velgAvd='', velgDiag=0)
+NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', fargepalett='BlaaOff',
+                          minald=0, maxald=130, MCEType='', AlvorlighetKompl='', Hastegrad='',
+                          enhetsUtvalg=0, velgAvd='', velgDiag=0)
 {
   # Definer intersect-operator
   "%i%" <- intersect

@@ -10,7 +10,7 @@
 #' @inheritParams NGERUtvalgEnh
 #' @param figurtype Hvilken figurtype det skal tilrettelegges variable for:
 #'                'andeler', 'andelGrVar', 'andelTid', 'gjsnGrVar', 'gjsnTid'
-#' @ind indekser fra enhetsUtvalg. Benyttes normalt ikke her, men trengs for
+#' @param ind indekser fra enhetsUtvalg. Benyttes normalt ikke her, men trengs for
 #' valgtVar Diagnoser og Prosedyrer
 #'
 #' @return Definisjon av valgt variabel.
@@ -102,22 +102,22 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     # Komplikasjoner ved operasjon. Må kombinere HysKomplikasjoner og LapKomplikasjoner
     #Kode 0: Nei, 1:Ja, tomme
     RegData$KomplIntra <- with(RegData, HysKomplikasjoner + LapKomplikasjoner) #Får mange tomme!!!
-    if (MCEType %in% c(1,4:6)) {indMed <- which(RegData$LapKomplikasjoner %in% 0:1)
-    indVar <- which(RegData$LapKomplikasjoner == 1)
+    if (MCEType %in% c(1,4:6)) {
+      indMed <- which(RegData$LapKomplikasjoner %in% 0:1)
+      indVar <- which(RegData$LapKomplikasjoner == 1)
     } else {
       indMed <- switch(as.character(MCEType),
                        '2' = which(RegData$HysKomplikasjoner %in% 0:1),
                        '3' = which(RegData$KomplIntra %in% 0:1),	#Få tomme for dette valget
                        '99' = union(which(is.finite(RegData$HysKomplikasjoner)), which(is.finite(RegData$LapKomplikasjoner))))
       indVar <- switch(as.character(MCEType),
-                       #'1' = which(RegData$LapKomplikasjoner == 1),
                        '2' = which(RegData$HysKomplikasjoner == 1),
                        '3' = which(RegData$KomplIntra %in% 1:2),
                        '99' = union(which(RegData$HysKomplikasjoner == 1), which(RegData$LapKomplikasjoner==1)))
     }
     RegData$Variabel[indVar] <- 1
     RegData <- RegData[indMed, ]
-	varTxt <- 'komplikasjoner'
+    varTxt <- 'komplikasjoner'
     tittel <- 'Komplikasjoner, intraoperativt'
   }
   if (valgtVar=='KomplPostop') { #andelGrVar, andelTid
@@ -829,7 +829,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     #Bare laparoskopi og begge
     #Ny kategori, dvs. ny variabel: Palmers point, neste prod.setting, etterreg. fra 1.3.2016. Mangler noen og disse filtreres bort.
     RegData <- RegData[which(RegData$OpMetode %in% c(1,3)), ]
-    tittel <- 'Laparoskopisk tilgang, teknikk og metode' #'Teknikk for laparaskopisk tilgang'
+    tittel <- 'Laparoskopisk tilgang, teknikk og metode' #  'Teknikk for laparaskopisk tilgang'
     grtxt <- c('Åpent', 'Veress-nål', 'Annet','Palmers point [1/3-16]', 'Navlen [1/3-16]') #LapTilgangsMetode
     indMar16 <- which(as.Date(RegData$HovedDato)>='2016-03-01')
     indMet <- which(RegData$LapTilgangsMetode %in% 0:2)

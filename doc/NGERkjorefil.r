@@ -68,7 +68,7 @@ valgtVar <- 'Prosedyrer'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0me
 outfile <- '' #paste0(valgtVar, '_fordDiag3.png')	#Navn angis av Jasper
 
 NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
-	reshID=reshID, enhetsUtvalg=1, MCEType = 2, outfile=outfile, preprosess = preprosess,
+	reshID=reshID, enhetsUtvalg=1, MCEType = MCEType, outfile=outfile, preprosess = preprosess,
   minald=minald, maxald=maxald, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad, velgDiag = 3)
 
 ind <- which(RegData$InnDato<as.Date('2017-01-01') & RegData$InnDato>as.Date('2015-12-31'))
@@ -169,6 +169,14 @@ for (valgtVar in variable) {
   NGERFigGjsnGrVar(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra,datoTil=datoTil,
                       valgtMaal='Gjsn',outfile=outfile)
 }
+
+
+
+#-----------------------------Kvalietsindikatorer------------------------------
+valgtVar <- RAND0 #TSS0, kvalInd
+outfile <- '' #paste0(valgtVar, '_kvalInd.png')
+NGERFigKvalInd(RegData, datoFra='2013-01-01', datoTil='3000-12-31', valgtVar, MCEType=99,
+               Hastegrad=99, preprosess=1, velgDiag=0, Ngrense=10, outfile=outfile)
 
 
 ######################### LITT LEKING ##############################

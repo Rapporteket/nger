@@ -4,9 +4,10 @@
 \alias{NGERUtvalgEnh}
 \title{Funksjon som gjør utvalg av dataene, returnerer det filtrerte datasettet og utvalgsteksten.}
 \usage{
-NGERUtvalgEnh(RegData, datoFra, datoTil, fargepalett = "BlaaOff",
-  minald = 0, maxald = 130, MCEType = "", AlvorlighetKompl = "",
-  Hastegrad = "", enhetsUtvalg = 0)
+NGERUtvalgEnh(RegData, datoFra = "2016-01-01", datoTil = "3000-12-31",
+  fargepalett = "BlaaOff", minald = 0, maxald = 130, MCEType = "",
+  AlvorlighetKompl = "", Hastegrad = "", enhetsUtvalg = 0, velgAvd = "",
+  velgDiag = 0)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -26,17 +27,14 @@ NGERUtvalgEnh(RegData, datoFra, datoTil, fargepalett = "BlaaOff",
 3: Begge
 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
 5: LCC11 (laparoskopisk subtotal hysterektomi)
-6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
-99: Alle}
+6: LCD11 (laparoskopisk assistert vaginal hysterektomi)}
 
 \item{AlvorlighetKompl}{Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
-                         Angis som en vektor av tall som tekst, f.eks. c('1','2')
-                         1: Lite alvorlig
-                         2: Middels alvorlig
-                         3: Alvorlig
-                         4: Dødelig
-
-Detajer: Her bør man liste opp hvilke variable funksjonen benytter.}
+Angis som en vektor av tall som tekst, f.eks. c('1','2')
+1: Lite alvorlig
+2: Middels alvorlig
+3: Alvorlig
+4: Dødelig}
 
 \item{Hastegrad}{Hastegrad av operasjon.
 1: Elektiv
@@ -47,9 +45,18 @@ Detajer: Her bør man liste opp hvilke variable funksjonen benytter.}
 0: Hele landet
 1: Egen enhet mot resten av landet (Standard)
 2: Egen enhet}
+
+\item{velgAvd}{Velge hvilke avdelinger som skal vises i figurer med avdelingsvise resultater.
+IKKE tatt høyde for sammenlikning mot "resten".}
+
+\item{velgDiag}{0: Alle
+1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
+2: Endometriose, livmorvegg (N80.0)
+3: Endometriose, unntatt livmorvegg.}
 }
 \value{
-UtData En liste bestående av det filtrerte datasettet, utvalgstekst for figur og tekststreng som angir fargepalett
+UtData En liste bestående av det filtrerte datasettet, utvalgstekst for figur og
+tekststreng som angir fargepalett
 }
 \description{
 Funksjon som gjør utvalg av dataene, returnerer det filtrerte datasettet og utvalgsteksten.

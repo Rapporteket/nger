@@ -75,7 +75,6 @@
 #'                          3: Alvorlig
 #'                          4: Dødelig
 #'
-#' Detajer: Her bør man liste opp hvilke variable funksjonen benytter.
 #' @return En figur med søylediagram (fordeling) av ønsket variabel
 #'
 #' @export

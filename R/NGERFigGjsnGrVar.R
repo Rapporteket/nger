@@ -4,8 +4,6 @@
 #' for hvert sykehus og kan ta inn ulike numeriske variable.
 #' Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus
 #'
-#' Detajer: Her bør man liste opp hvilke variable funksjonen benytter...
-#'
 #' @inheritParams NGERFigAndeler
 #' @inheritParams NGERFigAndelerGrVar
 #' @inheritParams NGERUtvalgEnh
@@ -15,8 +13,6 @@
 #'    \itemize{
 #'     \item Liggedogn: Liggetid
 #'    }
-#'
-#' Detajer: Her bør man liste opp hvilke variable funksjonen benytter.
 #'
 #' @return Søylediagram med gjennomsnitt/median av valgt variabel for hvert sykehus
 #'
