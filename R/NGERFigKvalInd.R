@@ -14,13 +14,13 @@
 #' @inheritParams NGERUtvalgEnh
 #'
 #'
-#' @return Søylediagram med gjennomsnitt/median av valgt variabel for hvert sykehus
+#' @return Søylediagram samling av kvalitetsindikatorer
 #'
 #' @export
 
 
-NGERFigKvalInd <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31',
-                             valgtVar, minald=0, maxald=130, MCEType=99, Hastegrad=99,
+NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='3000-12-31',
+                             valgtVar, enhetsUtvalg=0, minald=0, maxald=130, MCEType=99, Hastegrad=99,
                              hentData=0, preprosess=1, velgDiag=0, Ngrense=10,outfile='') {
 
   if (hentData == 1) {
@@ -44,8 +44,9 @@ NGERFigKvalInd <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31',
                     TSS0 = RegData[which(RegData$Tss2Status==1) %i% which(RegData$Tss2Type %in% 1:2)
                                    %i% which(RegData$InnDato >= '2016-01-01'), ])
 
-  NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra,
-                              datoTil = datoTil, MCEType = MCEType, Hastegrad=Hastegrad, velgDiag=velgDiag)
+  NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, reshID=reshID,  minald = minald, maxald = maxald, datoFra = datoFra,
+                              datoTil = datoTil, MCEType = MCEType, Hastegrad=Hastegrad, velgDiag=velgDiag,
+                              enhetsUtvalg=enhetsUtvalg)
   smltxt <- NGERUtvalg$smltxt
   medSml <- NGERUtvalg$medSml
   utvalgTxt <- NGERUtvalg$utvalgTxt
