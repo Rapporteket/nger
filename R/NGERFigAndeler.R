@@ -106,7 +106,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
  #koder <- NULL
 
   if (!(valgtVar %in% c('Diagnoser', 'Prosedyrer'))) {
-  NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, grVar='', figurtype='andeler')
+  NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, figurtype='andeler')
   RegData <- NGERVarSpes$RegData
 }
   ###Gjør utvalg (NGERUtvalg)
@@ -119,7 +119,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   ind <- NGERUtvalg$ind
 
   if (valgtVar %in% c('Diagnoser', 'Prosedyrer')) {
-    NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, grVar='', ind=ind, figurtype='andeler')
+    NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, ind=ind, figurtype='andeler')
     RegData <- NGERVarSpes$RegData
   }
   flerevar <- NGERVarSpes$flerevar

@@ -31,7 +31,7 @@
 #'
 #' @export
 #'
-NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', minald=0, maxald=130,
+NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', fargepalett='BlaaOff', minald=0, maxald=130,
                        MCEType='', AlvorlighetKompl='', Hastegrad='', enhetsUtvalg=0, velgAvd='', velgDiag=0)
 {
   # Definer intersect-operator

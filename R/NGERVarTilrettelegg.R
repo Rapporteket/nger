@@ -585,6 +585,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     tittel <- 'Hyppigst forekommende diagnoser'
     diagLap <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3')
     diagHys <- c('HysDiagnose1', 'HysDiagnose2', 'HysDiagnose3')
+    var <- c(diagLap, diagHys)
     ant <- 20
     cexgr <- 1-0.005*ant
     #Når bare utført lap el hys:
@@ -600,12 +601,9 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     nymatr <- as.data.frame(matrix(0,dim(RegData)[1],ant))
     names(nymatr) <- grtxt
     for (k in grtxt) {
-      nymatr[rowSums(RegData[ ,c(diagLap, diagHys)]== k)>0, k] <- 1
+      nymatr[rowSums(RegData[ ,var]== k, na.rm = T)>0, k] <- 1
     }
     RegData <- data.frame(RegData,nymatr)
-    #AntVar <- AlleDiagSort[1:ant]
-    #NVar <- dim(RegData)[1]
-    #N <- NVar
   }
   if (valgtVar=='Prosedyrer') {
     tittel <- 'Hyppigst forekommende prosedyrer'
@@ -623,7 +621,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     nymatr <- as.data.frame(matrix(0,dim(RegData)[1],ant))
     names(nymatr) <- grtxt
     for (k in grtxt) {
-      nymatr[rowSums(RegData[ ,prosVar]== k)>0, k] <- 1
+      nymatr[rowSums(RegData[ ,prosVar]== k, na.rm = T)>0, k] <- 1
     }
     RegData <- data.frame(RegData,nymatr)
 
