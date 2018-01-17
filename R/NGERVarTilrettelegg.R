@@ -595,7 +595,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     AlleDiag <- c(AlleDiag1, AlleDiag2,
                   unlist(apply(as.matrix(RegData[intersect(ind$Hoved, ind2), diagHys]), 1, FUN=unique)))
     AlleDiagSort <- sort(table(AlleDiag[which(AlleDiag != '')]), decreasing = TRUE)
-    grtxt <- names(AlleDiagSort)[1:ant]	#Alle diagnoser som skal være med. Kan benyttes til å lage indeks...
+    grtxt <- names(AlleDiagSort)[1:min(length(AlleDiagSort), ant)]	#Alle diagnoser som skal være med. Kan benyttes til å lage indeks...
     variable <- grtxt
     nymatr <- as.data.frame(matrix(0,dim(RegData)[1],ant))
     names(nymatr) <- grtxt
@@ -618,7 +618,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     AlleProsSort <- sort(table(AllePros[which(AllePros != '')]), decreasing = TRUE)
     ant <- 20
     cexgr <- 1-0.005*ant
-    grtxt <- names(AlleProsSort)[1:ant]
+    grtxt <- names(AlleProsSort)[1:min(length(AlleProsSort), ant)]
     variable <- grtxt
     nymatr <- as.data.frame(matrix(0,dim(RegData)[1],ant))
     names(nymatr) <- grtxt
