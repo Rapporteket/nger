@@ -10,13 +10,15 @@
 #' @inheritParams NGERUtvalgEnh
 #' @param figurtype Hvilken figurtype det skal tilrettelegges variable for:
 #'                'andeler', 'andelGrVar', 'andelTid', 'gjsnGrVar', 'gjsnTid'
+#' @ind indekser fra enhetsUtvalg. Benyttes normalt ikke her, men trengs for
+#' valgtVar Diagnoser og Prosedyrer
 #'
 #' @return Definisjon av valgt variabel.
 #'
 #' @export
 #'
 
-NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler'){
+NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='andeler'){
 
 
   "%i%" <- intersect
@@ -581,10 +583,17 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
   if (valgtVar=='Diagnoser') { #Tilfelle hvor man heller endrer format på variablene...?
     #PER NÅ FEIL. SAMME DIAGNOSE KAN VÆRE FØRT OPP FLERE GANGER FOR SAMME PASIENT.
     tittel <- 'Hyppigst forekommende diagnoser'
-    diagnoser <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3','HysDiagnose1', 'HysDiagnose2', 'HysDiagnose3')
+    diagLap <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3')
+    diagHys <- c('HysDiagnose1', 'HysDiagnose2', 'HysDiagnose3')
     ant <- 20
     cexgr <- 1-0.005*ant
-    AlleDiag <- as.vector(as.matrix(RegData[ , diagnoser]))
+    #Når bare utført lap el hys:
+    ind1 <- which(RegData$OpMetode %in% 1:2)
+    ind2 <- which(RegData$OpMetode == 3)
+    AlleDiag1 <- unlist(apply(as.matrix(RegData[intersect(ind$Hoved, ind1), c(diagLap, diagHys)]), 1, FUN=unique))
+    AlleDiag2 <- unlist(apply(as.matrix(RegData[intersect(ind$Hoved, ind2), diagLap]), 1, FUN=unique))
+    AlleDiag <- c(AlleDiag1, AlleDiag2,
+                  unlist(apply(as.matrix(RegData[intersect(ind$Hoved, ind2), diagHys]), 1, FUN=unique)))
     AlleDiagSort <- sort(table(AlleDiag[which(AlleDiag != '')]), decreasing = TRUE)
     grtxt <- names(AlleDiagSort)[1:ant]	#Alle diagnoser som skal være med. Kan benyttes til å lage indeks...
     variable <- grtxt
@@ -593,8 +602,8 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     test <- nymatr
     for (k in grtxt) {
       #nymatr[,k] <- rowSums(RegData[ ,diagnoser]== k)
-      nymatr[rowSums(RegData[ ,diagnoser]== k)>0, k] <- 1
-      test[,k] <- rowSums(RegData[ ,diagnoser]== k)
+      nymatr[rowSums(RegData[ ,c(diagLap, diagHys)]== k)>0, k] <- 1
+      test[,k] <- rowSums(RegData[ ,c(diagLap, diagHys)]== k)
     }
     RegData <- data.frame(RegData,nymatr)
     #AntVar <- AlleDiagSort[1:ant]
@@ -602,26 +611,28 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', figurtype='andeler
     #N <- NVar
   }
   if (valgtVar=='Prosedyrer') {
-    #Hyppigst forekommende prosedyrer
+    tittel <- 'Hyppigst forekommende prosedyrer'
     #RegData$Opf0Status == 1 OK
-    #Hver prosedyre skal telles bare en gang per operasjon - unique på hver linje. Samle alle linjer.
+    #Hver prosedyre skal telles bare en gang per operasjon - unique på hver linje.
     prosVar <- c('HysProsedyre1', 'HysProsedyre2', 'HysProsedyre3', 'LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3')
+    #AllePros <- toupper(as.vector(as.matrix(RegData[ , prosVar])))
+    AllePros <- toupper(unlist(apply(as.matrix(RegData[ind$Hoved, prosVar]), 1,FUN=unique)))
     #Må fjerne tomme. Tomme behandles som tomme lokalt, men NA på server.
-    AllePros <- toupper(as.vector(as.matrix(RegData[ , prosVar])))
     AlleProsSort <- sort(table(AllePros[which(AllePros != '')]), decreasing = TRUE)
     ant <- 20
-    grtxt <- names(AlleProsSort)[1:ant]
     cexgr <- 1-0.005*ant
-    tittel <- 'Hyppigst forekommende prosedyrer'
-    #Sjekk om hver prosedyre bare forekommer en gang!
-    test <- matrix(0,dim(RegData))
-    #for (k in grtxt) {
-    #  test[,k] <- rowSums(RegData[ ,prosVar]== k)
-    #}
+    grtxt <- names(AlleProsSort)[1:ant]
+    variable <- grtxt
+    nymatr <- as.data.frame(matrix(0,dim(RegData)[1],ant))
+    names(nymatr) <- grtxt
+    for (k in grtxt) {
+      nymatr[rowSums(RegData[ ,prosVar]== k)>0, k] <- 1
+    }
+    RegData <- data.frame(RegData,nymatr)
 
-    AntVar <- AlleProsSort[1:ant]
-    NVar <- dim(RegData)[1]
-    N <- NVar
+    #AntVar <- AlleProsSort[1:ant]
+    #NVar <- dim(RegData)[1]
+    #N <- NVar
   }
   if (valgtVar == 'inklKrit' ) {   # Andeler
     tittel <- 'Inklusjonskriterier, Rygg'

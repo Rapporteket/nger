@@ -35,7 +35,7 @@ library(nger)
 #----------------------------------- PARAMETRE ------------------------------
 setwd("C:/ResultattjenesteGIT/nger/")
 # Inndata til funksjon:
-reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
+reshID <- 700399 # 110734 (Tønsberg)  	700399
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
 datoFra <- '2015-01-01'	 # min og max dato i utvalget vises alltid i figuren.
@@ -63,21 +63,18 @@ outfile <- ''
 #------------------------------ (erstatter Fordelinger) --------------------------
 
 
-valgtVar <- 'RegForsinkelse'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid
-                    #Tss2Mott	Tss2Behandling	Tss2Lytte	Tss2Behandlere	Tss2Enighet	Tss2Generelt
-                    #R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,	R0ScoreEmo,
-                    #R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral
+valgtVar <- 'Prosedyrer'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid
 
-outfile <- '' #paste0(valgtVar, '_2ford.png')	#Navn angis av Jasper
+outfile <- '' #paste0(valgtVar, '_fordDiag3.png')	#Navn angis av Jasper
 
 NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
-	reshID=reshID, enhetsUtvalg=0, MCEType = MCEType, outfile=outfile, preprosess = preprosess,
+	reshID=reshID, enhetsUtvalg=1, MCEType = MCEType, outfile=outfile, preprosess = preprosess,
   minald=minald, maxald=maxald, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad, velgDiag = 3)
 
 ind <- which(RegData$InnDato<as.Date('2017-01-01') & RegData$InnDato>as.Date('2015-12-31'))
 
 #IKKE KLARE:
-Prosedyrer
+
 Diagnoser
 #Teste variable
 variable <- c('Alder','HysGjforingsGrad', 'HysKomplikasjoner','KomplPost',
@@ -86,7 +83,7 @@ variable <- c('Alder','HysGjforingsGrad', 'HysKomplikasjoner','KomplPost',
               'SivilStatus', 'Opf0metode', 'OpMetode', 'Norsktalende', 'OpAnestesi', 'OpASA',
               'OpBMI', 'OpKategori', 'OpDagkirurgi','Opf0AlvorlighetsGrad',
               'OpTidlVagInngrep', 'OpTidlLapsko',
-              'OpTidlLaparotomi', 'OpIVaktTid', 'OpType', 'RegForsinkelse', 'Utdanning')
+              'OpTidlLaparotomi', 'OpIVaktTid', 'OpType', 'Prosedyrer', 'RegForsinkelse', 'Utdanning')
 
 variable <- c('Utdanning','Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',	'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')
 variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
@@ -224,3 +221,10 @@ barplot(tapply(Leveringsdato-OpDato, SykehusNavn, FUN=mean, na.rm=T), horiz = T)
 
 help(barplot)
 
+
+
+a <- c(1:4,0:3,3:6)
+b <- matrix(a,3,4)
+colnames(b) <- c('rod', 'gronn','blaa','kvit')
+c <- apply(b, 1,FUN=unique)
+unlist(c)

@@ -105,12 +105,10 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   '%i%' <- intersect
  #koder <- NULL
 
+  if (!(valgtVar %in% c('Diagnoser', 'Prosedyrer'))) {
   NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, grVar='', figurtype='andeler')
   RegData <- NGERVarSpes$RegData
-  flerevar <- NGERVarSpes$flerevar
-  subtxt <- NGERVarSpes$subtxt
-  grtxt <- NGERVarSpes$grtxt
-
+}
   ###Gjør utvalg (NGERUtvalg)
   ###Kjører denne etter variabeldefinisjon for at utvalgTxt skal bli riktig
   NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra,
@@ -118,31 +116,24 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
                            Hastegrad=Hastegrad, velgDiag=velgDiag, enhetsUtvalg = enhetsUtvalg)
   RegData <- NGERUtvalg$RegData
   utvalgTxt <- NGERUtvalg$utvalgTxt
+  ind <- NGERUtvalg$ind
+
+  if (valgtVar %in% c('Diagnoser', 'Prosedyrer')) {
+    NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, grVar='', ind=ind, figurtype='andeler')
+    RegData <- NGERVarSpes$RegData
+  }
+  flerevar <- NGERVarSpes$flerevar
+  subtxt <- NGERVarSpes$subtxt
+  grtxt <- NGERVarSpes$grtxt
 
 
 
-#  #Gjør beregninger selv om det evt ikke skal vise figur ut. Trenger utdata.
-#  Andeler <- list(Hoved = 0, Rest =0)
-#  N$Rest <- 0
-#  AntRest <- 0
-
-#  #     if (flerevar == 0 ) { #pt. alltid 0 når kommer hit...
-#  AntHoved <- table(RegData$VariabelGr[indHoved])
-#  N$Hoved <- sum(AntHoved)
-#  Andeler$Hoved <- 100*AntHoved/N$Hoved
-#  if (medSml==1) {
-#    AntRest <- table(RegData$VariabelGr[indRest])
-#    N$Rest <- sum(AntRest)	#length(indRest)- Kan inneholde NA
-#    Andeler$Rest <- 100*AntRest/N$Rest
-#  }
-#  #    }
 
 #----------- Beregninger ---------------:
       Andeler <- list(Hoved = 0, Rest =0)
       N <- list(Hoved = 0, Rest =0)
       Nfig <- list(Hoved = 0, Rest =0) #figurtekst: N i legend
       Ngr <- list(Hoved = 0, Rest =0)
-      ind <- NGERUtvalg$ind
 	  variable <- NGERVarSpes$variable
 
       Ngr$Hoved <- switch(as.character(flerevar),
