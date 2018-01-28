@@ -42,7 +42,8 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
                     RAND0 = RegData[which(RegData$R0Status==1) %i% which(RegData$R0Metode %in% 1:2)
                                     %i% which(RegData$InnDato >= '2016-01-01'), ],
                     TSS0 = RegData[which(RegData$Tss2Status==1) %i% which(RegData$Tss2Type %in% 1:2)
-                                   %i% which(RegData$InnDato >= '2016-01-01'), ])
+                                   %i% which(RegData$InnDato >= '2016-01-01'), ],
+                    kvalInd = RegData)
 
   NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, reshID=reshID,  minald = minald, maxald = maxald, datoFra = datoFra,
                               datoTil = datoTil, MCEType = MCEType, Hastegrad=Hastegrad, velgDiag=velgDiag,
@@ -63,6 +64,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
   if (medSml == 0) {ind$Rest <- 0}
   N <- list(Hoved = length(ind$Hoved), Rest = length(ind$Rest))
   Ngr <- N
+  AggVerdier <- list(Hoved = 0, Rest = 0)
 
 
   ########RAND36
@@ -71,9 +73,9 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
     tittel <- 'RAND36, alle dimensjoner'
     Rand0var <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
                   'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')
-    grtxt <- c('Fysisk funksjon',	'Fysisk rollebegrensning',	'Følelsesmessig \n rollebegrensning',
+    grtxt <- c('Fysisk funksjon',	'Fysisk \n rollebegrensning',	'Følelsesmessig \n rollebegrensning',
                'Energinivå/vitalitet',	'Mental helse', 'Sosial funksjon',
-               'Smerte',	'Generell helsetilstand')
+               'Smerte',	'Generell \n helsetilstand')
     AggVerdier <- list(Hoved = colMeans(RegData[ind$Hoved, Rand0var], na.rm = T),
                        Rest = colMeans(RegData[ind$Rest, Rand0var], na.rm=T)) #AggVerdier <- list(Hoved=Midt, Rest=0, KIned=KIned, KIopp=KIopp, KIHele=KIHele)
     xakseTxt <- 'Gjennomsnittlig skår (høyest er best)'
@@ -104,27 +106,33 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
   }
 
   if (valgtVar == 'kvalInd') {
-    #  Reoperasjon for komplikasjoner innen 4 uker: intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1))
+    # Reoperasjon for komplikasjoner innen 4 uker:
+    #     intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1))
     #	Konvertering til laparoskopi (ut fra hysteroskopi) /laparotomi (ut fra hysteroskopi, laparoskopi).
-    # SJEKK:      Bare denne fra før: Konvertert til laparotomi?, intersect(which(RegData$LapKonvertert %in% 0:1), which(RegData$LapStatus == 1))
-    #	Intraoperative komplikasjoner. - både lap og hys? Blir ikke det "urettferdig" for de som gjør relativt mer hysteroskopi?
-    #	Oppfølging etter 4 uker, (postoperative) komplikasjoner): RegData$Variabel[RegData$Opf0Status==1] <- 1.
+    #   LapKonvertert og HysKonvertert gir konvertering for hhv både lap/hys og begge (og ingenting annet)
+    #	Intraoperative kompl.: HysKomplikasjoner/LapKomplikasjoner er NA hvis ikke hys/lap el. begge er utf.
+    #	Oppfølging etter 4 uker, kun de som faktisk har fått oppfølging:
     #               Ønsker å heller benytte RegData$Variabel[RegData$Opf0Metode %in% 1:2] <- 1
     tittel <- 'Kvalitetsindikatorer, prosessmål'
     grtxt <- c('Postop. komplikasjon: \n Reoperasjon', 'Konvertering hys->lap, \n hys/lap->laparatomi',
                'Intraoperative \n komplikasjoner', 'Oppfølging etter 4 uker')
-    variable <- c('Opf0Reoperasjon', 'LapKonvertert', 'Må sjekkes','Opf0Status')
+    variable <- c('PostOpKomplReop', 'LapKonvertert', 'HysKonvertert',
+                  'LapKomplikasjoner', 'HysKomplikasjoner', 'Opf0')
+
+    #Reoperasjon som følge av komplikasjon
+    #Kode 0: Nei, 1:Ja
+    RegData$PostOpKomplReop <- NA
+    RegData$PostOpKomplReop[which(RegData$Opf0Komplikasjoner %in% 0:1) %i% which(RegData$Opf0Status == 1)]
+    RegData$PostOpKomplReop[which(RegData$Opf0Reoperasjon == 1)] <- 1
+
+    RegData$Opf0 <- 0
+    RegData$Opf0[RegData$Opf0metode %in% 1:2] <- 1
+
+#!!!!!!!!!!!BEREGNINGER FOR GRUPPER MED ULIK N
 
 
 
-
-      varTxt <- 'av postoperativ oppfølging'
-      tittel <- 'Pasienter som har fått oppfølging etter 6-8 uker'
-
-
-
-
-    Ngrtxt <- paste0(' (', as.character(Ngr),')')
+   Ngrtxt <- paste0(' (', as.character(Ngr),')')
     indGrUt <- which(Ngr < Ngrense)
     if (length(indGrUt)==0) { indGrUt <- 0}
     Ngrtxt[indGrUt] <- paste0(' (<', Ngrense,')')

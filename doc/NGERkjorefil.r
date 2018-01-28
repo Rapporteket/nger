@@ -38,7 +38,7 @@ setwd("C:/ResultattjenesteGIT/nger/")
 reshID <- 110734 # 110734 (Tønsberg)  	700399
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
-datoFra <- '2015-01-01'	 # min og max dato i utvalget vises alltid i figuren.
+datoFra <- '2012-01-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2017-12-31'
 preprosess <- 1
 MCEType <- 99 #1: Laparoskopi, 2: Hysteroskopi, 3: Begge,  99: Alle
@@ -63,7 +63,7 @@ outfile <- ''
 #------------------------------ (erstatter Fordelinger) --------------------------
 
 
-valgtVar <- 'Alder'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid
+valgtVar <- 'Opf0metode'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid
 
 outfile <- '' #paste0(valgtVar, '_fordDiag3.png')	#Navn angis av Jasper
 
@@ -123,7 +123,7 @@ for (valgtVar in variable) {
 
 #------------------------------ Andeler per sykehus --------------------------
 #------------------------------ (AndelGrVar) --------------------------
-valgtVar <- 'RegForsinkelse' #Må velge... Alder, Opf0Reoperasjon, Education, Opf0AlvorlighetsGrad,
+valgtVar <- 'Opf0Status' #Må velge... Alder, Opf0Reoperasjon, Education, Opf0AlvorlighetsGrad,
       #KomplIntra, KomplPostop, OpAntibProfylakse, OpASA, OpBMI, Opf0Status, RegForsinkelse
       #Tss2Mott, Tss2Behandling,	Tss2Lytte, Tss2Behandlere, Tss2Enighet,	Tss2Generelt
 
@@ -173,10 +173,11 @@ for (valgtVar in variable) {
 
 
 #-----------------------------Kvalietsindikatorer------------------------------
-valgtVar <- RAND0 #TSS0, kvalInd
+valgtVar <- 'kvalInd' #TSS0, kvalInd
 outfile <- '' #paste0(valgtVar, '_kvalInd.png')
-NGERFigKvalInd(RegData, datoFra='2013-01-01', datoTil='3000-12-31', valgtVar, MCEType=99,
-               Hastegrad=99, preprosess=1, velgDiag=0, Ngrense=10, outfile=outfile)
+NGERFigKvalInd(RegData, datoFra='2013-01-01', datoTil='3000-12-31', valgtVar=valgtVar, MCEType=99,
+               Hastegrad=99, preprosess=1, velgDiag=0, Ngrense=10, enhetsUtvalg=1, reshID = reshID,
+               outfile=outfile)
 
 
 ######################### LITT LEKING ##############################

@@ -345,11 +345,12 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
   }
 
   if (valgtVar=='Opf0Status') { #andelGrVar, andelTid
-    #Andel med Opf0Status=1 (av samtlige, også tomme reg.)
+    #Andel med RegData$Opf0metode %in% 1:2 (av samtlige, også tomme reg. 9-oppf. ikke mulig)
     #Kode: tomme, -1,0,1
     #Tar ut hendelser siste 8 uker:
     datoTil <- min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 8*7))
-    RegData$Variabel[RegData$Opf0Status==1] <- 1
+
+    RegData$Variabel[RegData$Opf0metode %in% 1:2] <- 1 #Opf0Status==1
     varTxt <- 'av postoperativ oppfølging'
     tittel <- 'Pasienter som har fått oppfølging etter 6-8 uker'
   }
