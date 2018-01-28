@@ -373,11 +373,11 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
                      andeler='Tid fra operasjon til ferdigstilt registrering',
                      andelGrVar = 'Mer enn 6 uker fra operasjon til ferdig registrering')
     RegData$Variabel[RegData$Diff > 6*7] <- 1
-    subtxt <- 'dager'
+    subtxt <- 'døgn'
     gr <- c(0,1,7,14,30,90,365,5000) #gr <- c(seq(0, 90, 10), 1000)
     RegData$VariabelGr <- cut(RegData$Diff, breaks = gr, include.lowest = TRUE, right = TRUE)
     #plot(RegData$VariabelGr)
-    grtxt <- c('< 1 dag', '2d.-1uke', '1-2 uker', '2u.-1 mnd', '1-3 mnd', '3 mnd - 1 år', '>1 år')
+    grtxt <- c('<= 1', '(1-7]', '(7-14]', '(14-30]', '(30-90]', '(90-365]', '>365')
     #grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-2)], '>90')
     cexgr <- 0.9
   }
@@ -591,10 +591,11 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     #Når bare utført lap el hys:
     ind1 <- which(RegData$OpMetode %in% 1:2)
     ind2 <- which(RegData$OpMetode == 3)
-    AlleDiag1 <- unlist(apply(as.matrix(RegData[intersect(ind$Hoved, ind1), c(diagLap, diagHys)]), 1, FUN=unique))
-    AlleDiag2 <- unlist(apply(as.matrix(RegData[intersect(ind$Hoved, ind2), diagLap]), 1, FUN=unique))
-    AlleDiag <- c(AlleDiag1, AlleDiag2,
-                  unlist(apply(as.matrix(RegData[intersect(ind$Hoved, ind2), diagHys]), 1, FUN=unique)))
+    AlleDiag1 <- unlist(apply(as.matrix(RegData[intersect(ind$Hoved, ind1), c(diagLap, diagHys)]),
+                              1, FUN=unique))
+    AlleDiag2L <- unlist(apply(as.matrix(RegData[intersect(ind$Hoved, ind2), diagLap]), 1, FUN=unique))
+    AlleDiag2H <- unlist(apply(as.matrix(RegData[intersect(ind$Hoved, ind2), diagHys]), 1, FUN=unique))
+    AlleDiag <- c(AlleDiag1, AlleDiag2L, AlleDiag2H)
     AlleDiagSort <- sort(table(AlleDiag[which(AlleDiag != '')]), decreasing = TRUE)
     grtxt <- names(AlleDiagSort)[1:min(length(AlleDiagSort), ant)]	#Alle diagnoser som skal være med. Kan benyttes til å lage indeks...
     variable <- grtxt

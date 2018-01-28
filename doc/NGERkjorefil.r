@@ -49,7 +49,7 @@ velgDiag <- 0
 Hastegrad <- ''
 AlvorlighetKompl <- ''#c('2','3')
 hentData <- 0
-enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
+enhetsUtvalg <- 1 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
 
 tidsenhet <- 'Aar'
@@ -63,13 +63,13 @@ outfile <- ''
 #------------------------------ (erstatter Fordelinger) --------------------------
 
 
-valgtVar <- 'Prosedyrer'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid
+valgtVar <- 'Alder'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid
 
 outfile <- '' #paste0(valgtVar, '_fordDiag3.png')	#Navn angis av Jasper
 
 NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
 	reshID=reshID, enhetsUtvalg=1, MCEType = MCEType, outfile=outfile, preprosess = preprosess,
-  minald=minald, maxald=maxald, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad, velgDiag = 3)
+  minald=minald, maxald=maxald, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad, velgDiag = velgDiag)
 
 ind <- which(RegData$InnDato<as.Date('2017-01-01') & RegData$InnDato>as.Date('2015-12-31'))
 
