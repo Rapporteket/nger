@@ -116,10 +116,10 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
     #               Ønsker å heller benytte RegData$Variabel[RegData$Opf0Metode %in% 1:2] <- 1
     tittel <- 'Kvalitetsindikatorer, prosessmål'
     grtxt <- c('Postop. komplikasjon: \n Reoperasjon',
-               'Intraop. komplikasjon \n ved laparoskopi',
-               'Intraop. komplikasjon \n ved hysteroskopi',
-               'Konvertert laparoskopi \n til laparotomi', #"LapKonvertert":
-               'Konvertert hysteroskopi \n til laparaskopi/laparotomi', #"HysKonvertert":
+               'Intraop. komplikasjon ved \n laparoskopi',
+               'Intraop. komplikasjon ved \n hysteroskopi',
+               'Konvertert laparoskopi til \n laparotomi', #"LapKonvertert":
+               'Konvertert hysteroskopi til \n laparaskopi/laparotomi', #"HysKonvertert":
                'Ikke utført oppfølging \n etter 4 uker',
                'Ikke ferdistilt registrering \n innen 6 uker')
     variable <- c('PostOpKomplReop', 'LapKomplikasjoner', 'HysKomplikasjoner',
