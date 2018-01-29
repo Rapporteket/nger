@@ -32,6 +32,8 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
     RegData <- NGERPreprosess(RegData=RegData)
   }
 
+  RegData <- NGERRegDataSQL()
+  RegData <- NGERPreprosess(RegData=RegData)
   '%i%' <- intersect
 
 
@@ -39,8 +41,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
   #------- Gjøre utvalg
 #Utvalg fra variable:
   RegData <- switch(valgtVar,
-                    RAND0 = RegData[which(RegData$R0Status==1) %i% which(RegData$R0Metode %in% 1:2)
-                                    %i% which(RegData$InnDato >= '2016-01-01'), ],
+                    RAND0 = RegData[which(RegData$R0Status==1) %i% which(RegData$R0Metode %in% 1:2) %i% which(RegData$InnDato >= '2016-01-01'), ],
                     TSS0 = RegData[which(RegData$Tss2Status==1) %i% which(RegData$Tss2Type %in% 1:2)
                                    %i% which(RegData$InnDato >= '2016-01-01'), ],
                     kvalInd = RegData)
