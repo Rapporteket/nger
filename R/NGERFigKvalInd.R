@@ -222,8 +222,8 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
     if ( outfile != '') {dev.off()}
   }
 
-  #UtData <- list(paste0(toString(tittel),'.'), AggVerdier, N, grtxt )
-  #names(UtData) <- c('tittel', 'AggVerdier', 'Antall', 'GruppeTekst')
-  #return(invisible(UtData))
+  UtData <- list(paste0(toString(tittel),'.'), AggVerdier, N, grtxt )
+  names(UtData) <- c('tittel', 'AggVerdier', 'Antall', 'GruppeTekst')
+  return(invisible(UtData))
 }
 

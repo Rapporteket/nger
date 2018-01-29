@@ -173,9 +173,9 @@ for (valgtVar in variable) {
 
 
 #-----------------------------Kvalietsindikatorer------------------------------
-valgtVar <- 'kvalInd' #RAND0, TSS0, kvalInd
+valgtVar <- 'RAND0' #RAND0, TSS0, kvalInd
 outfile <- '' #paste0(valgtVar, '_kvalInd.png')
-NGERFigKvalInd(RegData, datoFra='2017-01-01', datoTil='2017-01-02', valgtVar=valgtVar, MCEType=99,
+NGERFigKvalInd(RegData, datoFra='2017-01-01', datoTil='3000-01-02', valgtVar=valgtVar, MCEType=99,
                Hastegrad=99, preprosess=1, velgDiag=0, Ngrense=10, enhetsUtvalg=1, reshID = reshID,
                outfile=outfile)
 
