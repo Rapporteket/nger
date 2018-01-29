@@ -67,6 +67,8 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
   AggVerdier <- list(Hoved = 0, Rest = 0)
   xakseTxt <- 'Andel (%)'
   xmax <- 100
+  indUtHoved <- NULL
+  indUtRest <- NULL
 
 
   ########RAND36
@@ -115,7 +117,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
     #	Oppfølging etter 4 uker, kun de som faktisk har fått oppfølging:
     #               Ønsker å heller benytte RegData$Variabel[RegData$Opf0Metode %in% 1:2] <- 1
     tittel <- 'Kvalitetsindikatorer, prosessmål'
-    grtxt <- c('Postop. komplikasjon: \n Reoperasjon',
+    grNavn <- c('Postop. komplikasjon: \n Reoperasjon',
                'Intraop. komplikasjon ved \n laparoskopi',
                'Intraop. komplikasjon ved \n hysteroskopi',
                'Konvertert laparoskopi til \n laparotomi', #"LapKonvertert":
@@ -156,9 +158,17 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
       N$Rest <- apply(RegData[ind$Rest,variable], MARGIN=2,
                                    FUN=function(x) sum(x %in% 0:1, na.rm=T))
       AggVerdier$Rest <- 100*Ngr$Rest/N$Rest
-    }
+      }
+
+    indUtHoved <- N$Hoved < Ngrense
+    indUtRest <- N$Rest < Ngrense
+    AggVerdier$Hoved[indUtHoved] <- NA
+    AggVerdier$Rest[indUtRest] <- NA
+
     xmax <- max(c(AggVerdier$Hoved, AggVerdier$Rest),na.rm=T)*1.15
-    grtxt <- paste0(grtxt, ' (N=', N$Hoved, ')')
+    grtxt <- paste0(grNavn, ' (N=', N$Hoved, ')')
+    grtxt[indUtHoved] <-   paste0(grNavn[indUtHoved], ' (N<', Ngrense, ')')
+
 } #end kvalInd
       Nfig$Hoved <- ifelse(min(N$Hoved)==max(N$Hoved),
                            min(N$Hoved[1]),
@@ -168,19 +178,21 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
                           paste0(min(N$Rest),'-',max(N$Rest)))
 
   soyletxt <- sprintf(paste0('%.1f'), AggVerdier$Hoved)
+  soyletxt[indUtHoved] <- ''
 
   cexgr <- 1-ifelse(length(soyletxt)>20, 0.25*length(soyletxt)/60, 0)
   grtxt2 <- paste0(sprintf('%.1f',AggVerdier$Hoved), '%') #paste0('(', sprintf('%.1f',AggVerdier$Hoved), '%)')
 
 
   ###-----------Figur---------------------------------------
-  if ( max(N$Hoved) < 5 | 	(NGERUtvalg$medSml ==1 & max(N$Rest)<10)) {
+  if ( max(N$Hoved) < Ngrense | 	(NGERUtvalg$medSml ==1 & max(N$Rest)< Ngrense)) {
     FigTypUt <- figtype(outfile)
     farger <- FigTypUt$farger
     plot.new()
     title(main=tittel)	#
     legend('topleft',utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
-    text(0.5, 0.6, 'Færre enn 5 "egne" registreringer eller \n færre enn 10 totalt for en variabel', cex=1.2)
+    text(0.5, 0.6, paste0('Færre enn ', Ngrense, ' "egne" registreringer eller \n
+                          færre enn ', Ngrense, ' i sammenligningsgruppe'), cex=1.2)
     if ( outfile != '') {dev.off()}
 
   } else {
