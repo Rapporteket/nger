@@ -32,8 +32,6 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
     RegData <- NGERPreprosess(RegData=RegData)
   }
 
-  RegData <- NGERRegDataSQL()
-  RegData <- NGERPreprosess(RegData=RegData)
   '%i%' <- intersect
 
 
@@ -117,9 +115,13 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
     #	Oppfølging etter 4 uker, kun de som faktisk har fått oppfølging:
     #               Ønsker å heller benytte RegData$Variabel[RegData$Opf0Metode %in% 1:2] <- 1
     tittel <- 'Kvalitetsindikatorer, prosessmål'
-    grtxt <- c('Postop. komplikasjon: \n Reoperasjon', 'Intraop. komplikasjon \n ved laparoskopi',
-               'Intraop. komplikasjon \n ved hysteroskopi', 'Konvertering \n hys. til laparoskopi',
-               'Konvertering \n hys./lap. til laparatomi', 'Ikke utført oppfølging \n etter 4 uker', 'Ikke ferdistilt registrering \n innen 6 uker')
+    grtxt <- c('Postop. komplikasjon: \n Reoperasjon',
+               'Intraop. komplikasjon \n ved laparoskopi',
+               'Intraop. komplikasjon \n ved hysteroskopi',
+               'Konvertert laparoskopi \n til laparotomi', #"LapKonvertert":
+               'Konvertert hysteroskopi \n til laparaskopi/laparotomi', #"HysKonvertert":
+               'Ikke utført oppfølging \n etter 4 uker',
+               'Ikke ferdistilt registrering \n innen 6 uker')
     variable <- c('PostOpKomplReop', 'LapKomplikasjoner', 'HysKomplikasjoner',
                   'LapKonvertert', 'HysKonvertert', 'Opf0', 'Innen6uker')
 
@@ -156,7 +158,8 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
       AggVerdier$Rest <- 100*Ngr$Rest/N$Rest
     }
     xmax <- max(c(AggVerdier$Hoved, AggVerdier$Rest),na.rm=T)*1.15
-}
+    grtxt <- paste0(grtxt, ' (N=', N$Hoved, ')')
+} #end kvalInd
       Nfig$Hoved <- ifelse(min(N$Hoved)==max(N$Hoved),
                            min(N$Hoved[1]),
                            paste0(min(N$Hoved),'-',max(N$Hoved)))
