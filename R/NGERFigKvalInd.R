@@ -63,8 +63,11 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
   ind <- NGERUtvalg$ind
   if (medSml == 0) {ind$Rest <- 0}
   N <- list(Hoved = length(ind$Hoved), Rest = length(ind$Rest))
+  Nfig <- N
   Ngr <- N
   AggVerdier <- list(Hoved = 0, Rest = 0)
+  xakseTxt <- 'Andel (%)'
+  xmax <- 100
 
 
   ########RAND36
@@ -91,7 +94,6 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
     'Svært stor grad av tillit \n til behandlerne',
     'Svært stor grad av enighet \n om målsetn. for behandlinga',
     'Svært positiv oppfatning \n av gyn. avd.')
-    xakseTxt <- 'Andel (%)'
     Ngr$Hoved <- apply(RegData[ind$Hoved,variable], MARGIN=2,
                                     FUN=function(x) sum(x == 3, na.rm=T))
     Ngr$Hoved['Tss2Generelt'] <- sum(RegData$Tss2Generelt[ind$Hoved]==4, na.rm=T)
@@ -114,61 +116,65 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
     #	Oppfølging etter 4 uker, kun de som faktisk har fått oppfølging:
     #               Ønsker å heller benytte RegData$Variabel[RegData$Opf0Metode %in% 1:2] <- 1
     tittel <- 'Kvalitetsindikatorer, prosessmål'
-    grtxt <- c('Postop. komplikasjon: \n Reoperasjon', 'Konvertering hys->lap, \n hys/lap->laparatomi',
-               'Intraoperative \n komplikasjoner', 'Oppfølging etter 4 uker')
-    variable <- c('PostOpKomplReop', 'LapKonvertert', 'HysKonvertert',
-                  'LapKomplikasjoner', 'HysKomplikasjoner', 'Opf0')
+    grtxt <- c('Postop. komplikasjon: \n Reoperasjon', 'Intraop. komplikasjon \n ved laparoskopi',
+               'Intraop. komplikasjon \n ved hysteroskopi', 'Konvertering \n hys. til laparoskopi',
+               'Konvertering \n hys./lap. til laparatomi', 'Ikke utført oppfølging \n etter 4 uker', 'Ikke ferdistilt registrering \n innen 6 uker')
+    variable <- c('PostOpKomplReop', 'LapKomplikasjoner', 'HysKomplikasjoner',
+                  'LapKonvertert', 'HysKonvertert', 'Opf0', 'Innen6uker')
+
+    RegData$Diff <- as.numeric(as.Date(RegData$Leveringsdato) - as.Date(RegData$InnDato)) #difftime(RegData$InnDato, RegData$Leveringsdato) #
+    RegData$Innen6uker <- NA
+    RegData$Innen6uker[which(RegData$OpStatus==1) %i% which(RegData$Diff > -1)] <- 0
+    RegData$Innen6uker[RegData$Diff > 6*7] <- 1
 
     #Reoperasjon som følge av komplikasjon
     #Kode 0: Nei, 1:Ja
     RegData$PostOpKomplReop <- NA
-    RegData$PostOpKomplReop[which(RegData$Opf0Komplikasjoner %in% 0:1) %i% which(RegData$Opf0Status == 1)]
+    RegData$PostOpKomplReop[which(RegData$Opf0Komplikasjoner %in% 0:1)
+                            %i% which(RegData$Opf0Status == 1)] <- 0
     RegData$PostOpKomplReop[which(RegData$Opf0Reoperasjon == 1)] <- 1
 
     RegData$Opf0 <- 0
-    RegData$Opf0[RegData$Opf0metode %in% 1:2] <- 1
-
-#!!!!!!!!!!!BEREGNINGER FOR GRUPPER MED ULIK N
+    RegData$Opf0[!(RegData$Opf0metode %in% 1:2)] <- 1
 
 
+    Ngr$Hoved <- apply(RegData[ind$Hoved,variable], MARGIN=2,
+                                    FUN=function(x) sum(x == 1, na.rm=T))
+    #N$ gjelder selv om totalutvalget er ulikt for de ulike variablene i flerevar
+    N$Hoved <- apply(RegData[ind$Hoved,variable], MARGIN=2,
+                                  FUN=function(x) sum(x %in% 0:1, na.rm=T))
+    AggVerdier$Hoved <- 100*Ngr$Hoved/N$Hoved
 
-   Ngrtxt <- paste0(' (', as.character(Ngr),')')
-    indGrUt <- which(Ngr < Ngrense)
-    if (length(indGrUt)==0) { indGrUt <- 0}
-    Ngrtxt[indGrUt] <- paste0(' (<', Ngrense,')')
-    N <- dim(RegData)[1]
-
-    indUT <- which(is.na(Midt))  #Rydd slik at bare benytter indGrUt
-    soyletxt[indUT] <- ''
-    Ngr <- list(Hoved=Ngr[sortInd], Rest=0)
-
+    if (NGERUtvalg$medSml==1) {
+      Ngr$Rest <- apply(RegData[ind$Rest,variable], MARGIN=2,
+                                     FUN=function(x) sum(x == 1, na.rm=T))
+      N$Rest <- apply(RegData[ind$Rest,variable], MARGIN=2,
+                                   FUN=function(x) sum(x %in% 0:1, na.rm=T))
+      AggVerdier$Rest <- 100*Ngr$Rest/N$Rest
+    }
+    xmax <- max(c(AggVerdier$Hoved, AggVerdier$Rest),na.rm=T)*1.15
 }
-
-  Nfig <- list(Hoved=NULL, Rest=NULL)
-  Nfig$Hoved <- ifelse(min(N$Hoved)==max(N$Hoved),
-                       min(N$Hoved[1]),
-                       paste0(min(N$Hoved),'-',max(N$Hoved)))
-  Nfig$Rest <- ifelse(min(N$Rest)==max(N$Rest),
-                      min(N$Rest[1]),
-                      paste0(min(N$Rest),'-',max(N$Rest)))
-
+      Nfig$Hoved <- ifelse(min(N$Hoved)==max(N$Hoved),
+                           min(N$Hoved[1]),
+                           paste0(min(N$Hoved),'-',max(N$Hoved)))
+      Nfig$Rest <- ifelse(min(N$Rest)==max(N$Rest),
+                          min(N$Rest[1]),
+                          paste0(min(N$Rest),'-',max(N$Rest)))
 
   soyletxt <- sprintf(paste0('%.1f'), AggVerdier$Hoved)
-  antDesTxt <- paste0('%.', 1, 'f')
-  #grtxt <- paste0(rev(grtxt), '\n (', rev(sprintf(antDesTxt, AggVerdier$Hoved)), '%)')
 
   cexgr <- 1-ifelse(length(soyletxt)>20, 0.25*length(soyletxt)/60, 0)
   grtxt2 <- paste0(sprintf('%.1f',AggVerdier$Hoved), '%') #paste0('(', sprintf('%.1f',AggVerdier$Hoved), '%)')
 
 
   ###-----------Figur---------------------------------------
-  if ( max(Nfig$Hoved) < 5 | 	(NGERUtvalg$medSml ==1 & Nfig$Rest<10)) {
+  if ( max(N$Hoved) < 5 | 	(NGERUtvalg$medSml ==1 & max(N$Rest)<10)) {
     FigTypUt <- figtype(outfile)
     farger <- FigTypUt$farger
     plot.new()
     title(main=tittel)	#
     legend('topleft',utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
-    text(0.5, 0.6, 'Færre enn 5 "egne" registreringer eller færre enn 10 totalt', cex=1.2)
+    text(0.5, 0.6, c('Færre enn 5 "egne" registreringer eller', 'færre enn 10 totalt for en variabel'), cex=1.2)
     if ( outfile != '') {dev.off()}
 
   } else {
@@ -189,7 +195,6 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
     cexleg <- 1	#Størrelse på legendtekst
     cexgr <- 1
 
-      xmax <- 100 #max(c(AggVerdier$Hoved, AggVerdier$Rest),na.rm=T)*1.15
       pos <- barplot(as.numeric(AggVerdier$Hoved), horiz=TRUE, beside=TRUE, las=1, xlab=xakseTxt, #main=tittel,
                      col=fargeHoved, border='white', font.main=1, xlim=c(0, xmax), ylim=c(0.05,1.4)*antGr)	#
       if (Nfig$Hoved>0) {mtext(at=pos+0.05, text=grtxt, side=2, las=1, cex=cexgr, adj=1, line=0.25)}
@@ -197,7 +202,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
       text(x=soyleXpos+xmax*0.02, y=pos+0.1, soyletxt, las=1, cex=cexgr, adj=1, col=farger[4])	#AggVerdier, hvert sykehus
 
       if (NGERUtvalg$medSml == 1) {
-        points(as.numeric(rev(AggVerdier$Rest)), pos, col=fargeRest,  cex=2, pch=18) #c("p","b","o"),
+        points(as.numeric(AggVerdier$Rest), pos, col=fargeRest,  cex=2, pch=18) #c("p","b","o"),
         legend('top', c(paste0(NGERUtvalg$hovedgrTxt, ' (N=', Nfig$Hoved,')'),
                         paste0(NGERUtvalg$smltxt, ' (N=', Nfig$Rest,')')),
                border=c(fargeHoved,NA), col=c(fargeHoved,fargeRest), bty='n', pch=c(15,18), pt.cex=2,
