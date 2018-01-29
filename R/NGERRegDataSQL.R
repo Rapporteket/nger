@@ -112,6 +112,8 @@ query <- paste0('SELECT
     HysDiagnose1,
     HysDiagnose2,
     HysDiagnose3,
+    HysKomplikasjoner,
+    HysKonvertert,
     HysProsedyre1,
     HysProsedyre2,
     HysProsedyre3,

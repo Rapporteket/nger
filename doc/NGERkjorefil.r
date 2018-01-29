@@ -19,7 +19,7 @@ tools:: texi2pdf('NGERmonthlyReport.tex')
 #Vil "snart" endre spørringa slik at det i hvert tilfelle spørres etter de variablene man trenger.
 
 rm(list=ls())
-dato <- '2017-11-30'
+dato <- '2018-01-29'
 NGERBasis <- read.table(paste0('A:/NGER/AlleVarNum', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #,
 NGERForlop <- read.table(paste0('A:/NGER/ForlopsOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
 #NGEROppf <- read.table('C:/Registre/NGER/data/FollowupsNum2016-10-14.csv', sep=';', header=T, fileEncoding = 'UTF-8')
@@ -28,7 +28,7 @@ NGERForlop <- read.table(paste0('A:/NGER/ForlopsOversikt', dato, '.csv'), sep=';
 NGERData <- merge(NGERBasis, NGERForlop, by = "ForlopsID", suffixes = c('','YY'),all.x = TRUE, all.y=FALSE)
 #write.table(NGERData, file = "NGERData.csv", row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
 RegData <- NGERData
-
+#save(RegData, file=paste0('A:/NGER/NGER', dato, '.Rdata'))
 load(paste0('A:/NGER/NGER', dato, '.Rdata'))
 
 library(nger)
@@ -38,8 +38,8 @@ setwd("C:/ResultattjenesteGIT/nger/")
 reshID <- 110734 # 110734 (Tønsberg)  	700399
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
-datoFra <- '2012-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2017-12-31'
+datoFra <- '2017-01-01'	 # min og max dato i utvalget vises alltid i figuren.
+datoTil <- '2018-12-31'
 preprosess <- 1
 MCEType <- 99 #1: Laparoskopi, 2: Hysteroskopi, 3: Begge,  99: Alle
 #'                 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
@@ -174,10 +174,16 @@ for (valgtVar in variable) {
 
 #-----------------------------Kvalietsindikatorer------------------------------
 valgtVar <- 'kvalInd' #RAND0, TSS0, kvalInd
-outfile <- paste0(valgtVar, '_kvalInd.png')
-NGERFigKvalInd(RegData, datoFra='2013-01-01', datoTil='3000-12-31', valgtVar=valgtVar, MCEType=99,
+outfile <- '' #paste0(valgtVar, '_kvalInd.png')
+NGERFigKvalInd(RegData, datoFra='2017-01-01', datoTil='2017-01-02', valgtVar=valgtVar, MCEType=99,
                Hastegrad=99, preprosess=1, velgDiag=0, Ngrense=10, enhetsUtvalg=1, reshID = reshID,
                outfile=outfile)
+
+RegData <- RegData[which(as.Date(RegData$HovedDato)>=as.Date('2017-01-01')), ]
+ind <- which(as.Date(RegData$HovedDato) < '2017-03-30')
+sum(table(RegData$Opf0metode[ind], useNA = 'a')[3:4])/length(ind)
+table(RegData$Opf0Status[ind], useNA = 'a')
+table(RegData$Opf0metode[ind], useNA = 'a')
 
 
 ######################### LITT LEKING ##############################

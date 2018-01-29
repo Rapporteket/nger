@@ -134,8 +134,10 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
                             %i% which(RegData$Opf0Status == 1)] <- 0
     RegData$PostOpKomplReop[which(RegData$Opf0Reoperasjon == 1)] <- 1
 
-    RegData$Opf0 <- 0
-    RegData$Opf0[!(RegData$Opf0metode %in% 1:2)] <- 1
+    RegData$Opf0 <- 1
+    datoTil <- min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 8*7))
+    RegData$Opf0[RegData$InnDato>datoTil] <- NA
+    RegData$Opf0[RegData$Opf0metode %in% 1:2] <- 0
 
 
     Ngr$Hoved <- apply(RegData[ind$Hoved,variable], MARGIN=2,
@@ -174,7 +176,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
     plot.new()
     title(main=tittel)	#
     legend('topleft',utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
-    text(0.5, 0.6, c('Færre enn 5 "egne" registreringer eller', 'færre enn 10 totalt for en variabel'), cex=1.2)
+    text(0.5, 0.6, 'Færre enn 5 "egne" registreringer eller \n færre enn 10 totalt for en variabel', cex=1.2)
     if ( outfile != '') {dev.off()}
 
   } else {
