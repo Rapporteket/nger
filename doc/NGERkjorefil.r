@@ -19,7 +19,7 @@ tools:: texi2pdf('NGERmonthlyReport.tex')
 #Vil "snart" endre spørringa slik at det i hvert tilfelle spørres etter de variablene man trenger.
 
 rm(list=ls())
-dato <- '2018-01-29'
+dato <- '2018-04-03'
 NGERBasis <- read.table(paste0('A:/NGER/AlleVarNum', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #,
 NGERForlop <- read.table(paste0('A:/NGER/ForlopsOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
 #NGEROppf <- read.table('C:/Registre/NGER/data/FollowupsNum2016-10-14.csv', sep=';', header=T, fileEncoding = 'UTF-8')
@@ -240,3 +240,27 @@ b <- matrix(a,3,4)
 colnames(b) <- c('rod', 'gronn','blaa','kvit')
 c <- apply(b, 1,FUN=unique)
 unlist(c)
+
+
+############## Signifikant endring? --------------------------------------------------
+#Signifikant endring i andel postoperative komplikasjoner for Sandnessjøen 2016 vs 2017?
+RegData <- NGERPreprosess(RegData=RegData)
+table(RegData$Aar)
+RegData <- RegData[which(RegData$Aar %in% 2016:2017),]
+'%i%' <- intersect
+RegData <- RegData[which(RegData$Opf0Komplikasjoner %in% 0:1) %i%
+                             which(RegData$Opf0Status == 1) %i%
+                             which(RegData$OpMetode == 1) %i% which(RegData$ShNavn=='Sandessjøen'), ]
+table(RegData$Opf0Komplikasjoner, RegData$Aar)
+#2016 2017
+#0   42   38
+#1    9    4
+prop.test(x=c(9,3), n=c(51, 42), alternative = "greater",correct = FALSE) #
+prop.table(table(RegData$Opf0Komplikasjoner, RegData$Aar), margin = 2)
+prop.test(x=table(RegData$Aar, RegData$Opf0Komplikasjoner), correct=FALSE)
+
+
+
+
+
+

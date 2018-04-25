@@ -548,7 +548,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     retn <- 'H'
     RegData <- RegData[which(RegData[ ,valgtVar] %in% koder) %i% which(RegData$Tss2Status == 1), ]
     RegData$VariabelGr <- factor(RegData$Tss2Generelt, levels=koder, labels = grtxt) #levels=c(nivaa,9)
-    RegData$Variabel[which(RegData$Tss2Generelt == 0)] <- 1 #andelGrVar
+    RegData$Variabel[which(RegData$Tss2Generelt %in% 0:1)] <- 1 #andelGrVar
   }
   if (valgtVar == 'Utdanning') {   #Andeler
     # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
