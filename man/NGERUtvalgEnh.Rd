@@ -7,7 +7,7 @@
 NGERUtvalgEnh(RegData, datoFra = "2016-01-01", datoTil = "3000-12-31",
   fargepalett = "BlaaOff", minald = 0, maxald = 130, MCEType = "",
   AlvorlighetKompl = "", Hastegrad = "", enhetsUtvalg = 0, velgAvd = "",
-  velgDiag = 0)
+  velgDiag = 0, reshID = 0)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -53,6 +53,9 @@ IKKE tatt høyde for sammenlikning mot "resten".}
 1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
 2: Endometriose, livmorvegg (N80.0)
 3: Endometriose, unntatt livmorvegg.}
+
+\item{reshID}{Parameter følger fra innlogging helseregister.no og angir
+hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 }
 \value{
 UtData En liste bestående av det filtrerte datasettet, utvalgstekst for figur og

@@ -122,15 +122,15 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
                'Intraop. komplikasjon ved \n hysteroskopi',
                'Konvertert laparoskopi til \n laparotomi', #"LapKonvertert":
                'Konvertert hysteroskopi til \n laparaskopi/laparotomi', #"HysKonvertert":
-               'Ikke utført oppfølging \n etter 4 uker',
-               'Ikke ferdistilt registrering \n innen 6 uker')
+               'Ikke utført oppfølging \n etter 4 uker')
+               # Ikke ferdistilt registrering \n innen 6 uker')
     variable <- c('PostOpKomplReop', 'LapKomplikasjoner', 'HysKomplikasjoner',
-                  'LapKonvertert', 'HysKonvertert', 'Opf0', 'Innen6uker')
+                  'LapKonvertert', 'HysKonvertert', 'Opf0') #, 'Innen6uker')
 
-    RegData$Diff <- as.numeric(as.Date(RegData$Leveringsdato) - as.Date(RegData$InnDato)) #difftime(RegData$InnDato, RegData$Leveringsdato) #
-    RegData$Innen6uker <- NA
-    RegData$Innen6uker[which(RegData$OpStatus==1) %i% which(RegData$Diff > -1)] <- 0
-    RegData$Innen6uker[RegData$Diff > 6*7] <- 1
+    # RegData$Diff <- as.numeric(as.Date(RegData$Leveringsdato) - as.Date(RegData$InnDato)) #difftime(RegData$InnDato, RegData$Leveringsdato) #
+    # RegData$Innen6uker <- NA
+    # RegData$Innen6uker[which(RegData$OpStatus==1) %i% which(RegData$Diff > -1)] <- 0
+    # RegData$Innen6uker[RegData$Diff > 6*7] <- 1
 
     #Reoperasjon som følge av komplikasjon
     #Kode 0: Nei, 1:Ja

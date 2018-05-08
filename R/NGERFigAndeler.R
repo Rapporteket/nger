@@ -43,7 +43,7 @@
 #'     \item R0ScoreRoleLmtPhy:
 #'     \item R0ScoreRoleLmtEmo:
 #'     \item R0ScoreSosial:
-#'     \item RegForsinkelse: Tid fra operasjon til ferdigstilt registrering
+#'     \item RegForsinkelse: MANGLER BEREGNINGSVARIABEL Tid fra operasjon til ferdigstilt registrering
 #'     \item Prosedyrer: Hyppigst forekommende prosedyrer
 #'     \item SivilStatus: Sivilstand
 #'     \item Tss2Mott: Hvordan du ble mottatt på avd.

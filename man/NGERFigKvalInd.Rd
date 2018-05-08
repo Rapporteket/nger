@@ -4,19 +4,27 @@
 \alias{NGERFigKvalInd}
 \title{Søylediagram som viser flere kvalitetsindikatorer}
 \usage{
-NGERFigKvalInd(RegData, datoFra = "2013-01-01", datoTil = "3000-12-31",
-  valgtVar, minald = 0, maxald = 130, MCEType = 99, Hastegrad = 99,
-  hentData = 0, preprosess = 1, velgDiag = 0, Ngrense = 10,
-  outfile = "")
+NGERFigKvalInd(RegData, reshID = 0, datoFra = "2013-01-01",
+  datoTil = "3000-12-31", valgtVar, enhetsUtvalg = 0, minald = 0,
+  maxald = 130, MCEType = 99, Hastegrad = 99, hentData = 0,
+  preprosess = 1, velgDiag = 0, Ngrense = 10, outfile = "")
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
+
+\item{reshID}{Parameter følger fra innlogging helseregister.no og angir
+hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 
 \item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}
 
 \item{datoTil}{Seneste dato i utvalget (vises alltid i figuren).}
 
 \item{valgtVar}{Hvilken variabel som skal visualiseres}
+
+\item{enhetsUtvalg}{Lag figur for
+0: Hele landet
+1: Egen enhet mot resten av landet (Standard)
+2: Egen enhet}
 
 \item{minald}{Alder, fra og med (Standardverdi: 0)}
 
@@ -51,7 +59,7 @@ NGERFigKvalInd(RegData, datoFra = "2013-01-01", datoTil = "3000-12-31",
 til systemets standard utdataenhet (som regel skjerm))}
 }
 \value{
-Søylediagram med gjennomsnitt/median av valgt variabel for hvert sykehus
+Søylediagram samling av kvalitetsindikatorer
 }
 \description{
 Funksjon som genererer en figurer med ei gruppe kvalitetsindikatorer

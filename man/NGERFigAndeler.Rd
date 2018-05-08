@@ -6,7 +6,7 @@
 \usage{
 NGERFigAndeler(RegData = 0, valgtVar, datoFra = "2013-01-01",
   datoTil = "2050-12-31", minald = 0, maxald = 130, outfile = "",
-  reshID, enhetsUtvalg = 0, MCEType = 99, Hastegrad = "",
+  reshID = 0, enhetsUtvalg = 0, MCEType = 99, Hastegrad = "",
   AlvorlighetKompl = "", velgDiag = 0, hentData = 0, preprosess = 0)
 }
 \arguments{
@@ -113,7 +113,7 @@ Argumentet \emph{valgtVar} har følgende valgmuligheter:
     \item R0ScoreRoleLmtPhy:
     \item R0ScoreRoleLmtEmo:
     \item R0ScoreSosial:
-    \item RegForsinkelse: Tid fra operasjon til ferdigstilt registrering
+    \item RegForsinkelse: MANGLER BEREGNINGSVARIABEL Tid fra operasjon til ferdigstilt registrering
     \item Prosedyrer: Hyppigst forekommende prosedyrer
     \item SivilStatus: Sivilstand
     \item Tss2Mott: Hvordan du ble mottatt på avd.

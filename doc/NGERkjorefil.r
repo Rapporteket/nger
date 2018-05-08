@@ -19,7 +19,7 @@ tools:: texi2pdf('NGERmonthlyReport.tex')
 #Vil "snart" endre spørringa slik at det i hvert tilfelle spørres etter de variablene man trenger.
 
 rm(list=ls())
-dato <- '2018-04-03'
+dato <- '2018-01-29'
 NGERBasis <- read.table(paste0('A:/NGER/AlleVarNum', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #,
 NGERForlop <- read.table(paste0('A:/NGER/ForlopsOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
 #NGEROppf <- read.table('C:/Registre/NGER/data/FollowupsNum2016-10-14.csv', sep=';', header=T, fileEncoding = 'UTF-8')
