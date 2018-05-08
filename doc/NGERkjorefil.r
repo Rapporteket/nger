@@ -19,7 +19,7 @@ tools:: texi2pdf('NGERmonthlyReport.tex')
 #Vil "snart" endre spørringa slik at det i hvert tilfelle spørres etter de variablene man trenger.
 
 rm(list=ls())
-dato <- '2018-01-29'
+dato <- '2018-04-03'
 NGERBasis <- read.table(paste0('A:/NGER/AlleVarNum', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #,
 NGERForlop <- read.table(paste0('A:/NGER/ForlopsOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
 #NGEROppf <- read.table('C:/Registre/NGER/data/FollowupsNum2016-10-14.csv', sep=';', header=T, fileEncoding = 'UTF-8')
@@ -38,7 +38,7 @@ setwd("C:/ResultattjenesteGIT/nger/")
 reshID <- 110734 # 110734 (Tønsberg)  	700399
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
-datoFra <- '2017-01-01'	 # min og max dato i utvalget vises alltid i figuren.
+datoFra <- '2014-01-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2018-12-31'
 preprosess <- 1
 MCEType <- 99 #1: Laparoskopi, 2: Hysteroskopi, 3: Begge,  99: Alle
@@ -94,7 +94,7 @@ for (valgtVar in variable) {
 #Opf0KomplUtstyr - LapAdherProfylakse
 
 
-#------------------------------ Andeler per år --------------------------
+#------------------------------ Andeler per tidsenhet --------------------------
 #------------------------------ (AndelTid) --------------------------
 valgtVar <- 'Alder' #LapKonvertert
 outfile <- '' #paste0(valgtVar, '_', tidsenhet, '.png')
@@ -104,7 +104,7 @@ NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=dat
             minald=minald, maxald=maxald, MCEType=MCEType, Hastegrad=Hastegrad,
             AlvorlighetKompl=AlvorlighetKompl, preprosess=1) #
 
-
+NGERFigAndelTid(RegData=RegData, valgtVar='Alder', reshID=reshID, enhetsUtvalg=2)
 
 #Teste variable
 variable <- c('Alder', 'LapKonvertert','Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan',

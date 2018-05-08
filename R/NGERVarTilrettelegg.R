@@ -507,7 +507,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     #0:Nei, 1:Ja, til en viss grad, 2:Ja, i ganske stor grad, 3:Ja, i svært stor grad
     tittel <- switch(figurtype,
                      andeler = 'Lyttet og forsto dine behandlere det du tok opp?',
-                     andelGrVar = 'I svært stor grad lyttet \n og forsto behandlerne')
+                     andelGrVar = 'I svært stor grad lyttet og forsto behandlerne')
     grtxt <- c("Nei","Ja, til en viss grad","Ja, i ganske stor grad","Ja, i svært stor grad")
     koder <- 0:3
     retn <- 'H'

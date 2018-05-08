@@ -149,8 +149,6 @@ if (velgDiag !=0) {
     }
   }
 
-
-
   UtData <- list(RegData=RegData, utvalgTxt=utvalgTxt, fargepalett=fargepalett,
 				ind=ind, medSml=medSml, hovedgrTxt=hovedgrTxt, smltxt=smltxt)
   return(invisible(UtData))

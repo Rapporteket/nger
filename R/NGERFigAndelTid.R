@@ -57,7 +57,7 @@ NGERFigAndelTid <- function(RegData=0, valgtVar, datoFra='2014-01-01', datoTil='
   #                                           strftime(datoTil, format="%m"),'-','01')}
 
   NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, enhetsUtvalg=enhetsUtvalg, datoFra=datoFra, datoTil=datoTil,
-                              minald=minald, maxald=maxald, velgDiag=velgDiag,
+                              minald=minald, maxald=maxald, velgDiag=velgDiag, reshID = reshID,
                               MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
   RegData <- NGERUtvalg$RegData
   utvalgTxt <- NGERUtvalg$utvalgTxt
