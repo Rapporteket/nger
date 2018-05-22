@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<!-- Created with Jaspersoft Studio version 6.4.3.final using JasperReports Library version 6.4.3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="NGERFigAndelerAsRPackage" language="groovy" pageWidth="595" pageHeight="595" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" scriptletClass="no.skde.report.nger.NGERCommonScriptletRPackage" isIgnorePagination="true" uuid="9ca92060-e90f-4e3c-acec-23662a03f059">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -37,13 +37,13 @@
 		<defaultValueExpression><![CDATA[new String("nger")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="rFunctionCallString" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new String("NGERFigAndeler(RegData=0, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad, MCEType=MCEType, hentData=1, preprosess=1)")]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new String("NGERFigAndeler(RegData=0, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad, MCEType=MCEType,velgDiag=velgDiag,  hentData=1, preprosess=1)")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="varName" class="java.lang.String">
 		<defaultValueExpression><![CDATA[new String("Alder")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="beginDate" class="java.util.Date">
-		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").parse("2016-01-01")]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").parse("2017-01-01")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="endDate" class="java.util.Date">
 		<parameterDescription><![CDATA[]]></parameterDescription>
@@ -57,6 +57,9 @@
 	</parameter>
 	<parameter name="MCEType" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[new java.lang.Integer(99)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="velgDiag" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new java.lang.Integer(0)]]></defaultValueExpression>
 	</parameter>
 	<parameter name="AlvorlighetKompl" class="java.util.List">
 		<defaultValueExpression><![CDATA[[""]]]></defaultValueExpression>

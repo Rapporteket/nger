@@ -7,8 +7,8 @@
 NGERFigGjsnGrVar(RegData, datoFra = "2013-01-01", datoTil = "3000-12-31",
   valgtVar, minald = 0, maxald = 130, MCEType = 99,
   AlvorlighetKompl = 99, Hastegrad = 99, valgtMaal = "Gjsn",
-  hentData = 0, preprosess = 1, grVar = "ShNavn", Ngrense = 10,
-  medKI = 1, lagFig = 1, outfile = "")
+  hentData = 0, preprosess = 1, grVar = "ShNavn", velgAvd = "",
+  velgDiag = 0, Ngrense = 10, medKI = 1, lagFig = 1, outfile = "")
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -28,17 +28,14 @@ NGERFigGjsnGrVar(RegData, datoFra = "2013-01-01", datoTil = "3000-12-31",
 3: Begge
 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
 5: LCC11 (laparoskopisk subtotal hysterektomi)
-6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
-99: Alle}
+6: LCD11 (laparoskopisk assistert vaginal hysterektomi)}
 
 \item{AlvorlighetKompl}{Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
-                         Angis som en vektor av tall som tekst, f.eks. c('1','2')
-                         1: Lite alvorlig
-                         2: Middels alvorlig
-                         3: Alvorlig
-                         4: Dødelig
-
-Detajer: Her bør man liste opp hvilke variable funksjonen benytter.}
+Angis som en vektor av tall som tekst, f.eks. c('1','2')
+1: Lite alvorlig
+2: Middels alvorlig
+3: Alvorlig
+4: Dødelig}
 
 \item{Hastegrad}{Hastegrad av operasjon.
 1: Elektiv
@@ -50,9 +47,7 @@ Detajer: Her bør man liste opp hvilke variable funksjonen benytter.}
 Argumentet \emph{valgtVar} har følgende valgmuligheter:
    \itemize{
     \item Liggedogn: Liggetid
-   }
-
-Detajer: Her bør man liste opp hvilke variable funksjonen benytter.}
+   }}
 
 \item{hentData}{Gjør spørring mot database
 0: Nei, RegData gis som input til funksjonen (Standard)
@@ -61,6 +56,14 @@ Detajer: Her bør man liste opp hvilke variable funksjonen benytter.}
 \item{preprosess}{Preprosesser data
 0: Nei (Standard)
 1: Ja}
+
+\item{velgAvd}{Velge hvilke avdelinger som skal vises i figurer med avdelingsvise resultater.
+IKKE tatt høyde for sammenlikning mot "resten".}
+
+\item{velgDiag}{0: Alle
+1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
+2: Endometriose, livmorvegg (N80.0)
+3: Endometriose, unntatt livmorvegg.}
 
 \item{outfile}{Navn på fil figuren skrives til. Standard: '' (Figur skrives
 til systemets standard utdataenhet (som regel skjerm))}
@@ -72,7 +75,4 @@ Søylediagram med gjennomsnitt/median av valgt variabel for hvert sykehus
 Funksjon som genererer en figur med gjennomsnitt/median
 for hvert sykehus og kan ta inn ulike numeriske variable.
 Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus
-}
-\details{
-Detajer: Her bør man liste opp hvilke variable funksjonen benytter...
 }

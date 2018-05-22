@@ -4,12 +4,16 @@
 \alias{NGERVarTilrettelegg}
 \title{Funksjon for å tilrettelegge variable for beregning.}
 \usage{
-NGERVarTilrettelegg(RegData, valgtVar, grVar = "", figurtype = "andeler")
+NGERVarTilrettelegg(RegData, valgtVar, grVar = "", ind = 0,
+  figurtype = "andeler")
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
 
 \item{valgtVar}{Hvilken variabel som skal visualiseres}
+
+\item{ind}{indekser fra enhetsUtvalg. Benyttes normalt ikke her, men trengs for
+valgtVar Diagnoser og Prosedyrer}
 
 \item{figurtype}{Hvilken figurtype det skal tilrettelegges variable for:
 'andeler', 'andelGrVar', 'andelTid', 'gjsnGrVar', 'gjsnTid'}

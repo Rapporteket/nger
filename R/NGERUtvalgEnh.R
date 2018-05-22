@@ -1,18 +1,51 @@
 #' Funksjon som gjør utvalg av dataene, returnerer det filtrerte datasettet og utvalgsteksten.
 #'
 #' @inheritParams NGERFigAndeler
+#' @param datoFra Tidligste dato i utvalget (vises alltid i figuren).
+#' @param datoTil Seneste dato i utvalget (vises alltid i figuren).
+#' @param minald Alder, fra og med (Standardverdi: 0)
+#' @param maxald Alder, til og med (Standardverdi: 130)
+#' @param MCEType  1: Laparoskopi
+#'                 2: Hysteroskopi
+#'                 3: Begge
+#'                 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
+#'                 5: LCC11 (laparoskopisk subtotal hysterektomi)
+#'                 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
+#' @param velgDiag 0: Alle
+#'                 1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
+#'                 2: Endometriose, livmorvegg (N80.0)
+#'                 3: Endometriose, unntatt livmorvegg.
+#' @param Hastegrad Hastegrad av operasjon.
+#'                1: Elektiv
+#'                2: Akutt
+#'                3: Ø-hjelp
+#' @param enhetsUtvalg Lag figur for
+#'                 0: Hele landet
+#'                 1: Egen enhet mot resten av landet (Standard)
+#'                 2: Egen enhet
+#' @param velgAvd Velge hvilke avdelinger som skal vises i figurer med avdelingsvise resultater.
+#' IKKE tatt høyde for sammenlikning mot "resten".
 #' @param fargepalett Hvilken fargepalett skal brukes i figurer (Default: BlaaRapp)
 #'
-#' @return UtData En liste bestående av det filtrerte datasettet, utvalgstekst for figur og tekststreng som angir fargepalett
+#' @return UtData En liste bestående av det filtrerte datasettet, utvalgstekst for figur og
+#' tekststreng som angir fargepalett
 #'
 #' @export
 #'
-NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', minald=0, maxald=130,
-                       MCEType='', AlvorlighetKompl='', Hastegrad='', enhetsUtvalg=0)
+NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', fargepalett='BlaaOff',
+                          minald=0, maxald=130, MCEType='', AlvorlighetKompl='', Hastegrad='',
+                          enhetsUtvalg=0, velgAvd='', velgDiag=0, reshID=0)
 {
   # Definer intersect-operator
   "%i%" <- intersect
 
+  #Velge hvilke sykehus som skal være med:
+  if (velgAvd[1] != '') {
+    if (enhetsUtvalg !=0) {stop("enhetsUtvalg må være 0 (alle)")}
+    #Utvalg på avdelinger:
+    RegData <- RegData[which(as.numeric(RegData$ReshId) %in% as.numeric(velgAvd)),]
+    RegData$ShNavn <- as.factor(RegData$ShNavn)
+  }
 
  hovedgrTxt <- switch(as.character(enhetsUtvalg),
                   '0' = 'Hele landet',
@@ -27,15 +60,12 @@ NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', mina
   #Utvalg på alder:
   indAld <- which(RegData$Alder >= minald & RegData$Alder <= maxald)
   #Utvalg på dato:
-  indDato <- which(RegData$InnDato >= as.Date(datoFra) & RegData$InnDato <= as.Date(datoTil))
+  indDato <- which(as.Date(RegData$InnDato) >= datoFra & as.Date(RegData$InnDato) <= datoTil)  #as.Date(datoFra)
   #Operasjonstype:
   indMCE <- if (MCEType %in% c(1:3)){which(RegData$OpMetode %in% c(MCEType,3))
     } else {indMCE <- 1:Ninn}
   if (MCEType %in% 4:6) {
       ProsLap <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3')
-      RegData$LapProsedyre1 <- toupper(RegData$LapProsedyre1)
-      RegData$LapProsedyre2 <- toupper(RegData$LapProsedyre2)
-      RegData$LapProsedyre3 <- toupper(RegData$LapProsedyre3)
       indMCE <- switch(as.character(MCEType),
               '4' = unique(c(which(RegData[,ProsLap] == 'LCD01', arr.ind = TRUE)[,1],
                                          which(RegData[,ProsLap] == 'LCD04', arr.ind = TRUE)[,1])), #LCD01 + LCD04: total laparoskopisk hysterektomi
@@ -45,6 +75,23 @@ NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', mina
       )
   }
 
+if (velgDiag !=0) {
+  indDiag <- NULL
+  diagTxt <- c('Godartede ovarialcyster', 'Endometriose, livmorvegg', 'Endometriose utenom livmorvegg')
+  DiagVar <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3', 'HysDiagnose1','HysDiagnose2', 'HysDiagnose3')
+  if (velgDiag ==1) {
+    koder <- c('N830', 'N831', 'N832', 'D27')
+    for (var in DiagVar) {indDiag <- union(indDiag, grep(paste(koder, collapse = "|"), RegData[ ,var]))}  #(Se også på pmatch, carmatch
+  }
+  if (velgDiag==2) { #Endometriose , livmorvegg
+    koder <- 'N800'
+    for (var in DiagVar) {indDiag <- union(indDiag, grep(koder, RegData[ ,var]))}
+  }
+	if (velgDiag == 3) {#endometriose, «u/livmorvegg»: N80.1-N80.9
+	  koder <- paste0('N80', 1:9)
+    for (var in DiagVar) {indDiag <- union(indDiag, grep(paste(koder, collapse = "|"), RegData[ ,var]))}  #(Se også på pmatch, carmatch
+	}
+} else {  indDiag <- 1:Ninn}
 
   #Alvorlighetsgrad, flervalgsutvalg
   indAlvor <- if (AlvorlighetKompl[1] %in% 1:3) {which(RegData$Opf0AlvorlighetsGrad %in% as.numeric(AlvorlighetKompl)) %i%
@@ -55,10 +102,8 @@ NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', mina
 
 
 
-
-
   #utvalg:
-  indMed <- indAld %i% indDato %i% indMCE %i% indAlvor %i% indHastegrad
+  indMed <- indAld %i% indDato %i% indMCE %i% indAlvor %i% indHastegrad %i% indDiag
 
   RegData <- RegData[indMed,]
 
@@ -70,36 +115,39 @@ NGERUtvalgEnh <- function(RegData, datoFra, datoTil, fargepalett='BlaaOff', mina
                  if ((minald>0) | (maxald<130))
                     {paste0('Pasienter fra ', if (N>0) {min(RegData$Alder, na.rm=T)} else {minald},
                         ' til ', if (N>0) {max(RegData$Alder, na.rm=T)} else {maxald}, ' år')},
-                 if (MCEType %in% c(1:6)){paste0('Operasjonsmetode: ',
+                 if (MCEType %in% c(1:8)){paste0('Operasjonsmetode: ',
                                                 c('Laparoskopi', 'Hysteroskopi', 'Begge',
                                                   'Tot. lap. hysterektomi (LCD01/LCD04)',
                                                   'Lap. subtotal hysterektomi (LCC11)',
-                                                  'Lap. ass. vag. hysterektomi (LCD11)')[MCEType])},
+                                                  'Lap. ass. vag. hysterektomi (LCD11)',
+                                                  'Ovarialcyster',
+                                                  'Endometriose, livmorvegg',
+                                                  'Endometriose unntatt livmorvegg')[MCEType])},
                  if (Hastegrad[1] %in% 1:3){paste0('Hastegrad: ', paste0(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','))},
                  if (AlvorlighetKompl[1] %in% 1:3){paste0('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
-                                                         [as.numeric(AlvorlighetKompl)], collapse=','))})
+                                                         [as.numeric(AlvorlighetKompl)], collapse=','))},
+                 if (velgDiag != 0) {paste0('Diagnose: ', diagTxt[velgDiag])},
+                 if (velgAvd[1] != '') {'Viser valgte sykehus'})
   #Generere hovedgruppe og sammenlikningsgruppe
   #Trenger indeksene før genererer tall for figurer med flere variable med ulike utvalg
   if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet
     hovedgrTxt <- as.character(RegData$ShNavn[match(reshID, RegData$ReshId)])
-  } else {hovedgrTxt <- 'Hele landet'}
+  } else {hovedgrTxt <- ifelse(velgAvd[1] != '', 'Valgte sykehus', 'Hele landet')}
 
     ind <- list(Hoved=0, Rest=0)
 	if (enhetsUtvalg %in% c(0,2)) {		#Ikke sammenlikning
     medSml <- 0
-	smltxt <- 'Ingen sml'
+	  smltxt <- 'Ingen sml'
     ind$Hoved <- 1:dim(RegData)[1]	#Tidligere redusert datasettet for 2,4,7. (+ 3og6)
     ind$Rest <- NULL
   } else {						#Skal gjøre sammenlikning
     medSml <- 1
     if (enhetsUtvalg == 1) {
-      ind$Hoved <-which(as.numeric(RegData$ReshId)==reshID)
+      ind$Hoved <-which(as.numeric(RegData$ReshId) == reshID)
       smltxt <- 'Landet forøvrig'
       ind$Rest <- which(as.numeric(RegData$ReshId) != reshID)
     }
   }
-
-
 
   UtData <- list(RegData=RegData, utvalgTxt=utvalgTxt, fargepalett=fargepalett,
 				ind=ind, medSml=medSml, hovedgrTxt=hovedgrTxt, smltxt=smltxt)

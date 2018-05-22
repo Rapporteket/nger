@@ -4,10 +4,9 @@
 #' for hvert sykehus og kan ta inn ulike numeriske variable.
 #' Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus
 #'
-#' Detajer: Her bør man liste opp hvilke variable funksjonen benytter...
-#'
 #' @inheritParams NGERFigAndeler
 #' @inheritParams NGERFigAndelerGrVar
+#' @inheritParams NGERUtvalgEnh
 #' @param valgtMaal 'Med' = median. Alt annet gir gjennomsnitt
 #'
 #' Argumentet \emph{valgtVar} har følgende valgmuligheter:
@@ -15,18 +14,15 @@
 #'     \item Liggedogn: Liggetid
 #'    }
 #'
-#' Detajer: Her bør man liste opp hvilke variable funksjonen benytter.
-#'
 #' @return Søylediagram med gjennomsnitt/median av valgt variabel for hvert sykehus
 #'
 #' @export
 
 
 NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31',
-                             valgtVar, minald=0, maxald=130,
-                             MCEType=99, AlvorlighetKompl=99, Hastegrad=99,
-                             valgtMaal='Gjsn', hentData=0, preprosess=1, grVar='ShNavn', Ngrense=10,
-                             medKI=1, lagFig=1, outfile='') {     #aar=0,
+                             valgtVar, minald=0, maxald=130, MCEType=99, AlvorlighetKompl=99, Hastegrad=99,
+                             valgtMaal='Gjsn', hentData=0, preprosess=1, grVar='ShNavn', velgAvd='', velgDiag=0,
+                             Ngrense=10,medKI=1, lagFig=1, outfile='') {     #aar=0,
 
 if (hentData == 1) {
   RegData <- NGERRegDataSQL(datoFra, datoTil)
@@ -44,7 +40,7 @@ RegData <- NGERVarSpes$RegData
 #------- Gjøre utvalg
 NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra,
                            datoTil = datoTil, MCEType = MCEType, AlvorlighetKompl=AlvorlighetKompl,
-                           Hastegrad=Hastegrad)
+                           Hastegrad=Hastegrad, velgAvd=velgAvd, velgDiag=velgDiag)
 smltxt <- NGERUtvalg$smltxt
 medSml <- NGERUtvalg$medSml
 utvalgTxt <- NGERUtvalg$utvalgTxt
@@ -242,7 +238,7 @@ if (dim(RegData)[1] < 10 )
 	      barplot(rev(as.numeric(AggVerdier$Hoved)), horiz=TRUE, beside=TRUE, las=1, add=TRUE,
 	              col=fargeHoved, border=NA, cex.names=cexgr) #, xlim=c(0, xmax), ylim=c(ymin,ymax)
 	      soyleXpos <- 1.12*xmax*max(strwidth(soyletxt, units='figure')) # cex=cexgr
-	      text(x=soyleXpos, y=pos+0.1, soyletxt, las=1, cex=cexgr, adj=1, col=farger[1])	#AggVerdier, hvert sykehus
+	      text(x=soyleXpos+xmax*0.01, y=pos+0.1, soyletxt, las=1, cex=cexgr, adj=1, col=farger[1])	#AggVerdier, hvert sykehus
 
 
 	if (medKI == 1) {	#Legge på konf.int for hver enkelt gruppe/sykehus
@@ -254,15 +250,17 @@ if (dim(RegData)[1] < 10 )
 	#------Tegnforklaring (legend)--------
 	  if (medKI == 0) { #Hopper over hvis ikke valgtMaal er oppfylt
 	            TXT <- paste0('totalt: ', sprintf('%.1f', AggTot), ', N=', N)
-      	      legend(xmax/4, posOver+posDiff, TXT, fill=NA,  border=NA, lwd=2.5, xpd=TRUE, #inset=c(-0.1,0),
+      	      legend('top', TXT, fill=NA,  border=NA, lwd=2.5, xpd=TRUE, #xmax/4, posOver+posDiff, inset=c(-0.1,0),
       	             col=farger[1], cex=cexleg, seg.len=0.6, merge=TRUE, bty='n')
 	      } else {
 	            TXT <- c(paste0('totalt: ', sprintf('%.1f', AggTot), ', N=', N),
 	                     paste0('95% konf.int., ', hovedgrTxt,  ' (', #grTypeTxt, 'sykehus..
-	                            sprintf('%.1f', KIHele[1]), '-', sprintf('%.1f', KIHele[2]), ')'))
-      	      legend(xmax/4, posOver+2*posDiff, TXT, fill=c(NA, farger[3]),  border=NA, lwd=2.5,  #inset=c(-0.1,0),
-      	             col=c(farger[1], farger[3]), cex=cexleg, seg.len=0.6, merge=TRUE, bty='n')
+	                            sprintf('%.1f', KIHele[1]), '-', sprintf('%.1f', KIHele[2]), ')')) #xmax/4, posOver+2*posDiff
+      	      legend('top', TXT, fill=c(NA, farger[3]),  border=NA, lwd=2.5,  #inset=c(-0.1,0),
+      	             col=c(farger[1], farger[3]), cex=cexleg, seg.len=0.6, merge=TRUE, bty='n',
+      	             yjust=0)
 	      }
+
 
       #Legge på gruppe/søylenavn
       mtext(at=pos+0.05, text=GrNavnSort, side=2, las=1, cex=cexgr, adj=1, line=0.25)

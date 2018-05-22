@@ -5,9 +5,10 @@
 \title{Søylediagram med andeler for hver grupperingsenhet (sykehus, RHF, ...)}
 \usage{
 NGERFigAndelerGrVar(RegData = 0, valgtVar, datoFra = "2013-01-01",
-  datoTil = "3000-12-31", minald = 0, maxald = 130, MCEType = 99,
-  Hastegrad = "", AlvorlighetKompl = "", Ngrense = 10, reshID,
-  outfile = "", enhetsUtvalg = 1, preprosess = 0, hentData = 0)
+  datoTil = "3000-12-31", velgAvd = "", minald = 0, maxald = 130,
+  MCEType = 99, Hastegrad = "", AlvorlighetKompl = "", Ngrense = 10,
+  reshID, outfile = "", enhetsUtvalg = 0, velgDiag = 0, preprosess = 0,
+  hentData = 0)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -18,6 +19,9 @@ NGERFigAndelerGrVar(RegData = 0, valgtVar, datoFra = "2013-01-01",
 
 \item{datoTil}{Seneste dato i utvalget (vises alltid i figuren).}
 
+\item{velgAvd}{Velge hvilke avdelinger som skal vises i figurer med avdelingsvise resultater.
+IKKE tatt høyde for sammenlikning mot "resten".}
+
 \item{minald}{Alder, fra og med (Standardverdi: 0)}
 
 \item{maxald}{Alder, til og med (Standardverdi: 130)}
@@ -27,8 +31,7 @@ NGERFigAndelerGrVar(RegData = 0, valgtVar, datoFra = "2013-01-01",
 3: Begge
 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
 5: LCC11 (laparoskopisk subtotal hysterektomi)
-6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
-99: Alle}
+6: LCD11 (laparoskopisk assistert vaginal hysterektomi)}
 
 \item{Hastegrad}{Hastegrad av operasjon.
 1: Elektiv
@@ -36,13 +39,11 @@ NGERFigAndelerGrVar(RegData = 0, valgtVar, datoFra = "2013-01-01",
 3: Ø-hjelp}
 
 \item{AlvorlighetKompl}{Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
-                         Angis som en vektor av tall som tekst, f.eks. c('1','2')
-                         1: Lite alvorlig
-                         2: Middels alvorlig
-                         3: Alvorlig
-                         4: Dødelig
-
-Detajer: Her bør man liste opp hvilke variable funksjonen benytter.}
+Angis som en vektor av tall som tekst, f.eks. c('1','2')
+1: Lite alvorlig
+2: Middels alvorlig
+3: Alvorlig
+4: Dødelig}
 
 \item{reshID}{Parameter følger fra innlogging helseregister.no og angir
 hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
@@ -54,6 +55,11 @@ til systemets standard utdataenhet (som regel skjerm))}
 0: Hele landet
 1: Egen enhet mot resten av landet (Standard)
 2: Egen enhet}
+
+\item{velgDiag}{0: Alle
+1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
+2: Endometriose, livmorvegg (N80.0)
+3: Endometriose, unntatt livmorvegg.}
 
 \item{preprosess}{Preprosesser data
 0: Nei (Standard)
@@ -88,6 +94,7 @@ Argumentet \emph{valgtVar} har følgende valgmuligheter:
 	\item Opf0KomplOrgan: Postop. komplikasjon: Organskade
 	\item Opf0Reoperasjon: Reoperasjon som følge av komplikasjon
 	\item Opf0Status: Fått postoperativ oppfølging
+   \item RegForsinkelse: Mer enn XX (1mnd?) fra operasjon til ferdigstilt registrering
    \item Tss2Mott: Møtet med gynekologisk avdeling var mindre godt
    \item Tss2Behandling: Behandlingens opplegg og innhold passet ikke pasienten
    \item Tss2Lytte: Pasientens behandlere lyttet- og forsto ikke det som ble tatt opp

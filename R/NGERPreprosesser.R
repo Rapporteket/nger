@@ -3,6 +3,7 @@
 #' Denne funksjonen definerer variabler og fjerner ikke-ferdigstilte registreringer
 #'
 #' @inheritParams NGERFigAndeler
+#' @inheritParams NGERUtvalgEnh
 #'
 #' @return RegData En data.frame med det preprosesserte datasettet
 #'
@@ -32,14 +33,29 @@ NGERPreprosess <- function(RegData=RegData)
 
   #Riktig format på datovariable:
   #RegData$FodselsDato <- as.Date(RegData$FodselsDato, format="%Y-%m-%d")
-  RegData$InnDato <- as.Date(RegData$OpDato, format="%Y-%m-%d")
+  #RegData$InnDato <- as.Date(RegData$OpDato, format="%Y-%m-%d")
   RegData$HovedDato <- as.Date(RegData$HovedDato, format="%Y-%m-%d")
-  RegData$SykehusNavn <- trimws(as.character(RegData$SykehusNavn)) #Fjerner mellomrom (før) og etter navn
+
+  RegData$InnDato <- as.POSIXlt(RegData$OpDato, format="%Y-%m-%d") #
+  RegData$Mnd <- RegData$InnDato$mon +1
+  RegData$Kvartal <- ceiling(RegData$Mnd/3)
+  RegData$Halvaar <- ceiling(RegData$Mnd/6)
+  RegData$Aar <- 1900 + RegData$InnDato$year #strptime(RegData$Innleggelsestidspunkt, format="%Y")$year
+
 
   #Riktig navn på resh-variabel:
   names(RegData)[which(names(RegData)=='AvdRESH')] <- 'ReshId' #Change var name
   names(RegData)[which(names(RegData)=='PasientAlder')] <- 'Alder' #Change var name
+  RegData$SykehusNavn <- trimws(as.character(RegData$SykehusNavn)) #Fjerner mellomrom (før) og etter navn
   names(RegData)[which(names(RegData)=='SykehusNavn')] <- 'ShNavn' #Change var name
+
+  #Endrer til bare store bokstaver
+  DiagVar <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3', 'HysDiagnose1','HysDiagnose2', 'HysDiagnose3')
+  ProsVar <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3', 'HysProsedyre1','HysProsedyre2', 'HysProsedyre3')
+  for (var in c(DiagVar,ProsVar)) {
+    RegData[ ,var] <- toupper(RegData[ ,var])
+  }
+
 
 
   return(invisible(RegData))
