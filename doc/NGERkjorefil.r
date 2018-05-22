@@ -15,6 +15,14 @@ setwd('C:/ResultattjenesteGIT/nger/inst/')
 knit('NGERmonthlyReport.Rnw')
 tools:: texi2pdf('NGERmonthlyReport.tex')
 
+
+# 'Tss2Mott',
+# 'Tss2Behandling',
+# 'Tss2Lytte',
+# 'Tss2Behandlere',
+# 'Tss2Enighet',
+# 'Tss2Generelt')
+
 #--------------------------------Datakobling--------------------------
 #Vil "snart" endre spørringa slik at det i hvert tilfelle spørres etter de variablene man trenger.
 
