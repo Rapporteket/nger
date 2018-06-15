@@ -71,7 +71,7 @@ outfile <- ''
 #------------------------------ (erstatter Fordelinger) --------------------------
 
 
-valgtVar <- 'Opf0metode'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid
+valgtVar <- 'Tss2Sumskaar'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid
 
 outfile <- '' #paste0(valgtVar, '_fordDiag3.png')	#Navn angis av Jasper
 

@@ -478,6 +478,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
 
   #Tss2Type  FOLLOWUP_TYPE	Oppfølgingsmetode	["Oppfølging pr post/brev","Oppfølging pr telefonintervju","Oppfølging ikke mulig"]
   if (valgtVar == 'Tss2Mott') {   #Andeler, andelGrVar
+    #Spm.1, Sverige
     #0:Mindre godt, 1:Ingen mening, 2:Ganske godt, 3:Svært godt
     tittel <- switch(figurtype,
                      andeler = 'Hvordan ble du møtt på gynekologisk avdeling?',
@@ -491,6 +492,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
   }
 
   if (valgtVar == 'Tss2Behandling') {   #Andeler#andelGrVar
+    #Spm.2, Sverige
     #0:Passet ikke, 1:Verken eller, 2:Ganske bra, 3:Svært bra
     tittel <- switch(figurtype,
                      andeler = 'Hvordan passet behandlingens opplegg og innhold for deg?',
@@ -504,6 +506,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
   }
 
   if (valgtVar == 'Tss2Lytte') {   #Andeler, #andelGrVar
+    #Spm.3, Sverige
     #0:Nei, 1:Ja, til en viss grad, 2:Ja, i ganske stor grad, 3:Ja, i svært stor grad
     tittel <- switch(figurtype,
                      andeler = 'Lyttet og forsto dine behandlere det du tok opp?',
@@ -516,6 +519,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     RegData$Variabel[which(RegData$Tss2Lytte == 3)] <- 1
   }
   if (valgtVar == 'Tss2Behandlere') {   #Andeler, andelGrVar
+    #Spm.4, Sverige
     #0:Nei, 1:Ja, til en viss grad, 2:Ja, i ganske stor grad, 3:Ja, i svært stor grad
     tittel <- switch(figurtype,
                      andeler = 'Hadde du tillit til dine behandlere på gynekologisk avd.?',
@@ -528,7 +532,8 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     RegData$Variabel[which(RegData$Tss2Behandlere == 3)] <- 1 #andelGrVar
   }
 if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
-    #0:Nei, 1:Ja, til en viss grad, 2:Ja, i ganske stor grad, 3:Ja, i svært stor grad
+  #Spm.5, Sverige
+  #0:Nei, 1:Ja, til en viss grad, 2:Ja, i ganske stor grad, 3:Ja, i svært stor grad
     tittel <- switch(figurtype,
                      andeler = 'Var du og dine behandlere enige om målsettingen for din behandling?',
                      andelGrVar = 'Pasient og behandlere svært enige om målsetn. for behandlinga')
@@ -540,6 +545,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData$Variabel[which(RegData$Tss2Enighet == 3)] <- 1 #andelGrVar
   }
   if (valgtVar == 'Tss2Generelt') {   #Andeler, andelGrVar
+    #Spm.6, Sverige
     #0:Svært negativ, 1:Negativ, 2:Nøytral, 3:Positiv, 4:Svært positiv
     tittel <- switch(figurtype,
                      andeler = 'Hvilken oppfatning har du om gynekologisk avdeling generelt?',
@@ -551,6 +557,23 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData$VariabelGr <- factor(RegData$Tss2Generelt, levels=koder, labels = grtxt) #levels=c(nivaa,9)
     RegData$Variabel[which(RegData$Tss2Generelt == 4)] <- 1 #andelGrVar
   }
+
+  if (valgtVar == 'Tss2Sumskaar') {   #Andeler, #gjsnGrVar
+    #Stort sett: 0:Nei, 1:Ja, til en viss grad, 2:Ja, i ganske stor grad, 3:Ja, i svært stor grad
+    #Alle variable må besvares for å kunne ferdigstille skjema.
+    RegData <- RegData[which(RegData$Tss2Status == 1) %i% which(RegData$Tss2Type %in% 1:2), ]
+    #TSSsumskaar
+    #RegData$Test <- (RegData$Tss2Score-1)/6 OK
+    RegData$Variabel <- (rowSums(RegData[ ,c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
+                                          'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')])-1)/6
+#   head(RegData[, c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte', 'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt', 'Variabel')])
+    gr <- c(-1:3)
+    RegData$VariabelGr <- cut(RegData$Variabel, breaks=gr, include.lowest=F, right=T)
+    grtxt <- c('0', levels(RegData$VariabelGr)[2:(length(gr)-1)])
+    #retn <- 'H'
+    tittel <- 'TSS2, sumskår'
+  }
+
   if (valgtVar == 'Utdanning') {   #Andeler
     # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
     #PasientSkjema. Andel med Utdanning 4 el 5
