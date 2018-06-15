@@ -482,13 +482,17 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     #0:Mindre godt, 1:Ingen mening, 2:Ganske godt, 3:Svært godt
     tittel <- switch(figurtype,
                      andeler = 'Hvordan ble du møtt på gynekologisk avdeling?',
+                     gjsnGrVar = 'Hvordan ble du møtt på gynekologisk avdeling?',
                      andelGrVar = 'Møtet med gynekologisk avdeling var svært godt')
     grtxt <- c('Mindre godt','Ingen mening','Ganske godt','Svært godt')
     koder <- 0:3
     retn <- 'H'
     RegData <- RegData[which(RegData[ ,valgtVar] %in% koder), ] #Evt: Tss2Status == 1, Tss2Type in 1:2
     RegData$VariabelGr <- factor(RegData$Tss2Mott, levels=koder, labels = grtxt)
-    RegData$Variabel[which(RegData$Tss2Mott == 3)] <- 1 #andelGrVar
+    if (figurtype == 'andelGrVar') {
+      RegData$Variabel[which(RegData$Tss2Mott == 3)] <- 1 }
+      if (figurtype == 'gjsnGrVar') {
+        RegData$Variabel <- RegData$Tss2Mott}
   }
 
   if (valgtVar == 'Tss2Behandling') {   #Andeler#andelGrVar
@@ -496,13 +500,17 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     #0:Passet ikke, 1:Verken eller, 2:Ganske bra, 3:Svært bra
     tittel <- switch(figurtype,
                      andeler = 'Hvordan passet behandlingens opplegg og innhold for deg?',
+                     gjsnGrVar = 'Hvordan passet behandlingens opplegg og innhold for deg?',
                      andelGrVar = 'Behandlingens opplegg/innhold passet svært bra')
     grtxt <- c('Passet ikke','Verken eller','Ganske bra','Svært bra')
     koder <- 0:3
     retn <- 'H'
     RegData <- RegData[which(RegData[ ,valgtVar] %in% koder) %i% which(RegData$Tss2Status == 1), ]
     RegData$VariabelGr <- factor(RegData$Tss2Behandling, levels=koder, labels = grtxt) #levels=c(nivaa,9)
-    RegData$Variabel[which(RegData$Tss2Behandling == 3)] <- 1
+    if (figurtype == 'andelGrVar') {
+      RegData$Variabel[which(RegData$Tss2Behandling == 3)] <- 1}
+    if (figurtype == 'gjsnGrVar') {
+      RegData$Variabel <- RegData$Tss2Behandling}
   }
 
   if (valgtVar == 'Tss2Lytte') {   #Andeler, #andelGrVar
@@ -510,52 +518,68 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     #0:Nei, 1:Ja, til en viss grad, 2:Ja, i ganske stor grad, 3:Ja, i svært stor grad
     tittel <- switch(figurtype,
                      andeler = 'Lyttet og forsto dine behandlere det du tok opp?',
+                     gjsnGrVar = 'Lyttet og forsto dine behandlere det du tok opp?',
                      andelGrVar = 'I svært stor grad lyttet og forsto behandlerne')
     grtxt <- c("Nei","Ja, til en viss grad","Ja, i ganske stor grad","Ja, i svært stor grad")
     koder <- 0:3
     retn <- 'H'
     RegData <- RegData[which(RegData[ ,valgtVar] %in% koder) %i% which(RegData$Tss2Status == 1), ]
     RegData$VariabelGr <- factor(RegData$Tss2Lytte, levels=koder, labels = grtxt)
-    RegData$Variabel[which(RegData$Tss2Lytte == 3)] <- 1
+    if (figurtype == 'andelGrVar') {
+      RegData$Variabel[which(RegData$Tss2Lytte == 3)] <- 1}
+    if (figurtype == 'gjsnGrVar') {
+      RegData$Variabel <- RegData$Tss2Lytte}
   }
   if (valgtVar == 'Tss2Behandlere') {   #Andeler, andelGrVar
     #Spm.4, Sverige
     #0:Nei, 1:Ja, til en viss grad, 2:Ja, i ganske stor grad, 3:Ja, i svært stor grad
     tittel <- switch(figurtype,
                      andeler = 'Hadde du tillit til dine behandlere på gynekologisk avd.?',
+                     gjsnGrVar = 'Hadde du tillit til dine behandlere på gynekologisk avd.?',
                      andelGrVar = 'Pasienten hadde svært stor tillit til sine behandlere')
     grtxt <- c("Nei, ikke tilstrekkelig","Ja, til en viss grad","Ja, i ganske stor grad","Ja, i svært stor grad")
     koder <- 0:3
     retn <- 'H'
     RegData <- RegData[which(RegData[ ,valgtVar] %in% koder) %i% which(RegData$Tss2Status == 1), ]
     RegData$VariabelGr <- factor(RegData$Tss2Behandlere, levels=koder, labels = grtxt) #levels=c(nivaa,9)
-    RegData$Variabel[which(RegData$Tss2Behandlere == 3)] <- 1 #andelGrVar
+    if (figurtype == 'andelGrVar') {
+      RegData$Variabel[which(RegData$Tss2Behandlere == 3)] <- 1 }
+      if (figurtype == 'gjsnGrVar') {
+        RegData$Variabel <- RegData$Tss2Behandlere}
   }
 if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
   #Spm.5, Sverige
   #0:Nei, 1:Ja, til en viss grad, 2:Ja, i ganske stor grad, 3:Ja, i svært stor grad
     tittel <- switch(figurtype,
                      andeler = 'Var du og dine behandlere enige om målsettingen for din behandling?',
+                     gjsnGrVar = 'Var du og dine behandlere enige om målsettingen for din behandling?',
                      andelGrVar = 'Pasient og behandlere svært enige om målsetn. for behandlinga')
     grtxt <- c("Nei","Ja, til en viss grad","Ja, i ganske stor grad","Ja, i svært stor grad")
     koder <- 0:3
     retn <- 'H'
     RegData <- RegData[which(RegData[ ,valgtVar] %in% koder) %i% which(RegData$Tss2Status == 1), ]
     RegData$VariabelGr <- factor(RegData$Tss2Enighet, levels=koder, labels = grtxt) #levels=c(nivaa,9)
-    RegData$Variabel[which(RegData$Tss2Enighet == 3)] <- 1 #andelGrVar
+    if (figurtype == 'andelGrVar') {
+      RegData$Variabel[which(RegData$Tss2Enighet == 3)] <- 1 }
+    if (figurtype == 'gjsnGrVar') {
+      RegData$Variabel <- RegData$Tss2Enighet}
   }
   if (valgtVar == 'Tss2Generelt') {   #Andeler, andelGrVar
     #Spm.6, Sverige
     #0:Svært negativ, 1:Negativ, 2:Nøytral, 3:Positiv, 4:Svært positiv
     tittel <- switch(figurtype,
                      andeler = 'Hvilken oppfatning har du om gynekologisk avdeling generelt?',
+                     gjsnGrVar = 'Hvilken oppfatning har du om gynekologisk avdeling generelt?',
                      andelGrVar = 'Svært positiv oppfatning om gyn. avd.')
     grtxt <- c("Svært negativ","Negativ","Nøytral","Positiv","Svært positiv")
     koder <- 0:4
     retn <- 'H'
     RegData <- RegData[which(RegData[ ,valgtVar] %in% koder) %i% which(RegData$Tss2Status == 1), ]
     RegData$VariabelGr <- factor(RegData$Tss2Generelt, levels=koder, labels = grtxt) #levels=c(nivaa,9)
-    RegData$Variabel[which(RegData$Tss2Generelt == 4)] <- 1 #andelGrVar
+    if (figurtype == 'andelGrVar') {
+      RegData$Variabel[which(RegData$Tss2Generelt == 4)] <- 1 }
+    if (figurtype == 'gjsnGrVar') {
+      RegData$Variabel <- RegData$Tss2Generelt-1}
   }
 
   if (valgtVar == 'Tss2Sumskaar') {   #Andeler, #gjsnGrVar
@@ -571,7 +595,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData$VariabelGr <- cut(RegData$Variabel, breaks=gr, include.lowest=F, right=T)
     grtxt <- c('0', levels(RegData$VariabelGr)[2:(length(gr)-1)])
     #retn <- 'H'
-    tittel <- 'TSS2, sumskår'
+    tittel <- 'TSS2, gjennomsnittlig sumskår'
   }
 
   if (valgtVar == 'Utdanning') {   #Andeler
