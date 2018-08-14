@@ -71,9 +71,9 @@ outfile <- ''
 #------------------------------ (erstatter Fordelinger) --------------------------
 
 
-valgtVar <- 'Opf0metode'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid
+valgtVar <- 'Tss2Sumskaar'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid
 
-outfile <- '' #paste0(valgtVar, '_fordDiag3.png')	#Navn angis av Jasper
+outfile <- paste0(valgtVar, '_ford.png')
 
 NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
 	reshID=reshID, enhetsUtvalg=1, MCEType = MCEType, outfile=outfile, preprosess = preprosess,
@@ -159,21 +159,25 @@ for (valgtVar in variable) {
 #------------------------------ Sentralmål per sykehus --------------------------
 #------------------------------ (GjsnGrVar) --------------------------
 
-valgtVar <- 'Alder'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
-                            #R0ScoreEmo, R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral
+valgtVar <- 'Tss2Generelt'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
+                            #R0ScoreEmo, R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral,
+                          #'Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
+                          #'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt'
 
-outfile <- '' #paste0(valgtVar, '_sh.pdf')
-
+outfile <- ''
+outfile <- paste0(valgtVar, '_sh.png')
 
 NGERFigGjsnGrVar(RegData=RegData,valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-                 MCEType=MCEType, valgtMaal='Med', hentData=0,  grVar=grVar, Ngrense=10,
+                 MCEType=MCEType, valgtMaal='Gjsn', hentData=0,  grVar=grVar, Ngrense=10,
                  medKI=1, outfile=outfile, velgAvd = '')#AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
 
 
 variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
               'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')
+variable <- c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
+              'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')
 for (valgtVar in variable) {
-  outfile <- paste0(valgtVar, '_ShGjsn.pdf')
+  outfile <- paste0(valgtVar, '_ShGjsn.png')
   NGERFigGjsnGrVar(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra,datoTil=datoTil,
                       valgtMaal='Gjsn',outfile=outfile)
 }
@@ -187,7 +191,7 @@ NGERFigKvalInd(RegData=RegData, datoFra='2017-10-01', datoTil='3000-01-02', valg
                Hastegrad=99, preprosess=1, velgDiag=1, Ngrense=10, enhetsUtvalg=1, reshID = reshID,
                outfile=outfile)
 
-RegData <- RegData[which(as.Date(RegData$HovedDato)>=as.Date('2017-01-01')), ]
+RegData <- RegData[which(as.Date(RegData$HovedDato)>= as.Date('2017-01-01')), ]
 ind <- which(as.Date(RegData$HovedDato) < '2017-03-30')
 sum(table(RegData$Opf0metode[ind], useNA = 'a')[3:4])/length(ind)
 table(RegData$Opf0Status[ind], useNA = 'a')
