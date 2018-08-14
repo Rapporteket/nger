@@ -88,13 +88,13 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
   if (valgtVar == 'TSS0') {
 
     tittel <- 'TSS2, alle spørsmål'
-    variable <- c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',	'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')
-    grtxt <- c('Svært godt møte \n med gyn. avd.',
+    variable <- rev(c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',	'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt'))
+    grtxt <- rev(c('Svært godt møte \n med gyn. avd.',
       'Svært bra tilpasset \n behandling/opplegg',
     'I svært stor grad lyttet \n og forsto behandlerne',
     'Svært stor grad av tillit \n til behandlerne',
     'Svært stor grad av enighet \n om målsetn. for behandlinga',
-    'Svært positiv oppfatning \n av gyn. avd.')
+    'Svært positiv oppfatning \n av gyn. avd.'))
     Ngr$Hoved <- apply(RegData[ind$Hoved,variable], MARGIN=2,
                                     FUN=function(x) sum(x == 3, na.rm=T))
     Ngr$Hoved['Tss2Generelt'] <- sum(RegData$Tss2Generelt[ind$Hoved]==4, na.rm=T)

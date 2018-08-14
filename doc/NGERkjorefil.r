@@ -159,7 +159,7 @@ for (valgtVar in variable) {
 #------------------------------ Sentralmål per sykehus --------------------------
 #------------------------------ (GjsnGrVar) --------------------------
 
-valgtVar <- 'Tss2Mott'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
+valgtVar <- 'Tss2Generelt'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
                             #R0ScoreEmo, R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral,
                           #'Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
                           #'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt'
@@ -191,7 +191,7 @@ NGERFigKvalInd(RegData=RegData, datoFra='2017-10-01', datoTil='3000-01-02', valg
                Hastegrad=99, preprosess=1, velgDiag=1, Ngrense=10, enhetsUtvalg=1, reshID = reshID,
                outfile=outfile)
 
-RegData <- RegData[which(as.Date(RegData$HovedDato)>=as.Date('2017-01-01')), ]
+RegData <- RegData[which(as.Date(RegData$HovedDato)>= as.Date('2017-01-01')), ]
 ind <- which(as.Date(RegData$HovedDato) < '2017-03-30')
 sum(table(RegData$Opf0metode[ind], useNA = 'a')[3:4])/length(ind)
 table(RegData$Opf0Status[ind], useNA = 'a')
