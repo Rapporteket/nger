@@ -57,11 +57,11 @@ RegData[ ,grVar] <- as.factor(RegData[ ,grVar])
 if(dim(RegData)[1]>0) {Ngr <- table(RegData[ ,grVar])}	else {Ngr <- 0}
 
 
-#t1 <- switch(valgtMaal,
-#			Med = 'Median ',
-#			Gjsn = 'Gjennomsnittlig ')
+t1 <- switch(valgtMaal,
+			Med = 'Median ',
+			Gjsn = 'Gjennomsnittlig ')
 
-tittel <- NGERVarSpes$tittel #paste0(t1, NGERVarSpes$tittel)
+tittel <- paste0(t1, NGERVarSpes$tittel) #NGERVarSpes$tittel #
 
 Ngrtxt <- paste0(' (', as.character(Ngr),')')
 indGrUt <- which(Ngr < Ngrense)
@@ -101,7 +101,7 @@ if (valgtMaal=='Med') {
 if (valgtMaal=='Gjsn') {	#Gjennomsnitt er standard, men må velges.
   Gjsn <- tapply(RegData$Variabel, RegData[ ,grVar], mean, na.rm=T)
 	SE <- tapply(RegData$Variabel, RegData[ ,grVar], sd, na.rm=T)/sqrt(Ngr)
-	MidtHele <- mean(RegData$Variabel)	#mean(RegData$Variabel)
+	MidtHele <- mean(RegData$Variabel, na.rm=T)	#mean(RegData$Variabel)
 	KIHele <- MidtHele + sd(RegData$Variabel)/sqrt(N)*c(-2,2)
 	Gjsn[indGrUt] <- dummy0
 	SE[indGrUt] <- 0

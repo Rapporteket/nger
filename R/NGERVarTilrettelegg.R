@@ -151,7 +151,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     RegData <- RegData[which(RegData$Norsktalende %in% koder), ]
     RegData$VariabelGr <- factor(RegData$Norsktalende, levels=koder, labels = grtxt) #levels=c(nivaa,9)
   }
-  if (valgtVar == 'OpAnestesi') {   #Andeler
+  if (valgtVar == 'OpAnestesi') {   #Andeler, andelGrVar, andelTid
     # 1-Ingen, 2-Lokal, 3-Generell, 4-Spinal, 5-Annet
     tittel <- 'Anestesitype ved endoskopiske inngrep'
     grtxt <- c('Ingen', 'Lokal', 'Generell', 'Spinal', 'Annet')
@@ -159,6 +159,11 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     retn <- 'H'
     RegData <- RegData[RegData$OpAnestesi %in% koder, ]
     RegData$VariabelGr <- factor(RegData$OpAnestesi, levels=koder, labels = grtxt) #levels=c(nivaa,9)
+    if (figurtype %in% c('andelGrVar', 'andelTid')) {
+      tittel <- 'Lokalbedøvelse'
+      varTxt <- 'som har fått lokalbedøvelse'
+      RegData$Variabel[RegData$OpAnestesi == 2] <- 1
+    }
   }
   if (valgtVar=='OpAntibProfylakse') { #andelGrVar #andelTid
     #Andel som får antibiotika
@@ -184,13 +189,15 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     RegData$Variabel[which(RegData[ ,valgtVar] > 2)] <- 1
   }
 
-  if (valgtVar == 'OpDagkirurgi') {   #Andeler
+  if (valgtVar == 'OpDagkirurgi') {   #Andeler, AndelGrVar, AndelTid
     #0: Nei, 1: Ja Manglende:Ukjent
     tittel <- 'Dagkirurgiske Inngrep'
     grtxt <- c('Nei', 'Ja')
     koder <- 0:1
     RegData <- RegData[which(RegData$OpDagkirurgi %in% koder), ]
     RegData$VariabelGr <- factor(RegData$OpDagkirurgi, levels=koder, labels = grtxt) #levels=c(nivaa,9)
+    varTxt <- 'dagkirurgiske inngrep'
+    RegData$Variabel <- RegData$OpDagkirurgi
   }
   if (valgtVar=='Opf0AlvorlighetsGrad') {   #Andeler, andelGrVar
     #Postoperative komplikasjoner
@@ -356,15 +363,25 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
   }
   #Lag figur for ett års oppfølging
 
-  if (valgtVar == 'OpTid') {   #Andeler
+  if (valgtVar == 'OpTid') {   #Andeler, andelTid, andelGrVar, gjsnGrVar,
     #0-20, 21-40, 41-60, 61-80, 81-100, 101-120, 121-140, 141-160, 161-180, 181-200, 201-220, 221-240, > 240
     tittel <- 'Operasjonstid'
     gr <- c(seq(0, 180, 20), 1000) #c(seq(0, 180, 30), 1000) #
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = FALSE)
     grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-2)], '180+')
+    RegData$Variabel <- RegData$OpTid
+    if (figurtype %in% c('gjsnGrVar', 'andelGrVar')) {
+      tittel <- 'operasjonstid'}
+    sortAvtagende <- F
     subtxt <- 'minutter'
     cexgr <- 0.9
     retn <- 'V'
+    if (figurtype %in% c('andelGrVar','andelTid')) {
+      #BMI > 30
+      RegData$Variabel[which(RegData[ ,valgtVar] > 60)] <- 1
+      varTxt <- 'med op.tid > 60 min.'
+      tittel <- 'Operasjonstid over 60 minutter'
+    }
   }
   # if (valgtVar == 'RegForsinkelse') {  #Andeler, GjsnGrVar
   #   #!!!!!!!!!!!Leveringsdato vil oppdateres ved reåpning og kan derfor ikke brukes
@@ -389,6 +406,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     RegData$Variabel <- RegData$R0ScorePhys
     RegData <- RegData[which(RegData$R0Status==1) %i% which(RegData$R0ScorePhys > -1), ] #Evt. R0Metode in 1:2
     tittel <- 'Fysisk funksjon'
+    if (figurtype == 'gjsnGrVar') {tittel <- 'fysisk funksjon'}
     subtxt <- 'sumskår (høyest er best)'
     gr <- c(seq(0, 90, 10), 100) #c(seq(0, 180, 30), 1000) #
     RegData$VariabelGr <- cut(RegData$R0ScorePhys, breaks = gr, include.lowest = TRUE, right = TRUE)

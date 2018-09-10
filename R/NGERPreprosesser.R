@@ -35,12 +35,11 @@ NGERPreprosess <- function(RegData=RegData)
   #RegData$FodselsDato <- as.Date(RegData$FodselsDato, format="%Y-%m-%d")
   #RegData$InnDato <- as.Date(RegData$OpDato, format="%Y-%m-%d")
   RegData$HovedDato <- as.Date(RegData$HovedDato, format="%Y-%m-%d")
-
-  RegData$InnDato <- as.POSIXlt(RegData$OpDato, format="%Y-%m-%d") #
-  RegData$Mnd <- RegData$InnDato$mon +1
+  RegData$InnDato <- as.Date(RegData$OpDato, format="%Y-%m-%d") #
+  RegData$Mnd <- as.POSIXlt(RegData$OpDato, format="%Y-%m-%d")$mon +1
   RegData$Kvartal <- ceiling(RegData$Mnd/3)
   RegData$Halvaar <- ceiling(RegData$Mnd/6)
-  RegData$Aar <- 1900 + RegData$InnDato$year #strptime(RegData$Innleggelsestidspunkt, format="%Y")$year
+  RegData$Aar <- 1900 + as.POSIXlt(RegData$OpDato, format="%Y-%m-%d")$year #strptime(RegData$Innleggelsestidspunkt, format="%Y")$year
 
 
   #Riktig navn på resh-variabel:

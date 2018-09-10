@@ -31,7 +31,7 @@
 
 NGERFigAndelTid <- function(RegData=0, valgtVar, datoFra='2014-01-01', datoTil='3000-12-31',
                             minald=0, maxald=130, MCEType=99, Hastegrad='', AlvorlighetKompl='', reshID, outfile='',
-                            enhetsUtvalg=0, velgDiag=0, preprosess=0, hentData=0, tidsenhet='Aar') {
+                            enhetsUtvalg=0, velgDiag=0, preprosess=1, hentData=0, tidsenhet='Aar') {
 
 
   ## Hvis spørring skjer fra R på server. ######################
