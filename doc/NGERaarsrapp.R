@@ -14,7 +14,7 @@ NGERData <- RegData
 
 
 # Inndata til funksjon:
-datoFra<- '2014-01-01'
+datoFra<- '2015-01-01'
 datoFra1aar <- '2017-01-01'
 datoTil <- '2017-12-31'
 MCEType <- 99
@@ -59,7 +59,7 @@ for (valgtVar in c('Diagnoser', 'Prosedyrer')) {
 #------------------------------ Andeler per år --------------------------
 #------------------------------ (AndelTid) --------------------------
 
-variable <- c('OpAnestesi', 'OpDagkirurgi', 'KomplIntra','KomplPostop',
+variable <- c('KomplIntra','KomplPostop',
 					'Opf0AlvorlighetsGrad','Opf0Reoperasjon', 'OpTid')
 for (valgtVar in variable) {
   outfile <- paste0(valgtVar, '_', tidsenhet, '.pdf')
@@ -68,6 +68,11 @@ for (valgtVar in variable) {
               AlvorlighetKompl=AlvorlighetKompl, tidsenhet='Aar')
 }
 
+NGERFigAndelTid(RegData=NGERData, valgtVar='OpDagkirurgi', datoFra=datoFra, datoTil=datoTil,
+                enhetsUtvalg=0, MCEType=1, Hastegrad=1, tidsenhet='Aar', outfile='OpDagkirLapEl_aar.pdf')
+
+NGERFigAndelTid(RegData=NGERData, valgtVar='OpAnestesi',   datoFra='2013-01-01', datoTil=datoTil, #datoFra
+                enhetsUtvalg=0, MCEType=2, Hastegrad=1, tidsenhet='Aar', outfile='') #OpAnestesiHysEl_aar.pdf')
 
 #------------------------------ Andeler per sykehus --------------------------
 #------------------------------ (AndelGrVar) --------------------------
