@@ -73,8 +73,8 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
                      andeler = 'Aldersfordeling',
                      andelGrVar = 'Pasienter over 70 år',
                      andelTid = 'Pasienter over 70 år',
-                     gjsnGrVar = 'Alder ved innleggelse',
-                     gjsnTid = 'Alder ved innleggelse')
+                     gjsnGrVar = 'alder ved innleggelse',
+                     gjsnTid = 'alder ved innleggelse')
     gr <- c(0, seq(15, 80, 5), 120)
     RegData$VariabelGr <- cut(RegData$Alder, breaks=gr, include.lowest=TRUE, right=FALSE)
     grtxt <- c('<15', levels(RegData$VariabelGr)[2:(length(gr)-2)], '80+')
@@ -369,9 +369,10 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     gr <- c(seq(0, 180, 20), 1000) #c(seq(0, 180, 30), 1000) #
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = FALSE)
     grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-2)], '180+')
-    RegData$Variabel <- RegData$OpTid
-    if (figurtype %in% c('gjsnGrVar', 'andelGrVar')) {
-      tittel <- 'operasjonstid'}
+    if (figurtype %in% c('gjsnGrVar', 'gjsnTid')) {
+      tittel <- 'operasjonstid'
+      RegData$Variabel <- RegData$OpTid
+    }
     sortAvtagende <- F
     subtxt <- 'minutter'
     cexgr <- 0.9
@@ -587,7 +588,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     #0:Svært negativ, 1:Negativ, 2:Nøytral, 3:Positiv, 4:Svært positiv
     tittel <- switch(figurtype,
                      andeler = 'Hvilken oppfatning har du om gynekologisk avdeling generelt?',
-                     gjsnGrVar = 'Hvilken oppfatning har du om gynekologisk avdeling generelt?',
+                     gjsnGrVar = 'skår, oppfatning om gynekologisk avdeling generelt',
                      andelGrVar = 'Svært positiv oppfatning om gyn. avd.')
     grtxt <- c("Svært negativ","Negativ","Nøytral","Positiv","Svært positiv")
     koder <- 0:4

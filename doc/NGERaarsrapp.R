@@ -24,6 +24,37 @@ AlvorlighetKompl <- ''
 enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 setwd("C:/ResultattjenesteGIT/nger/aarsrapp/")
 library(nger)
+
+#--------------------Offentliggjøring--------------------------
+
+NGERFigAndelTid(RegData=NGERData, valgtVar='KomplIntra', datoFra=datoFra, datoTil=datoTil,
+                MCEType=1, tidsenhet='Aar',
+                outfile='Fig1 Andel intraoperative komplikasjoner siste år, laparoskopi.png')
+
+NGERFigAndelTid(RegData=NGERData, valgtVar='LapKonvertert', datoFra=datoFra, datoTil=datoTil,
+                tidsenhet='Aar', MCEType = 1,
+                outfile='Fig3 Utvikling konvertering til laparotomi.png')
+
+NGERFigAndelTid(RegData=NGERData, valgtVar='KomplPostop', datoFra=datoFra, datoTil=datoTil,
+                tidsenhet='Aar', MCEType = 4, Hastegrad = 1,
+                outfile='Fig4 antall postopr kompl ved TLH per aar.png')
+
+
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='LapIntraabdominell', datoTil=datoTil,
+               outfile='Fig2 Intraabdominelle kompl ved laparoskopi.png')
+
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='Opf0AlvorlighetsGrad', datoTil=datoTil,
+               MCEType = 4, outfile='Fig5 Alvorlighetsgrad ved TLH.png')
+
+NGERFigAndeler(RegData=NGERData, valgtVar='Tss2Generelt', datoFra=datoFra1aar, datoTil=datoTil,
+               outfile='Fig6 TSS2 Oppfatning om gynekologisk avdeling.png')
+
+NGERFigKvalInd(RegData=NGERData, valgtVar='TSS0', datoFra=datoFra1aar, datoTil=datoTil,
+               outfile='Fig7 TSS2 samlet.png')
+
+NGERFigGjsnGrVar(RegData=NGERData, valgtVar='Tss2Generelt', datoFra=datoFra1aar, datoTil=datoTil,
+                 Hastegrad = 1, outfile='Fig8 Gjsn sumskår, oppfatning om gyn avd generelt.png')
+
 #------------------------------ Andeler flere var --------------------------
 
 variable <- c('Alder', 'KomplPost','KomplPostUtd','LapIntraabdominell', 'Norsktalende', 'OpBMI',

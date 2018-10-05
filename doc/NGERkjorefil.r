@@ -104,13 +104,13 @@ for (valgtVar in variable) {
 
 #------------------------------ Andeler per tidsenhet --------------------------
 #------------------------------ (AndelTid) --------------------------
-valgtVar <- 'OpTid' #LapKonvertert, OpAnestesi, OpDagkirurgi, OpTid
+valgtVar <- 'OpDagkirurgi' #LapKonvertert, OpAnestesi, OpDagkirurgi, OpTid
 outfile <- '' #paste0(valgtVar, '_', tidsenhet, '.png')
 
 NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
-            reshID=reshID, enhetsUtvalg=0, outfile=outfile, tidsenhet = 'Aar',
-            minald=minald, maxald=maxald, MCEType=MCEType, Hastegrad=Hastegrad,
-            AlvorlighetKompl=AlvorlighetKompl, preprosess=1) #
+            reshID=reshID, enhetsUtvalg=0, tidsenhet = 'Aar',
+            #minald=minald, maxald=maxald, MCEType=MCEType, Hastegrad=Hastegrad, AlvorlighetKompl=AlvorlighetKompl,
+            outfile=outfile) #
 
 
 #Teste variable
@@ -137,11 +137,11 @@ valgtVar <- 'OpTid' #Må velge... OpAnestesi, OpDagkirurgi,OpTid
       #Tss2Mott, Tss2Behandling,	Tss2Lytte, Tss2Behandlere, Tss2Enighet,	Tss2Generelt
 
 outfile <- '' #paste0(valgtVar, '_Shus.png')	#Navn angis av Jasper
-velgAvd <- '' #c(108048, 111180, 700404)
+#velgAvd <- '' #c(108048, 111180, 700404)
 
 NGERFigAndelerGrVar(RegData=RegData, datoFra='2017-01-01', valgtVar=valgtVar, datoTil=datoTil,
             reshID=reshID, outfile=outfile, MCEType=MCEType,
-            minald=minald, maxald=maxald, Hastegrad = Hastegrad, preprosess = 1, velgAvd=velgAvd )
+            minald=minald, maxald=maxald, Hastegrad = Hastegrad, preprosess = 1, velgAvd='' )
 
 
 #Teste variable
@@ -160,7 +160,7 @@ for (valgtVar in variable) {
 #------------------------------ Sentralmål per sykehus --------------------------
 #------------------------------ (GjsnGrVar) --------------------------
 
-valgtVar <- 'OpTid'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
+valgtVar <- 'R0ScorePhys'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
                             #R0ScoreEmo, R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral, OpTid
                           #'Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
                           #'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt'

@@ -87,7 +87,7 @@ if (valgtMaal=='Med') {
 	MedIQRHele <-  boxplot.stats(RegData$Variabel, do.conf = TRUE)
 	MidtHele <- as.numeric(MedIQRHele$stats[3])	#median(RegData$Variabel)
 	KIHele <- MedIQRHele$conf
-	xAkseTxt <- 'Median'
+	xAkseTxt <- paste0('Median ',NGERVarSpes$subtxt)
 	#Hvis vil bruke vanlige konf.int:
 	#j <- ceiling(N/2 - 1.96*sqrt(N/4))
 	#k <- ceiling(N/2 + 1.96*sqrt(N/4))
@@ -109,7 +109,7 @@ if (valgtMaal=='Gjsn') {	#Gjennomsnitt er standard, men må velges.
 	Midt <- Gjsn[sortInd] #as.numeric(Gjsn[sortInd])
 	KIned <- Gjsn[sortInd] - 2*SE[sortInd]
 	KIopp <- Gjsn[sortInd] + 2*SE[sortInd]
-	xAkseTxt <- 'Gjennomsnitt'
+	xAkseTxt <- paste0('Gjennomsnittlig ', ,NGERVarSpes$subtxt)
 	}
 
 
