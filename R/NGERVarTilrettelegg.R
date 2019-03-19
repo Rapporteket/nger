@@ -98,6 +98,14 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     RegData <- RegData[which(RegData$HysGjforingsGrad %in% koder), ]
     RegData$VariabelGr <- factor(RegData$HysGjforingsGrad, levels=koder, labels = grtxt) #levels=c(nivaa,9)
   }
+
+    if (valgtVar=='HysKonvertert') { #andelGrVar, andelTid
+    RegData <- RegData[intersect(which(RegData$HysKonvertert %in% 0:1), which(RegData$HysStatus == 1)), ]
+    RegData$Variabel <- RegData$LapKonvertert
+    varTxt <- 'konverterte'
+    tittel <- 'Konvertert hysteroskopi til laparotomi/-skopi'
+  }
+
   if (valgtVar=='KomplIntra') { #andelGrVar, andelTid
     # Komplikasjoner ved operasjon. Må kombinere HysKomplikasjoner og LapKomplikasjoner
     #Kode 0: Nei, 1:Ja, tomme
@@ -132,9 +140,8 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     RegData <- RegData[intersect(which(RegData$LapKonvertert %in% 0:1), which(RegData$LapStatus == 1)), ]
     RegData$Variabel <- RegData$LapKonvertert
     varTxt <- 'konverterte'
-    tittel <- 'Konvertert til laparotomi?'
+    tittel <- 'Konvertert lapraskopi til laparotomi'
   }
-
   if (valgtVar == 'LapNumHjelpeinnstikk') {   #Andeler
     # Velge antall fra 0 til 6
     #IKKE gjort noen utvalg. (StatusLap==1?, LapHjelpeinnstikk==1?)
@@ -359,7 +366,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
 
     RegData$Variabel[RegData$Opf0metode %in% 1:2] <- 1 #Opf0Status==1
     varTxt <- 'av postoperativ oppfølging'
-    tittel <- 'Pasienter som har fått oppfølging etter 6-8 uker'
+    tittel <- 'Pasienter som har svart på oppfølging'
   }
   #Lag figur for ett års oppfølging
 

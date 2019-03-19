@@ -27,16 +27,19 @@ tools:: texi2pdf('NGERmonthlyReport.tex')
 #Vil "snart" endre spørringa slik at det i hvert tilfelle spørres etter de variablene man trenger.
 
 rm(list=ls())
-dato <- '2018-09-10'
+dato <- '2019-03-18'
 NGERBasis <- read.table(paste0('A:/NGER/AlleVarNum', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #,
 NGERForlop <- read.table(paste0('A:/NGER/ForlopsOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
 #NGEROppf <- read.table('C:/Registre/NGER/data/FollowupsNum2016-10-14.csv', sep=';', header=T, fileEncoding = 'UTF-8')
 #NGERData <- merge(NGERForlop, NGERBasis, by = "ForlopsID", suffixes = c('','xx'), all = FALSE)
 #NGERData <- merge(NGERData, NGEROppf, by = "ForlopsID", suffixes = c('','YY'),all.x = TRUE)
 NGERData <- merge(NGERBasis, NGERForlop, by = "ForlopsID", suffixes = c('','YY'),all.x = TRUE, all.y=FALSE)
-#write.table(NGERData, file = "NGERData.csv", row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
+write.table(NGERData, file = "Aarsrapp2018.csv", row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
 RegData <- NGERData
-#save(RegData, file=paste0('A:/NGER/NGER', dato, '.Rdata'))
+RegData <- NGERPreprosess(NGERData)
+RegData <- NGERUtvalgEnh(RegData, datoFra = '2016-01-01', datoTil = '2018-12-31')$RegData
+save(RegData, file=paste0('A:/NGER/Aarsrapp2018', dato, '.Rdata'))
+write.table(RegData, file = "A:/NGER/Aarsrapp2018.csv", row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
 load(paste0('A:/NGER/NGER', dato, '.Rdata'))
 
 library(nger)
@@ -131,7 +134,7 @@ for (valgtVar in variable) {
 
 #------------------------------ Andeler per sykehus --------------------------
 #------------------------------ (AndelGrVar) --------------------------
-valgtVar <- 'OpTid' #Må velge... OpAnestesi, OpDagkirurgi,OpTid
+valgtVar <- 'Tss2Mott' #Må velge... OpAnestesi, OpDagkirurgi,OpTid
       #Alder, Opf0Reoperasjon, Education, Opf0AlvorlighetsGrad,
       #KomplIntra, KomplPostop, OpAntibProfylakse, OpASA, OpBMI, Opf0Status, RegForsinkelse
       #Tss2Mott, Tss2Behandling,	Tss2Lytte, Tss2Behandlere, Tss2Enighet,	Tss2Generelt

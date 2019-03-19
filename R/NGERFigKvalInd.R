@@ -121,11 +121,11 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
                'Intraop. komplikasjon ved \n laparoskopi',
                'Intraop. komplikasjon ved \n hysteroskopi',
                'Konvertert laparoskopi til \n laparotomi', #"LapKonvertert":
-               'Konvertert hysteroskopi til \n laparaskopi/laparotomi', #"HysKonvertert":
-               'Ikke utført oppfølging \n etter 4 uker')
+               'Konvertert hysteroskopi til \n laparaskopi/laparotomi') #"HysKonvertert":
+               #'Ikke utført oppfølging \n etter 4 uker')
                # Ikke ferdistilt registrering \n innen 6 uker')
     variable <- c('PostOpKomplReop', 'LapKomplikasjoner', 'HysKomplikasjoner',
-                  'LapKonvertert', 'HysKonvertert', 'Opf0') #, 'Innen6uker')
+                  'LapKonvertert', 'HysKonvertert') #, 'Opf0') #, 'Innen6uker')
 
     # RegData$Diff <- as.numeric(as.Date(RegData$Leveringsdato) - as.Date(RegData$InnDato)) #difftime(RegData$InnDato, RegData$Leveringsdato) #
     # RegData$Innen6uker <- NA
@@ -139,10 +139,10 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
                             %i% which(RegData$Opf0Status == 1)] <- 0
     RegData$PostOpKomplReop[which(RegData$Opf0Reoperasjon == 1)] <- 1
 
-    RegData$Opf0 <- 1
-    datoTil <- min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 8*7))
-    RegData$Opf0[RegData$InnDato>datoTil] <- NA
-    RegData$Opf0[RegData$Opf0metode %in% 1:2] <- 0
+    # RegData$Opf0 <- 1
+    # datoTil <- min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 8*7))
+    # RegData$Opf0[RegData$InnDato>datoTil] <- NA
+    # RegData$Opf0[RegData$Opf0metode %in% 1:2] <- 0
 
 
     Ngr$Hoved <- apply(RegData[ind$Hoved,variable], MARGIN=2,

@@ -4,9 +4,10 @@
 \alias{NGEROpInd}
 \title{Genererer figur over de 20 vanligste operasjonsindikatorene.}
 \usage{
-NGEROpInd(RegData = 0, datoFra = "2000-04-01", datoTil = "2050-12-31",
-  minald = 0, maxald = 130, outfile = "", reshID, enhetsUtvalg = 1,
-  OpMetode = 99, preprosess = 0, hentData = 0)
+NGEROpInd(RegData = 0, datoFra = "2000-04-01",
+  datoTil = "2050-12-31", minald = 0, maxald = 130, outfile = "",
+  reshID, enhetsUtvalg = 1, OpMetode = 99, preprosess = 0,
+  hentData = 0)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}

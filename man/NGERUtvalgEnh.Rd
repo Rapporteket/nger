@@ -6,8 +6,8 @@
 \usage{
 NGERUtvalgEnh(RegData, datoFra = "2016-01-01", datoTil = "3000-12-31",
   fargepalett = "BlaaOff", minald = 0, maxald = 130, MCEType = "",
-  AlvorlighetKompl = "", Hastegrad = "", enhetsUtvalg = 0, velgAvd = "",
-  velgDiag = 0, reshID = 0)
+  AlvorlighetKompl = "", Hastegrad = "", enhetsUtvalg = 0,
+  velgAvd = "", velgDiag = 0, reshID = 0)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}

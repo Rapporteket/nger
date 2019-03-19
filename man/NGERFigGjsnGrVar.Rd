@@ -4,11 +4,12 @@
 \alias{NGERFigGjsnGrVar}
 \title{Søylediagram med gjennomsnitt/median for hver grupperingsenhet (sykehus, RHF, ...)}
 \usage{
-NGERFigGjsnGrVar(RegData, datoFra = "2013-01-01", datoTil = "3000-12-31",
-  valgtVar, minald = 0, maxald = 130, MCEType = 99,
-  AlvorlighetKompl = 99, Hastegrad = 99, valgtMaal = "Gjsn",
-  hentData = 0, preprosess = 1, grVar = "ShNavn", velgAvd = "",
-  velgDiag = 0, Ngrense = 10, medKI = 1, lagFig = 1, outfile = "")
+NGERFigGjsnGrVar(RegData, datoFra = "2013-01-01",
+  datoTil = "3000-12-31", valgtVar, minald = 0, maxald = 130,
+  MCEType = 99, AlvorlighetKompl = 99, Hastegrad = 99,
+  valgtMaal = "Gjsn", hentData = 0, preprosess = 1,
+  grVar = "ShNavn", velgAvd = "", velgDiag = 0, Ngrense = 10,
+  medKI = 1, lagFig = 1, outfile = "")
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
