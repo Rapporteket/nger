@@ -143,7 +143,7 @@ og kan genereres av gynekologiregisterets databasebrukerne på \textit{helseregi
 
 
 <<LasteData, echo=FALSE, eval=T>>=
-datoFra <- '2013-01-01' 	 # min og max dato i utvalget vises alltid i figuren.
+datoFra <- '2015-01-01' 	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- Sys.Date()	#'2015-12-31'
 if (!exists('RegData')){
   RegData <- NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil)
@@ -157,15 +157,15 @@ RegData <- NGERPreprosess(RegData)
 library(xtable)
 library(plyr)
 outfile <- ''
-enhetsUtvalg <- 0
+enhetsUtvalg <- 1
 minald <- 0
 maxald <- 130
-MCEType<-99
+OpMetode<-99
 Hastegrad <- ''
 tidsenhet <- 'Aar'
 
-NGERUtvalg <- NGERUtvalg(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra,
-                         datoTil = datoTil, MCEType = MCEType, Hastegrad=Hastegrad)
+NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra,
+                         datoTil = datoTil, OpMetode = OpMetode, Hastegrad=Hastegrad)
 RegData <- NGERUtvalg$RegData
 
 RegData$OpAar <- as.factor(format(RegData$HovedDato, '%Y'))
@@ -347,7 +347,7 @@ RegDataUtvalg <- RegData[which(RegData$OpMetode==1), c('ShNavn', Instr)]
 
 InstrTabDum <- plyr::ddply(RegDataUtvalg[ ,Instr], .(RegDataUtvalg$ShNavn), .drop=F, colwise(sum), na.rm=T)  #Dataramme m/7dim
 Tot <- colSums(InstrTabDum[,2:(length(Instr)+1)])
-ShNavn <- levels(InstrTabDum[,1])
+ShNavn <- InstrTabDum[,1]
 
 InstrTab <- rbind(InstrTabDum[,2:(length(Instr)+1)],
                   Sum = Tot)
@@ -433,80 +433,80 @@ print(xtable(KonvTab, digits=c(0,rep(1, AntKol)), align=c('l', rep('r', AntKol, 
 
 <<'DivFig1', echo=FALSE, eval=T>>=
 #results='asis',
-dum <- NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar='Opf0Status', datoTil=datoTil,
+dum <- NGERFigAndelTid(RegData=RegData, preprosess=0, datoFra=datoFra, valgtVar='Opf0Status', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='StatusOppf0Aar.pdf',
-                       minald=minald, maxald=maxald, MCEType=MCEType, Hastegrad=Hastegrad)
+                       minald=minald, maxald=maxald, OpMetode=OpMetode, Hastegrad=Hastegrad)
 
-dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='OpAnestesi', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='OpAnestesiLap.pdf', MCEType = 1,
+dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='OpAnestesi', datoTil=datoTil,
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='OpAnestesiLap.pdf', OpMetode = 1,
                       minald=minald, maxald=maxald, Hastegrad=Hastegrad)
 
 
-dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='OpAnestesi', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='OpAnestesiHyp.pdf', MCEType = 2,
+dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='OpAnestesi', datoTil=datoTil,
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='OpAnestesiHyp.pdf', OpMetode = 2,
                       minald=minald, maxald=maxald, Hastegrad=Hastegrad)
 
-dum <-  NGERFigAndelerGrVar(RegData=RegData, datoFra=datoFra, datoTil=datoTil, valgtVar='OpAntibProfylakse',
-                            reshID=reshID, outfile='OpAntibProfylakse.pdf', MCEType=MCEType,
-                            minald=minald, maxald=maxald, Hastegrad = Hastegrad, preprosess = 0)
+dum <-  NGERFigAndelerGrVar(RegData=RegData, preprosess=0,datoFra=datoFra, datoTil=datoTil, valgtVar='OpAntibProfylakse',
+                            reshID=reshID, outfile='OpAntibProfylakse.pdf', OpMetode=OpMetode,
+                            minald=minald, maxald=maxald, Hastegrad = Hastegrad)
 
-dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='LapEkstrautstyr', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='LapEkstrautstyr.pdf', MCEType = 1,
+dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='LapEkstrautstyr', datoTil=datoTil,
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='LapEkstrautstyr.pdf', OpMetode = 1,
                       minald=minald, maxald=maxald, Hastegrad=Hastegrad)
 
 
-dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='LapTeknikk', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='LapTeknikk.pdf', MCEType = 1,
+dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='LapTeknikk', datoTil=datoTil,
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='LapTeknikk.pdf', OpMetode = 1,
                       minald=minald, maxald=maxald, Hastegrad=Hastegrad)
 
-dum <- NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar='KomplIntra', datoTil=datoTil,
+dum <- NGERFigAndelTid(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplIntra', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplIntraLapAar.pdf',
-                       minald=minald, maxald=maxald, MCEType=1, preprosess=0)
+                       minald=minald, maxald=maxald, OpMetode=1)
 
-dum <- NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar='KomplIntra', datoTil=datoTil,
+dum <- NGERFigAndelTid(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplIntra', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplIntraHysAar.pdf',
-                       minald=minald, maxald=maxald, MCEType=2, preprosess=0)
+                       minald=minald, maxald=maxald, OpMetode=2)
 
-dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='KomplPost', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostLap.pdf', MCEType = 1,
+dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplPost', datoTil=datoTil,
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostLap.pdf', OpMetode = 1,
                       minald=minald, maxald=maxald, Hastegrad=Hastegrad)
 
-dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='KomplPost', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostHys.pdf', MCEType = 2,
+dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplPost', datoTil=datoTil,
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostHys.pdf', OpMetode = 2,
                       minald=minald, maxald=maxald, Hastegrad=Hastegrad)
 
-dum <- NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar='KomplPostop', datoTil=datoTil,
+dum <- NGERFigAndelTid(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplPostop', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostLapAar.pdf',
-                       minald=minald, maxald=maxald, MCEType=1, preprosess=0)
+                       minald=minald, maxald=maxald, OpMetode=1)
 
-dum <- NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar='KomplPostop', datoTil=datoTil,
+dum <- NGERFigAndelTid(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplPostop', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostHysAar.pdf',
-                       minald=minald, maxald=maxald, MCEType=2,  preprosess=0)
+                       minald=minald, maxald=maxald, OpMetode=2)
 
 
-dum <- NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar='Opf0Reoperasjon', datoTil=datoTil,
+dum <- NGERFigAndelTid(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='Opf0Reoperasjon', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='Opf0ReoperasjonLapAar.pdf',
-                       minald=minald, maxald=maxald, MCEType=1,  preprosess=0)
+                       minald=minald, maxald=maxald, OpMetode=1)
 
-dum <- NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar='Opf0Reoperasjon', datoTil=datoTil,
+dum <- NGERFigAndelTid(RegData=RegData,preprosess=0, datoFra=datoFra, valgtVar='Opf0Reoperasjon', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='Opf0ReoperasjonHysAar.pdf',
-                       minald=minald, maxald=maxald, MCEType=2,  preprosess=0)
+                       minald=minald, maxald=maxald, OpMetode=2)
 
-dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='Opf0AlvorlighetsGrad', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='Opf0AlvorLap.pdf', MCEType = 1,
+dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='Opf0AlvorlighetsGrad', datoTil=datoTil,
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='Opf0AlvorLap.pdf', OpMetode = 1,
                       minald=minald, maxald=maxald, Hastegrad=Hastegrad)
 
-dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='Opf0AlvorlighetsGrad', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='Opf0AlvorHys.pdf', MCEType = 2,
+dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='Opf0AlvorlighetsGrad', datoTil=datoTil,
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='Opf0AlvorHys.pdf', OpMetode = 2,
                       minald=minald, maxald=maxald, Hastegrad=Hastegrad)
 
 
-dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='LapIntraabdominell', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='LapIntraabdominell.pdf', MCEType = '',
+dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='LapIntraabdominell', datoTil=datoTil,
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='LapIntraabdominell.pdf', OpMetode = '',
                       minald=minald, maxald=maxald, Hastegrad=Hastegrad)
 
-dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='HysKomplikasjoner', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='HysKompl.pdf', MCEType = '',
+dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='HysKomplikasjoner', datoTil=datoTil,
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='HysKompl.pdf', OpMetode = '',
                       minald=minald, maxald=maxald, Hastegrad=Hastegrad)
 
 
@@ -587,30 +587,30 @@ utvikling over tid.}
 \clearpage
 
 <<'DivFig2', results='asis', echo=FALSE, eval=T>>=
-dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='KomplPostUtd', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostUtd.pdf', MCEType = '',
+dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplPostUtd', datoTil=datoTil,
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostUtd.pdf', OpMetode = '',
                       minald=minald, maxald=maxald, Hastegrad=Hastegrad)
 
-dum <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar='KomplReopUtd', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplReopUtd.pdf', MCEType = '',
+dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplReopUtd', datoTil=datoTil,
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplReopUtd.pdf', OpMetode = '',
                       minald=minald, maxald=maxald, Hastegrad=Hastegrad)
 
-dum <- NGERFigAndelerGrVar(RegData=RegData, datoFra=datoFra, datoTil=datoTil, valgtVar='KomplPostop',
-                           reshID=reshID, outfile='KomplPostLapShus.pdf', MCEType=1,
-                           minald=minald, maxald=maxald, Hastegrad = Hastegrad, preprosess = 0)
+dum <- NGERFigAndelerGrVar(RegData=RegData, preprosess=0,datoFra=datoFra, datoTil=datoTil, valgtVar='KomplPostop',
+                           reshID=reshID, outfile='KomplPostLapShus.pdf', OpMetode=1,
+                           minald=minald, maxald=maxald, Hastegrad = Hastegrad)
 
-dum <- NGERFigAndelerGrVar(RegData=RegData, datoFra=datoFra, datoTil=datoTil, valgtVar='KomplPostop',
-                           reshID=reshID, outfile='KomplPostHysShus.pdf', MCEType=2,
-                           minald=minald, maxald=maxald, Hastegrad = Hastegrad, preprosess = 0)
+dum <- NGERFigAndelerGrVar(RegData=RegData, preprosess=0,datoFra=datoFra, datoTil=datoTil, valgtVar='KomplPostop',
+                           reshID=reshID, outfile='KomplPostHysShus.pdf', OpMetode=2,
+                           minald=minald, maxald=maxald, Hastegrad = Hastegrad)
 
 
-dum <- NGERFigAndelerGrVar(RegData=RegData, datoFra=datoFra, datoTil=datoTil, valgtVar='Opf0AlvorlighetsGrad',
-                           reshID=reshID, outfile='Opf0AlvorligLapShus.pdf', MCEType=1,
-                           minald=minald, maxald=maxald, Hastegrad = Hastegrad, preprosess = 0)
+dum <- NGERFigAndelerGrVar(RegData=RegData,preprosess=0, datoFra=datoFra, datoTil=datoTil, valgtVar='Opf0AlvorlighetsGrad',
+                           reshID=reshID, outfile='Opf0AlvorligLapShus.pdf', OpMetode=1,
+                           minald=minald, maxald=maxald, Hastegrad = Hastegrad)
 
-dum <- NGERFigAndelerGrVar(RegData=RegData, datoFra=datoFra, datoTil=datoTil, valgtVar='Opf0AlvorlighetsGrad',
-                           reshID=reshID, outfile='Opf0AlvorligHysShus.pdf', MCEType=2,
-                           minald=minald, maxald=maxald, Hastegrad = Hastegrad, preprosess = 0)
+dum <- NGERFigAndelerGrVar(RegData=RegData, preprosess=0,datoFra=datoFra, datoTil=datoTil, valgtVar='Opf0AlvorlighetsGrad',
+                           reshID=reshID, outfile='Opf0AlvorligHysShus.pdf', OpMetode=2,
+                           minald=minald, maxald=maxald, Hastegrad = Hastegrad)
 
 @
 

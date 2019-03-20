@@ -28,16 +28,16 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
   retn <- 'V'		#Vertikal som standard. 'H' angis evt. for enkeltvariable
   flerevar <- 0
   grtxt <- ''		#Spesifiseres for hver enkelt variabel
-  grtxt2 <- ''	#Spesifiseres evt. for hver enkelt variabel
-  grNavn <- ''
+  #grtxt2 <- ''	#Spesifiseres evt. for hver enkelt variabel
+  #grNavn <- ''
   varTxt <- ''
   xAkseTxt <- ''	#Benevning
-  yAkseTxt <- ''
+  #yAkseTxt <- ''
   subtxt <- ''
-  txtEtiketter  <- ''	#legend
-  verdier <- ''	#AggVerdier, gjennomsnitt, ...
-  verdiTxt <- '' 	#pstTxt, ...
-  strIfig <- ''		#cex
+  #txtEtiketter  <- ''	#legend
+  #verdier <- ''	#AggVerdier, gjennomsnitt, ...
+  #verdiTxt <- '' 	#pstTxt, ...
+  #strIfig <- ''		#cex
   sortAvtagende <- TRUE  #Sortering av resultater
   KImaal <- NA
   tittel <- 'Mangler tittel'
@@ -110,15 +110,15 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     # Komplikasjoner ved operasjon. Må kombinere HysKomplikasjoner og LapKomplikasjoner
     #Kode 0: Nei, 1:Ja, tomme
     RegData$KomplIntra <- with(RegData, HysKomplikasjoner + LapKomplikasjoner) #Får mange tomme!!!
-    if (MCEType %in% c(1,4:6)) {
+    if (OpMetode %in% c(1,4:6)) {
       indMed <- which(RegData$LapKomplikasjoner %in% 0:1)
       indVar <- which(RegData$LapKomplikasjoner == 1)
     } else {
-      indMed <- switch(as.character(MCEType),
+      indMed <- switch(as.character(OpMetode),
                        '2' = which(RegData$HysKomplikasjoner %in% 0:1),
                        '3' = which(RegData$KomplIntra %in% 0:1),	#Få tomme for dette valget
                        '99' = union(which(is.finite(RegData$HysKomplikasjoner)), which(is.finite(RegData$LapKomplikasjoner))))
-      indVar <- switch(as.character(MCEType),
+      indVar <- switch(as.character(OpMetode),
                        '2' = which(RegData$HysKomplikasjoner == 1),
                        '3' = which(RegData$KomplIntra %in% 1:2),
                        '99' = union(which(RegData$HysKomplikasjoner == 1), which(RegData$LapKomplikasjoner==1)))
@@ -220,10 +220,10 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
       tittel <- 'Alvorlighetsgrad av komplikasjoner'
     }
     if (figurtype %in% c('andelGrVar', 'andelTid')) {
-      #Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
-      RegData$Variabel[which(RegData$Opf0AlvorlighetsGrad %in% 3:4)] <- 1
-	  varTxt <- 'alvorlige komplikasjoner'
-      tittel <- 'Alvorlige komplikasjoner (grad 3 og 4)'
+      #Andel av postoperative komplikasjoner som var moderate 2 eller alvorlige (3 og 4)
+      RegData$Variabel[which(RegData$Opf0AlvorlighetsGrad %in% 2:4)] <- 1
+	  varTxt <- 'komplikasjoner grad 2-4'
+      tittel <- 'Postop. komplikasjon, moderat/alvorlig'
     }
   }
 

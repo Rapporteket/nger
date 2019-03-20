@@ -20,7 +20,7 @@
 
 
 NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='3000-12-31',
-                             valgtVar, enhetsUtvalg=0, minald=0, maxald=130, MCEType=99, Hastegrad=99,
+                             valgtVar, enhetsUtvalg=0, minald=0, maxald=130, OpMetode=99, Hastegrad=99,
                              hentData=0, preprosess=1, velgDiag=0, Ngrense=10,outfile='') {
 
   if (hentData == 1) {
@@ -45,7 +45,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
                     kvalInd = RegData)
 
   NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, reshID=reshID,  minald = minald, maxald = maxald, datoFra = datoFra,
-                              datoTil = datoTil, MCEType = MCEType, Hastegrad=Hastegrad, velgDiag=velgDiag,
+                              datoTil = datoTil, OpMetode = OpMetode, Hastegrad=Hastegrad, velgDiag=velgDiag,
                               enhetsUtvalg=enhetsUtvalg)
   smltxt <- NGERUtvalg$smltxt
   medSml <- NGERUtvalg$medSml
@@ -122,8 +122,8 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
                'Intraop. komplikasjon ved \n hysteroskopi',
                'Konvertert laparoskopi til \n laparotomi', #"LapKonvertert":
                'Konvertert hysteroskopi til \n laparaskopi/laparotomi') #"HysKonvertert":
-               #'Ikke utført oppfølging \n etter 4 uker')
-               # Ikke ferdistilt registrering \n innen 6 uker')
+               # 'Ikke utført oppfølging \n etter 4 uker')
+               # 'Ikke ferdistilt registrering \n innen 6 uker')
     variable <- c('PostOpKomplReop', 'LapKomplikasjoner', 'HysKomplikasjoner',
                   'LapKonvertert', 'HysKonvertert') #, 'Opf0') #, 'Innen6uker')
 

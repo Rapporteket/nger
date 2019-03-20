@@ -5,7 +5,7 @@
 #' @param datoTil Seneste dato i utvalget (vises alltid i figuren).
 #' @param minald Alder, fra og med (Standardverdi: 0)
 #' @param maxald Alder, til og med (Standardverdi: 130)
-#' @param MCEType  1: Laparoskopi
+#' @param OpMetode  1: Laparoskopi
 #'                 2: Hysteroskopi
 #'                 3: Begge
 #'                 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
@@ -33,7 +33,7 @@
 #' @export
 #'
 NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', fargepalett='BlaaOff',
-                          minald=0, maxald=130, MCEType='', AlvorlighetKompl='', Hastegrad='',
+                          minald=0, maxald=130, OpMetode='', AlvorlighetKompl='', Hastegrad='',
                           enhetsUtvalg=0, velgAvd='', velgDiag=0, reshID=0)
 {
   # Definer intersect-operator
@@ -62,11 +62,11 @@ NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', f
   #Utvalg på dato:
   indDato <- which(as.Date(RegData$InnDato) >= datoFra & as.Date(RegData$InnDato) <= datoTil)  #as.Date(datoFra)
   #Operasjonstype:
-  indMCE <- if (MCEType %in% c(1:3)){which(RegData$OpMetode %in% c(MCEType,3))
+  indMCE <- if (OpMetode %in% c(1:3)){which(RegData$OpMetode %in% c(OpMetode,3))
     } else {indMCE <- 1:Ninn}
-  if (MCEType %in% 4:6) {
+  if (OpMetode %in% 4:6) {
       ProsLap <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3')
-      indMCE <- switch(as.character(MCEType),
+      indMCE <- switch(as.character(OpMetode),
               '4' = unique(c(which(RegData[,ProsLap] == 'LCD01', arr.ind = TRUE)[,1],
                                          which(RegData[,ProsLap] == 'LCD04', arr.ind = TRUE)[,1])), #LCD01 + LCD04: total laparoskopisk hysterektomi
               '5' = which(RegData[,ProsLap] == 'LCC11', arr.ind = TRUE)[,1], #LCC11: laparoskopisk subtotal hysterektomi)
@@ -115,14 +115,14 @@ if (velgDiag !=0) {
                  if ((minald>0) | (maxald<130))
                     {paste0('Pasienter fra ', if (N>0) {min(RegData$Alder, na.rm=T)} else {minald},
                         ' til ', if (N>0) {max(RegData$Alder, na.rm=T)} else {maxald}, ' år')},
-                 if (MCEType %in% c(1:8)){paste0('Operasjonsmetode: ',
+                 if (OpMetode %in% c(1:8)){paste0('Operasjonsmetode: ',
                                                 c('Laparoskopi', 'Hysteroskopi', 'Begge',
                                                   'Tot. lap. hysterektomi (LCD01/LCD04)',
                                                   'Lap. subtotal hysterektomi (LCC11)',
                                                   'Lap. ass. vag. hysterektomi (LCD11)',
                                                   'Ovarialcyster',
                                                   'Endometriose, livmorvegg',
-                                                  'Endometriose unntatt livmorvegg')[MCEType])},
+                                                  'Endometriose unntatt livmorvegg')[OpMetode])},
                  if (Hastegrad[1] %in% 1:3){paste0('Hastegrad: ', paste0(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','))},
                  if (AlvorlighetKompl[1] %in% 1:3){paste0('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
                                                          [as.numeric(AlvorlighetKompl)], collapse=','))},

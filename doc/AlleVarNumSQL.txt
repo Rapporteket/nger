@@ -56,7 +56,7 @@ SELECT
   operation.COMPLICATION_TYPE as ComplType,  
   operation.OPCAT as Opcat,  
   operation.OPCAT_OUTSIDE_DAYTIME as OpOpcatOutsideDaytime,
-  operation.MCETYPE as MCEType,  
+  operation.MCETYPE as OpType,  
   operation.DAY_SURGERY as OpDaySurgery,  
   operation.OP_INDICATION1 as OpInd1,
   operation.OP_INDICATION2 as OpInd2,

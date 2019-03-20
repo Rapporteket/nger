@@ -17,7 +17,7 @@ NGERData <- RegData
 datoFra<- '2015-01-01'
 datoFra1aar <- '2017-01-01'
 datoTil <- '2017-12-31'
-MCEType <- 99
+OpType <- 99
 tidsenhet <- 'Aar'
 Hastegrad <- ''
 AlvorlighetKompl <- ''
@@ -28,15 +28,15 @@ library(nger)
 #--------------------Offentliggjøring--------------------------
 
 NGERFigAndelTid(RegData=NGERData, valgtVar='KomplIntra', datoFra=datoFra, datoTil=datoTil,
-                MCEType=1, tidsenhet='Aar',
+                OpType=1, tidsenhet='Aar',
                 outfile='Fig1 Andel intraoperative komplikasjoner siste år, laparoskopi.png')
 
 NGERFigAndelTid(RegData=NGERData, valgtVar='LapKonvertert', datoFra=datoFra, datoTil=datoTil,
-                tidsenhet='Aar', MCEType = 1,
+                tidsenhet='Aar', OpType = 1,
                 outfile='Fig3 Utvikling konvertering til laparotomi.png')
 
 NGERFigAndelTid(RegData=NGERData, valgtVar='KomplPostop', datoFra=datoFra, datoTil=datoTil,
-                tidsenhet='Aar', MCEType = 4, Hastegrad = 1,
+                tidsenhet='Aar', OpType = 4, Hastegrad = 1,
                 outfile='Fig4 antall postopr kompl ved TLH per aar.png')
 
 
@@ -44,7 +44,7 @@ NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='LapIntraabdomine
                outfile='Fig2 Intraabdominelle kompl ved laparoskopi.png')
 
 NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='Opf0AlvorlighetsGrad', datoTil=datoTil,
-               MCEType = 4, outfile='Fig5 Alvorlighetsgrad ved TLH.png')
+               OpType = 4, outfile='Fig5 Alvorlighetsgrad ved TLH.png')
 
 NGERFigAndeler(RegData=NGERData, valgtVar='Tss2Generelt', datoFra=datoFra1aar, datoTil=datoTil,
                outfile='Fig6 TSS2 Oppfatning om gynekologisk avdeling.png')
@@ -70,20 +70,20 @@ valgtVar <- 'Diagnoser'
 outfile <- paste0(valgtVar, '_ford.pdf')
 NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil,
                reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
-MCEType <- 1
+OpType <- 1
 outfile <- paste0(valgtVar, '_fordLap.pdf')
-NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil, MCEType = MCEType,
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil, OpType = OpType,
                reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
-MCEType <- 2
+OpType <- 2
 outfile <- paste0(valgtVar, '_fordHys.pdf')
-NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil,MCEType = MCEType,
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil,OpType = OpType,
                reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
 
 for (valgtVar in c('Diagnoser', 'Prosedyrer')) {
-  for (MCEType in c(1:2,99)) {
-  outfile <- paste0(valgtVar, '_fordOpType',MCEType, '.pdf')
+  for (OpType in c(1:2,99)) {
+  outfile <- paste0(valgtVar, '_fordOpType',OpType, '.pdf')
   NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil,
-					MCEType = MCEType, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
+					OpType = OpType, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
   }
 }
 
@@ -95,15 +95,15 @@ variable <- c('KomplIntra','KomplPostop',
 for (valgtVar in variable) {
   outfile <- paste0(valgtVar, '_', tidsenhet, '.pdf')
   NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
-              enhetsUtvalg=0, outfile=outfile, MCEType=MCEType, Hastegrad=Hastegrad,
+              enhetsUtvalg=0, outfile=outfile, OpType=OpType, Hastegrad=Hastegrad,
               AlvorlighetKompl=AlvorlighetKompl, tidsenhet='Aar')
 }
 
 NGERFigAndelTid(RegData=NGERData, valgtVar='OpDagkirurgi', datoFra=datoFra, datoTil=datoTil,
-                enhetsUtvalg=0, MCEType=1, Hastegrad=1, tidsenhet='Aar', outfile='OpDagkirLapEl_aar.pdf')
+                enhetsUtvalg=0, OpType=1, Hastegrad=1, tidsenhet='Aar', outfile='OpDagkirLapEl_aar.pdf')
 
 NGERFigAndelTid(RegData=NGERData, valgtVar='OpAnestesi',   datoFra='2013-01-01', datoTil=datoTil, #datoFra
-                enhetsUtvalg=0, MCEType=2, Hastegrad=1, tidsenhet='Aar', outfile='') #OpAnestesiHysEl_aar.pdf')
+                enhetsUtvalg=0, OpType=2, Hastegrad=1, tidsenhet='Aar', outfile='') #OpAnestesiHysEl_aar.pdf')
 
 #------------------------------ Andeler per sykehus --------------------------
 #------------------------------ (AndelGrVar) --------------------------
@@ -140,7 +140,7 @@ for (valgtVar in variable) {
 library(xtable)
 RegData <- NGERPreprosess(RegData)
 NGERUtvalg <- NGERUtvalg(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra,
-                         datoTil = datoTil, MCEType = MCEType, Hastegrad=Hastegrad)
+                         datoTil = datoTil, OpType = OpType, Hastegrad=Hastegrad)
 RegData <- NGERUtvalg$RegData
 
 

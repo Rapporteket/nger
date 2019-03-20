@@ -5,7 +5,7 @@
 \title{Tidstrend (år) av andel for en gitt variabel.}
 \usage{
 NGERFigAndelTid(RegData = 0, valgtVar, datoFra = "2014-01-01",
-  datoTil = "3000-12-31", minald = 0, maxald = 130, MCEType = 99,
+  datoTil = "3000-12-31", minald = 0, maxald = 130, OpMetode = 99,
   Hastegrad = "", AlvorlighetKompl = "", reshID = 0, outfile = "",
   enhetsUtvalg = 0, velgDiag = 0, preprosess = 1, hentData = 0,
   tidsenhet = "Aar")
@@ -23,7 +23,7 @@ NGERFigAndelTid(RegData = 0, valgtVar, datoFra = "2014-01-01",
 
 \item{maxald}{Alder, til og med (Standardverdi: 130)}
 
-\item{MCEType}{1: Laparoskopi
+\item{OpMetode}{1: Laparoskopi
 2: Hysteroskopi
 3: Begge
 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)

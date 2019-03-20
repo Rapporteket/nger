@@ -6,7 +6,7 @@
 \usage{
 NGERFigKvalInd(RegData, reshID = 0, datoFra = "2013-01-01",
   datoTil = "3000-12-31", valgtVar, enhetsUtvalg = 0, minald = 0,
-  maxald = 130, MCEType = 99, Hastegrad = 99, hentData = 0,
+  maxald = 130, OpMetode = 99, Hastegrad = 99, hentData = 0,
   preprosess = 1, velgDiag = 0, Ngrense = 10, outfile = "")
 }
 \arguments{
@@ -30,7 +30,7 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 
 \item{maxald}{Alder, til og med (Standardverdi: 130)}
 
-\item{MCEType}{1: Laparoskopi
+\item{OpMetode}{1: Laparoskopi
 2: Hysteroskopi
 3: Begge
 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)

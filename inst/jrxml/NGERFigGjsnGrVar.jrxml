@@ -37,7 +37,7 @@
 		<defaultValueExpression><![CDATA[new String("nger")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="rFunctionCallString" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new String("NGERFigGjsnGrVar(RegData=0, valgtVar=valgtVar, valgtMaal=valgtMaal, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, outfile=outfile, MCEType=MCEType, velgDiag=velgDiag, velgAvd=velgAvd, Hastegrad=Hastegrad, AlvorlighetKompl=AlvorlighetKompl, hentData=1, preprosess=1)")]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new String("NGERFigGjsnGrVar(RegData=0, valgtVar=valgtVar, valgtMaal=valgtMaal, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, outfile=outfile, OpType=OpType, velgDiag=velgDiag, velgAvd=velgAvd, Hastegrad=Hastegrad, AlvorlighetKompl=AlvorlighetKompl, hentData=1, preprosess=1)")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="varName" class="java.lang.String">
 		<defaultValueExpression><![CDATA[new String("alder")]]></defaultValueExpression>
@@ -58,7 +58,7 @@
 	<parameter name="velgAvd" class="java.util.List">
 		<defaultValueExpression><![CDATA[[""]]]></defaultValueExpression>
 	</parameter>
-	<parameter name="MCEType" class="java.lang.Integer">
+	<parameter name="OpType" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[new java.lang.Integer(99)]]></defaultValueExpression>
 	</parameter>
 	<parameter name="velgDiag" class="java.lang.Integer">

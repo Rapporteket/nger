@@ -6,7 +6,7 @@
 \usage{
 NGERFigAndeler(RegData = 0, valgtVar, datoFra = "2013-01-01",
   datoTil = "2050-12-31", minald = 0, maxald = 130, outfile = "",
-  reshID = 0, enhetsUtvalg = 0, MCEType = 99, Hastegrad = "",
+  reshID = 0, enhetsUtvalg = 0, OpMetode = 99, Hastegrad = "",
   AlvorlighetKompl = "", velgDiag = 0, hentData = 0,
   preprosess = 1)
 }
@@ -34,7 +34,7 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 1: Egen enhet mot resten av landet (Standard)
 2: Egen enhet}
 
-\item{MCEType}{1: Laparoskopi
+\item{OpMetode}{1: Laparoskopi
 2: Hysteroskopi
 3: Begge
 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)

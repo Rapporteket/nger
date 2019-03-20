@@ -38,7 +38,7 @@
 #' @export
 
 NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31', velgAvd='',
-                                minald=0, maxald=130, MCEType=99, Hastegrad='', AlvorlighetKompl='', Ngrense=10,
+                                minald=0, maxald=130, OpMetode=99, Hastegrad='', AlvorlighetKompl='', Ngrense=10,
                                 reshID=0, outfile='', enhetsUtvalg=0, velgDiag=0, preprosess=1, hentData=0) {
 
   ## Hvis spørring skjer fra R på server. ######################
@@ -76,7 +76,7 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoT
 
 
   NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-                              MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
+                              OpMetode=OpMetode, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
                               velgAvd=velgAvd, velgDiag=velgDiag)
   RegData <- NGERUtvalg$RegData
   utvalgTxt <- NGERUtvalg$utvalgTxt

@@ -6,7 +6,7 @@
 \usage{
 NGERFigGjsnGrVar(RegData, datoFra = "2013-01-01",
   datoTil = "3000-12-31", valgtVar, minald = 0, maxald = 130,
-  MCEType = 99, AlvorlighetKompl = 99, Hastegrad = 99,
+  OpMetode = 99, AlvorlighetKompl = 99, Hastegrad = 99,
   valgtMaal = "Gjsn", hentData = 0, preprosess = 1,
   grVar = "ShNavn", velgAvd = "", velgDiag = 0, Ngrense = 10,
   medKI = 1, lagFig = 1, outfile = "")
@@ -24,7 +24,7 @@ NGERFigGjsnGrVar(RegData, datoFra = "2013-01-01",
 
 \item{maxald}{Alder, til og med (Standardverdi: 130)}
 
-\item{MCEType}{1: Laparoskopi
+\item{OpMetode}{1: Laparoskopi
 2: Hysteroskopi
 3: Begge
 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)

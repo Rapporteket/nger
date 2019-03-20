@@ -9,12 +9,15 @@ library(plyr)
 
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 setwd('C:/ResultattjenesteGIT/nger/inst/')
-#knitr::knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
-#tools::texi2pdf('NGERSamleRapp.tex')
+load('A:/NGER/NGER2019-03-18.Rdata')
 
-knit('NGERmonthlyReport.Rnw')
-tools:: texi2pdf('NGERmonthlyReport.tex')
+knitr::knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
+tools::texi2pdf('NGERSamleRapp.tex')
 
+knit('NGERmndRapp.Rnw', encoding = 'UTF-8')
+tools:: texi2pdf('NGERmndRapp.tex')
+
+test <- NGERUtvalgEnh(RegData = RegData, datoFra = '2011-01-01', OpType = 1)$RegData
 
 # 'Tss2Mott',
 # 'Tss2Behandling',
@@ -34,12 +37,14 @@ NGERForlop <- read.table(paste0('A:/NGER/ForlopsOversikt', dato, '.csv'), sep=';
 #NGERData <- merge(NGERForlop, NGERBasis, by = "ForlopsID", suffixes = c('','xx'), all = FALSE)
 #NGERData <- merge(NGERData, NGEROppf, by = "ForlopsID", suffixes = c('','YY'),all.x = TRUE)
 NGERData <- merge(NGERBasis, NGERForlop, by = "ForlopsID", suffixes = c('','YY'),all.x = TRUE, all.y=FALSE)
-write.table(NGERData, file = "Aarsrapp2018.csv", row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
-RegData <- NGERData
-RegData <- NGERPreprosess(NGERData)
-RegData <- NGERUtvalgEnh(RegData, datoFra = '2016-01-01', datoTil = '2018-12-31')$RegData
-save(RegData, file=paste0('A:/NGER/Aarsrapp2018', dato, '.Rdata'))
-write.table(RegData, file = "A:/NGER/Aarsrapp2018.csv", row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
+#write.table(NGERData, file = paste0("NGER", dato), row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
+# RegData <- NGERData
+# RegData <- NGERPreprosess(NGERData)
+# RegData <- NGERUtvalgEnh(RegData, datoFra = '2016-01-01', datoTil = '2018-12-31')$RegData
+# save(RegData, file=paste0('A:/NGER/Aarsrapp2018', dato, '.Rdata'))
+# write.table(RegData, file = "A:/NGER/Aarsrapp2018.csv", row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
+save(RegData, file=paste0('A:/NGER/NGER', dato, '.Rdata'))
+
 load(paste0('A:/NGER/NGER', dato, '.Rdata'))
 
 library(nger)
@@ -52,7 +57,7 @@ maxald <- 130	#alder, til og med
 datoFra <- '2014-01-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2017-12-31'
 preprosess <- 1
-MCEType <- 99 #1: Laparoskopi, 2: Hysteroskopi, 3: Begge,  99: Alle
+OpType <- 99 #1: Laparoskopi, 2: Hysteroskopi, 3: Begge,  99: Alle
 #'                 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
 #'                 5: LCC11 (laparoskopisk subtotal hysterektomi)
 #'                 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
@@ -74,12 +79,12 @@ outfile <- ''
 #------------------------------ (erstatter Fordelinger) --------------------------
 
 
-valgtVar <- 'OpTid'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid, Tss2Sumskaar
+valgtVar <- 'OpMetode'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid, Tss2Sumskaar
 
 outfile <- '' #paste0(valgtVar, '_ford.png')
 
 NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
-	reshID=reshID, enhetsUtvalg=1, MCEType = MCEType, outfile=outfile, preprosess = preprosess,
+	reshID=reshID, enhetsUtvalg=1, OpMetode = OpMetode, outfile=outfile, preprosess = preprosess,
   minald=minald, maxald=maxald, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad, velgDiag = velgDiag)
 
 ind <- which(RegData$InnDato<as.Date('2017-01-01') & RegData$InnDato>as.Date('2015-12-31'))
@@ -112,7 +117,7 @@ outfile <- '' #paste0(valgtVar, '_', tidsenhet, '.png')
 
 NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
             reshID=reshID, enhetsUtvalg=0, tidsenhet = 'Aar',
-            #minald=minald, maxald=maxald, MCEType=MCEType, Hastegrad=Hastegrad, AlvorlighetKompl=AlvorlighetKompl,
+            #minald=minald, maxald=maxald, OpType=OpType, Hastegrad=Hastegrad, AlvorlighetKompl=AlvorlighetKompl,
             outfile=outfile) #
 
 
@@ -126,7 +131,7 @@ for (valgtVar in variable) {
   outfile <- paste0(valgtVar, '_', tidsenhet, '.png')
   NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
               reshID=reshID, enhetsUtvalg=1, outfile=outfile,
-              minald=minald, maxald=maxald, MCEType=MCEType, Hastegrad=Hastegrad,
+              minald=minald, maxald=maxald, OpType=OpType, Hastegrad=Hastegrad,
               AlvorlighetKompl=AlvorlighetKompl, tidsenhet=tidsenhet, preprosess=TRUE)
 }
 
@@ -143,7 +148,7 @@ outfile <- '' #paste0(valgtVar, '_Shus.png')	#Navn angis av Jasper
 #velgAvd <- '' #c(108048, 111180, 700404)
 
 NGERFigAndelerGrVar(RegData=RegData, datoFra='2017-01-01', valgtVar=valgtVar, datoTil=datoTil,
-            reshID=reshID, outfile=outfile, MCEType=MCEType,
+            reshID=reshID, outfile=outfile, OpType=OpType,
             minald=minald, maxald=maxald, Hastegrad = Hastegrad, preprosess = 1, velgAvd='' )
 
 
@@ -172,7 +177,7 @@ outfile <- ''
 outfile <- paste0(valgtVar, '_sh.png')
 
 NGERFigGjsnGrVar(RegData=RegData,valgtVar=valgtVar, datoFra='2017-01-01', datoTil=datoTil, minald=minald, maxald=maxald,
-                 MCEType=MCEType, valgtMaal='Med', hentData=0,  grVar=grVar, Ngrense=10,
+                 OpType=OpType, valgtMaal='Med', hentData=0,  grVar=grVar, Ngrense=10,
                  medKI=1, outfile=outfile, velgAvd = '')#AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
 
 
@@ -191,7 +196,7 @@ for (valgtVar in variable) {
 #-----------------------------Kvalietsindikatorer------------------------------
 valgtVar <- 'kvalInd' #RAND0, TSS0, kvalInd
 outfile <- '' #paste0(valgtVar, '_kvalInd.png')
-NGERFigKvalInd(RegData=RegData, datoFra='2017-10-01', datoTil='3000-01-02', valgtVar=valgtVar, MCEType=99,
+NGERFigKvalInd(RegData=RegData, datoFra='2017-10-01', datoTil='3000-01-02', valgtVar=valgtVar, OpType=99,
                Hastegrad=99, preprosess=1, velgDiag=1, Ngrense=10, enhetsUtvalg=1, reshID = reshID,
                outfile=outfile)
 

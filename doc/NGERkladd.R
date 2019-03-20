@@ -20,7 +20,7 @@ valgtVar <- 'Alder'
 outfile <- ""
 hentData<-0
 preprosess=T
-MCEType<-99
+OpType<-99
 AlvorlighetKompl<-c('1', '2', '4')
 
 
@@ -30,11 +30,11 @@ if (outfile=='') {
 }
 FigAndeler(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil,
            minald=minald, maxald=maxald, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg,
-           MCEType=MCEType, hentData=hentData, preprosess=preprosess, AlvorlighetKompl=AlvorlighetKompl)
+           OpType=OpType, hentData=hentData, preprosess=preprosess, AlvorlighetKompl=AlvorlighetKompl)
 
 
 FigAndelTid(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil,
-                        minald=minald, maxald=maxald, MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl, reshID=reshID, outfile=outfile,
+                        minald=minald, maxald=maxald, OpType=OpType, AlvorlighetKompl=AlvorlighetKompl, reshID=reshID, outfile=outfile,
                         enhetsUtvalg=enhetsUtvalg, preprosess=preprosess, hentData=hentData)
 
 
@@ -42,7 +42,7 @@ FigAndelTid(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil
 tmp <- NGERAntallRegPrAvd(RegData = RegData)
 
 OpInd <- NGEROpInd(RegData=RegData, datoFra='2000-04-01', datoTil='2050-12-31', minald=0, maxald=130, outfile='',
-                   reshID=reshID, enhetsUtvalg=1, MCEType=99, preprosess=TRUE, hentData=F)
+                   reshID=reshID, enhetsUtvalg=1, OpType=99, preprosess=TRUE, hentData=F)
 
 
 ## For Are:

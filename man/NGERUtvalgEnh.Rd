@@ -5,7 +5,7 @@
 \title{Funksjon som gjør utvalg av dataene, returnerer det filtrerte datasettet og utvalgsteksten.}
 \usage{
 NGERUtvalgEnh(RegData, datoFra = "2016-01-01", datoTil = "3000-12-31",
-  fargepalett = "BlaaOff", minald = 0, maxald = 130, MCEType = "",
+  fargepalett = "BlaaOff", minald = 0, maxald = 130, OpMetode = "",
   AlvorlighetKompl = "", Hastegrad = "", enhetsUtvalg = 0,
   velgAvd = "", velgDiag = 0, reshID = 0)
 }
@@ -22,7 +22,7 @@ NGERUtvalgEnh(RegData, datoFra = "2016-01-01", datoTil = "3000-12-31",
 
 \item{maxald}{Alder, til og med (Standardverdi: 130)}
 
-\item{MCEType}{1: Laparoskopi
+\item{OpMetode}{1: Laparoskopi
 2: Hysteroskopi
 3: Begge
 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
