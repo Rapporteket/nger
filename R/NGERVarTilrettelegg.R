@@ -101,28 +101,32 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
 
     if (valgtVar=='HysKonvertert') { #andelGrVar, andelTid
     RegData <- RegData[intersect(which(RegData$HysKonvertert %in% 0:1), which(RegData$HysStatus == 1)), ]
-    RegData$Variabel <- RegData$LapKonvertert
+    RegData$Variabel <- RegData$HysKonvertert
+    mean(RegData$Variabel, na.rm = T)*100
     varTxt <- 'konverterte'
     tittel <- 'Konvertert hysteroskopi til laparotomi/-skopi'
   }
 
   if (valgtVar=='KomplIntra') { #andelGrVar, andelTid
     # Komplikasjoner ved operasjon. Må kombinere HysKomplikasjoner og LapKomplikasjoner
+    # Noen få Hys-skjema ikke ferdigstilt ved begge (OpMetode=3). Lar disse stå.
+    # Bare ferdigstilte skjema ellers, så filtrerer ikke på ferdigstilte.
     #Kode 0: Nei, 1:Ja, tomme
-    RegData$KomplIntra <- with(RegData, HysKomplikasjoner + LapKomplikasjoner) #Får mange tomme!!!
-    if (OpMetode %in% c(1,4:6)) {
-      indMed <- which(RegData$LapKomplikasjoner %in% 0:1)
-      indVar <- which(RegData$LapKomplikasjoner == 1)
-    } else {
-      indMed <- switch(as.character(OpMetode),
-                       '2' = which(RegData$HysKomplikasjoner %in% 0:1),
-                       '3' = which(RegData$KomplIntra %in% 0:1),	#Få tomme for dette valget
-                       '99' = union(which(is.finite(RegData$HysKomplikasjoner)), which(is.finite(RegData$LapKomplikasjoner))))
-      indVar <- switch(as.character(OpMetode),
-                       '2' = which(RegData$HysKomplikasjoner == 1),
-                       '3' = which(RegData$KomplIntra %in% 1:2),
-                       '99' = union(which(RegData$HysKomplikasjoner == 1), which(RegData$LapKomplikasjoner==1)))
-    }
+    indVar <- which((RegData$LapKomplikasjoner==1) | (RegData$HysKomplikasjoner==1))
+    #Alle med en NA faller bort. RegData$KomplIntra <- with(RegData, HysKomplikasjoner + LapKomplikasjoner, na.rm=T) #Får mange tomme!!!
+    # if (OpMetode %in% c(1,4:6)) {
+    #   indMed <- which(RegData$LapKomplikasjoner %in% 0:1)
+    #   indVar <- which(RegData$LapKomplikasjoner == 1)
+    # } else {
+    #   indMed <- switch(as.character(OpMetode),
+    #                    '2' = which(RegData$HysKomplikasjoner %in% 0:1),
+    #                    '3' = which(RegData$KomplIntra %in% 0:1),	#Få tomme for dette valget
+    #                    '99' = union(which(is.finite(RegData$HysKomplikasjoner)), which(is.finite(RegData$LapKomplikasjoner))))
+    #   indVar <- switch(as.character(OpMetode),
+    #                    '2' = which(RegData$HysKomplikasjoner == 1),
+    #                    '3' = which(RegData$KomplIntra %in% 1:2),
+    #                    '99' = union(which(RegData$HysKomplikasjoner == 1), which(RegData$LapKomplikasjoner==1)))
+    # }
     RegData$Variabel[indVar] <- 1
     RegData <- RegData[indMed, ]
     varTxt <- 'komplikasjoner'
@@ -146,7 +150,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     # Velge antall fra 0 til 6
     #IKKE gjort noen utvalg. (StatusLap==1?, LapHjelpeinnstikk==1?)
     tittel <- 'Antall hjelpeinnstikk, laparaskopi'
-    grtxt <- 0:6 #Kategoriser: 0,1,2,3,4+
+    grtxt <- 0:6
     RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = grtxt)
   }
 
@@ -656,7 +660,8 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
   #(Alternativt kan vi gjøre beregninga her og sende tilbake teller og nevner for den sammensatte variabelen)
 
   if (valgtVar=='Diagnoser') { #Tilfelle hvor man heller endrer format på variablene...?
-    #PER NÅ FEIL. SAMME DIAGNOSE KAN VÆRE FØRT OPP FLERE GANGER FOR SAMME PASIENT.
+    #Gammel kommentar?: PER NÅ FEIL. SAMME DIAGNOSE KAN VÆRE FØRT OPP FLERE GANGER FOR SAMME PASIENT.
+    #Tar unique for hver rad. Antar dette er for å ta høyde for at sm. diag oppf. flere ganger.
     tittel <- 'Hyppigst forekommende diagnoser'
     diagLap <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3')
     diagHys <- c('HysDiagnose1', 'HysDiagnose2', 'HysDiagnose3')

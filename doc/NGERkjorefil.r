@@ -17,7 +17,7 @@ tools::texi2pdf('NGERSamleRapp.tex')
 knit('NGERmndRapp.Rnw', encoding = 'UTF-8')
 tools:: texi2pdf('NGERmndRapp.tex')
 
-test <- NGERUtvalgEnh(RegData = RegData, datoFra = '2011-01-01', OpType = 1)$RegData
+test <- NGERUtvalgEnh(RegData = RegData, datoFra = '2011-01-01', OpMetode = 1)$RegData
 
 # 'Tss2Mott',
 # 'Tss2Behandling',
@@ -57,7 +57,7 @@ maxald <- 130	#alder, til og med
 datoFra <- '2014-01-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2017-12-31'
 preprosess <- 1
-OpType <- 99 #1: Laparoskopi, 2: Hysteroskopi, 3: Begge,  99: Alle
+OpMetode <- 99 #1: Laparoskopi, 2: Hysteroskopi, 3: Begge,  99: Alle
 #'                 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
 #'                 5: LCC11 (laparoskopisk subtotal hysterektomi)
 #'                 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
@@ -96,7 +96,7 @@ variable <- c('Alder','HysGjforingsGrad', 'HysKomplikasjoner','KomplPost',
               'SivilStatus', 'Opf0metode', 'OpMetode', 'Norsktalende', 'OpAnestesi', 'OpASA',
               'OpBMI', 'OpKategori', 'OpDagkirurgi','Opf0AlvorlighetsGrad',
               'OpTidlVagInngrep', 'OpTidlLapsko',
-              'OpTidlLaparotomi', 'OpIVaktTid', 'OpType', 'Prosedyrer', 'RegForsinkelse', 'Utdanning')
+              'OpTidlLaparotomi', 'OpIVaktTid', 'OpMetode', 'Prosedyrer', 'RegForsinkelse', 'Utdanning')
 
 variable <- c('Utdanning','Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',	'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')
 variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
@@ -117,7 +117,7 @@ outfile <- '' #paste0(valgtVar, '_', tidsenhet, '.png')
 
 NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
             reshID=reshID, enhetsUtvalg=0, tidsenhet = 'Aar',
-            #minald=minald, maxald=maxald, OpType=OpType, Hastegrad=Hastegrad, AlvorlighetKompl=AlvorlighetKompl,
+            #minald=minald, maxald=maxald, OpMetode=OpMetode, Hastegrad=Hastegrad, AlvorlighetKompl=AlvorlighetKompl,
             outfile=outfile) #
 
 
@@ -131,7 +131,7 @@ for (valgtVar in variable) {
   outfile <- paste0(valgtVar, '_', tidsenhet, '.png')
   NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
               reshID=reshID, enhetsUtvalg=1, outfile=outfile,
-              minald=minald, maxald=maxald, OpType=OpType, Hastegrad=Hastegrad,
+              minald=minald, maxald=maxald, OpMetode=OpMetode, Hastegrad=Hastegrad,
               AlvorlighetKompl=AlvorlighetKompl, tidsenhet=tidsenhet, preprosess=TRUE)
 }
 
@@ -139,7 +139,7 @@ for (valgtVar in variable) {
 
 #------------------------------ Andeler per sykehus --------------------------
 #------------------------------ (AndelGrVar) --------------------------
-valgtVar <- 'Tss2Mott' #Må velge... OpAnestesi, OpDagkirurgi,OpTid
+valgtVar <- 'KomplIntra' #Må velge... OpAnestesi, OpDagkirurgi,OpTid
       #Alder, Opf0Reoperasjon, Education, Opf0AlvorlighetsGrad,
       #KomplIntra, KomplPostop, OpAntibProfylakse, OpASA, OpBMI, Opf0Status, RegForsinkelse
       #Tss2Mott, Tss2Behandling,	Tss2Lytte, Tss2Behandlere, Tss2Enighet,	Tss2Generelt
@@ -147,8 +147,10 @@ valgtVar <- 'Tss2Mott' #Må velge... OpAnestesi, OpDagkirurgi,OpTid
 outfile <- '' #paste0(valgtVar, '_Shus.png')	#Navn angis av Jasper
 #velgAvd <- '' #c(108048, 111180, 700404)
 
+NGERFigAndelerGrVar(RegData=RegData,  valgtVar='KomplIntra', reshID=110734, outfile='GmlKomplIntra1.png', preprosess = 1)
+
 NGERFigAndelerGrVar(RegData=RegData, datoFra='2017-01-01', valgtVar=valgtVar, datoTil=datoTil,
-            reshID=reshID, outfile=outfile, OpType=OpType,
+            reshID=reshID, outfile=outfile, OpMetode=OpMetode,
             minald=minald, maxald=maxald, Hastegrad = Hastegrad, preprosess = 1, velgAvd='' )
 
 
@@ -177,7 +179,7 @@ outfile <- ''
 outfile <- paste0(valgtVar, '_sh.png')
 
 NGERFigGjsnGrVar(RegData=RegData,valgtVar=valgtVar, datoFra='2017-01-01', datoTil=datoTil, minald=minald, maxald=maxald,
-                 OpType=OpType, valgtMaal='Med', hentData=0,  grVar=grVar, Ngrense=10,
+                 OpMetode=OpMetode, valgtMaal='Med', hentData=0,  grVar=grVar, Ngrense=10,
                  medKI=1, outfile=outfile, velgAvd = '')#AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
 
 
@@ -196,7 +198,7 @@ for (valgtVar in variable) {
 #-----------------------------Kvalietsindikatorer------------------------------
 valgtVar <- 'kvalInd' #RAND0, TSS0, kvalInd
 outfile <- '' #paste0(valgtVar, '_kvalInd.png')
-NGERFigKvalInd(RegData=RegData, datoFra='2017-10-01', datoTil='3000-01-02', valgtVar=valgtVar, OpType=99,
+NGERFigKvalInd(RegData=RegData, datoFra='2017-10-01', datoTil='3000-01-02', valgtVar=valgtVar, OpMetode=99,
                Hastegrad=99, preprosess=1, velgDiag=1, Ngrense=10, enhetsUtvalg=1, reshID = reshID,
                outfile=outfile)
 

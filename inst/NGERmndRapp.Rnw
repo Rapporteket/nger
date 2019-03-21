@@ -67,7 +67,13 @@ for (valgtVar in variable) {
 	NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
               reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile, OpMetode = OpMetode,
               tidsenhet=tidsenhet, preprosess=preprosess)
-			  }
+}
+# 	NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar='KomplIntra', datoTil=datoTil,
+#               reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='', OpMetode = OpMetode,
+#               tidsenhet=tidsenhet, preprosess=preprosess)
+# 	NGERFigAndelerGrVar(RegData=RegData, valgtVar='KomplIntra', outfile='', reshID=reshID,
+# 	                    hentData=0, preprosess=1)
+
 @
 
 \title[NGER\\\Sexpr{shtxt}]{\textit{Norsk gynekologisk endoskopiregister} \\
