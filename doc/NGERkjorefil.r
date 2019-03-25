@@ -6,18 +6,19 @@ library(nger)
 library(knitr)
 library(tools)
 library(plyr)
+library(lubridate)
 
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 setwd('C:/ResultattjenesteGIT/nger/inst/')
 load('A:/NGER/NGER2019-03-18.Rdata')
+RegData <- NGERPreprosess(RegData=RegData)
 
-knitr::knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
-tools::texi2pdf('NGERSamleRapp.tex')
+#knitr::knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
+#tools::texi2pdf('NGERSamleRapp.tex')
 
 knit('NGERmndRapp.Rnw', encoding = 'UTF-8')
 tools:: texi2pdf('NGERmndRapp.tex')
 
-test <- NGERUtvalgEnh(RegData = RegData, datoFra = '2011-01-01', OpMetode = 1)$RegData
 
 # 'Tss2Mott',
 # 'Tss2Behandling',
@@ -25,14 +26,18 @@ test <- NGERUtvalgEnh(RegData = RegData, datoFra = '2011-01-01', OpMetode = 1)$R
 # 'Tss2Behandlere',
 # 'Tss2Enighet',
 # 'Tss2Generelt')
+#------------------------------Kjøre App----------------------------
+load(paste0('A:/NGER/NGER2019-03-18.Rdata'))
 
 #--------------------------------Datakobling--------------------------
 #Vil "snart" endre spørringa slik at det i hvert tilfelle spørres etter de variablene man trenger.
 
 rm(list=ls())
 dato <- '2019-03-18'
+dato <- '2019-03-18Aarsrapp18'
 NGERBasis <- read.table(paste0('A:/NGER/AlleVarNum', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #,
 NGERForlop <- read.table(paste0('A:/NGER/ForlopsOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
+NGERSkjema <- read.table(paste0('A:/NGER/SkjemaOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
 #NGEROppf <- read.table('C:/Registre/NGER/data/FollowupsNum2016-10-14.csv', sep=';', header=T, fileEncoding = 'UTF-8')
 #NGERData <- merge(NGERForlop, NGERBasis, by = "ForlopsID", suffixes = c('','xx'), all = FALSE)
 #NGERData <- merge(NGERData, NGEROppf, by = "ForlopsID", suffixes = c('','YY'),all.x = TRUE)
@@ -54,8 +59,8 @@ setwd("C:/ResultattjenesteGIT/nger/")
 reshID <- 110734 # 110734 (Tønsberg)  	700399
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
-datoFra <- '2014-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2017-12-31'
+datoFra <- '2017-01-01'	 # min og max dato i utvalget vises alltid i figuren.
+datoTil <- '2019-12-31'
 preprosess <- 1
 OpMetode <- 99 #1: Laparoskopi, 2: Hysteroskopi, 3: Begge,  99: Alle
 #'                 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
@@ -65,7 +70,7 @@ velgDiag <- 0
 Hastegrad <- ''
 AlvorlighetKompl <- ''#c('2','3')
 hentData <- 0
-enhetsUtvalg <- 1 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
+enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
 
 tidsenhet <- 'Aar'
@@ -79,9 +84,10 @@ outfile <- ''
 #------------------------------ (erstatter Fordelinger) --------------------------
 
 
-valgtVar <- 'OpMetode'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid, Tss2Sumskaar
+valgtVar <- 'KomplPostop'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid, Tss2Sumskaar
 
 outfile <- '' #paste0(valgtVar, '_ford.png')
+enhetsUtvalg <- 0
 
 NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
 	reshID=reshID, enhetsUtvalg=1, OpMetode = OpMetode, outfile=outfile, preprosess = preprosess,

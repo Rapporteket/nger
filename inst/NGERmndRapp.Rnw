@@ -15,7 +15,7 @@ knitr::opts_chunk$set(warnings=FALSE,echo=FALSE)
 knitr::opts_knit$set(root.dir = './')
 @
 
-<<'getData', include=FALSE>>=
+<<'hentData', include=FALSE>>=
 datoTil <- Sys.Date()
 dato <- as.POSIXlt(datoTil)
 datoFra <- as.Date(paste0(1900+dato$year-1,'-', dato$mon+1, '-', '01'))
@@ -23,28 +23,32 @@ datoFra <- as.Date(paste0(1900+dato$year-1,'-', dato$mon+1, '-', '01'))
 
 if (!exists('RegData')){
       RegData <- NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil)
+      RegData <- NGERPreprosess(RegData=RegData)
 }
 
 #RegData <- NGERRegDataSQL(datoFra=datoFra, datoTil=datoTil)
-RegData <- NGERPreprosess(RegData=RegData)
 @
 
 
 <<'SetteParametreOgLageFig', include=FALSE>>=
-minald <- 0
-maxald <- 130
+#minald <- 0
+#maxald <- 110
 OpMetode <- 99
 Hastegrad <- ""
 AlvorlighetKompl <- ""
-enhetsUtvalg <- 2
+enhetsUtvalg <- 1
 tidsenhet <- 'Mnd'
 preprosess <- 0
 hentData <- 0
+
 
 shtxt <- switch(as.character(enhetsUtvalg),
                      '0' = 'Hele landet',
                      '1' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]),
                      '2' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]))
+
+RegDataEget <- RegData[which(RegData$ReshId==reshID), ]
+maxDatoEget <- format.Date(max(RegDataEget$InnDato), format='%d.%m.%Y', tz='UTC')
 
 NGERFigKvalInd(RegData=RegData, reshID=reshID, datoFra=datoFra, datoTil=datoTil,
                              valgtVar='kvalInd', enhetsUtvalg=1, OpMetode=99,
@@ -103,10 +107,50 @@ MÅNEDSRAPPORT \\
 % \includegraphics[scale=0.35]{Opf0KomplOrgan_Mnd.pdf}
 % \caption{Postoperativ komplikasjon: Organskade}
 
+\section{Info}
+\begin{frame}[fragile] {Datagrunnlag}
+
+Denne rapporten er utarbeidet på oppdrag fra Norsk gynekologisk endoskopiregister (NGER) og blir generert automatisk
+fra Rapporteket. Alle resultat er baserte på data fra registeret som per rapportdato  er ferdigstilte i QReg.
+
+
+Fagrådet i NGER er ansvarleg for alle vurderinger og tolkninger av data, samt feil i resultat som skyldes
+feil i datagrunnlaget. En feilkilde i rapporten vil trolig vere ufullstendig registrering og evt. manglende ferdigstilleslse av registreringer ved flere av sykehusene.
+Dette etterslepet vil variere både i tid og volum, og medfører at det varierer hvor representative data er for de ulike sykehusene. Rapporten har følgelig usikkert datagrunnlag og er kun ment til internt bruk. \par
+
+Rapporten inneholder aggregerte data. I tilfeller der utvalget inneholder få registreringer og disse
+kombineres med eksempelvis demografiske data, kan det ikke utelukkes at rapporterte data kan tilbakeføres
+til enkeltpersoner. \par
+
+\textit{\textbf{Av grunnene nevnt over, ber NGER om at denne rapporten ikke blir brukt offentlig i noen
+samanheng eller på noe vis blir offentliggjort.}} \par
+
+
+For \Sexpr{shtxt} er siste ferdigstilte innleggingsdato i denne rapporten
+\Sexpr{maxDatoEget}.
+\par
+
+Denne rapporten kan også hentes ved å logge seg inn på Rapporteket-NGER og klikke på "Last ned Månedsrapport". Det
+betyr at alle kan hente seg representative månadsrapporter når de måtte ønske.
+I Rapporteket kan ein også finne mange flere figurer og tabeller, samt gjøre endringar i tidsintervall og
+sammenlikningsgrunnlag.
+
+
+\end{frame}
+
+
 \section{Aktivitet og kvalitet}
 
 \begin{frame}[fragile]
-Her kommer en tabell med oversikt over antall registreringer pr mnd siste 6 mnd
+%Antall registreringer siste måneder
+
+<<'AntMnd', results='asis'>>=
+antMnd <- 6
+xtable::xtable(tabAntOpphShMnd(RegData=RegData, antMnd=antMnd, reshID=reshID),
+               digits=0,
+               caption=paste0('Antall registreringer ved ditt sykehus siste ', antMnd, ' måneder.'))
+
+@
 \end{frame}
 
 \begin{frame}[fragile]

@@ -467,11 +467,11 @@ dum <- NGERFigAndelTid(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplIntraHysAar.pdf',
                        minald=minald, maxald=maxald, OpMetode=2)
 
-dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplPost', datoTil=datoTil,
+dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplPostopType', datoTil=datoTil,
                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostLap.pdf', OpMetode = 1,
                       minald=minald, maxald=maxald, Hastegrad=Hastegrad)
 
-dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplPost', datoTil=datoTil,
+dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplPostopType', datoTil=datoTil,
                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostHys.pdf', OpMetode = 2,
                       minald=minald, maxald=maxald, Hastegrad=Hastegrad)
 

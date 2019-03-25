@@ -33,7 +33,7 @@
 #' @export
 #'
 NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', fargepalett='BlaaOff',
-                          minald=0, maxald=130, OpMetode='', AlvorlighetKompl='', Hastegrad='',
+                          minald=0, maxald=110, OpMetode='', AlvorlighetKompl='', Hastegrad='',
                           enhetsUtvalg=0, velgAvd='', velgDiag=0, reshID=0)
 {
   # Definer intersect-operator
@@ -112,7 +112,7 @@ if (velgDiag !=0) {
 
   utvalgTxt <- c(paste0('Operasjonsdato: ', if (N>0) {min(RegData$InnDato, na.rm=T)} else {datoFra},
                        ' til ', if (N>0) {max(RegData$InnDato, na.rm=T)} else {datoTil}),
-                 if ((minald>0) | (maxald<130))
+                 if ((minald>0) | (maxald<110))
                     {paste0('Pasienter fra ', if (N>0) {min(RegData$Alder, na.rm=T)} else {minald},
                         ' til ', if (N>0) {max(RegData$Alder, na.rm=T)} else {maxald}, ' år')},
                  if (OpMetode %in% c(1:8)){paste0('Operasjonsmetode: ',

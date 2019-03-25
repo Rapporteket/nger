@@ -128,7 +128,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     #                    '99' = union(which(RegData$HysKomplikasjoner == 1), which(RegData$LapKomplikasjoner==1)))
     # }
     RegData$Variabel[indVar] <- 1
-    RegData <- RegData[indMed, ]
+    #RegData <- RegData[indMed, ]
     varTxt <- 'komplikasjoner'
     tittel <- 'Komplikasjoner, intraoperativt'
   }
@@ -731,7 +731,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     #apply(RegData[,variable], MARGIN=2, FUN=function(x) sum(x %in% 0:1))
   }
   #FIGURER SATT SAMMEN AV FLERE VARIABLE, ULIKT TOTALUTVALG
-  if (valgtVar %in% c('Diagnoser', 'KomplPost', 'HysKomplikasjoner', 'LapKomplikasjoner',
+  if (valgtVar %in% c('Diagnoser', 'KomplPostopType', 'HysKomplikasjoner', 'LapKomplikasjoner',
                       'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr',
                       'LapIntraabdominell', 'LapTeknikk', 'Prosedyrer')){
     flerevar <- 1
@@ -767,7 +767,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     #NVar <- length(indMed)
     #N <- NVar
   }
-  if (valgtVar=='KomplPost') {
+  if (valgtVar=='KomplPostopType') {
     #Postoperative komplikasjoner. Bare registreringer hvor Opf0Komplikasjoner er 0 el. 1
     tittel <- 'Postoperative komplikasjoner'
     RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]

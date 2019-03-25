@@ -102,7 +102,6 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   flerevar <- 0
   antDes <- ifelse(valgtVar %in% c('HysKomplikasjoner', 'LapIntraabdominell', 'LapKomplikasjoner'),2, 1)
   '%i%' <- intersect
- #koder <- NULL
 
   if (!(valgtVar %in% c('Diagnoser', 'Prosedyrer'))) {
   NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, figurtype='andeler')
@@ -116,6 +115,9 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   RegData <- NGERUtvalg$RegData
   utvalgTxt <- NGERUtvalg$utvalgTxt
   ind <- NGERUtvalg$ind
+  medSml <- NGERUtvalg$medSml
+  smltxt <- NGERUtvalg$smltxt
+  hovedgrTxt <- NGERUtvalg$hovedgrTxt
 
   if (valgtVar %in% c('Diagnoser', 'Prosedyrer')) {
     NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, ind=ind, figurtype='andeler')
@@ -124,12 +126,13 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   flerevar <- NGERVarSpes$flerevar
   subtxt <- NGERVarSpes$subtxt
   grtxt <- NGERVarSpes$grtxt
-
+  tittel <- NGERVarSpes$tittel
+  retn <- NGERVarSpes$retn
 
 
 
 #----------- Beregninger ---------------:
-      Andeler <- list(Hoved = 0, Rest =0)
+      AggVerdier <- list(Hoved = 0, Rest =0)
       N <- list(Hoved = 0, Rest =0)
       Nfig <- list(Hoved = 0, Rest =0) #figurtekst: N i legend
       Ngr <- list(Hoved = 0, Rest =0)
@@ -145,7 +148,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
                         '0' = sum(Ngr$Hoved),	#length(ind$Hoved)- Kan inneholde NA
                         '1' = apply(RegData[ind$Hoved,variable], MARGIN=2,
                                  FUN=function(x) sum(x %in% 0:1, na.rm=T)))
-      Andeler$Hoved <- 100*Ngr$Hoved/N$Hoved
+      AggVerdier$Hoved <- 100*Ngr$Hoved/N$Hoved
 
       if (NGERUtvalg$medSml==1) {
            Ngr$Rest <- switch(as.character(flerevar),
@@ -156,7 +159,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
                              '0' = sum(Ngr$Rest),
                              '1' = apply(RegData[ind$Rest,variable], MARGIN=2,
                                    FUN=function(x) sum(x %in% 0:1, na.rm=T)))
-            Andeler$Rest <- 100*Ngr$Rest/N$Rest
+            AggVerdier$Rest <- 100*Ngr$Rest/N$Rest
       }
 
       if(flerevar==1) {
@@ -169,16 +172,33 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
       } else {
             Nfig <- N}
 
-      grtxt2 <- paste0(sprintf('%.1f',Andeler$Hoved), '%') #paste0('(', sprintf('%.1f',Andeler$Hoved), '%)')
+      grtxt2 <- paste0(sprintf('%.1f',AggVerdier$Hoved), '%') #paste0('(', sprintf('%.1f',AggVerdier$Hoved), '%)')
 
 
-
+      # UtData <- list(paste0(toString(NGERVarSpes$tittel),'.'), AggVerdier, N, grtxt )
+      # names(UtData) <- c('tittel', 'AggVerdier', 'Antall', 'GruppeTekst')
+      FigDataParam <- list(AggVerdier=AggVerdier,
+                           N=Nfig,
+                           Ngr=Ngr,
+                           #KImaal <- NIRVarSpes$KImaal,
+                           grtxt2=grtxt2,
+                           grtxt=grtxt,
+                           #grTypeTxt=grTypeTxt,
+                           tittel=tittel,
+                           retn=retn,
+                           subtxt=subtxt,
+                           #yAkseTxt=yAkseTxt,
+                           utvalgTxt=utvalgTxt,
+                           fargepalett=NGERUtvalg$fargepalett,
+                           medSml=medSml,
+                           hovedgrTxt=hovedgrTxt,
+                           smltxt=smltxt)
   ###-----------Figur---------------------------------------
   if ( Nfig$Hoved %in% 1:5 | 	(NGERUtvalg$medSml ==1 & Nfig$Rest<10)) {
     FigTypUt <- figtype(outfile)
     farger <- FigTypUt$farger
     plot.new()
-    title(main=NGERVarSpes$tittel)	#
+    title(main=tittel)	#
     legend('topleft',utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
     text(0.5, 0.6, 'Færre enn 5 "egne" registreringer eller færre enn 10 totalt', cex=1.2)
     if ( outfile != '') {dev.off()}
@@ -186,16 +206,16 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   } else {
 
 
-    ###Innparametre til evt. funksjon: subtxt, grtxt, grtxt2, tittel, Andeler, utvalgTxt, retn, cexgr
+    ###Innparametre til evt. funksjon: subtxt, grtxt, grtxt2, tittel, AggVerdier, utvalgTxt, retn, cexgr
     FigTypUt <- figtype(outfile, fargepalett=NGERUtvalg$fargepalett)
     #Tilpasse marger for å kunne skrive utvalgsteksten
     NutvTxt <- length(utvalgTxt)
     antDesTxt <- paste0('%.', antDes, 'f')
-    if (length(grtxt2) == 1) {grtxt2 <- paste0('(', sprintf(antDesTxt, Andeler$Hoved), '%)')}
-    grtxtpst <- paste0(rev(grtxt), '\n (', rev(sprintf(antDesTxt, Andeler$Hoved)), '%)')
+    if (length(grtxt2) == 1) {grtxt2 <- paste0('(', sprintf(antDesTxt, AggVerdier$Hoved), '%)')}
+    grtxtpst <- paste0(rev(grtxt), '\n (', rev(sprintf(antDesTxt, AggVerdier$Hoved)), '%)')
     if (valgtVar %in% c('Diagnoser', 'Prosedyrer', 'LapEkstrautstyr') ) {
-      grtxtpst <- paste0(rev(grtxt), ' (', rev(sprintf(antDesTxt, Andeler$Hoved)), '%)')}
-    vmarg <- switch(NGERVarSpes$retn, V=0, H=max(0, strwidth(grtxtpst, units='figure', cex=cexgr)*0.65))
+      grtxtpst <- paste0(rev(grtxt), ' (', rev(sprintf(antDesTxt, AggVerdier$Hoved)), '%)')}
+    vmarg <- switch(retn, V=0, H=max(0, strwidth(grtxtpst, units='figure', cex=cexgr)*0.65))
     par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1)))	#Har alltid datoutvalg med
 
     farger <- FigTypUt$farger
@@ -206,16 +226,16 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     cexleg <- 1	#Størrelse på legendtekst
 
     #Horisontale søyler
-    if (NGERVarSpes$retn == 'H') {
-      xmax <- max(c(Andeler$Hoved, Andeler$Rest),na.rm=T)*1.15
-      pos <- barplot(rev(as.numeric(Andeler$Hoved)), horiz=TRUE, beside=TRUE, las=1, xlab="Andel pasienter (%)", #main=tittel,
+    if (retn == 'H') {
+      xmax <- max(c(AggVerdier$Hoved, AggVerdier$Rest),na.rm=T)*1.15
+      pos <- barplot(rev(as.numeric(AggVerdier$Hoved)), horiz=TRUE, beside=TRUE, las=1, xlab="Andel pasienter (%)", #main=tittel,
                      col=fargeHoved, border='white', font.main=1, xlim=c(0, xmax), ylim=c(0.05,1.4)*antGr)	#
       if (Nfig$Hoved>0) {mtext(at=pos+0.05, text=grtxtpst, side=2, las=1, cex=NGERVarSpes$cexgr, adj=1, line=0.25)}
 
-      if (NGERUtvalg$medSml == 1) {
-        points(as.numeric(rev(Andeler$Rest)), pos, col=fargeRest,  cex=2, pch=18) #c("p","b","o"),
-        legend('top', c(paste0(NGERUtvalg$hovedgrTxt, ' (N=', Nfig$Hoved,')'),
-                        paste0(NGERUtvalg$smltxt, ' (N=', Nfig$Rest,')')),
+      if (medSml == 1) {
+        points(as.numeric(rev(AggVerdier$Rest)), pos, col=fargeRest,  cex=2, pch=18) #c("p","b","o"),
+        legend('top', c(paste0(hovedgrTxt, ' (N=', Nfig$Hoved,')'),
+                        paste0(smltxt, ' (N=', Nfig$Rest,')')),
                border=c(fargeHoved,NA), col=c(fargeHoved,fargeRest), bty='n', pch=c(15,18), pt.cex=2,
                lwd=lwdRest,	lty=NA, ncol=1, cex=cexleg)
       } else {
@@ -224,16 +244,16 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
       }
     }
 
-    if (NGERVarSpes$retn == 'V' ) {
+    if (retn == 'V' ) {
       #Vertikale søyler eller linje
-      ymax <- max(c(Andeler$Hoved, Andeler$Rest),na.rm=T)*1.15
-      pos <- barplot(as.numeric(Andeler$Hoved), beside=TRUE, las=1, ylab="Andel pasienter (%)",
+      ymax <- max(c(AggVerdier$Hoved, AggVerdier$Rest),na.rm=T)*1.15
+      pos <- barplot(as.numeric(AggVerdier$Hoved), beside=TRUE, las=1, ylab="Andel pasienter (%)",
                      xlab=subtxt, col=fargeHoved, border='white', ylim=c(0, ymax))	#sub=subtxt,
       mtext(at=pos, NGERVarSpes$grtxt, side=1, las=1, cex=NGERVarSpes$cexgr, adj=0.5, line=0.5)
       mtext(at=pos, grtxt2, side=1, las=1, cex=NGERVarSpes$cexgr, adj=0.5, line=1.5)
       if (NGERUtvalg$medSml == 1) {
-        points(pos, as.numeric(Andeler$Rest), col=fargeRest,  cex=2, pch=18) #c("p","b","o"),
-        legend('top', c(paste0(NGERUtvalg$hovedgrTxt, ' (N=', Nfig$Hoved,')'), paste0(NGERUtvalg$smltxt, ' (N=', Nfig$Rest,')')),
+        points(pos, as.numeric(AggVerdier$Rest), col=fargeRest,  cex=2, pch=18) #c("p","b","o"),
+        legend('top', c(paste0(NGERUtvalg$hovedgrTxt, ' (N=', Nfig$Hoved,')'), paste0(smltxt, ' (N=', Nfig$Rest,')')),
                border=c(fargeHoved,NA), col=c(fargeHoved,fargeRest), bty='n', pch=c(15,18), pt.cex=2, lty=c(NA,NA),
                lwd=lwdRest, ncol=2, cex=cexleg)
       } else {
@@ -243,7 +263,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     }
 
 
-    title(NGERVarSpes$tittel, line=1, font.main=1)
+    title(tittel, line=1, font.main=1)
 
     #Tekst som angir hvilket utvalg som er gjort
     mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))
@@ -252,12 +272,10 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   }
 
   #Beregninger som returneres fra funksjonen.
-#  AndelerUt <- rbind(Andeler$Hoved, Andeler$Rest)
-#  rownames(AndelerUt) <- c('Hoved', 'Rest')
+#  AggVerdierUt <- rbind(AggVerdier$Hoved, AggVerdier$Rest)
+#  rownames(AggVerdierUt) <- c('Hoved', 'Rest')
 #  AntallUt <- rbind(AntHoved, AntRest)
 #  rownames(AntallUt) <- c('Hoved', 'Rest')
 
-  UtData <- list(paste0(toString(NGERVarSpes$tittel),'.'), Andeler, N, grtxt )
-  names(UtData) <- c('tittel', 'Andeler', 'Antall', 'GruppeTekst')
-  return(invisible(UtData))
+  return(invisible(FigDataParam))
 }

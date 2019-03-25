@@ -4,15 +4,12 @@
 \alias{NGERtabeller}
 \alias{tabAntOpphShMnd}
 \alias{tabAntOpphSh5Aar}
-\alias{tabAntOpphPasSh5Aar}
 \alias{lagTabavFig}
 \title{Funksjoner for å lage tabeller Group of functions page title}
 \usage{
-tabAntOpphShMnd(RegData, datoTil, antMnd = 6)
+tabAntOpphShMnd(RegData, datoTil = Sys.Date(), antMnd = 6)
 
-tabAntOpphSh5Aar(RegData, datoTil)
-
-tabAntOpphPasSh5Aar(RegData, gr = "opph", datoTil)
+tabAntOpphSh5Aar(RegData, datoTil = Sys.Date())
 
 lagTabavFig(UtDataFraFig)
 }
@@ -44,11 +41,6 @@ NA
 
 \section{Antall opphold siste 5 år}{
 NA
-}
-
-\section{Antall registreringer/pasienter siste 5 år}{
-
-Hmmm
 }
 
 \section{Vise figurdata som tabell}{
