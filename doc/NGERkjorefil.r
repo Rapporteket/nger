@@ -55,15 +55,17 @@ load(paste0('A:/NGER/NGER', dato, '.Rdata'))
 library(nger)
 #----------------------------------- Lage tulledata ------------------------------
 #Denne inneholder ingen id'er og trenger ikke
-SkjemaOversikt <- NGERSkjema[ ,c("Skjemanavn", "SkjemaRekkeflg",  "SkjemaStatus",  "OpprettetDato", "HovedDato", "AvdRESH")]
-SkjemaOversikt<- lageTulleData(RegData=SkjemaOversikt, antSh=26, antObs=10000)
+SkjemaOversikt <- NGERSkjema[ ,c("Skjemanavn", "SkjemaRekkeflg",  "SkjemaStatus",  "OpprettetDato", "HovedDato")]
 
-varUt <- c('PasRegDato', 'PersonNr', 'PersonNrType', 'FodselsDato', 'Morsmaal', 'MorsmaalAnnet', 'Norsktalende',
+SkjemaOversikt<- lageTulleData(RegData=SkjemaOversikt, antSh=26, antObs=20000)
+
+varBort <- c('PasRegDato', 'PersonNr', 'PersonNrType', 'FodselsDato', 'Morsmaal', 'MorsmaalAnnet', 'Norsktalende',
            'Tss2ScoreAVG', 'AvdRESHYY', 'ShNavn', 'PasientIDYY', 'PostNr', 'PostSted', 'Kommune', 'Kommunenr',
            'Fylke', 'Fylkenr', 'KryptertFnr', 'Fodselsdato', 'NorsktalendeYY', 'SivilStatusYY', 'UtdanningSSB',
            'AvdodYY', 'InnDato', 'Mnd', 'Kvartal', 'Halvaar', 'Aar',
+           'SykehusNavn', 'AvdRESH',
            grep('Opf1', names(RegData)), grep('RY1', names(RegData)))
-RegData <- lageTulleData(RegData=RegData, varBort=varUt, antSh=26, antObs=10000)
+RegData <- lageTulleData(RegData=RegData, varBort=varBort, antSh=26, antObs=20000)
 
 save(SkjemaOversikt, RegData, file = 'A:/NGER/NGERtulledata.Rdata')
 

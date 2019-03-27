@@ -11,8 +11,8 @@ startDatoStandard <- '2018-01-01' #Sys.Date()-364
 reshID <- 110734
 if (!exists('RegData')) {
 data('NGERtulledata', package = 'nger')
-SkjemaOversikt <- plyr::rename(SkjemaOversikt, replace=c('AvdRESH'='reshID'))
-SkjemaOversikt <- plyr::rename(SkjemaOversikt, replace=c('AvdRESH'='reshID'))
+  reshID <- 8
+SkjemaOversikt <- plyr::rename(SkjemaOversikt, replace=c('SykehusNavn'='ShNavn'))
 }
 
 
