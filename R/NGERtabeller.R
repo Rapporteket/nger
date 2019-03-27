@@ -73,12 +73,12 @@ tabAntSkjema <- function(SkjemaOversikt, datoFra = '2019-01-01', datoTil=Sys.Dat
   #SkjemaOversikt <- NGERSkjema
 
   SkjemaOversikt$InnDato <- as.Date(SkjemaOversikt$HovedDato, format="%Y-%m-%d")
-  SkjemaOversikt$ShNavn <- as.factor(SkjemaOversikt$SykehusNavn)
+  SkjemaOversikt$ShNavn <- as.factor(SkjemaOversikt$ShNavn)
   indDato <- which(as.Date(SkjemaOversikt$InnDato) >= datoFra & as.Date(SkjemaOversikt$InnDato) <= datoTil)
-  indSkjemastatus <- which(SkjemaOversikt$SkjemaStatus)
+  indSkjemastatus <- which(SkjemaOversikt$SkjemaStatus==skjemastatus)
   SkjemaOversikt <- SkjemaOversikt[intersect(indDato, indSkjemastatus),]
 
-  tab <-table(SkjemaOversikt[,c('SykehusNavn', 'SkjemaRekkeflg')])
+  tab <-table(SkjemaOversikt[,c('ShNavn', 'SkjemaRekkeflg')])
 
 return(tab)
 }

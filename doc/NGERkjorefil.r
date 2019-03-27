@@ -48,11 +48,25 @@ NGERData <- merge(NGERBasis, NGERForlop, by = "ForlopsID", suffixes = c('','YY')
 # RegData <- NGERUtvalgEnh(RegData, datoFra = '2016-01-01', datoTil = '2018-12-31')$RegData
 # save(RegData, file=paste0('A:/NGER/Aarsrapp2018', dato, '.Rdata'))
 # write.table(RegData, file = "A:/NGER/Aarsrapp2018.csv", row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
-save(RegData, file=paste0('A:/NGER/NGER', dato, '.Rdata'))
+save(RegData, file=paste0('A:/NGER/NGER', dato, '.RData'))
 
 load(paste0('A:/NGER/NGER', dato, '.Rdata'))
 
 library(nger)
+#----------------------------------- Lage tulledata ------------------------------
+#Denne inneholder ingen id'er og trenger ikke
+SkjemaOversikt <- NGERSkjema[ ,c("Skjemanavn", "SkjemaRekkeflg",  "SkjemaStatus",  "OpprettetDato", "HovedDato", "AvdRESH")]
+SkjemaOversikt<- lageTulleData(RegData=SkjemaOversikt, antSh=26, antObs=10000)
+
+varUt <- c('PasRegDato', 'PersonNr', 'PersonNrType', 'FodselsDato', 'Morsmaal', 'MorsmaalAnnet', 'Norsktalende',
+           'Tss2ScoreAVG', 'AvdRESHYY', 'ShNavn', 'PasientIDYY', 'PostNr', 'PostSted', 'Kommune', 'Kommunenr',
+           'Fylke', 'Fylkenr', 'KryptertFnr', 'Fodselsdato', 'NorsktalendeYY', 'SivilStatusYY', 'UtdanningSSB',
+           'AvdodYY', 'InnDato', 'Mnd', 'Kvartal', 'Halvaar', 'Aar',
+           grep('Opf1', names(RegData)), grep('RY1', names(RegData)))
+RegData <- lageTulleData(RegData=RegData, varBort=varUt, antSh=26, antObs=10000)
+
+save(SkjemaOversikt, RegData, file = 'A:/NGER/NGERtulledata.Rdata')
+
 #----------------------------------- PARAMETRE ------------------------------
 setwd("C:/ResultattjenesteGIT/nger/")
 # Inndata til funksjon:

@@ -9,7 +9,12 @@ library(kableExtra)
 
 startDatoStandard <- '2018-01-01' #Sys.Date()-364
 reshID <- 110734
-load(paste0('A:/NGER/NGER2019-03-18.Rdata'))
+if (!exists('RegData')) {
+data('NGERtulledata', package = 'nger')
+SkjemaOversikt <- plyr::rename(SkjemaOversikt, replace=c('AvdRESH'='reshID'))
+SkjemaOversikt <- plyr::rename(SkjemaOversikt, replace=c('AvdRESH'='reshID'))
+}
+
 
 # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
 addResourcePath('rap', system.file('www', package='rapbase'))
@@ -327,8 +332,9 @@ server <- function(input, output) {
 
 
       #RegData som har tilknyttede skjema av ulik type
-      AntSkjemaAvHver <- tabAntSkjema(SkjemaOversikt, datoFra = input$datovalgReg[1], datoTil=input$datovalgReg[2],
+      AntSkjemaAvHver <- tabAntSkjema(SkjemaOversikt=SkjemaOversikt, datoFra = input$datovalgReg[1], datoTil=input$datovalgReg[2],
                                       skjemastatus=as.numeric(input$skjemastatus))
+      #tabAntSkjema(SkjemaOversikt=SkjemaOversikt)
             output$tabAntSkjema <- renderTable(
               AntSkjemaAvHver
                   ,rownames = T, digits=0, spacing="xs" )

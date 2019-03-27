@@ -4,12 +4,17 @@
 \alias{NGERtabeller}
 \alias{tabAntOpphShMnd}
 \alias{tabAntOpphSh5Aar}
+\alias{tabAntSkjema}
 \alias{lagTabavFig}
 \title{Funksjoner for å lage tabeller Group of functions page title}
 \usage{
-tabAntOpphShMnd(RegData, datoTil = Sys.Date(), antMnd = 6)
+tabAntOpphShMnd(RegData, datoTil = Sys.Date(), antMnd = 6,
+  reshID = 0)
 
 tabAntOpphSh5Aar(RegData, datoTil = Sys.Date())
+
+tabAntSkjema(SkjemaOversikt, datoFra = "2019-01-01",
+  datoTil = Sys.Date(), skjemastatus = 1)
 
 lagTabavFig(UtDataFraFig)
 }
@@ -40,6 +45,10 @@ NA
 }
 
 \section{Antall opphold siste 5 år}{
+NA
+}
+
+\section{Hvor mange skjema av hver type}{
 NA
 }
 

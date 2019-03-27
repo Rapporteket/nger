@@ -5,7 +5,7 @@
 \title{Funksjon som gjør utvalg av dataene, returnerer det filtrerte datasettet og utvalgsteksten.}
 \usage{
 NGERUtvalgEnh(RegData, datoFra = "2016-01-01", datoTil = "3000-12-31",
-  fargepalett = "BlaaOff", minald = 0, maxald = 130, OpMetode = "",
+  fargepalett = "BlaaOff", minald = 0, maxald = 110, OpMetode = "",
   AlvorlighetKompl = "", Hastegrad = "", enhetsUtvalg = 0,
   velgAvd = "", velgDiag = 0, reshID = 0)
 }
