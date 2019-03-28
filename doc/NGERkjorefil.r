@@ -75,7 +75,7 @@ save(SkjemaOversikt, RegData, file = 'A:/NGER/NGERtulledata.Rdata')
 #----------------------------------- PARAMETRE ------------------------------
 setwd("C:/ResultattjenesteGIT/nger/")
 # Inndata til funksjon:
-reshID <- 110734 # 110734 (Tønsberg)  	700399
+reshID <- 8 #110734 # 110734 (Tønsberg)  	700399
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
 datoFra <- '2017-01-01'	 # min og max dato i utvalget vises alltid i figuren.
@@ -103,13 +103,14 @@ outfile <- ''
 #------------------------------ (erstatter Fordelinger) --------------------------
 
 
-valgtVar <- 'KomplPostop'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid, Tss2Sumskaar
+valgtVar <- 'Alder'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid, Tss2Sumskaar
 
 outfile <- '' #paste0(valgtVar, '_ford.png')
 enhetsUtvalg <- 0
 
-NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
-	reshID=reshID, enhetsUtvalg=1, OpMetode = OpMetode, outfile=outfile, preprosess = preprosess,
+
+UtDataFraFig <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
+	reshID=reshID, enhetsUtvalg=enhetsUtvalg, OpMetode = OpMetode, outfile=outfile, preprosess = preprosess,
   minald=minald, maxald=maxald, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad, velgDiag = velgDiag)
 
 ind <- which(RegData$InnDato<as.Date('2017-01-01') & RegData$InnDato>as.Date('2015-12-31'))
@@ -164,7 +165,7 @@ for (valgtVar in variable) {
 
 #------------------------------ Andeler per sykehus --------------------------
 #------------------------------ (AndelGrVar) --------------------------
-valgtVar <- 'KomplIntra' #Må velge... OpAnestesi, OpDagkirurgi,OpTid
+valgtVar <- 'Alder' #Må velge... OpAnestesi, OpDagkirurgi,OpTid
       #Alder, Opf0Reoperasjon, Education, Opf0AlvorlighetsGrad,
       #KomplIntra, KomplPostop, OpAntibProfylakse, OpASA, OpBMI, Opf0Status, RegForsinkelse
       #Tss2Mott, Tss2Behandling,	Tss2Lytte, Tss2Behandlere, Tss2Enighet,	Tss2Generelt
@@ -172,7 +173,7 @@ valgtVar <- 'KomplIntra' #Må velge... OpAnestesi, OpDagkirurgi,OpTid
 outfile <- '' #paste0(valgtVar, '_Shus.png')	#Navn angis av Jasper
 #velgAvd <- '' #c(108048, 111180, 700404)
 
-NGERFigAndelerGrVar(RegData=RegData,  valgtVar='KomplIntra', reshID=110734, outfile='GmlKomplIntra1.png', preprosess = 1)
+UtDataFraFig <-NGERFigAndelerGrVar(RegData=RegData,  valgtVar='KomplIntra', reshID=reshID, outfile='', preprosess = 1)
 
 NGERFigAndelerGrVar(RegData=RegData, datoFra='2017-01-01', valgtVar=valgtVar, datoTil=datoTil,
             reshID=reshID, outfile=outfile, OpMetode=OpMetode,

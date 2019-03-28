@@ -132,10 +132,10 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
 
 
 #----------- Beregninger ---------------:
-      AggVerdier <- list(Hoved = 0, Rest =0)
+      AggVerdier <- list(Hoved = NULL, Rest =NULL)
       N <- list(Hoved = 0, Rest =0)
       Nfig <- list(Hoved = 0, Rest =0) #figurtekst: N i legend
-      Ngr <- list(Hoved = 0, Rest =0)
+      Ngr <- list(Hoved = NULL, Rest =NULL)
 	  variable <- NGERVarSpes$variable
 
       Ngr$Hoved <- switch(as.character(flerevar),

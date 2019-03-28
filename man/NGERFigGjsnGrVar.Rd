@@ -7,7 +7,7 @@
 NGERFigGjsnGrVar(RegData, datoFra = "2013-01-01",
   datoTil = "3000-12-31", valgtVar, minald = 0, maxald = 130,
   OpMetode = 99, AlvorlighetKompl = 99, Hastegrad = 99,
-  valgtMaal = "Gjsn", hentData = 0, preprosess = 1,
+  valgtMaal = "gjsn", hentData = 0, preprosess = 1,
   grVar = "ShNavn", velgAvd = "", velgDiag = 0, Ngrense = 10,
   medKI = 1, lagFig = 1, outfile = "")
 }
@@ -43,7 +43,7 @@ Angis som en vektor av tall som tekst, f.eks. c('1','2')
 2: Akutt
 3: Ø-hjelp}
 
-\item{valgtMaal}{'Med' = median. Alt annet gir gjennomsnitt
+\item{valgtMaal}{'med' = median. Alt annet gir gjennomsnitt
 
 Argumentet \emph{valgtVar} har følgende valgmuligheter:
    \itemize{

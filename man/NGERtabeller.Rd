@@ -6,6 +6,7 @@
 \alias{tabAntOpphSh5Aar}
 \alias{tabAntSkjema}
 \alias{lagTabavFig}
+\alias{lagTabavFigGjsnGrVar}
 \title{Funksjoner for å lage tabeller Group of functions page title}
 \usage{
 tabAntOpphShMnd(RegData, datoTil = Sys.Date(), antMnd = 6,
@@ -16,7 +17,9 @@ tabAntOpphSh5Aar(RegData, datoTil = Sys.Date())
 tabAntSkjema(SkjemaOversikt, datoFra = "2019-01-01",
   datoTil = Sys.Date(), skjemastatus = 1)
 
-lagTabavFig(UtDataFraFig)
+lagTabavFig(UtDataFraFig, figtype = "andeler")
+
+lagTabavFigGjsnGrVar(UtDataFraFig)
 }
 \arguments{
 \item{RegData}{data}
@@ -53,6 +56,10 @@ NA
 }
 
 \section{Vise figurdata som tabell}{
+NA
+}
+
+\section{Vise figurdata som tabell, sentralmål per sykshus}{
 NA
 }
 

@@ -33,7 +33,7 @@
 #' @export
 #'
 NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', fargepalett='BlaaOff',
-                          minald=0, maxald=110, OpMetode='', AlvorlighetKompl='', Hastegrad='',
+                          minald=0, maxald=110, OpMetode=0, AlvorlighetKompl=0, Hastegrad=0,
                           enhetsUtvalg=0, velgAvd='', velgDiag=0, reshID=0)
 {
   # Definer intersect-operator
@@ -115,14 +115,11 @@ if (velgDiag !=0) {
                  if ((minald>0) | (maxald<110))
                     {paste0('Pasienter fra ', if (N>0) {min(RegData$Alder, na.rm=T)} else {minald},
                         ' til ', if (N>0) {max(RegData$Alder, na.rm=T)} else {maxald}, ' år')},
-                 if (OpMetode %in% c(1:8)){paste0('Operasjonsmetode: ',
+                 if (OpMetode %in% c(1:6)){paste0('Operasjonsmetode: ',
                                                 c('Laparoskopi', 'Hysteroskopi', 'Begge',
                                                   'Tot. lap. hysterektomi (LCD01/LCD04)',
                                                   'Lap. subtotal hysterektomi (LCC11)',
-                                                  'Lap. ass. vag. hysterektomi (LCD11)',
-                                                  'Ovarialcyster',
-                                                  'Endometriose, livmorvegg',
-                                                  'Endometriose unntatt livmorvegg')[OpMetode])},
+                                                  'Lap. ass. vag. hysterektomi (LCD11)')[OpMetode])},
                  if (Hastegrad[1] %in% 1:3){paste0('Hastegrad: ', paste0(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','))},
                  if (AlvorlighetKompl[1] %in% 1:3){paste0('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
                                                          [as.numeric(AlvorlighetKompl)], collapse=','))},

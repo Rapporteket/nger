@@ -85,21 +85,50 @@ return(tab)
 #' @section Vise figurdata som tabell
 #' @rdname NGERtabeller
 #' @export
-lagTabavFig <- function(UtDataFraFig){
-      tab <-cbind(UtDataFraFig$Ngr$Hoved,
-                  UtDataFraFig$AggVerdier$Hoved,
-                  UtDataFraFig$Ngr$Rest,
-                  UtDataFraFig$AggVerdier$Rest)
-      grtxt <- UtDataFraFig$grtxt
-      if ((min(nchar(grtxt)) == 5) & (max(nchar(grtxt)) == 5)) {
-            grtxt <- paste(substr(grtxt, 1,3), substr(grtxt, 4,5))}
-      rownames(tab) <- grtxt
-      kolnavn <- c('Antall' , 'Andel (%)')
-      colnames(tab) <- c(kolnavn, if(!is.null(UtDataFraFig$Ngr$Rest)){kolnavn})
-      # colnames(tab) <- c(paste0(UtDataFraFig$hovedgrTxt,', Antall'),
-#                    paste0(UtDataFraFig$hovedgrTxt, ', Andel (%)'),
-#                    if(!is.null(UtDataFraFig$Ngr$Rest)){paste0(UtDataFraFig$smltxt,', Antall')},
-#                    if(!is.null(UtDataFraFig$Ngr$Rest)){paste0(UtDataFraFig$smltxt, ', Andel (%)')})
+# lagTabavFig <- function(UtDataFraFig){
+#       tab <-cbind(UtDataFraFig$Ngr$Hoved,
+#                   UtDataFraFig$AggVerdier$Hoved,
+#                   UtDataFraFig$Ngr$Rest,
+#                   UtDataFraFig$AggVerdier$Rest)
+#       grtxt <- UtDataFraFig$grtxt
+#       if ((min(nchar(grtxt)) == 5) & (max(nchar(grtxt)) == 5)) {
+#             grtxt <- paste(substr(grtxt, 1,3), substr(grtxt, 4,5))}
+#       rownames(tab) <- grtxt
+#       kolnavn <- c('Antall' , 'Andel (%)')
+#       colnames(tab) <- c(kolnavn, if(!is.null(UtDataFraFig$Ngr$Rest)){kolnavn})
+#
+# return(tab)
+# }
 
-return(tab)
+lagTabavFig <- function(UtDataFraFig, figtype='andeler'){ #lagTabavFigAndeler
+  tab <-cbind(UtDataFraFig$Ngr$Hoved,
+              UtDataFraFig$AggVerdier$Hoved,
+              if(!is.null(UtDataFraFig$Ngr$Rest)){UtDataFraFig$Ngr$Rest},
+              if(!is.null(UtDataFraFig$AggVerdier$Rest)){UtDataFraFig$AggVerdier$Rest})
+  #rownames(tab) <- UtDataFraFig$grtxt
+
+  if(figtype=='andeler') {
+    kolnavn <- c(paste0(UtDataFraFig$hovedgrTxt,', N'),
+                     paste0(UtDataFraFig$hovedgrTxt, ', Andel (%)'),
+                     if(!is.null(UtDataFraFig$Ngr$Rest)){paste0(UtDataFraFig$smltxt,', N')},
+                     if(!is.null(UtDataFraFig$Ngr$Rest)){paste0(UtDataFraFig$smltxt, ', Andel (%)')})}
+  if(figtype=='gjsnGrVar') {
+    kolnavn <- c('Antall (N)', UtDataFraFig$SentralmaalTxt)}
+
+  colnames(tab) <- kolnavn
+  return(tab)
 }
+
+#' @section Vise figurdata som tabell, sentralmål per sykshus
+#' @rdname NGERtabeller
+#' @export
+lagTabavFigGjsnGrVar <- function(UtDataFraFig){
+  tab <-cbind(UtDataFraFig$Ngr,
+              UtDataFraFig$AggVerdier$Hoved
+  )
+  colnames(tab) <- c('Antall (N)', UtDataFraFig$SentralmaalTxt)
+  return(tab)
+}
+
+
+
