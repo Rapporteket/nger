@@ -13,7 +13,7 @@ NGERPreprosess <- function(RegData=RegData)
 {
   #Kun ferdigstilte registreringer:
   #OK
-  RegData <- RegData[RegData$BasisRegStatus==1, ]#Leveres fortsatt registreringer m/BasisRegStatus=0
+  if ('BasisRegStatus' %in% (names(RegData))) { RegData <- RegData[RegData$BasisRegStatus==1, ]}#Leveres fortsatt registreringer m/BasisRegStatus=0
   #Opf0Status=1 for alle registreringer i FollowupsNum
   #OppflgRegStatus:
     # NULL	Oppfølginger finnes ikke for denne typen forløp.
@@ -34,12 +34,13 @@ NGERPreprosess <- function(RegData=RegData)
   #Riktig format på datovariable:
   #RegData$FodselsDato <- as.Date(RegData$FodselsDato, format="%Y-%m-%d")
   #RegData$InnDato <- as.Date(RegData$OpDato, format="%Y-%m-%d")
-  RegData$HovedDato <- as.Date(RegData$HovedDato, format="%Y-%m-%d")
-  RegData$InnDato <- as.Date(RegData$OpDato, format="%Y-%m-%d") #
-  RegData$Mnd <- as.POSIXlt(RegData$OpDato, format="%Y-%m-%d")$mon +1
+  #!!! HovedDato tilsvarer OpDato. Benytter HovedDato siden OpDato ikke finnes i alle skjema
+  RegData$InnDato <- as.Date(RegData$HovedDato, format="%Y-%m-%d")
+  #RegData$InnDato <- as.Date(RegData$OpDato, format="%Y-%m-%d") #
+  RegData$Mnd <- as.POSIXlt(RegData$HovedDato, format="%Y-%m-%d")$mon +1
   RegData$Kvartal <- ceiling(RegData$Mnd/3)
   RegData$Halvaar <- ceiling(RegData$Mnd/6)
-  RegData$Aar <- 1900 + as.POSIXlt(RegData$OpDato, format="%Y-%m-%d")$year #strptime(RegData$Innleggelsestidspunkt, format="%Y")$year
+  RegData$Aar <- 1900 + as.POSIXlt(RegData$HovedDato, format="%Y-%m-%d")$year #strptime(RegData$Innleggelsestidspunkt, format="%Y")$year
 
 
   #Riktig navn på resh-variabel:
@@ -49,13 +50,13 @@ NGERPreprosess <- function(RegData=RegData)
   names(RegData)[which(names(RegData)=='SykehusNavn')] <- 'ShNavn' #Change var name
 
   #Endrer til bare store bokstaver
+  if ('LapDiagnose1' %in% (names(RegData))) {
   DiagVar <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3', 'HysDiagnose1','HysDiagnose2', 'HysDiagnose3')
   ProsVar <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3', 'HysProsedyre1','HysProsedyre2', 'HysProsedyre3')
   for (var in c(DiagVar,ProsVar)) {
     RegData[ ,var] <- toupper(RegData[ ,var])
   }
-
-
+}
 
   return(invisible(RegData))
 }

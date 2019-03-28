@@ -8,7 +8,7 @@
 \usage{
 SorterOgNavngiTidsEnhet(RegData, tidsenhet = "Aar", tab = 0)
 
-lageTulleData(RegData, varBort = "", antSh = 26, antObs = 20000)
+lageTulleData(RegData, varBort = NA, antSh = 26, antObs = 20000)
 }
 \arguments{
 \item{RegData}{data}

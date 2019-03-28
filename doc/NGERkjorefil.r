@@ -29,6 +29,9 @@ tools:: texi2pdf('NGERmndRapp.tex')
 #------------------------------Kjøre App----------------------------
 load(paste0('A:/NGER/NGER2019-03-18.Rdata'))
 
+SkjemaOversikt <- NGERPreprosess(SkjemaOversikt)
+indAvvikDato <- which(as.numeric(as.Date(RegData$OpDato) - as.Date(RegData$HovedDato))>1)
+RegData[indAvvikDato[1:5], c('InnDato', "HovedDato")]
 #--------------------------------Datakobling--------------------------
 #Vil "snart" endre spørringa slik at det i hvert tilfelle spørres etter de variablene man trenger.
 

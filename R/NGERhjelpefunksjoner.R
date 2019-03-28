@@ -86,14 +86,14 @@ lageTulleData <- function(RegData, varBort=NA, antSh=26, antObs=20000) {
       RegData <- RegData[,-which(names(RegData) %in% varBort)]}
       #RegData <- RegData[sample(1:dim(RegData)[1], antObs, replace = T),]
       sykehus <- cbind(ShNavn=paste('Sykehus', LETTERS[1:antSh]),
-                       ReshID=1:antSh)
+                       ReshId=1:antSh)
       fordelingPasienter <- sample(1:10,antSh, replace = TRUE)
       indSample <-  sample(1:antSh, prob=fordelingPasienter/sum(fordelingPasienter),
                            replace = TRUE, size=antObs)
 
       RegDataSyn <- synthpop::syn(RegData, method = "sample", k=antObs, seed = 500) #Trekker med tilbakelegging
       RegData <- data.frame(RegDataSyn$syn)
-      RegData[c('SykehusNavn','ReshID')] <- sykehus[indSample,]
+      RegData[c('SykehusNavn','ReshId')] <- sykehus[indSample,]
 
 	  return(RegData)
 }

@@ -70,15 +70,13 @@ tabAntSkjema <- function(SkjemaOversikt, datoFra = '2019-01-01', datoTil=Sys.Dat
   SkjemaOversikt$SkjemaRekkeflg <- factor(SkjemaOversikt$SkjemaRekkeflg, levels = c(1,3,5,7,9,11))
   skjemanavn <- c('Operasjon','Laparoskopi','Hysteroskopi', 'Oppfølging', 'RAND36', 'TSS2')
 
-  #SkjemaOversikt <- NGERSkjema
-
-  SkjemaOversikt$InnDato <- as.Date(SkjemaOversikt$HovedDato, format="%Y-%m-%d")
-  SkjemaOversikt$ShNavn <- as.factor(SkjemaOversikt$ShNavn)
   indDato <- which(as.Date(SkjemaOversikt$InnDato) >= datoFra & as.Date(SkjemaOversikt$InnDato) <= datoTil)
   indSkjemastatus <- which(SkjemaOversikt$SkjemaStatus==skjemastatus)
   SkjemaOversikt <- SkjemaOversikt[intersect(indDato, indSkjemastatus),]
 
   tab <-table(SkjemaOversikt[,c('ShNavn', 'SkjemaRekkeflg')])
+  colnames(tab) <- skjemanavn
+  tab <- xtable::xtable(tab)
 
 return(tab)
 }

@@ -395,23 +395,23 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
       tittel <- 'Operasjonstid over 60 minutter'
     }
   }
-  # if (valgtVar == 'RegForsinkelse') {  #Andeler, GjsnGrVar
-  #   #!!!!!!!!!!!Leveringsdato vil oppdateres ved reåpning og kan derfor ikke brukes
-  #   #Verdier: 0-3402
-  #   RegData$Diff <- as.numeric(as.Date(RegData$Leveringsdato) - as.Date(RegData$InnDato)) #difftime(RegData$InnDato, RegData$Leveringsdato) #
-  #   RegData <- RegData[which(RegData$OpStatus==1) %i% which(RegData$Diff > -1), ]
-  #   tittel <- switch(figurtype,
-  #                    andeler='Tid fra operasjon til ferdigstilt registrering',
-  #                    andelGrVar = 'Mer enn 6 uker fra operasjon til ferdig registrering')
-  #   RegData$Variabel[RegData$Diff > 6*7] <- 1
-  #   subtxt <- 'døgn'
-  #   gr <- c(0,1,7,14,30,90,365,5000) #gr <- c(seq(0, 90, 10), 1000)
-  #   RegData$VariabelGr <- cut(RegData$Diff, breaks = gr, include.lowest = TRUE, right = TRUE)
-  #   #plot(RegData$VariabelGr)
-  #   grtxt <- c('<= 1', '(1-7]', '(7-14]', '(14-30]', '(30-90]', '(90-365]', '>365')
-  #   #grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-2)], '>90')
-  #   cexgr <- 0.9
-  # }
+  if (valgtVar == 'RegForsinkelse') {  #Andeler, GjsnGrVar
+    #!!!!!!!!!!!Leveringsdato vil oppdateres ved reåpning og kan derfor ikke brukes
+    #Verdier: 0-3402
+    RegData$Diff <- as.numeric(as.Date(RegData$Leveringsdato) - as.Date(RegData$InnDato)) #difftime(RegData$InnDato, RegData$Leveringsdato) #
+    RegData <- RegData[which(RegData$OpStatus==1) %i% which(RegData$Diff > -1), ]
+    tittel <- switch(figurtype,
+                     andeler='Tid fra operasjon til ferdigstilt registrering',
+                     andelGrVar = 'Mer enn 4 uker fra operasjon til ferdig registrering')
+    RegData$Variabel[RegData$Diff > 4*7] <- 1
+    subtxt <- 'døgn'
+    gr <- c(0,1,7,14,30,90,365,5000) #gr <- c(seq(0, 90, 10), 1000)
+    RegData$VariabelGr <- cut(RegData$Diff, breaks = gr, include.lowest = TRUE, right = TRUE)
+    #plot(RegData$VariabelGr)
+    grtxt <- c('<= 1', '(1-7]', '(7-14]', '(14-30]', '(30-90]', '(90-365]', '>365')
+    #grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-2)], '>90')
+    cexgr <- 0.9
+  }
 
   if (valgtVar == 'R0ScorePhys') {  #Andeler, #GjsnGrVar
     #Verdier: 0:5:100

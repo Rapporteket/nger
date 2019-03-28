@@ -8,12 +8,6 @@ library(kableExtra)
 #library(zoo)
 
 startDatoStandard <- '2018-01-01' #Sys.Date()-364
-reshID <- 110734
-if (!exists('RegData')) {
-data('NGERtulledata', package = 'nger')
-  reshID <- 8
-SkjemaOversikt <- plyr::rename(SkjemaOversikt, replace=c('SykehusNavn'='ShNavn'))
-}
 
 
 # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
@@ -34,6 +28,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
             # velg css (forelÃ¸pig den eneste bortsett fra "naken" utgave)
             #theme = "rap/bootstrap.css",
 
+#------------Startside--------------------------
       tabPanel("Startside",
                #fluidRow(
                #column(width=5,
@@ -53,6 +48,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                          h2('Velkommen til Rapporteket - Norsk Gynekologisk Endoskopiregister!', align='center'),
                          br(),
                          h3('Dere står fritt til å endre alle tekster som dere ønsker...'),
+                         h3('Alle figurer fra Rapporteket vil komme. Det jeg trenger snarlig
+                            tilbakemelding på er hvilke tabeller som skal være med og hvor de skal være.'),
                          br(),
                          h4('Du er nå inne på Rapporteket for NGER. Rapporteket er registerets resultattjeneste.
                             Disse sidene inneholder en samling av figurer og tabeller som viser resultater fra registeret.
@@ -65,7 +62,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                             tabeller kan lastes ned.'),
                          br(),
                          h4(tags$b(tags$u('Innhold i de ulike fanene:'))),
-                         h4(tags$b('Registreringsoversikter '), 'viser aktivitet i registeret. Også her kan man gjøre filtreringer.'),
+                         h4(tags$b('Registreringsoversikter '), 'viser aktivitet i registeret.'),
                          h4(tags$b('Fordelinger '), 'viser på fordelinger (figur/tabell) av ulike variable.
                               Man kan velge hvilken variabel man vil se på, og man kan gjøre ulike filtreringer.'),
                          h4(tags$b('Sykehusvise resultater '), 'viser gjennomsnittsverdier per sykehus.
@@ -73,17 +70,17 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                             Man kan også velge å filtrere data.'),
                          br(),
                          br(),
+                         h4('Antall registreringer ved eget sykehus:'),
+                         uiOutput("tabEgneReg"),
+                         br(),
+                         h3('Legge inn andre figurer/tabeller her?'),
+                         br(),
                          br(),
                          h4('Oversikt over registerets kvalitetsindikatorer og resultater med offentlig tilgjengelige tall
                             finner du på www.kvalitetsregistre.no:', #helpText
                                   a("NGER", href="https://www.kvalitetsregistre.no/registers/547/resultater"),
                                   target="_blank", align='center'),
-                         br(),
-                         br(),
-                         h4('Antall registreringer ved eget sykehus:'),
-                         uiOutput("tabEgneReg"),
-                         br(),
-                         h3('Legge inn andre figurer/tabeller her?')
+                         br()
                              )
       ), #tab
       #-----Registreringsoversikter------------
@@ -106,7 +103,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                               selectInput(inputId = 'skjemastatus', label='Velg skjemastatus',
                                           choices = c("Ferdigstilt"=1,
                                                       "Kladd"=0,
-                                                      "Ikke opprettet"=-1)
+                                                      "Åpen"=-1)
                               )
 
                             )
@@ -118,16 +115,18 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                       uiOutput("undertittelReg"),
                                       p("Velg tidsperiode ved å velge sluttdato/tidsenhet i menyen til venstre"),
                                       br(),
-                                      fluidRow(tableOutput("tabAntOpphShMnd12"),
-                                      downloadButton(outputId = 'lastNed_tabAntOpph', label='Last ned')
+                                      fluidRow(
+                                        tableOutput("tabAntOpphShMnd12"),
+                                        downloadButton(outputId = 'lastNed_tabAntOpph', label='Last ned')
                                       )
                              ),
                              tabPanel('Antall registrerte skjema',
-                                      #uiOutput("undertittelReg"),
+                                      h4("Tabellen viser antall registrerte skjema for valgt tidsperiode"),
                                       p("Velg tidsperiode i menyen til venstre"),
                                       br(),
-                                      fluidRow(tableOutput("tabAntSkjema"),
-                                               downloadButton(outputId = 'lastNed_tabAntSkjema', label='Last ned')
+                                      fluidRow(
+                                        tableOutput("tabAntSkjema"),
+                                        downloadButton(outputId = 'lastNed_tabAntSkjema', label='Last ned')
                                       )
                              )
 
@@ -261,12 +260,15 @@ server <- function(input, output) {
                   } #hente data på server
 
   #----------Hente data og evt. parametre som er statistke i appen----------
-     # if (!exists('RegData')){
-     #        #Tulledata:
-     #        data('NGERfiktiveData', package = 'nger')
-     #  }
+      reshID <- 8 #110734
+ #     if (!exists('RegData')) {
+        data('NGERtulledata', package = 'nger')
+        reshID <- 8
+        #SkjemaOversikt <- plyr::rename(SkjemaOversikt, replace=c('SykehusNavn'='ShNavn'))
+#      }
 
       RegData <- NGERPreprosess(RegData)
+      SkjemaOversikt <- NGERPreprosess(RegData = SkjemaOversikt)
 
       # AlleTab <- list(HovedSkjema=HovedSkjema,
       #                 LivskvalitetH=LivskvalitetH,
@@ -307,7 +309,7 @@ server <- function(input, output) {
             rownames=T,
             digits = 0
       )
-
+      tabAntOpphShMnd(RegData=RegData, reshID = 8)
  #----------Tabeller, registreringsoversikter ----------------------
 
             output$undertittelReg <- renderUI({
@@ -318,41 +320,39 @@ server <- function(input, output) {
                          Aar = paste0(t1, 'siste 5 år før ', input$sluttDatoReg, '<br />'))
                   ))})
       observe({
-            tabAntOpphShMndAar <- switch(input$tidsenhetReg,
-                                         Mnd=tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12), #input$datovalgTab[2])
-                                         Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg))
-            #Aar=xtable::xtable(tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg)), digits=0)
-
-                  output$tabAntOpphShMnd12 <- renderTable(tabAntOpphShMndAar, rownames = T, digits=0, spacing="xs")
-      output$lastNed_tabAntOpph <- downloadHandler(
-            filename = function(){paste0('tabAntOpph.csv')},
-            content = function(file, filename){write.csv2(tabAntOpphShMndAar, file, row.names = T, na = '')
-            })
-
+        tabAntOpphShMndAar <- switch(input$tidsenhetReg,
+                                     Mnd=tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12), #input$datovalgTab[2])
+                                     Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg))
+        #Aar=xtable::xtable(tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg)), digits=0)
+        output$tabAntOpphShMnd12 <- renderTable(tabAntOpphShMndAar, rownames = T, digits=0, spacing="xs")
+        output$lastNed_tabAntOpph <- downloadHandler(
+          filename = function(){paste0('tabAntOpph.csv')},
+          content = function(file, filename){write.csv2(tabAntOpphShMndAar, file, row.names = T, na = '')
+          })
 
 
-      #RegData som har tilknyttede skjema av ulik type
-      AntSkjemaAvHver <- tabAntSkjema(SkjemaOversikt=SkjemaOversikt, datoFra = input$datovalgReg[1], datoTil=input$datovalgReg[2],
-                                      skjemastatus=as.numeric(input$skjemastatus))
-      #tabAntSkjema(SkjemaOversikt=SkjemaOversikt)
-            output$tabAntSkjema <- renderTable(
-              AntSkjemaAvHver
-                  ,rownames = T, digits=0, spacing="xs" )
 
-            output$lastNed_tabAntSkjema <- downloadHandler(
-                  filename = function(){'tabAntSkjema.csv'},
-                  content = function(file, filename){write.csv2(AntSkjemaAvHver, file, row.names = T, na = '')
-                  })
-      #       #Andel (prosent) av registreringsskjemaene som har oppfølgingsskjema.
-      #       output$tabAndelTilknyttedeHovedSkjema <- renderTable(
-      #             tabTilknHovedSkjema$Andeler
-      #             ,rownames = T, digits=0, spacing="xs" )
-      #
-      #        output$lastNed_tabOppfHovedPst <- downloadHandler(
-      #              filename = function(){'tabOppfHovedPst.csv'},
-      #              content = function(file, filename){write.csv2(tabTilknHovedSkjema$Andeler, file, row.names = T, na = '')
-      #              })
-       })
+        #RegData som har tilknyttede skjema av ulik type
+        AntSkjemaAvHver <- tabAntSkjema(SkjemaOversikt=SkjemaOversikt, datoFra = input$datovalgReg[1], datoTil=input$datovalgReg[2],
+                                        skjemastatus=as.numeric(input$skjemastatus))
+        #tabAntOpphShMnd(RegData=RegData)
+        #tabAntSkjema(SkjemaOversikt=SkjemaOversikt)
+        output$tabAntSkjema <- renderTable(AntSkjemaAvHver
+                                           ,rownames = T, digits=0, spacing="xs" )
+        output$lastNed_tabAntSkjema <- downloadHandler(
+          filename = function(){'tabAntSkjema.csv'},
+          content = function(file, filename){write.csv2(AntSkjemaAvHver, file, row.names = T, na = '')
+          })
+        #       #Andel (prosent) av registreringsskjemaene som har oppfølgingsskjema.
+        #       output$tabAndelTilknyttedeHovedSkjema <- renderTable(
+        #             tabTilknHovedSkjema$Andeler
+        #             ,rownames = T, digits=0, spacing="xs" )
+        #
+        #        output$lastNed_tabOppfHovedPst <- downloadHandler(
+        #              filename = function(){'tabOppfHovedPst.csv'},
+        #              content = function(file, filename){write.csv2(tabTilknHovedSkjema$Andeler, file, row.names = T, na = '')
+        #              })
+      })
 
 
 #---------Fordelinger------------
@@ -366,7 +366,8 @@ server <- function(input, output) {
                                enhetsUtvalg=as.numeric(input$enhetsUtvalg))
             }, height=800, width=800 #height = function() {session$clientData$output_fordelinger_width}
             )
-
+            NGERFigAndeler(RegData=RegData, valgtVar='Alder', preprosess = 0,
+                           reshID = reshID, enhetsUtvalg=2)
             #RegData må hentes ut fra valgtVar
             UtDataFord <- NGERFigAndeler(RegData=RegData, preprosess = 0, valgtVar=input$valgtVar,
                                        datoFra=input$datovalg[1], datoTil=input$datovalg[2],
