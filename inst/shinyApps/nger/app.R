@@ -226,10 +226,33 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, Gjennomføringsgrad,...'
          sidebarPanel(
            width=3,
            h3('Utvalg'),
+
+
            selectInput(
-             inputId = "valgtVarAndel", label="Velg variabel (flere valg kommer)",
+             inputId = "valgtVarAndel", label="Velg variabel",
              choices = c('Alder over 70 år' = 'Alder',
-                         'Hysrektomi, gjennomføringsgrad' = 'HysGjforingsGrad')
+                         'Antibiotika' = 'OpAntibProfylakse',
+                         'ASA-grad > II' = 'OpASA',
+                         'Fedme (BMI>30)' = 'OpBMI',
+                         'Pasienter med høyere utdanning' = 'Utdanning',
+                         'Postop. komplikasjon: Blødning' = 'Opf0KomplBlodning',
+                         'Postop. komplikasjon: Problemer med ustyr' = 'Opf0KomplUtstyr',
+                         'Postop. komplikasjon: Infeksjon' = 'Opf0KomplInfeksjon',
+                         'Postop. komplikasjon: Organskade' = 'Opf0KomplOrgan',
+                         'Postop. komplikasjon: Reoperasjon' = 'Opf0Reoperasjon',
+                         'Postop. komplikasjon: andel moderate/alvorlige (grad 2-4)' = 'Opf0AlvorlighetsGrad',
+                         'Postop. komplikasjon: Alle' = 'KomplPostop',
+                         'Komplikasjoner under operasjon' = 'KomplIntra',
+                         'Konvertert til laparoromi?' = 'LapKonvertert',
+                         'Postoperativ oppfølging' = 'Opf0Status',
+                         'Registreringsforsinkelse' = 'RegForsinkelse',
+                         'TSS2: Møtet med gyn. avd. var svært godt' = 'Tss2Mott',
+                         'TSS2: Behandlingsopplegg/-innhold passet svært bra' = 'Tss2Behandling',
+                         'TSS2: Behandlerne lyttet- og forsto i svært stor grad' = 'Tss2Lytte',
+                         'TSS2: Pasienten hadde svært stor tillit til sine behandlere' = 'Tss2Behandlere',
+                         'TSS2: Pasient og behandlere svært enige om målsetn. for behandlinga' = 'Tss2Enighet',
+                         'TSS2: Svært positiv oppfatning om gyn. avd.' = 'Tss2Generelt'
+                         )
            ),
            dateRangeInput(inputId = 'datovalgAndel', start = startDato, end = idag,
                           label = "Tidsperiode", separator="t.o.m.", language="nb"),

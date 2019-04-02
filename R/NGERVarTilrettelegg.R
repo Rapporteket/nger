@@ -248,7 +248,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
   if (valgtVar=='Opf0KomplOrgan') { #andelGrVar, andelTid
     #Kode 0: Nei, 1:Ja
     RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
-    RegData$Variabel[which(RegData$Opf0KomplOrgan == 1)] <- 1
+    RegData$Variabel <- RegData$Opf0KomplOrgan
 	varTxt <- 'organskader'
     tittel <- 'Postop. komplikasjon: Organskade'
   }
@@ -366,10 +366,11 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     #Andel med RegData$Opf0metode %in% 1:2 (av samtlige, også tomme reg. 9-oppf. ikke mulig)
     #Kode: tomme, -1,0,1
     #Tar ut hendelser siste 8 uker:
-    datoTil <- min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 8*7))
+    datoTil <- as.POSIXlt(Sys.Date() - 8*7)  #min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 8*7))
+    RegData <- RegData[which(as.Date(RegData$InnDato) <= datoTil),]
 
     RegData$Variabel[RegData$Opf0metode %in% 1:2] <- 1 #Opf0Status==1
-    varTxt <- 'av postoperativ oppfølging'
+    varTxt <- 'svar på postoperativ oppfølging'
     tittel <- 'Pasienter som har svart på oppfølging'
   }
   #Lag figur for ett års oppfølging
@@ -396,13 +397,15 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     }
   }
   if (valgtVar == 'RegForsinkelse') {  #Andeler, GjsnGrVar
-    #!!!!!!!!!!!Leveringsdato vil oppdateres ved reåpning og kan derfor ikke brukes
+    #NB: Leveringsdato vil oppdateres ved reåpning og kan derfor ikke brukes. mars19: Toril mener den er pålitelig nok
     #Verdier: 0-3402
     RegData$Diff <- as.numeric(as.Date(RegData$Leveringsdato) - as.Date(RegData$InnDato)) #difftime(RegData$InnDato, RegData$Leveringsdato) #
     RegData <- RegData[which(RegData$OpStatus==1) %i% which(RegData$Diff > -1), ]
     tittel <- switch(figurtype,
                      andeler='Tid fra operasjon til ferdigstilt registrering',
-                     andelGrVar = 'Mer enn 4 uker fra operasjon til ferdig registrering')
+                     andelGrVar = 'Mer enn 4 uker fra operasjon til ferdig registrering',
+                     andelTid = 'Mer enn 4 uker fra operasjon til ferdig registrering')
+    varTxt <- 'registreringer etter 4 uker'
     RegData$Variabel[RegData$Diff > 4*7] <- 1
     subtxt <- 'døgn'
     gr <- c(0,1,7,14,30,90,365,5000) #gr <- c(seq(0, 90, 10), 1000)
@@ -507,19 +510,21 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
   }
 
   #Tss2Type  FOLLOWUP_TYPE	Oppfølgingsmetode	["Oppfølging pr post/brev","Oppfølging pr telefonintervju","Oppfølging ikke mulig"]
-  if (valgtVar == 'Tss2Mott') {   #Andeler, andelGrVar
+  if (valgtVar == 'Tss2Mott') {   #Andeler, andelGrVar, andelTid
     #Spm.1, Sverige
     #0:Mindre godt, 1:Ingen mening, 2:Ganske godt, 3:Svært godt
     tittel <- switch(figurtype,
                      andeler = 'Hvordan ble du møtt på gynekologisk avdeling?',
                      gjsnGrVar = 'Hvordan ble du møtt på gynekologisk avdeling?',
-                     andelGrVar = 'Møtet med gynekologisk avdeling var svært godt')
+                     andelGrVar = 'Møtet med gynekologisk avdeling var svært godt',
+                     andelTid = 'Møtet med gynekologisk avdeling var svært godt')
     grtxt <- c('Mindre godt','Ingen mening','Ganske godt','Svært godt')
+    varTxt <- grtxt[4]
     koder <- 0:3
     retn <- 'H'
     RegData <- RegData[which(RegData[ ,valgtVar] %in% koder), ] #Evt: Tss2Status == 1, Tss2Type in 1:2
     RegData$VariabelGr <- factor(RegData$Tss2Mott, levels=koder, labels = grtxt)
-    if (figurtype == 'andelGrVar') {
+    if (figurtype %in% c('andelGrVar', 'andelTid')) {
       RegData$Variabel[which(RegData$Tss2Mott == 3)] <- 1 }
       if (figurtype == 'gjsnGrVar') {
         RegData$Variabel <- RegData$Tss2Mott}
@@ -531,13 +536,15 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     tittel <- switch(figurtype,
                      andeler = 'Hvordan passet behandlingens opplegg og innhold for deg?',
                      gjsnGrVar = 'Hvordan passet behandlingens opplegg og innhold for deg?',
-                     andelGrVar = 'Behandlingens opplegg/innhold passet svært bra')
+                     andelGrVar = 'Behandlingens opplegg/innhold passet svært bra',
+                     andelTid = 'Behandlingens opplegg/innhold passet svært bra')
     grtxt <- c('Passet ikke','Verken eller','Ganske bra','Svært bra')
+    varTxt <- grtxt[4]
     koder <- 0:3
     retn <- 'H'
     RegData <- RegData[which(RegData[ ,valgtVar] %in% koder) %i% which(RegData$Tss2Status == 1), ]
     RegData$VariabelGr <- factor(RegData$Tss2Behandling, levels=koder, labels = grtxt) #levels=c(nivaa,9)
-    if (figurtype == 'andelGrVar') {
+    if (figurtype %in% c('andelGrVar', 'andelTid')) {
       RegData$Variabel[which(RegData$Tss2Behandling == 3)] <- 1}
     if (figurtype == 'gjsnGrVar') {
       RegData$Variabel <- RegData$Tss2Behandling}
@@ -549,13 +556,15 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     tittel <- switch(figurtype,
                      andeler = 'Lyttet og forsto dine behandlere det du tok opp?',
                      gjsnGrVar = 'Lyttet og forsto dine behandlere det du tok opp?',
-                     andelGrVar = 'I svært stor grad lyttet og forsto behandlerne')
+                     andelGrVar = 'Behandlerne lyttet og forsto i svært stor grad',
+                     andelTidr = 'Behandlerne lyttet og forsto i svært stor grad')
     grtxt <- c("Nei","Ja, til en viss grad","Ja, i ganske stor grad","Ja, i svært stor grad")
+    varTxt <- grtxt[4]
     koder <- 0:3
     retn <- 'H'
     RegData <- RegData[which(RegData[ ,valgtVar] %in% koder) %i% which(RegData$Tss2Status == 1), ]
     RegData$VariabelGr <- factor(RegData$Tss2Lytte, levels=koder, labels = grtxt)
-    if (figurtype == 'andelGrVar') {
+    if (figurtype %in% c('andelGrVar', 'andelTid')) {
       RegData$Variabel[which(RegData$Tss2Lytte == 3)] <- 1}
     if (figurtype == 'gjsnGrVar') {
       RegData$Variabel <- RegData$Tss2Lytte}
@@ -566,13 +575,15 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     tittel <- switch(figurtype,
                      andeler = 'Hadde du tillit til dine behandlere på gynekologisk avd.?',
                      gjsnGrVar = 'Hadde du tillit til dine behandlere på gynekologisk avd.?',
-                     andelGrVar = 'Pasienten hadde svært stor tillit til sine behandlere')
+                     andelGrVar = 'Pasienten hadde svært stor tillit til sine behandlere',
+                     andelTid = 'Pasienten hadde svært stor tillit til sine behandlere')
     grtxt <- c("Nei, ikke tilstrekkelig","Ja, til en viss grad","Ja, i ganske stor grad","Ja, i svært stor grad")
+    varTxt <- grtxt[4]
     koder <- 0:3
     retn <- 'H'
     RegData <- RegData[which(RegData[ ,valgtVar] %in% koder) %i% which(RegData$Tss2Status == 1), ]
     RegData$VariabelGr <- factor(RegData$Tss2Behandlere, levels=koder, labels = grtxt) #levels=c(nivaa,9)
-    if (figurtype == 'andelGrVar') {
+    if (figurtype %in% c('andelGrVar', 'andelTid')) {
       RegData$Variabel[which(RegData$Tss2Behandlere == 3)] <- 1 }
       if (figurtype == 'gjsnGrVar') {
         RegData$Variabel <- RegData$Tss2Behandlere}
@@ -583,30 +594,35 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     tittel <- switch(figurtype,
                      andeler = 'Var du og dine behandlere enige om målsettingen for din behandling?',
                      gjsnGrVar = 'Var du og dine behandlere enige om målsettingen for din behandling?',
-                     andelGrVar = 'Pasient og behandlere svært enige om målsetn. for behandlinga')
+                     andelGrVar = 'Pasient og behandlere svært enige om målsetn. for behandlinga',
+                     andelTid = 'Pasient og behandlere svært enige om målsetn. for behandlinga')
     grtxt <- c("Nei","Ja, til en viss grad","Ja, i ganske stor grad","Ja, i svært stor grad")
+    varTxt <- grtxt[4]
     koder <- 0:3
     retn <- 'H'
     RegData <- RegData[which(RegData[ ,valgtVar] %in% koder) %i% which(RegData$Tss2Status == 1), ]
     RegData$VariabelGr <- factor(RegData$Tss2Enighet, levels=koder, labels = grtxt) #levels=c(nivaa,9)
-    if (figurtype == 'andelGrVar') {
+    if (figurtype %in% c('andelGrVar', 'andelTid')) {
       RegData$Variabel[which(RegData$Tss2Enighet == 3)] <- 1 }
     if (figurtype == 'gjsnGrVar') {
       RegData$Variabel <- RegData$Tss2Enighet}
-  }
+}
+
   if (valgtVar == 'Tss2Generelt') {   #Andeler, andelGrVar
     #Spm.6, Sverige
     #0:Svært negativ, 1:Negativ, 2:Nøytral, 3:Positiv, 4:Svært positiv
     tittel <- switch(figurtype,
                      andeler = 'Hvilken oppfatning har du om gynekologisk avdeling generelt?',
                      gjsnGrVar = 'skår, oppfatning om gynekologisk avdeling generelt',
-                     andelGrVar = 'Svært positiv oppfatning om gyn. avd.')
+                     andelGrVar = 'Svært positiv oppfatning om gyn. avd.',
+                     andelTid = 'Svært positiv oppfatning om gyn. avd.')
     grtxt <- c("Svært negativ","Negativ","Nøytral","Positiv","Svært positiv")
+    varTxt <- grtxt[5]
     koder <- 0:4
     retn <- 'H'
     RegData <- RegData[which(RegData[ ,valgtVar] %in% koder) %i% which(RegData$Tss2Status == 1), ]
     RegData$VariabelGr <- factor(RegData$Tss2Generelt, levels=koder, labels = grtxt) #levels=c(nivaa,9)
-    if (figurtype == 'andelGrVar') {
+    if (figurtype %in% c('andelGrVar', 'andelTid')) {
       RegData$Variabel[which(RegData$Tss2Generelt == 4)] <- 1 }
     if (figurtype == 'gjsnGrVar') {
       RegData$Variabel <- RegData$Tss2Generelt-1}
@@ -846,7 +862,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
                   'LapIntKombo',
                   'LapIntKoagOgKlipp',
                   'LapUnipolarDiatermi')
-    grtxt <- c('Adheranseprofylakse', 'Bipolar Diatermi', 'Clips', 'Harmonic skalpell',
+    grtxt <- c('Adheranseprofylakse', 'Bipolar Diatermi', 'Clips', 'Ultralyd skalpell',
                'Morc. u/pose [1/3-16]', 'Morc. m/pose [1/3-16]',
                'Nett', 'Preparatpose', 'Uterusmanipulator', 'Robotkirurgi', 'Singel port',
                'Stapler/endoGIA', 'Sutur', 'Bipolar og ultralyd', 'Bipolar koag. og klipping',
@@ -880,7 +896,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
                   'LapTekniskUtstyr', #0,1
                   'LapPostoperativ') #0,1 Hører denne med?
     grtxt <- c('Uterusmanipulator', 'Tilgangsmetode', 'Hjelpeinnstikk',
-               'Intraabdominal', 'Utstyr', 'Postoperativ')
+               'Intraabdominal/mini laparatomi', 'Utstyr', 'Postoperativ')
     cexgr <- 0.85
     tittel <- 'Intraoperative komplikasjoner ved laparoskopi'
     RegData <- RegData[(RegData$LapKomplikasjoner %in% 0:1), ]
@@ -942,7 +958,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
                      andeler = 'Type infeksjon, postoperativt',
                      andelGrVar = 'Postop. komplikasjon: Infeksjon',
                      andelTid = 'Postop. komplikasjon: Infeksjon' )
-    grtxt <- c('Operasjonssår', 'Intraabdominal', 'Endometritt/Saplingitt', 'UVI', 'Annet') #, 'Ukjent')
+    grtxt <- c('Operasjonssår', 'Intraabdominal/mini laparatomi', 'Endometritt/Saplingitt', 'UVI', 'Annet') #, 'Ukjent')
     varTxt <- 'infeksjoner'
     RegData$Variabel[which(RegData$Opf0KomplInfeksjon == 1)] <- 1
   }

@@ -163,7 +163,9 @@ for (valgtVar in variable) {
 
 
 #------------------------------ Andeler per sykehus (AndelGrVar) --------------------------
-valgtVar <- 'Alder' #Må velge... OpAnestesi, OpDagkirurgi,OpTid
+ #Ok?: Opf0KomplOrgan, Opf0Status, RegForsinkelse, Tss2Mott
+
+valgtVar <- 'Tss2Mott' #Må velge... OpAnestesi, OpDagkirurgi,OpTid
       #Alder, Opf0Reoperasjon, Education, Opf0AlvorlighetsGrad,
       #KomplIntra, KomplPostop, OpAntibProfylakse, OpASA, OpBMI, Opf0Status, RegForsinkelse
       #Tss2Mott, Tss2Behandling,	Tss2Lytte, Tss2Behandlere, Tss2Enighet,	Tss2Generelt
@@ -171,7 +173,7 @@ valgtVar <- 'Alder' #Må velge... OpAnestesi, OpDagkirurgi,OpTid
 outfile <- '' #paste0(valgtVar, '_Shus.png')	#Navn angis av Jasper
 #velgAvd <- '' #c(108048, 111180, 700404)
 
-UtDataFraFig <-NGERFigAndelerGrVar(RegData=RegData,  valgtVar='KomplIntra', reshID=reshID, outfile='', preprosess = 1)
+UtDataFraFig <-NGERFigAndelerGrVar(RegData=RegData,  datoFra='2018-01-01', valgtVar=valgtVar, reshID=8, outfile='', preprosess = 1)
 
 NGERFigAndelerGrVar(RegData=RegData, datoFra='2017-01-01', valgtVar=valgtVar, datoTil=datoTil,
             reshID=reshID, outfile=outfile, OpMetode=OpMetode,

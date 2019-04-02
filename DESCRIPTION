@@ -29,9 +29,8 @@ Suggests:
 Imports:
     kableExtra,
     knitr, 
-    lubridate,
-    plyr,
     shiny,
+    tidyverse,
     xtable,
     zoo
 VignetteBuilder: knitr
