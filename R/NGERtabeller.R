@@ -100,24 +100,66 @@ return(tab)
 # return(tab)
 # }
 
-lagTabavFig <- function(UtDataFraFig, figtype='andeler'){ #lagTabavFigAndeler
-  tab <-cbind(UtDataFraFig$Ngr$Hoved,
-              UtDataFraFig$AggVerdier$Hoved,
-              if(!is.null(UtDataFraFig$Ngr$Rest)){UtDataFraFig$Ngr$Rest},
-              if(!is.null(UtDataFraFig$AggVerdier$Rest)){UtDataFraFig$AggVerdier$Rest})
-  #rownames(tab) <- UtDataFraFig$grtxt
+lagTabavFig <- function(UtDataFraFig, figurtype='andeler'){ #lagTabavFigAndeler
 
-  if(figtype=='andeler') {
-    kolnavn <- c(paste0(UtDataFraFig$hovedgrTxt,', N'),
-                     paste0(UtDataFraFig$hovedgrTxt, ', Andel (%)'),
-                     if(!is.null(UtDataFraFig$Ngr$Rest)){paste0(UtDataFraFig$smltxt,', N')},
-                     if(!is.null(UtDataFraFig$Ngr$Rest)){paste0(UtDataFraFig$smltxt, ', Andel (%)')})}
-  if(figtype=='gjsnGrVar') {
-    kolnavn <- c('Antall (N)', UtDataFraFig$SentralmaalTxt)}
+  attach(UtDataFraFig, warn.conflicts = F)
+  medSml==1
 
-  colnames(tab) <- kolnavn
+
+  if (figurtype %in% c('andeler','gjsnGrVar', 'andelTid')){
+  tab <-cbind(Ngr$Hoved,
+              AggVerdier$Hoved,
+              if (medSml==1){cbind(
+                Ngr$Rest,
+                AggVerdier$Rest)})}
+
+  if (figurtype %in% c('andeler', 'andelTid')) {
+    colnames(tab) <- c(paste0(hovedgrTxt,', N'),
+                     paste0(hovedgrTxt, ', Andel (%)'),
+                     if (medSml==1) {
+                       cbind(paste0(smltxt,', N'),
+                             paste0(smltxt, ', Andel (%)'))}
+                 )}
+
+  if (figurtype == 'gjsnTid'){
+    tab <- AggVerdier
+    colnames(tab) <-  grtxt
+    tab <- t(tab)
+  }
+
+    if(figurtype=='gjsnGrVar') {
+    kolnavn <- c('Antall (N)', SentralmaalTxt)
+    if (medSml==1) {
+      colnames(tab) <-  c(kolnavn, paste0(smltxt, c(', N', ', Andel (%)')))}
+    }
+
+  # if (figurtype %in% c('andeler','gjsnGrVar'))
+  #   tab <-cbind(UtDataFraFig$Ngr$Hoved,
+  #               UtDataFraFig$AggVerdier$Hoved,
+  #               if (medSml==1){cbind(
+  #                 UtDataFraFig$Ngr$Rest,
+  #                 UtDataFraFig$AggVerdier$Rest)})
+  #
+  # if(figurtype=='andeler') {
+  #   kolnavn <- c(paste0(UtDataFraFig$hovedgrTxt,', N'),
+  #                paste0(UtDataFraFig$hovedgrTxt, ', Andel (%)'),
+  #                if (medSml==1) {
+  #                  cbind(paste0(UtDataFraFig$smltxt,', N'),
+  #                        paste0(UtDataFraFig$smltxt, ', Andel (%)'))}
+  #   )}
+  #
+  # if (figurtype=='gjsnTid'){
+  #   tab <- UtDataFraFig$AggVerdier
+  #   kolnavn <- UtDataFraFig$grtxt
+  # }
+  #
+  # if(figurtype=='gjsnGrVar') {
+  #   kolnavn <- c('Antall (N)', UtDataFraFig$SentralmaalTxt)}
+
+    #colnames(tab) <- kolnavn
   return(tab)
 }
+
 
 #' @section Vise figurdata som tabell, sentralmål per sykshus
 #' @rdname NGERtabeller
@@ -131,4 +173,126 @@ lagTabavFigGjsnGrVar <- function(UtDataFraFig){
 }
 
 
+#' @section Generere tabell med nøkkeltall
+#' @rdname NGERtabeller
+#' @export
 
+NGERpasientegenskaper <- function(RegData) {
+  # make dummy column for all MCEs
+  n <- dim(RegData)[1]
+  RegData$dummy <- rep("\\textbf{Alle BMI} ($kg/m^2$)", n)
+  myTab <- xtabs(OpBMI ~ dummy + Aar,
+                 aggregate(OpBMI~dummy+Aar,RegData,mean))
+  myTab <- rbind(myTab,
+                 xtabs(OpBMI ~ OpMetode + Aar,
+                       aggregate(OpBMI~OpMetode+Aar,RegData,mean)))
+  RegData$dummy <- "\\textbf{Alle fødsler} (\\textit{antall})"
+  myTab <- rbind(myTab,
+                 xtabs(OpPariteter ~ dummy + Aar,
+                       aggregate(OpPariteter~dummy+Aar,RegData,mean)))
+  myTab <- rbind(myTab,
+                 xtabs(OpPariteter ~ OpMetode + Aar,
+                       aggregate(OpPariteter~OpMetode+Aar,RegData,mean)))
+  RegData$dummy <- "\\textbf{Alle graviditeter} (\\textit{antall})"
+  myTab <- rbind(myTab,
+                 xtabs(OpGraviditeter ~ dummy + Aar,
+                       aggregate(OpGraviditeter~dummy+Aar,RegData,mean)))
+  myTab <- rbind(myTab,
+                 xtabs(OpGraviditeter ~ OpMetode + Aar,
+                       aggregate(OpGraviditeter~OpMetode+Aar,RegData,mean)))
+  RegData$dummy <- "\\textbf{Alle knivtider} (\\textit{minutt})"
+  myTab <- rbind(myTab,
+                 xtabs(OpTid ~ dummy + Aar,
+                       aggregate(OpTid~dummy+Aar,RegData,mean)))
+  myTab <- rbind(myTab,
+                 xtabs(OpTid ~ OpMetode + Aar,
+                       aggregate(OpTid~OpMetode+Aar,RegData,mean)))
+
+  # move rownames to its own column do allow duplicate names
+  # OpMetode 1=laparo, 2=hysteroskopi, 3=begge
+  pe <- rownames(myTab)
+  pe[which(pe==1)] <- "\\quad Laparoskopi"
+  pe[which(pe==2)] <- "\\quad Hysteroskopi"
+  pe[which(pe==3)] <- "\\quad Begge"
+
+  mydf <- data.frame(Pasientegenskap=pe, myTab, check.names = FALSE)
+  #  list(tabVI=mydf)
+  return(invisible(mydf))
+}
+
+
+
+
+#' @section Vise figurdata som tabell, sentralmål per sykshus
+#' @rdname NGERtabeller
+#' @export
+visVanligsteProcDiag <- function(RegData, ant=20, prosdiag='pros'){
+
+ant <- 20
+  ProsHys <- c('HysProsedyre1', 'HysProsedyre2', 'HysProsedyre3')
+  ProsLap <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3')
+  DiagLap <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3')
+  DiagHys <- c('HysDiagnose1', 'HysDiagnose2', 'HysDiagnose3')
+
+  variable <- switch(prosdiag,
+                     diag = c(DiagHys, DiagLap),
+                     pros = c(ProsHys, ProsLap))
+
+AlleProsDiag <- as.vector(as.matrix(RegData[ , variable]))
+AllePDsort <- sort(table(AlleProsDiag[which(AlleProsDiag != '')]), decreasing = TRUE)
+
+#AlleProsEget <- as.vector(as.matrix(RegData[indEget, c(ProsHys, ProsLap)]))
+#AlleProsEgetSort <- sort(table(AlleProsEget[which(AlleProsEget != '')]), decreasing = TRUE)
+
+tab <- cbind( #Må fjerne tomme
+  Andel = (AllePDsort[1:ant])/dim(RegData)[1]*100 ,
+  Antall = AllePDsort[1:ant] )
+
+# ProcEget <- cbind( #Må fjerne tomme
+#   Andel = (AlleProsEgetSort[1:ant])/Neget*100 ,
+#   Antall = AlleProsEgetSort[1:ant] )
+
+# AlleDiag <- as.vector(as.matrix(RegData[ , c(DiagHys,DiagLap)]))
+# AlleDiagSort <- sort(table(AlleDiag[which(AlleDiag != '')]), decreasing = TRUE)
+# AlleDiagEget <- as.vector(as.matrix(RegData[indEget , c(DiagHys,DiagLap)]))
+# AlleDiagEgetSort <- sort(table(AlleDiagEget[which(AlleDiagEget != '')]), decreasing = TRUE)
+
+
+# Diag <- cbind( #Må fjerne tomme
+#   Andel = (AlleDiagSort[1:ant])/N*100 ,
+#   Antall = AlleDiagSort[1:ant] )
+
+# DiagEget <- cbind( #Må fjerne tomme
+#   Andel = (AlleDiagEgetSort[1:ant])/Neget*100 ,
+#   Antall = AlleDiagEgetSort[1:ant] )
+
+type <- switch(prosdiag, pros='prosedyr', diag='diagnos')
+tittel <- paste0('Vanligste ', type,'er. Andel angir prosent av utførte
+                 operasjoner hvor ', type, 'en er benyttet.')
+
+tabUt <- xtable(tab, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(tab)), na.rm=T))),
+       caption=tittel,
+       linclude.rownames=TRUE, include.colnames=TRUE)
+
+# xtable(Proc, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(Proc)), na.rm=T))),
+#        caption='Vanligste prosedyrer. Andel angir andel av antall utførte
+#        operasjoner hvor prosedyra er benyttet.',
+#        label='tab:Proc', include.rownames=TRUE, include.colnames=TRUE)
+#
+# xtable(ProcEget, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(ProcEget)), na.rm=T))),
+#        caption='Vanligste prosedyrer, eget sykehus. Andel angir andel av antall utførte
+#        operasjoner hvor prosedyra er benyttet.',
+#        label='tab:ProcEget', include.rownames=TRUE, include.colnames=TRUE)
+#
+# xtable(Diag, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(Diag)), na.rm=T))),
+#        caption='Vanligste diagnoser. Andel angir andel av antall utførte
+#        operasjoner hvor diagnosen er benyttet.',
+#        label='tab:Diag', include.rownames=TRUE, include.colnames=TRUE)
+#
+# xtable(DiagEget, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(DiagEget)), na.rm=T))),
+#        caption='Vanligste diagnoser, eget sykehus. Andel angir andel av antall utførte
+#        operasjoner hvor diagnosen er benyttet.',
+#        label='tab:DiagEget', include.rownames=TRUE, include.colnames=TRUE)
+
+return(tabUt)
+}

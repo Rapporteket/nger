@@ -78,7 +78,7 @@ setwd("C:/ResultattjenesteGIT/nger/")
 reshID <- 8 #110734 # 110734 (Tønsberg)  	700399
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
-datoFra <- '2017-01-01'	 # min og max dato i utvalget vises alltid i figuren.
+datoFra <- '2018-01-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2019-12-31'
 preprosess <- 1
 OpMetode <- 99 #1: Laparoskopi, 2: Hysteroskopi, 3: Begge,  99: Alle
@@ -89,13 +89,13 @@ velgDiag <- 0
 Hastegrad <- ''
 AlvorlighetKompl <- ''#c('2','3')
 hentData <- 0
-enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
+enhetsUtvalg <- 1 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 #					6–egen enhet mot egen region, 7–egen region, 8–egen region mot resten
 
-tidsenhet <- 'Aar'
+tidsenhet <- 'Mnd'
 grVar <- 'ShNavn'
 Ngrense <- 10
-valgtMaal <- 'Gjsn'
+valgtMaal <- 'med'
 outfile <- ''
 
 
@@ -136,13 +136,12 @@ for (valgtVar in variable) {
 #Opf0KomplUtstyr - LapAdherProfylakse
 
 
-#------------------------------ Andeler per tidsenhet --------------------------
-#------------------------------ (AndelTid) --------------------------
-valgtVar <- 'OpDagkirurgi' #LapKonvertert, OpAnestesi, OpDagkirurgi, OpTid
+#------------------------------ Andeler per tidsenhet (AndelTid)  --------------------------
+valgtVar <- 'Alder' #LapKonvertert, OpAnestesi, OpDagkirurgi, OpTid
 outfile <- '' #paste0(valgtVar, '_', tidsenhet, '.png')
 
-NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
-            reshID=reshID, enhetsUtvalg=0, tidsenhet = 'Aar',
+test <- NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
+            reshID=reshID, enhetsUtvalg=1, tidsenhet = tidsenhet,
             #minald=minald, maxald=maxald, OpMetode=OpMetode, Hastegrad=Hastegrad, AlvorlighetKompl=AlvorlighetKompl,
             outfile=outfile) #
 
@@ -163,8 +162,7 @@ for (valgtVar in variable) {
 
 
 
-#------------------------------ Andeler per sykehus --------------------------
-#------------------------------ (AndelGrVar) --------------------------
+#------------------------------ Andeler per sykehus (AndelGrVar) --------------------------
 valgtVar <- 'Alder' #Må velge... OpAnestesi, OpDagkirurgi,OpTid
       #Alder, Opf0Reoperasjon, Education, Opf0AlvorlighetsGrad,
       #KomplIntra, KomplPostop, OpAntibProfylakse, OpASA, OpBMI, Opf0Status, RegForsinkelse
@@ -193,10 +191,10 @@ for (valgtVar in variable) {
 }
 
 
-#------------------------------ Sentralmål per sykehus --------------------------
-#------------------------------ (GjsnGrVar) --------------------------
+#------------------------------ Sentralmål per sykehus/Tid --------------------------
+#------------------------------ (GjsnGrVar/GjsnTid) --------------------------
 
-valgtVar <- 'R0ScorePhys'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
+valgtVar <- 'Alder'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
                             #R0ScoreEmo, R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral, OpTid
                           #'Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
                           #'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt'
@@ -204,10 +202,13 @@ valgtVar <- 'R0ScorePhys'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	R
 outfile <- ''
 outfile <- paste0(valgtVar, '_sh.png')
 
-NGERFigGjsnGrVar(RegData=RegData,valgtVar=valgtVar, datoFra='2017-01-01', datoTil=datoTil, minald=minald, maxald=maxald,
-                 OpMetode=OpMetode, valgtMaal='Med', hentData=0,  grVar=grVar, Ngrense=10,
+testGjsn <- NGERFigGjsnGrVar(RegData=RegData,valgtVar=valgtVar, datoFra='2017-01-01', datoTil=datoTil, minald=minald, maxald=maxald,
+                 OpMetode=OpMetode, valgtMaal='med', hentData=0,  grVar=grVar, Ngrense=10,
                  medKI=1, outfile=outfile, velgAvd = '')#AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
 
+testGjsnTid <- NGERFigGjsnTid(RegData=RegData,valgtVar=valgtVar, datoFra='2017-01-01', datoTil=datoTil, minald=minald, maxald=maxald,
+                 valgtMaal='med', hentData=0, tidsenhet = 'Aar', enhetsUtvalg = enhetsUtvalg, #OpMetode=OpMetode, medKI=1, , velgAvd = ''
+                 outfile=outfile, reshID = reshID)#AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
 
 variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
               'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')

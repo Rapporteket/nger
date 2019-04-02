@@ -7,6 +7,8 @@
 \alias{tabAntSkjema}
 \alias{lagTabavFig}
 \alias{lagTabavFigGjsnGrVar}
+\alias{NGERpasientegenskaper}
+\alias{visVanligsteProcDiag}
 \title{Funksjoner for å lage tabeller Group of functions page title}
 \usage{
 tabAntOpphShMnd(RegData, datoTil = Sys.Date(), antMnd = 6,
@@ -17,9 +19,13 @@ tabAntOpphSh5Aar(RegData, datoTil = Sys.Date())
 tabAntSkjema(SkjemaOversikt, datoFra = "2019-01-01",
   datoTil = Sys.Date(), skjemastatus = 1)
 
-lagTabavFig(UtDataFraFig, figtype = "andeler")
+lagTabavFig(UtDataFraFig, figurtype = "andeler")
 
 lagTabavFigGjsnGrVar(UtDataFraFig)
+
+NGERpasientegenskaper(RegData)
+
+visVanligsteProcDiag(RegData, ant = 20, prosdiag = "pros")
 }
 \arguments{
 \item{RegData}{data}
@@ -60,6 +66,12 @@ NA
 }
 
 \section{Vise figurdata som tabell, sentralmål per sykshus}{
+NA
+
+NA
+}
+
+\section{Generere tabell med nøkkeltall}{
 NA
 }
 

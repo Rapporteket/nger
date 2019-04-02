@@ -37,10 +37,11 @@ NGERPreprosess <- function(RegData=RegData)
   #!!! HovedDato tilsvarer OpDato. Benytter HovedDato siden OpDato ikke finnes i alle skjema
   RegData$InnDato <- as.Date(RegData$HovedDato, format="%Y-%m-%d")
   #RegData$InnDato <- as.Date(RegData$OpDato, format="%Y-%m-%d") #
-  RegData$Mnd <- as.POSIXlt(RegData$HovedDato, format="%Y-%m-%d")$mon +1
+  RegData$MndNum <- as.POSIXlt(RegData$HovedDato, format="%Y-%m-%d")$mon +1
   RegData$Kvartal <- ceiling(RegData$Mnd/3)
   RegData$Halvaar <- ceiling(RegData$Mnd/6)
   RegData$Aar <- 1900 + as.POSIXlt(RegData$HovedDato, format="%Y-%m-%d")$year #strptime(RegData$Innleggelsestidspunkt, format="%Y")$year
+  RegData$MndAar <- format(RegData$Innleggelsestidspunkt, '%b%y')
 
 
   #Riktig navn på resh-variabel:
@@ -53,10 +54,11 @@ NGERPreprosess <- function(RegData=RegData)
   if ('LapDiagnose1' %in% (names(RegData))) {
   DiagVar <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3', 'HysDiagnose1','HysDiagnose2', 'HysDiagnose3')
   ProsVar <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3', 'HysProsedyre1','HysProsedyre2', 'HysProsedyre3')
+
   for (var in c(DiagVar,ProsVar)) {
     RegData[ ,var] <- toupper(RegData[ ,var])
   }
-}
+  }
 
   return(invisible(RegData))
 }

@@ -137,13 +137,10 @@ er kombinert med for eksempel demografisk informasjon, kan det ikke utelukkes
 at rapporterte data kan tilbakeføres til enkeltpersoner. Det er registeret sitt ansvar
 å vurdere hvorvidt rapporten skal vurderes som sensitiv eller ikke.
 
-Rapporten er laget ved hjelp av statistikkverktøyet R, dokumentverktøyet \LaTeX{} og
-rapporteringsløsningen JasperReports
-og kan genereres av gynekologiregisterets databasebrukerne på \textit{helseregister.no}.
 
 
 <<LasteData, echo=FALSE, eval=T>>=
-datoFra <- '2015-01-01' 	 # min og max dato i utvalget vises alltid i figuren.
+datoFra <- startDato 	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- Sys.Date()	#'2015-12-31'
 if (!exists('RegData')){
   RegData <- NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil)
@@ -158,17 +155,14 @@ library(xtable)
 library(plyr)
 outfile <- ''
 enhetsUtvalg <- 1
-minald <- 0
-maxald <- 130
 OpMetode<-99
 Hastegrad <- ''
 tidsenhet <- 'Aar'
 
-NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra,
+NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, datoFra = datoFra,
                          datoTil = datoTil, OpMetode = OpMetode, Hastegrad=Hastegrad)
 RegData <- NGERUtvalg$RegData
 
-RegData$OpAar <- as.factor(format(RegData$HovedDato, '%Y'))
 figKrymp1 <- 0.8	#Skaleringsparameter for enkeltfigurer
 figKrymp2 <- 0.7
 '%i%' <- intersect
@@ -181,8 +175,6 @@ Neget <- length(indEget)
 
 \section{Registrerende avdelinger}
 
-Innregistrering i registeret ble startet i 2013. Alle resultater i denne rapporten er basert
-å
 Norsk Gynekologisk Endoskopiregister startet elektronisk registrering helseregister.no i 2013.
 Denne samlerapporten er basert på registreringer som er lagret og ferdigstilt i NGER fra
 \Sexpr{min(RegData$InnDato)} til \Sexpr{max(RegData$InnDato)}.
@@ -191,15 +183,15 @@ Denne samlerapporten er basert på registreringer som er lagret og ferdigstilt i
 
 <<'Tabell:RegistrerendeAvd', results='asis', echo=FALSE, eval=T >>=
 ## VIDERE: Max 5 år i tabellen
-if (dim(table(RegData$OpAar)) > 1) {
-  tabAvdN <- addmargins(as.table(ftable(RegData[ ,c('ShNavn', 'OpAar')])))
+if (dim(table(RegData$Aar)) > 1) {
+  tabAvdN <- addmargins(as.table(ftable(RegData[ ,c('ShNavn', 'Aar')])))
   colnames(tabAvdN)[dim(tabAvdN)[2] ]<- 'Alle år'
 } else {
   tabAvdN <- addmargins(table(RegData$ShNavn))
 }
 rownames(tabAvdN)[dim(tabAvdN)[1] ]<- 'TOTALT, alle sykehus:'
 
-#Tabell <- table(RegData[,c('ShNavn', 'OpAar')])
+#Tabell <- table(RegData[,c('ShNavn', 'Aar')])
 print(xtable::xtable(tabAvdN, digits=0, align=c('l', rep('r', max(c(1,ncol(tabAvdN)), na.rm=T))),
                      caption='Avdelinger som registrerer pasienter i NGER.',
                      label='tab:RegistrenrendeAvd'),
@@ -211,16 +203,11 @@ print(xtable::xtable(tabAvdN, digits=0, align=c('l', rep('r', max(c(1,ncol(tabAv
 <<'Tabell:Pasientkarakterisika', results='asis', warnings=FALSE, echo=FALSE, eval=T >>=
 # Får feilmelding med duplikate radnavn. Be Are se på koden sin.
 
-TabPasKar <- NGERtabVI(RegData)
+TabPasKar <- NGERpasientegenskaper(RegData)
 
-#print(xtable::xtable(TabPasKar, digits=0, align=c('l', rep('r', max(c(1,ncol(TabPasKar)), na.rm=T))),
-#                     caption='Pasientkarakterisika og operasjonstid.',
-#                     label='tab:TabPasKar'),
-#      include.rownames=TRUE, include.colnames=TRUE, check.names = FALSE)
 cap <- "Gjennomsnittlig BMI, fødsler, graviditeter og knivtid. Verdiene
 er gitt samlet for alle typer inngrep og splittet for laparoskopi,
-hysteroskopi og der begge prosedyrer er brukt. Datagrunnlaget er tatt fra
-en tre-års periode."
+hysteroskopi og der begge prosedyrer er brukt."
 
 tab <- xtable::xtable(TabPasKar, align=c("l", "l", rep("r", ncol(TabPasKar)-1)),
                       digits=c(0,0,rep(1, ncol(TabPasKar)-1)),
@@ -244,67 +231,20 @@ print(tab, include.rownames=FALSE, sanitize.text.function = function(x){x})
 <<'ProsedyrerDiagnoser', results='asis', echo=FALSE, eval=T, >>=
 #Tabell med de 20 vanligste prosedyrer og diagnoser for egen avdeling og hele landet
 
-ProsHys <- c('HysProsedyre1', 'HysProsedyre2', 'HysProsedyre3')
-ProsLap <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3')
-DiagLap <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3')
-DiagHys <- c('HysDiagnose1', 'HysDiagnose2', 'HysDiagnose3')
+visVanligsteProcDiag(RegData=RegData, ant=20, prosdiag='diag')
+visVanligsteProcDiag(RegData=RegData, ant=20, prosdiag='pros')
+diagEget <- visVanligsteProcDiag(RegData=RegData[indEget,], ant=20, prosdiag='diag')
+prosEget <- visVanligsteProcDiag(RegData=RegData[indEget, ], ant=20, prosdiag='pros')
 
-#Må fjerne tomme. Tomme behandles som tomme lokalt, men NA på server.
-AllePros <- toupper(as.vector(as.matrix(RegData[ , c(ProsHys, ProsLap)])))
-AlleProsSort <- sort(table(AllePros[which(AllePros != '')]), decreasing = TRUE)
-#AlleprosSort <- sort(table(toupper(as.vector(as.matrix(RegData[ ,c(ProsHys, ProsLap)])))), decreasing = TRUE)
-
-AlleProsEget <- toupper(as.vector(as.matrix(RegData[indEget, c(ProsHys, ProsLap)])))
-AlleProsEgetSort <- sort(table(AlleProsEget[which(AlleProsEget != '')]), decreasing = TRUE)
-#AlleprosEget <- sort(table(toupper(as.vector(as.matrix(RegData[indEget ,c(ProsHys, ProsLap)])))), decreasing = TRUE)
-
-ant <- 20
-Proc <- cbind( #Må fjerne tomme
-  Andel = (AlleProsSort[1:ant])/N*100 ,
-  Antall = AlleProsSort[1:ant] )
-
-ProcEget <- cbind( #Må fjerne tomme
-  Andel = (AlleProsEgetSort[1:ant])/Neget*100 ,
-  Antall = AlleProsEgetSort[1:ant] )
-
-#Allediag <- sort(table(toupper(as.vector(as.matrix(RegData[ ,c(DiagHys, DiagLap)])))), decreasing = TRUE)
-#AllediagEget <- sort(table(toupper(as.vector(as.matrix(RegData[indEget ,c(DiagHys, DiagLap)])))), decreasing = TRUE)
-AlleDiag <- toupper(as.vector(as.matrix(RegData[ , c(DiagHys,DiagLap)])))
-AlleDiagSort <- sort(table(AlleDiag[which(AlleDiag != '')]), decreasing = TRUE)
-AlleDiagEget <- toupper(as.vector(as.matrix(RegData[indEget , c(DiagHys,DiagLap)])))
-AlleDiagEgetSort <- sort(table(AlleDiagEget[which(AlleDiagEget != '')]), decreasing = TRUE)
-
-
-ant <- 20
-Diag <- cbind( #Må fjerne tomme
-  Andel = (AlleDiagSort[1:ant])/N*100 ,
-  Antall = AlleDiagSort[1:ant] )
-
-DiagEget <- cbind( #Må fjerne tomme
-  Andel = (AlleDiagEgetSort[1:ant])/Neget*100 ,
-  Antall = AlleDiagEgetSort[1:ant] )
-
-
-xtable(Proc, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(Proc)), na.rm=T))),
-       caption='Vanligste prosedyrer. Andel angir andel av antall utførte
-       operasjoner hvor prosedyra er benyttet.',
-       label='tab:Proc', include.rownames=TRUE, include.colnames=TRUE)
-
-xtable(ProcEget, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(ProcEget)), na.rm=T))),
-       caption='Vanligste prosedyrer, eget sykehus. Andel angir andel av antall utførte
-       operasjoner hvor prosedyra er benyttet.',
-       label='tab:ProcEget', include.rownames=TRUE, include.colnames=TRUE)
-
-xtable(Diag, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(Diag)), na.rm=T))),
-       caption='Vanligste diagnoser. Andel angir andel av antall utførte
-       operasjoner hvor diagnosen er benyttet.',
-       label='tab:Diag', include.rownames=TRUE, include.colnames=TRUE)
-
-xtable(DiagEget, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(DiagEget)), na.rm=T))),
+xtable(diagEget,
        caption='Vanligste diagnoser, eget sykehus. Andel angir andel av antall utførte
        operasjoner hvor diagnosen er benyttet.',
-       label='tab:DiagEget', include.rownames=TRUE, include.colnames=TRUE)
+       label='tab:DiagEget')
 
+xtable(prosEget,
+       caption='Vanligste prosedyrer, eget sykehus. Andel angir andel av antall utførte
+       operasjoner hvor prosedyra er benyttet.',
+       label='tab:ProsEget')
 
 @
 
@@ -312,7 +252,7 @@ xtable(DiagEget, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(DiagEget)),
 
 Metode <- c('Laparosopi', 'Hysteroskopi')
 for (met in 1:2) {
-  ASALapHys <- addmargins(table(RegData[which(RegData$OpMetode == met), c('OpASA', 'OpAar')]))
+  ASALapHys <- addmargins(table(RegData[which(RegData$OpMetode == met), c('OpASA', 'Aar')]))
 
 
 
@@ -414,10 +354,10 @@ print(xtable(AndelLapKomplTab, digits=c(0,1,1), align=c('l', 'l', rep('r', max(c
 
 <<'LapDiv', results='asis', echo=FALSE, eval=T>>=
 #Få med resultat for eget sykehus.
-RegDataLap <- RegData[which(RegData$OpMetode %in% c(1,3)), c('LapKonvertert','OpAar','ReshId')]
+RegDataLap <- RegData[which(RegData$OpMetode %in% c(1,3)), c('LapKonvertert','Aar','ReshId')]
 indKonv <- which(RegDataLap$LapKonvertert == 1)
-Konv <- table(RegDataLap[indKonv,'OpAar'])/table(RegDataLap$OpAar[indMed])*100
-KonvEget <- table(RegDataLap[(which(RegDataLap$ReshId == reshID) %i% indKonv) , 'OpAar'])/table(RegDataLap$OpAar[indEget])*100
+Konv <- table(RegDataLap[indKonv,'Aar'])/table(RegDataLap$Aar[indMed])*100
+KonvEget <- table(RegDataLap[(which(RegDataLap$ReshId == reshID) %i% indKonv) , 'Aar'])/table(RegDataLap$Aar[indEget])*100
 #table(RegData$LapKonvertert[indMed,'Aar'])
 KonvTab <- rbind(
   'Konvertert' = Konv,
@@ -435,79 +375,79 @@ print(xtable(KonvTab, digits=c(0,rep(1, AntKol)), align=c('l', rep('r', AntKol, 
 #results='asis',
 dum <- NGERFigAndelTid(RegData=RegData, preprosess=0, datoFra=datoFra, valgtVar='Opf0Status', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='StatusOppf0Aar.pdf',
-                       minald=minald, maxald=maxald, OpMetode=OpMetode, Hastegrad=Hastegrad)
+                       OpMetode=OpMetode, Hastegrad=Hastegrad)
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='OpAnestesi', datoTil=datoTil,
                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='OpAnestesiLap.pdf', OpMetode = 1,
-                      minald=minald, maxald=maxald, Hastegrad=Hastegrad)
+                      Hastegrad=Hastegrad)
 
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='OpAnestesi', datoTil=datoTil,
                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='OpAnestesiHyp.pdf', OpMetode = 2,
-                      minald=minald, maxald=maxald, Hastegrad=Hastegrad)
+                      Hastegrad=Hastegrad)
 
 dum <-  NGERFigAndelerGrVar(RegData=RegData, preprosess=0,datoFra=datoFra, datoTil=datoTil, valgtVar='OpAntibProfylakse',
                             reshID=reshID, outfile='OpAntibProfylakse.pdf', OpMetode=OpMetode,
-                            minald=minald, maxald=maxald, Hastegrad = Hastegrad)
+                            Hastegrad = Hastegrad)
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='LapEkstrautstyr', datoTil=datoTil,
                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='LapEkstrautstyr.pdf', OpMetode = 1,
-                      minald=minald, maxald=maxald, Hastegrad=Hastegrad)
+                      Hastegrad=Hastegrad)
 
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='LapTeknikk', datoTil=datoTil,
                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='LapTeknikk.pdf', OpMetode = 1,
-                      minald=minald, maxald=maxald, Hastegrad=Hastegrad)
+                      Hastegrad=Hastegrad)
 
 dum <- NGERFigAndelTid(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplIntra', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplIntraLapAar.pdf',
-                       minald=minald, maxald=maxald, OpMetode=1)
+                       OpMetode=1)
 
 dum <- NGERFigAndelTid(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplIntra', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplIntraHysAar.pdf',
-                       minald=minald, maxald=maxald, OpMetode=2)
+                       OpMetode=2)
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplPostopType', datoTil=datoTil,
                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostLap.pdf', OpMetode = 1,
-                      minald=minald, maxald=maxald, Hastegrad=Hastegrad)
+                      Hastegrad=Hastegrad)
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplPostopType', datoTil=datoTil,
                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostHys.pdf', OpMetode = 2,
-                      minald=minald, maxald=maxald, Hastegrad=Hastegrad)
+                      Hastegrad=Hastegrad)
 
 dum <- NGERFigAndelTid(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplPostop', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostLapAar.pdf',
-                       minald=minald, maxald=maxald, OpMetode=1)
+                       OpMetode=1)
 
 dum <- NGERFigAndelTid(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplPostop', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostHysAar.pdf',
-                       minald=minald, maxald=maxald, OpMetode=2)
+                       OpMetode=2)
 
 
 dum <- NGERFigAndelTid(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='Opf0Reoperasjon', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='Opf0ReoperasjonLapAar.pdf',
-                       minald=minald, maxald=maxald, OpMetode=1)
+                       OpMetode=1)
 
 dum <- NGERFigAndelTid(RegData=RegData,preprosess=0, datoFra=datoFra, valgtVar='Opf0Reoperasjon', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='Opf0ReoperasjonHysAar.pdf',
-                       minald=minald, maxald=maxald, OpMetode=2)
+                       OpMetode=2)
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='Opf0AlvorlighetsGrad', datoTil=datoTil,
                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='Opf0AlvorLap.pdf', OpMetode = 1,
-                      minald=minald, maxald=maxald, Hastegrad=Hastegrad)
+                      Hastegrad=Hastegrad)
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='Opf0AlvorlighetsGrad', datoTil=datoTil,
                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='Opf0AlvorHys.pdf', OpMetode = 2,
-                      minald=minald, maxald=maxald, Hastegrad=Hastegrad)
+                      Hastegrad=Hastegrad)
 
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='LapIntraabdominell', datoTil=datoTil,
                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='LapIntraabdominell.pdf', OpMetode = '',
-                      minald=minald, maxald=maxald, Hastegrad=Hastegrad)
+                      Hastegrad=Hastegrad)
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='HysKomplikasjoner', datoTil=datoTil,
                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='HysKompl.pdf', OpMetode = '',
-                      minald=minald, maxald=maxald, Hastegrad=Hastegrad)
+                      Hastegrad=Hastegrad)
 
 
 @
@@ -589,28 +529,28 @@ utvikling over tid.}
 <<'DivFig2', results='asis', echo=FALSE, eval=T>>=
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplPostUtd', datoTil=datoTil,
                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostUtd.pdf', OpMetode = '',
-                      minald=minald, maxald=maxald, Hastegrad=Hastegrad)
+                      Hastegrad=Hastegrad)
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplReopUtd', datoTil=datoTil,
                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplReopUtd.pdf', OpMetode = '',
-                      minald=minald, maxald=maxald, Hastegrad=Hastegrad)
+                      Hastegrad=Hastegrad)
 
 dum <- NGERFigAndelerGrVar(RegData=RegData, preprosess=0,datoFra=datoFra, datoTil=datoTil, valgtVar='KomplPostop',
                            reshID=reshID, outfile='KomplPostLapShus.pdf', OpMetode=1,
-                           minald=minald, maxald=maxald, Hastegrad = Hastegrad)
+                           Hastegrad = Hastegrad)
 
 dum <- NGERFigAndelerGrVar(RegData=RegData, preprosess=0,datoFra=datoFra, datoTil=datoTil, valgtVar='KomplPostop',
                            reshID=reshID, outfile='KomplPostHysShus.pdf', OpMetode=2,
-                           minald=minald, maxald=maxald, Hastegrad = Hastegrad)
+                           Hastegrad = Hastegrad)
 
 
 dum <- NGERFigAndelerGrVar(RegData=RegData,preprosess=0, datoFra=datoFra, datoTil=datoTil, valgtVar='Opf0AlvorlighetsGrad',
                            reshID=reshID, outfile='Opf0AlvorligLapShus.pdf', OpMetode=1,
-                           minald=minald, maxald=maxald, Hastegrad = Hastegrad)
+                           Hastegrad = Hastegrad)
 
 dum <- NGERFigAndelerGrVar(RegData=RegData, preprosess=0,datoFra=datoFra, datoTil=datoTil, valgtVar='Opf0AlvorlighetsGrad',
                            reshID=reshID, outfile='Opf0AlvorligHysShus.pdf', OpMetode=2,
-                           minald=minald, maxald=maxald, Hastegrad = Hastegrad)
+                           Hastegrad = Hastegrad)
 
 @
 

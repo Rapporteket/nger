@@ -7,7 +7,8 @@ library(lubridate)
 library(kableExtra)
 #library(zoo)
 
-startDatoStandard <- '2018-01-01' #Sys.Date()-364
+startDato <- '2018-01-01' #Sys.Date()-364
+idag <- Sys.Date()
 
 # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
 addResourcePath('rap', system.file('www', package='rapbase'))
@@ -59,9 +60,11 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                #column(width=5,
                br(),
                tags$head(tags$style(".butt{background-color:#6baed6;} .butt{color: white;}")), # background color and font color
+               h2('Velkommen til Rapporteket - Norsk Gynekologisk Endoskopiregister!', align='center'),
+               br(),
 
                sidebarPanel(width = 3,
-                            br(),
+               #             br(),
                             #h2('Nedlastbare dokumenter med samling av resultater'),
                             h3("Månedsrapport"), #),
                             downloadButton(outputId = 'mndRapp.pdf', label='Last ned MÅNEDSRAPPORT', class = "butt"),
@@ -70,12 +73,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                             br()
                ),
                mainPanel(width = 8,
-                         h2('Velkommen til Rapporteket - Norsk Gynekologisk Endoskopiregister!', align='center'),
-                         br(),
-                         h3('Dere står fritt til å endre alle tekster som dere ønsker...'),
-                         h3('Alle figurer fra Rapporteket vil komme. Det jeg trenger snarlig
-                            tilbakemelding på er hvilke tabeller som skal være med og hvor de skal være.'),
-                         br(),
                          h4('Du er nå inne på Rapporteket for NGER. Rapporteket er registerets resultattjeneste.
                             Disse sidene inneholder en samling av figurer og tabeller som viser resultater fra registeret.
                             På hver av sidene kan man gjøre utvalg i menyene til venstre. Alle resultater er basert
@@ -90,15 +87,18 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                          h4(tags$b('Registreringsoversikter '), 'viser aktivitet i registeret.'),
                          h4(tags$b('Fordelinger '), 'viser på fordelinger (figur/tabell) av ulike variable.
                               Man kan velge hvilken variabel man vil se på, og man kan gjøre ulike filtreringer.'),
-                         h4(tags$b('Sykehusvise resultater '), 'viser gjennomsnittsverdier per sykehus.
-                            Man kan velge hvilken variabel man vil se på og om man vil se gjennomsnitt eller median.
+                         h4(tags$b('Andeler: per sykehus og over tid'), ' viser andeler(prosent) en per sykehus og utvikling over tid.
+                            Man kan velge hvilken variabel man vil se på, om man vil filtrere data og velge tidsskala.'),
+                         h4(tags$b('Gjennomsnitt: per sykehus og over tid'), ' viser gjennomsnittsverdier per sykehus og utvikling over tid.
+                            Man kan velge hvilken variabel man vil se på, om man vil se gjennomsnitt eller median og velge tidsskala.
                             Man kan også velge å filtrere data.'),
+                         h4('Årsaken til at resultater deles inn i gjennomsnitt og andeler er
+                            at dette er programmeringsmessig effektivt. Gi gjerne innspill til registerledelsen om ønsket organisering
+                            av innholdet på Rapporteket-NGER.'),
                          br(),
                          br(),
-                         h4('Antall registreringer ved eget sykehus:'),
+                         h4('Antall registreringer ved eget sykehus siste år:'),
                          uiOutput("tabEgneReg"),
-                         br(),
-                         h3('Legge inn andre figurer/tabeller her?'),
                          br(),
                          br(),
                          h4('Oversikt over registerets kvalitetsindikatorer og resultater med offentlig tilgjengelige tall
@@ -123,7 +123,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                           choices = rev(c('År'= 'Aar', 'Måned'='Mnd')))),
                             conditionalPanel(
                               condition = "input.ark == 'Antall registrerte skjema'",
-                              dateRangeInput(inputId = 'datovalgReg', start = startDatoStandard, end = Sys.Date(),
+                              dateRangeInput(inputId = 'datovalgReg', start = startDato, end = Sys.Date(),
                                              label = "Tidsperiode", separator="t.o.m.", language="nb"),
                               selectInput(inputId = 'skjemastatus', label='Velg skjemastatus',
                                           choices = c("Ferdigstilt"=1,
@@ -163,13 +163,14 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
       #--------Fordelinger-----------
       tabPanel("Fordelinger",
                sidebarPanel(width = 3,
+                            h3('Utvalg'),
                             selectInput(
                                   inputId = "valgtVar", label="Velg variabel (flere kommer)",
                                   choices = c('Alder' = 'Alder',
                                               'Komplikasjoner, postoperativt' = 'KomplPostopType'
                                   )
                             ),
-                            dateRangeInput(inputId = 'datovalg', start = startDatoStandard, end = Sys.Date(),
+                            dateRangeInput(inputId = 'datovalg', start = startDato, end = Sys.Date(),
                                            label = "Tidsperiode", separator="t.o.m.", language="nb"),
                             sliderInput(inputId="alder", label = "Alder", min = 0,
                                         max = 110, value = c(0, 110)
@@ -216,45 +217,126 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
       ), #tab Fordelinger
 
 
-#------------Sykehusvise resultater------------
-      tabPanel("Sykehusvise resultater",
+#----------Andeler-----------------------------
+tabPanel(p("Andeler: per sykehus og tid", title='Alder, Gjennomføringsgrad,...'),
+         h2("Sykehusvise andeler og utvikling over tid for valgt variabel", align='center'),
+         h5("Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen
+            til venstre. Man kan også gjøre ulike filtreringer.", align='center'),
+         br(),
+         sidebarPanel(
+           width=3,
+           h3('Utvalg'),
+           selectInput(
+             inputId = "valgtVarAndel", label="Velg variabel (flere valg kommer)",
+             choices = c('Alder over 70 år' = 'Alder',
+                         'Hysrektomi, gjennomføringsgrad' = 'HysGjforingsGrad')
+           ),
+           dateRangeInput(inputId = 'datovalgAndel', start = startDato, end = idag,
+                          label = "Tidsperiode", separator="t.o.m.", language="nb"),
+           sliderInput(inputId="alderAndel", label = "Alder", min = 0,
+                       max = 110, value = c(0, 110)),
+           br(),
+           p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid')),
+           selectInput(inputId = 'enhetsUtvalgAndel', label='Egen enhet og/eller landet',
+                       choices = c("Egen mot resten av landet"=1, "Hele landet"=0, "Egen enhet"=2)),
+           selectInput(inputId = "tidsenhetAndel", label="Velg tidsenhet",
+                       choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
+                                       'Kvartal'='Kvartal', 'Måned'='Mnd')))
+         ),
+         mainPanel(
+           tabsetPanel(
+             tabPanel("Figurer",
+               #column(10,
+               h3(em("Utvikling over tid")),
+               plotOutput("andelTid", height = 'auto'),
+               br(),
+               h3(em("Sykehusvise resultater")),
+               plotOutput("andelerGrVar", height='auto')
+             ),
+             tabPanel("Tabeller",
+                      uiOutput("tittelAndel"),
+                      br(),
+                      #fluidRow(
+                      column(width = 3,
+                             h3("Sykehusvise resultater"),
+                             tableOutput("andelerGrVarTab"),
+                             downloadButton(outputId = 'lastNed_tabAndelGrVar', label='Last ned tabell')),
+                      column(width = 1),
+                      column(width = 5,
+                             h3("Utvikling over tid"),
+                             tableOutput("andelTidTab"),
+                             downloadButton(outputId = 'lastNed_tabAndelTid', label='Last ned tabell'))
+                      #DT::DTOutput("andelerGrVarTab")
+             ))
+         ) #mainPanel
+
+         ), #tab
+
+#------------ Gjennomsnittresultater------------
+      tabPanel("Gjennomsnitt: per sykehus og over tid",
+               h2('Sykehusvise gjennomsnitt/median og utvikling over tid for valgt variabel', align='center'),
+               h5('Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen til venstre.
+                  (Man kan også gjøre ulike filtreringer.)', align='center'),
+               br(),
                sidebarPanel(width = 3,
+                            h3('Utvalg'),
                             selectInput(
-                                  inputId = "valgtVarGjsnGrVar", label="Velg variabel",
+                                  inputId = "valgtVarGjsn", label="Velg variabel (flere valg kommer)",
                                   choices = c('Alder' = 'Alder',
-                                              'Lengde på rehab.opphold' = 'DagerRehab'
+                                              'Bla, bla' = 'DagerRehab'
                                              )
                             ),
-                            dateRangeInput(inputId = 'datovalgGjsnGrVar', start = startDatoStandard, end = Sys.Date(),
+                            dateRangeInput(inputId = 'datovalgGjsn', start = startDato, end = Sys.Date(),
                                            label = "Tidsperiode", separator="t.o.m.", language="nb"),
-                            sliderInput(inputId="alderGjsnGrVar", label = "Alder", min = 0,
+                            sliderInput(inputId="alderGjsn", label = "Alder", min = 0,
                                         max = 110, value = c(0, 110)
                             ),
                             selectInput(inputId = "sentralmaal", label="Velg gjennomsnitt/median ",
-                                                               choices = c("Gjennomsnitt"='gjsn', "Median"='med'))
+                                                               choices = c("Gjennomsnitt"='gjsn', "Median"='med')),
+                            br(),
+                            p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid')),
+                            selectInput(inputId = 'enhetsUtvalgGjsn', label='Egen enhet og/eller landet',
+                                        choices = c("Egen mot resten av landet"=1, "Hele landet"=0, "Egen enhet"=2)
+                            ),
+                            selectInput(inputId = "tidsenhetGjsn", label="Velg tidsenhet",
+                                        choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
+                                                        'Kvartal'='Kvartal', 'Måned'='Mnd'))
+                            )
+
 
                ),
                mainPanel(
                      tabsetPanel(
                            tabPanel(
-                                 'Figur',
+                                 'Figurer',
                                  br(),
                                  em('(Høyreklikk på figuren for å laste den ned)'),
                                  br(),
                                  br(),
-                                 plotOutput('gjsnGrVar')
+                                 h3(em("Utvikling over tid")),
+                                 plotOutput("gjsnTid", height = 'auto'),
+                                 br(),
+                                 h3(em("Sykehusvise resultater")),
+                                 plotOutput("gjsnGrVar", height='auto')
+
                              ),
                            tabPanel(
-                                 'Tabell',
-                                 uiOutput("tittelGjsnGrVar"),
+                                 'Tabeller',
+                                 uiOutput("tittelGjsn"),
                                  br(),
-                                 tableOutput('gjsnGrVarTab'),
-                                 downloadButton(outputId = 'lastNed_tabGjsnGrVar', label='Last ned') # , class = "butt"))
-                           )
+                                 column(width = 3,
+                                        h3("Sykehusvise resultater"),
+                                        tableOutput('gjsnGrVarTab'),
+                                 downloadButton(outputId = 'lastNed_gjsnGrVarTab', label='Last ned')), # , class = "butt"))
+                                 column(width = 1),
+                                 column(width = 5,
+                                        h3("Utvikling over tid"),
+                                        tableOutput("gjsnTidTab"),
+                                        downloadButton(outputId = 'lastNed_gjsnTidTab', label='Hvorfor virker den ikke???)'))
+                                 )
                      )
                )
-
-) #GjsnGrVar
+) #GjsnGrVar/Tid
 
 
 
@@ -419,40 +501,128 @@ server <- function(input, output) {
                   })
       }) #observe Fordeling
 
+
+#--------------Andeler-----------------------------------
+      output$andelerGrVar <- renderPlot({
+        NGERFigAndelerGrVar(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
+                           datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
+                           minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]))
+      }, height = 800, width=700 #height = function() {session$clientData$output_andelerGrVarFig_width} #})
+      )
+
+      output$andelTid <- renderPlot({
+
+        NGERFigAndelTid(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
+                       reshID=reshID,
+                       datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
+                       minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
+                       tidsenhet = input$tidsenhetAndel,
+                       enhetsUtvalg = input$enhetsUtvalgAndel)
+      }, height = 300, width = 1000
+      )
+
+      observe({
+        #AndelTid
+        AndelerTid <- NGERFigAndelTid(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
+                                     reshID=reshID,
+                                     datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
+                                     minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
+                                     tidsenhet = input$tidsenhetAndel,
+                                     enhetsUtvalg = input$enhetsUtvalgAndel) #,lagFig=0)
+        tabAndelTid <- lagTabavFig(UtDataFraFig = AndelerTid, figurtype = 'andelTid')
+
+
+        output$andelTidTab <- function() {
+          antKol <- ncol(tabAndelTid)
+          kableExtra::kable(tabAndelTid, format = 'html'
+                            , full_width=F
+                            , digits = c(0,1,0,1)[1:antKol]
+          ) %>%
+            add_header_above(c(" "=1, 'Egen enhet/gruppe' = 2, 'Resten' = 2)[1:(antKol/2+1)]) %>%
+            column_spec(column = 1, width_min = '7em') %>%
+            column_spec(column = 2:(antKol+1), width = '7em') %>%
+            row_spec(0, bold = T)
+        }
+        output$lastNed_tabAndelTid <- downloadHandler(
+          filename = function(){
+            paste0(input$valgtVar, '_andelTid.csv')
+          },
+          content = function(file, filename){
+            write.csv2(tabAndelTid, file, row.names = T, na = '')
+          })
+
+
+        #AndelGrVar
+        AndelerShus <- NGERFigAndelerGrVar(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
+                                          datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
+                                          minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2])) #, lagFig = 0))
+        tabAndelerShus <- cbind(Antall=AndelerShus$Ngr,
+                                Andeler = AndelerShus$AggVerdier$Hoved)
+
+        output$andelerGrVarTab <- function() {
+          antKol <- ncol(tabAndelerShus)
+          kableExtra::kable(tabAndelerShus, format = 'html'
+                            #, full_width=T
+                            , digits = c(0,1) #,0,1)[1:antKol]
+          ) %>%
+            column_spec(column = 1, width_min = '5em') %>%
+            column_spec(column = 2:(antKol+1), width = '4em') %>%
+            row_spec(0, bold = T)
+        }
+        output$lastNed_tabAndelGrVar <- downloadHandler(
+          filename = function(){
+            paste0(input$valgtVar, '_andelGrVar.csv')
+          },
+          content = function(file, filename){
+            write.csv2(tabAndelerShus, file, row.names = T, na = '')
+          })
+
+        output$tittelAndel <- renderUI({
+          tagList(
+            h3(AndelerShus$tittel),
+            h5(HTML(paste0(AndelerShus$utvalgTxt, '<br />')))
+          )}) #, align='center'
+      }) #observe
+
+
+
+
+#---------Gjennomsnitt------------
       observe({ #Sykehusvise gjennomsnitt, figur og tabell
             output$gjsnGrVar <- renderPlot(
-                  NGERFigGjsnGrVar(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarGjsnGrVar,
-                                 datoFra=input$datovalgGjsnGrVar[1], datoTil=input$datovalgGjsnGrVar[2],
-                                 minald=as.numeric(input$alderGjsnGrVar[1]), maxald=as.numeric(input$alderGjsnGrVar[2]),
+                  NGERFigGjsnGrVar(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarGjsn,
+                                 datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
+                                 minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
                                  valgtMaal = input$sentralmaal
                   ),
-                  width = 800, height = 600)
-            UtDataGjsnGrVar <- NGERFigGjsnGrVar(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarGjsnGrVar,
-                                              datoFra=input$datovalgGjsnGrVar[1], datoTil=input$datovalgGjsnGrVar[2],
-                                              minald=as.numeric(input$alderGjsnGrVar[1]), maxald=as.numeric(input$alderGjsnGrVar[2]),
+                  width = 700, height = 800)
+            UtDataGjsnGrVar <- NGERFigGjsnGrVar(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarGjsn,
+                                              datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
+                                              minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
                                               valgtMaal = input$sentralmaal)
-            print(UtDataGjsnGrVar)
-            tabGjsnGrVar <- lagTabavFig(UtDataFraFig = UtDataGjsnGrVar, figtype = 'gjsnGrVar')
-
-            output$tittelGjsnGrVar <- renderUI({
+            output$tittelGjsn <- renderUI({
                   tagList(
                         h3(UtDataGjsnGrVar$tittel),
                         h5(HTML(paste0(UtDataGjsnGrVar$utvalgTxt, '<br />')))
                   )}) #, align='center'
 
+            tabGjsnGrVar <- cbind(Antall = UtDataGjsnGrVar$Ngr$Hoved,
+                                  Sentralmål = UtDataGjsnGrVar$AggVerdier$Hoved)
+            colnames(tabGjsnGrVar)[2] <- ifelse(input$sentralmaal == 'Med', 'Median', 'Gjennomsnitt')
+
             output$gjsnGrVarTab <- function() {
-                  antKol <- ncol(tabGjsnGrVar)
-                  kableExtra::kable(tabGjsnGrVar, format = 'html'
-                                    #, full_width=T
-                                    , digits = c(0,1) #,0,1)[1:antKol]
-                  ) %>%
-                        column_spec(column = 1, width_min = '5em') %>%
-                        column_spec(column = 2:(antKol+1), width = '4em') %>%
-                        row_spec(0, bold = T)
+              kableExtra::kable(tabGjsnGrVar, format = 'html'
+                                , full_width=F
+                                , digits = c(0,1) #,1,1)[1:antKol]
+              ) %>%
+                column_spec(column = 1, width_min = '7em') %>%
+                column_spec(column = 2:3, width = '7em') %>%
+                row_spec(0, bold = T)
             }
-            output$lastNed_tabGjsnGrVar <- downloadHandler(
+
+            output$lastNed_gjsnGrVarTab <- downloadHandler(
                   filename = function(){
-                        paste0(input$valgtVar, '_tabGjsnSh .csv')
+                        paste0(input$valgtVarGjsn, '_tabGjsnSh .csv')
                   },
                   content = function(file, filename){
                         write.csv2(tabGjsnGrVar, file, row.names = T, na = '')
@@ -463,7 +633,57 @@ server <- function(input, output) {
                         h3(tabGjsnGrVar$tittel),
                         h5(HTML(paste0(tabGjsnGrVar$utvalgTxt, '<br />')))
                   )}) #, align='center'
-      }) #observe gjsnGrVar
+
+
+
+            #------gjsnTid
+
+            output$gjsnTid <- renderPlot(
+              NGERFigGjsnTid(RegData=RegData, reshID=reshID, preprosess = 0, valgtVar=input$valgtVarGjsn,
+                               datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
+                               minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
+                               valgtMaal = input$sentralmaal, enhetsUtvalg =  as.numeric(input$enhetsUtvalgGjsn),
+                            tidsenhet = input$tidsenhetGjsn
+              ),
+              width = 1000, height = 300)
+            UtDataGjsnTid <- NGERFigGjsnTid(RegData=RegData, reshID=reshID, preprosess = 0, valgtVar=input$valgtVarGjsn,
+                                                datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
+                                                minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
+                                                valgtMaal = input$sentralmaal, enhetsUtvalg =  as.numeric(input$enhetsUtvalgGjsn),
+                                            tidsenhet = input$tidsenhetGjsn)
+
+            tabGjsnTid <- t(UtDataGjsnTid$AggVerdier)
+            grtxt <-UtDataGjsnTid$grtxt
+            if ((min(nchar(grtxt)) == 5) & (max(nchar(grtxt)) == 5)) {
+              grtxt <- paste(substr(grtxt, 1,3), substr(grtxt, 4,5))}
+            rownames(tabGjsnTid) <- grtxt
+
+            antKol <- ncol(tabGjsnTid)
+            navnKol <- colnames(tabGjsnTid)
+            if (antKol==6) {colnames(tabGjsnTid) <- c(navnKol[1:3], navnKol[1:3])}
+
+            output$gjsnTidTab <- function() {
+              kableExtra::kable(tabGjsnTid, format = 'html'
+                                , full_width=F
+                                , digits = 1 #c(0,1,1,1)[1:antKol]
+              ) %>%
+                add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
+                #add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
+                column_spec(column = 1, width_min = '7em') %>%
+                column_spec(column = 2:(antKol+1), width = '7em') %>%
+                row_spec(0, bold = T)
+            }
+
+            output$lastNed_GjsnTidTab <- downloadHandler(
+              filename = function(){
+                paste0(input$valgtVarGjsn, '_tabGjsnTid .csv')
+              },
+              content = function(file, filename){
+                write.csv2(tabGjsnTid, file, row.names = T, na = '')
+              })
+
+
+                }) #observe gjsnGrVar
 } #server
 # Run the application
 shinyApp(ui = ui, server = server)
