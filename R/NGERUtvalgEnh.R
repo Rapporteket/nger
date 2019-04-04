@@ -39,10 +39,15 @@ NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', f
   # Definer intersect-operator
   "%i%" <- intersect
 
+  #Velge hva som er eget sykehus
+  if ((reshID!=0) & (length(velgAvd)==1) & (velgAvd != '')) {
+    reshID <- velgAvd}
+
   #Velge hvilke sykehus som skal være med:
-  if (velgAvd[1] != '') {
-    if (enhetsUtvalg !=0) {stop("enhetsUtvalg må være 0 (alle)")}
+  if (velgAvd[1] != '' & reshID==0) {
+    #if (enhetsUtvalg !=0) {stop("enhetsUtvalg må være 0 (alle)")}
     #Utvalg på avdelinger:
+    #RegData <- RegData[which(as.character(RegData$ShNavn) %in% velgAvd),]
     RegData <- RegData[which(as.numeric(RegData$ReshId) %in% as.numeric(velgAvd)),]
     RegData$ShNavn <- as.factor(RegData$ShNavn)
   }
@@ -124,7 +129,7 @@ if (velgDiag !=0) {
                  if (AlvorlighetKompl[1] %in% 1:3){paste0('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
                                                          [as.numeric(AlvorlighetKompl)], collapse=','))},
                  if (velgDiag != 0) {paste0('Diagnose: ', diagTxt[velgDiag])},
-                 if (velgAvd[1] != '') {'Viser valgte sykehus'})
+                 if (velgAvd[1] != '' & reshID==0) {'Viser valgte sykehus'})
   #Generere hovedgruppe og sammenlikningsgruppe
   #Trenger indeksene før genererer tall for figurer med flere variable med ulike utvalg
   if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet

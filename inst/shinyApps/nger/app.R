@@ -9,13 +9,48 @@ library(kableExtra)
 
 startDato <- '2018-01-01' #Sys.Date()-364
 idag <- Sys.Date()
+sluttDato <- idag
 
 # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
 addResourcePath('rap', system.file('www', package='rapbase'))
 
 regTitle = 'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER med FIKTIVE data'
 
+
+#----------Hente data og evt. parametre som er statistke i appen----------
+context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
+if (context == "TEST" | context == "QA" | context == "PRODUCTION") {
+
+  registryName <- "nger"
+  dbType <- "mysql"
+
+  query <- paste0('SELECT  ...')
+
+  #RegData <- NGERRegDataSQL(valgtVar = valgtVar) #datoFra = datoFra, datoTil = datoTil)
+  HovedSkjema <- NGERRegDataSQL() #datoFra = datoFra, datoTil = datoTil)
+  Livskvalitet <- rapbase::LoadRegData(registryName, qLivs, dbType)
+} #hente data på server
+
+reshID <- 8 #110734
+#     if (!exists('RegData')) {
+data('NGERtulledata', package = 'nger')
+reshID <- 8
+#SkjemaOversikt <- plyr::rename(SkjemaOversikt, replace=c('SykehusNavn'='ShNavn'))
+#      }
+rolle <- 'SC' #LU
+
+RegData <- NGERPreprosess(RegData)
+SkjemaOversikt <- NGERPreprosess(RegData = SkjemaOversikt)
+
+
 #Definere utvalgsinnhold
+sykehusNavn <- sort(unique(RegData$ShNavn), index.return=T)
+sykehusValg <- unique(RegData$ReshId)[sykehusNavn$ix]
+names(sykehusValg) <- sykehusNavn$x
+# sykehusValg <- c(reshID,unique(RegData$ReshId)[sykehusNavn$ix])
+# names(sykehusValg) <- c(RegData$ShNavn[match(reshID, RegData$ReshId)], sykehusNavn$x)
+
+
  enhetsUtvalg <- c("Egen mot resten av landet"=1,
                         "Hele landet"=0,
                         "Egen enhet"=2)
@@ -30,7 +65,7 @@ regTitle = 'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER med FIKTIVE data'
                'Lap. subtotal hysterektomi (LCC11)'=5,
                'Lap. ass. vag. hysterektomi (LCD11)'=6)
 
- alvorKompl <- c("Alle"=0,
+ alvorKompl <- c(#"Alle"=0,
                   "Lite alvorlig"=1,
                   "Middels alvorlig"=2,
                   "Alvorlig"=3,
@@ -70,6 +105,14 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                             downloadButton(outputId = 'mndRapp.pdf', label='Last ned MÅNEDSRAPPORT', class = "butt"),
                             br(),
                             br(),
+               h3('Samledokument'),
+               helpText('Samledokumentet er ei samling av utvalgte tabeller og figurer basert på
+                        operasjoner utført i valgte tidsperiode'),
+               dateRangeInput(inputId = 'datovalgSamleDok', start = startDato, end = Sys.Date(),
+                              label = "Tidsperiode", separator="t.o.m.", language="nb"),
+
+               downloadButton(outputId = 'samleDok', label='Last ned samledokument', class = "butt"),
+
                             br()
                ),
                mainPanel(width = 8,
@@ -84,14 +127,15 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                             tabeller kan lastes ned.'),
                          br(),
                          h4(tags$b(tags$u('Innhold i de ulike fanene:'))),
+                         h4('I feltet til venstre på hver side kan man velge hvilken variabel man ønsker å se
+                            resultater for. Der kan man også gjøre ulike filtreringer/utvalg av data.'),
                          h4(tags$b('Registreringsoversikter '), 'viser aktivitet i registeret.'),
-                         h4(tags$b('Fordelinger '), 'viser på fordelinger (figur/tabell) av ulike variable.
-                              Man kan velge hvilken variabel man vil se på, og man kan gjøre ulike filtreringer.'),
+                         h4(tags$b('Kvalitetsindikatorer '), 'viser på fordelinger (figur/tabell) av ulike variable.'),
+                         h4(tags$b('Fordelinger '), 'viser på fordelinger (figur/tabell) av ulike variable.'),
                          h4(tags$b('Andeler: per sykehus og over tid'), ' viser andeler(prosent) en per sykehus og utvikling over tid.
-                            Man kan velge hvilken variabel man vil se på, om man vil filtrere data og velge tidsskala.'),
+                            Man kan velge hvilken tidsskala man vi se på.'),
                          h4(tags$b('Gjennomsnitt: per sykehus og over tid'), ' viser gjennomsnittsverdier per sykehus og utvikling over tid.
-                            Man kan velge hvilken variabel man vil se på, om man vil se gjennomsnitt eller median og velge tidsskala.
-                            Man kan også velge å filtrere data.'),
+                            Man kan velge om man vil se gjennomsnitt eller median.'),
                          h4('Årsaken til at resultater deles inn i gjennomsnitt og andeler er
                             at dette er programmeringsmessig effektivt. Gi gjerne innspill til registerledelsen om ønsket organisering
                             av innholdet på Rapporteket-NGER.'),
@@ -160,6 +204,65 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
       ), #tab Registreringsoversikter
 
+
+#-----Kvalitetsindikatorer------------
+tabPanel("Kvalitetsindikatorer",
+h3('Registerets kvalitetsindikatorer', align='center'),
+         sidebarPanel(width=3,
+                      h3('Utvalg'),
+                      selectInput(
+                        inputId = "valgtVarKval", label="Velg variabel",
+                        choices = c('Prosessindikatorer' = 'kvalInd',
+                                    'TSS2, oppfølging' = 'TSS20',
+                                    'RAND36, oppfølging' = 'RAND0'
+                        )
+                      ),
+                      dateRangeInput(inputId = 'datovalgKval', start = startDato, end = Sys.Date(),
+                                     label = "Tidsperiode", separator="t.o.m.", language="nb"),
+                      sliderInput(inputId="alderKval", label = "Alder", min = 0,
+                                  max = 110, value = c(0, 110)
+                      ),
+                      selectInput(inputId = 'enhetsUtvalgKval', label='Egen enhet og/eller landet',
+                                  choices = enhetsUtvalg
+                      ),
+                      selectInput(inputId = 'opMetodeKval', label='Operasjonstype',
+                                  choices = opMetode
+                      ),
+                      selectInput(inputId = 'velgDiagKval', label='Diagnose',
+                                  choices = diag
+                      ),
+                      selectInput(inputId = 'hastegradKval', label='Hastegrad',
+                                  choices = hastegrad
+                      ),
+                      selectInput(inputId = 'alvorlighetKomplKval',
+                                  label='Alvorlighetsgrad, postoperative komplikasjoner',
+                                  multiple = T, #selected=0,
+                                  choices = alvorKompl
+                      ),
+                      selectInput(inputId = 'velgReshKval', label='Velg eget Sykehus',
+                                  selected = reshID,
+                                  choices = sykehusValg)
+         ),
+         mainPanel(
+           tabsetPanel(
+             tabPanel(
+               'Figur',
+               br(),
+               em('(Høyreklikk på figuren for å laste den ned)'),
+               br(),
+               br(),
+               plotOutput('kvalInd')),
+             tabPanel(
+               'Tabell',
+               uiOutput("tittelKvalInd"),
+               br(),
+               tableOutput('kvalIndTab'),
+               downloadButton(outputId = 'lastNed_tabKvalInd', label='Last ned')
+             )
+           ))
+
+), #tab Kvalitetsindikatorer
+
       #--------Fordelinger-----------
       tabPanel("Fordelinger",
                sidebarPanel(width = 3,
@@ -167,9 +270,56 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                             selectInput(
                                   inputId = "valgtVar", label="Velg variabel (flere kommer)",
                                   choices = c('Alder' = 'Alder',
-                                              'Komplikasjoner, postoperativt' = 'KomplPostopType'
+                                              'Komplikasjoner, postoperativt' = 'KomplPostopType',
+                                              'Hyppigst forekommende diagnoser' = 'Diagnoser',
+                                              'Gjennomføringsgrad av hysteroskopi' = 'HysGjforingsGrad',
+                                              'Hysteroskopi intrapoerative komplikasjoner' = 'HysKomplikasjoner',
+                                              'Postoperative komplikasjoner' = 'KomplPost',
+                           'Postoperative komplikasjoner vs. utdanning' = 'KomplPostUtd',
+                           'Reoperasjoner som følge av komplikasjon vs. utdanning' = 'KomplReopUtd',
+                           'Laparoskopiske intrapoerative komplikasjoner' = 'LapKomplikasjoner',
+                           'Laparaskopisk ekstrautstyr' = 'LapEkstrautstyr',
+                           'Laparoskopiske intraabdominale komplikasjoner' = 'LapIntraabdominell',
+                           'Antall hjelpeinnstikk' = 'LapNumHjelpeinnstikk',
+                           'Laparaskopisk tilgang, teknikk og metode' = 'LapTeknikk',
+                           'Pasientens norskkunnskaper' = 'Norsktalende',
+                           'Anestesitype' = 'OpAnestesi',
+                           'ASA-grad' = 'OpASA',
+                           'BMI-kategori' = 'OpBMI',
+                           'Alvorlighetsgrad, postop. kompl.' = 'Opf0AlvorlighetsGrad',
+                            'Type infeksjoner' = 'Opf0KomplInfeksjon',
+                            'Opfølgingsmetode' = 'Opf0metode',
+                           'Dagkirurgiske inngrep' = 'OpDagkirurgi',
+                           'Operasjon i legens vakttid' = 'OpIVaktTid',
+                           'Hastegrad av operasjon' = 'OpKategori',
+                           'Operasjonsmetode' = 'OpMetode',
+                           'Operasjonstid (minutter)' = 'OpTid',
+                           'Tidligere vaginale inngrep' = 'OpTidlVagInngrep',
+                           'Tidligere laparoskopi' = 'OpTidlLapsko',
+                           'Tidligere laparatomi' = 'OpTidlLaparotomi',
+                           'Primæroperasjon eller reoperasjon' = 'OpType',
+                           'RAND36 Fysisk funksjon' = 'R0ScorePhys',
+                           'RAND36 Begrenses av fysisk helse' = 'R0ScoreRoleLmtPhy',
+                           'RAND36 Følelsesmessig rollebegrensning' = 'R0ScoreRoleLmtEmo',
+                           'RAND36 Energinivå/vitalitet' = 'R0ScoreEnergy',
+                           'RAND36 Mental helse' = 'R0ScoreEmo',
+                           'RAND36 Sosial funksjon' = 'R0ScoreSosial',
+                           'RAND36 Smerte' = 'R0ScorePain',
+                           'RAND36 Generell helsetilstand' = 'R0ScoreGeneral',
+                          'Registreringsforsinkelse' =  'RegForsinkelse',
+                          'Hyppigst forekommende prosedyrer' = 'Prosedyrer',
+                          'Sivilstatus' = 'SivilStatus',
+                           'TSS2, sp.1 Mottak på avdelinga' = 'Tss2Mott',
+                          'TSS2, sp.2 Behandlingsopplegg' = 'Tss2Behandling',
+                          'TSS2, sp.3 Lyttet behandleren' = 'Tss2Lytte',
+                          'TSS2, sp.4 Tillit til behandleren' = 'Tss2Behandlere',
+                          'TSS2, sp.5 Enighet om målsetning' = 'Tss2Enighet',
+                          'TSS2, sp.6 Generell oppfatning av avdelinga' = 'Tss2Generelt',
+                           'Utdanning' = 'Utdanning'
                                   )
                             ),
+
+
                             dateRangeInput(inputId = 'datovalg', start = startDato, end = Sys.Date(),
                                            label = "Tidsperiode", separator="t.o.m.", language="nb"),
                             sliderInput(inputId="alder", label = "Alder", min = 0,
@@ -192,10 +342,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                         multiple = T, #selected=0,
                                         choices = alvorKompl
                             ),
-                            h5('Velge eget sykehus (bare admin)')
-
-                            #sliderInput(inputId="aar", label = "Årstall", min = 2012,  #min(RegData$Aar),
-                            #           max = as.numeric(format(Sys.Date(), '%Y')), value = )
+                            selectInput(inputId = 'velgResh', label='Velg eget Sykehus',
+                                        selected = reshID,
+                                        choices = sykehusValg)
                ),
                mainPanel(
                      tabsetPanel(
@@ -303,10 +452,18 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, Gjennomføringsgrad,...'
                br(),
                sidebarPanel(width = 3,
                             h3('Utvalg'),
+                            #8 hoveddimensjoner av Rand, TSS2spm + sumskår
                             selectInput(
                                   inputId = "valgtVarGjsn", label="Velg variabel (flere valg kommer)",
                                   choices = c('Alder' = 'Alder',
-                                              'Bla, bla' = 'DagerRehab'
+                                              'RAND36 Fysisk funksjon' = 'R0ScorePhys',
+                                              'RAND36 Begrenses av fysisk helse' = 'R0ScoreRoleLmtPhy',
+                                              'RAND36 Følelsesmessig rollebegrensning' = 'R0ScoreRoleLmtEmo',
+                                              'RAND36 Energinivå/vitalitet' = 'R0ScoreEnergy',
+                                              'RAND36 Mental helse' = 'R0ScoreEmo',
+                                              'RAND36 Sosial funksjon' = 'R0ScoreSosial',
+                                              'RAND36 Smerte' = 'R0ScorePain',
+                                              'RAND36 Generell helsetilstand' = 'R0ScoreGeneral'
                                              )
                             ),
                             dateRangeInput(inputId = 'datovalgGjsn', start = startDato, end = Sys.Date(),
@@ -371,35 +528,32 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, Gjennomføringsgrad,...'
 #----- Define server logic required to draw a histogram-------
 server <- function(input, output) {
 
- #NB: Skal bare forholde oss til oppfølgingsskjema som er tilknyttet et gyldig Hovedskjema
+  # reshID <- reactive({
+  #   ifelse(onServer, as.numeric(rapbase::getShinyUserReshId(session, testCase = TRUE)), 601225)
+  #   # as.numeric(rapbase::getUserReshId(session))
+  # })
+  userRole <- reactive({
+    'SC' #FUNKER IKKE..
+    #ifelse(onServer, rapbase::getShinyUserRole(session, testCase = TRUE), 'SC')
+    # rapbase::getUserRole(session)
+    #reshID <- input$velgResh
+  })
 
-      context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-      if (context == "TEST" | context == "QA" | context == "PRODUCTION") {
+  observe(
+    if (userRole() != 'SC') {
+      shinyjs::hide(id = 'velgResh')
+      shinyjs::hide(id = 'velgReshKval')
+      shinyjs::hide(id = 'velgShus')
+      #      hideTab(inputId = "tabs_andeler", target = "Figur, sykehusvisning")
+#      hideTab(inputId = "tabs_andeler", target = "Tabell, sykehusvisning")
+    }
 
-                  registryName <- "nger"
-                  dbType <- "mysql"
+  )
 
-                 query <- paste0('SELECT  ...')
-
-                  #RegData <- NGERRegDataSQL(valgtVar = valgtVar) #datoFra = datoFra, datoTil = datoTil)
-                  HovedSkjema <- NGERRegDataSQL() #datoFra = datoFra, datoTil = datoTil)
-                  Livskvalitet <- rapbase::LoadRegData(registryName, qLivs, dbType)
-                  } #hente data på server
-
-  #----------Hente data og evt. parametre som er statistke i appen----------
-      reshID <- 8 #110734
- #     if (!exists('RegData')) {
-        data('NGERtulledata', package = 'nger')
-        reshID <- 8
-        #SkjemaOversikt <- plyr::rename(SkjemaOversikt, replace=c('SykehusNavn'='ShNavn'))
-#      }
-
-      RegData <- NGERPreprosess(RegData)
-      SkjemaOversikt <- NGERPreprosess(RegData = SkjemaOversikt)
-
-#-------Samlerapporter--------------------
+  #--------------Startside------------------------------
+  #-------Samlerapporter--------------------
       # funksjon for å kjøre Rnw-filer (render file funksjon)
-      contentFile <- function(file, srcFil, tmpFile) {
+      contentFile <- function(file, srcFil, tmpFile, datoFra=startDato, datoTil=sluttDato) {
             src <- normalizePath(system.file(srcFil, package="nger"))
 
             # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
@@ -422,8 +576,15 @@ server <- function(input, output) {
                   contentFile(file, srcFil="NGERmndRapp.Rnw", tmpFile="tmpNGERmndRapp.Rnw")
             })
 
-
-#--------------Startside------------------------------
+      output$samleDok <- downloadHandler(
+        filename = function(){
+          paste0('samleDok', Sys.time(), '.pdf')
+        },
+        content = function(file){
+          contentFile(file, "NGERSamleRapp.Rnw", "tmpNGERSamleRapp.Rnw", input$datovalgSamleDok[1],
+                      input$datovalgSamleDok[2])
+        }
+      )
 
       #output$lenkeNorScir <- renderUI({tagList("www.norscir.no", www.norscir.no)})
 
@@ -432,7 +593,7 @@ server <- function(input, output) {
             rownames=T,
             digits = 0
       )
-      tabAntOpphShMnd(RegData=RegData, reshID = 8)
+      #tabAntOpphShMnd(RegData=RegData, reshID = 8)
  #----------Tabeller, registreringsoversikter ----------------------
 
             output$undertittelReg <- renderUI({
@@ -464,19 +625,66 @@ server <- function(input, output) {
           filename = function(){'tabAntSkjema.csv'},
           content = function(file, filename){write.csv2(AntSkjemaAvHver, file, row.names = T, na = '')
           })
-        #       #Andel (prosent) av registreringsskjemaene som har oppfølgingsskjema.
-        #       output$tabAndelTilknyttedeHovedSkjema <- renderTable(
-        #             tabTilknHovedSkjema$Andeler
-        #             ,rownames = T, digits=0, spacing="xs" )
-        #
-        #        output$lastNed_tabOppfHovedPst <- downloadHandler(
-        #              filename = function(){'tabOppfHovedPst.csv'},
-        #              content = function(file, filename){write.csv2(tabTilknHovedSkjema$Andeler, file, row.names = T, na = '')
-        #              })
       })
 
 
-#---------Fordelinger------------
+      #---------Kvalitetsindikatorer------------
+      observe({   #KvalInd
+        #print(input$datoValgKval)
+        #print(RegData$InnDato[1])
+        output$kvalInd <- renderPlot({
+          NGERFigKvalInd(RegData=RegData, valgtVar=input$valgtVarKval, preprosess = 0,
+                         datoFra=input$datovalgKval[1], datoTil=input$datovalgKval[2],
+                         reshID = reshID,
+                         minald=as.numeric(input$alderKval[1]), maxald=as.numeric(input$alderKval[2]),
+                         OpMetode = as.numeric(input$opMetodeKval),
+                         Hastegrad = as.numeric(input$hastegradKval),
+                         velgDiag = as.numeric(input$velgDiagKval),
+                        # AlvorlighetKompl = as.numeric(input$alvorlighetKompl),
+                         enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
+                         velgAvd=input$velgReshKval)
+        }, height=800, width=800 #height = function() {session$clientData$output_fordelinger_width}
+        )
+        #RegData må hentes ut fra valgtVar
+        UtDataKvalInd <- NGERFigKvalInd(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarKval,
+                                     datoFra=input$datovalgKval[1], datoTil=input$datovalgKval[2],
+                                     reshID = reshID,
+                                     minald=as.numeric(input$alderKval[1]), maxald=as.numeric(input$alderKval[2]),
+                                     OpMetode = as.numeric(input$opMetodeKval),
+                                     Hastegrad = as.numeric(input$hastegradKval),
+                                     velgDiag = as.numeric(input$velgDiagKval),
+                                     enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
+                                     velgAvd=input$velgReshKval)
+        tabKvalInd <- lagTabavFig(UtDataFraFig = UtDataKvalInd) #lagTabavFigAndeler
+        output$tittelKvalInd <- renderUI({
+          tagList(
+            h3(UtDataKvalInd$tittel),
+            h5(HTML(paste0(UtDataKvalInd$utvalgTxt, '<br />')))
+          )}) #, align='center'
+        output$kvalIndTab <- renderTable(
+          tabKvalInd, rownames = T)
+
+        output$KvalIndTab <- function() {
+          antKol <- ncol(tabKvalInd)
+          kableExtra::kable(tabKvalInd, format = 'html'
+                            , full_width=F
+                            , digits = c(0,1,0,1)[1:antKol]
+          ) %>%
+            add_header_above(c(" "=1, 'Egen enhet/gruppe' = 2, 'Resten' = 2)[1:(antKol/2+1)]) %>%
+            column_spec(column = 1, width_min = '7em') %>%
+            column_spec(column = 2:(ncol(tabKvalInd)+1), width = '7em') %>%
+            row_spec(0, bold = T)
+        }
+
+        output$lastNed_tabKvalInd <- downloadHandler(
+          filename = function(){paste0(input$valgtVar, '_kvalInd.csv')},
+          content = function(file, filename){write.csv2(tabKvalInd, file, row.names = F, na = '')
+          })
+      }) #observe Kvalitetsind
+
+
+
+      #---------Fordelinger------------
             observe({   #Fordelingsfigurer og tabeller
 
             output$fordelinger <- renderPlot({
@@ -488,7 +696,8 @@ server <- function(input, output) {
                                Hastegrad = as.numeric(input$hastegrad),
                                velgDiag = as.numeric(input$velgDiag),
                                AlvorlighetKompl = as.numeric(input$alvorlighetKompl),
-                               enhetsUtvalg=as.numeric(input$enhetsUtvalg))
+                               enhetsUtvalg=as.numeric(input$enhetsUtvalg),
+                               velgAvd=input$velgResh)
             }, height=800, width=800 #height = function() {session$clientData$output_fordelinger_width}
             )
             #RegData må hentes ut fra valgtVar
@@ -496,7 +705,8 @@ server <- function(input, output) {
                                        datoFra=input$datovalg[1], datoTil=input$datovalg[2],
                                        reshID = reshID,
                                        minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
-                                       enhetsUtvalg=as.numeric(input$enhetsUtvalg))
+                                       enhetsUtvalg=as.numeric(input$enhetsUtvalg),
+                                       velgAvd=input$velgResh)
             tabFord <- lagTabavFig(UtDataFraFig = UtDataFord) #lagTabavFigAndeler
             output$tittelFord <- renderUI({
                   tagList(

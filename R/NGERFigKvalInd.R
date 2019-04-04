@@ -19,9 +19,9 @@
 #' @export
 
 
-NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='3000-12-31',
+NGERFigKvalInd <- function(RegData, reshID=0, velgAvd='', datoFra='2013-01-01', datoTil='3000-12-31',
                              valgtVar, enhetsUtvalg=0, minald=0, maxald=130, OpMetode=99, Hastegrad=99,
-                             hentData=0, preprosess=1, velgDiag=0, Ngrense=10,outfile='') {
+                             hentData=0, preprosess=1, velgDiag=0, Ngrense=10, outfile='') {
 
   if (hentData == 1) {
     RegData <- NGERRegDataSQL(datoFra, datoTil)
@@ -46,7 +46,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
 
   NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, reshID=reshID,  minald = minald, maxald = maxald, datoFra = datoFra,
                               datoTil = datoTil, OpMetode = OpMetode, Hastegrad=Hastegrad, velgDiag=velgDiag,
-                              enhetsUtvalg=enhetsUtvalg)
+                              enhetsUtvalg=enhetsUtvalg, velgAvd=velgAvd)
   smltxt <- NGERUtvalg$smltxt
   medSml <- NGERUtvalg$medSml
   utvalgTxt <- NGERUtvalg$utvalgTxt
@@ -221,12 +221,12 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
 
       if (NGERUtvalg$medSml == 1) {
         points(as.numeric(AggVerdier$Rest), pos, col=fargeRest,  cex=2, pch=18) #c("p","b","o"),
-        legend('top', c(paste0(NGERUtvalg$hovedgrTxt, ' (N=', Nfig$Hoved,')'),
-                        paste0(NGERUtvalg$smltxt, ' (N=', Nfig$Rest,')')),
+        legend('top', c(paste0(hovedgrTxt, ' (N=', Nfig$Hoved,')'),
+                        paste0(smltxt, ' (N=', Nfig$Rest,')')),
                border=c(fargeHoved,NA), col=c(fargeHoved,fargeRest), bty='n', pch=c(15,18), pt.cex=2,
                lwd=lwdRest,	lty=NA, ncol=1, cex=cexleg)
       } else {
-        legend('top', paste0(NGERUtvalg$hovedgrTxt, ' (N=', Nfig$Hoved,')'),
+        legend('top', paste0(hovedgrTxt, ' (N=', Nfig$Hoved,')'),
                border=NA, fill=fargeHoved, bty='n', ncol=1, cex=cexleg)
       }
 

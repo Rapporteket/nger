@@ -79,8 +79,8 @@
 
 %	TITLE SECTION
 %\HRule \\[1.5cm]
-%{ \huge \bfseries Samlerapport med resultater fra Norsk Gynekologisk Endoskopiregister (NGER)}\\[0.4cm] % Title of your document
-\title{Samlerapport med resultater fra Norsk Gynekologisk Endoskopiregister (NGER)}
+%{ \huge \bfseries Resultater fra Norsk Gynekologisk Endoskopiregister (NGER)}\\[0.4cm] % Title of your document
+\title{Oversiktstall fra Norsk Gynekologisk Endoskopiregister (NGER)}
 
 %	AUTHOR SECTION
 %\author{NIR og SKDE}
@@ -141,15 +141,16 @@ at rapporterte data kan tilbakeføres til enkeltpersoner. Det er registeret sitt
 
 <<LasteData, echo=FALSE, eval=T>>=
 datoFra <- startDato 	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- Sys.Date()	#'2015-12-31'
+datoTil <- sluttDato #Sys.Date()	#'2015-12-31'
+startAar <- '2015-01-01' #Til bruk i årstabell
 if (!exists('RegData')){
-  RegData <- NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil)
+  RegData <- NGERRegDataSQL(datoFra = startAar, datoTil = datoTil)
 }
 @
 
 <<FellesParamOgPreprosess, echo=FALSE>>=
 
-RegData <- NGERPreprosess(RegData)
+#RegData <- NGERPreprosess(RegData)
 
 library(xtable)
 library(plyr)
@@ -157,16 +158,24 @@ outfile <- ''
 enhetsUtvalg <- 1
 OpMetode<-99
 Hastegrad <- ''
-tidsenhet <- 'Aar'
+tidsenhet <- 'Mnd'
+tidsspenn <- difftime(datoTil,datoFra, units = 'weeks')
+if (tidsspenn > 60) {tidsenhet <- 'Kvartal'}
+if (tidsspenn > 300) {tidsenhet <- 'Aar'}
+tidsperiodeTxt <- paste0('Operasjoner utført i perioden ', datoFra, ' til ', datoTil,'.' )
 
+RegDataHele <- NGERUtvalgEnh(RegData = RegData, datoFra = startAar, datoTil = datoTil)$RegData
+#RegDataHele$Aar <- as.factor(RegDataHele$Aar)
 NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, datoFra = datoFra,
                          datoTil = datoTil, OpMetode = OpMetode, Hastegrad=Hastegrad)
 RegData <- NGERUtvalg$RegData
+#RegData$Aar <- as.factor(RegData$Aar)
 
 figKrymp1 <- 0.8	#Skaleringsparameter for enkeltfigurer
 figKrymp2 <- 0.7
 '%i%' <- intersect
 indEget <- which(RegData$ReshId == reshID)
+indEgetHele <- which(RegDataHele$ReshId == reshID)
 egetSh <- RegData$ShNavn[match(reshID,RegData$ReshId)]
 N <- dim(RegData)[1]
 Neget <- length(indEget)
@@ -175,39 +184,34 @@ Neget <- length(indEget)
 
 \section{Registrerende avdelinger}
 
-Norsk Gynekologisk Endoskopiregister startet elektronisk registrering helseregister.no i 2013.
-Denne samlerapporten er basert på registreringer som er lagret og ferdigstilt i NGER fra
-\Sexpr{min(RegData$InnDato)} til \Sexpr{max(RegData$InnDato)}.
+Norsk Gynekologisk Endoskopiregister startet elektronisk registrering i 2013. Tabell \ref{tab:RegistrenrendeAvd}
+viser antall registreringer siste 5 år.
 
 
 
 <<'Tabell:RegistrerendeAvd', results='asis', echo=FALSE, eval=T >>=
-## VIDERE: Max 5 år i tabellen
-if (dim(table(RegData$Aar)) > 1) {
-  tabAvdN <- addmargins(as.table(ftable(RegData[ ,c('ShNavn', 'Aar')])))
-  colnames(tabAvdN)[dim(tabAvdN)[2] ]<- 'Alle år'
-} else {
-  tabAvdN <- addmargins(table(RegData$ShNavn))
-}
-rownames(tabAvdN)[dim(tabAvdN)[1] ]<- 'TOTALT, alle sykehus:'
 
-#Tabell <- table(RegData[,c('ShNavn', 'Aar')])
+tabAvdN <- tabAntOpphSh5Aar(RegDataHele, datoTil=sluttDato)
+
 print(xtable::xtable(tabAvdN, digits=0, align=c('l', rep('r', max(c(1,ncol(tabAvdN)), na.rm=T))),
-                     caption='Avdelinger som registrerer pasienter i NGER.',
+                     caption='Antall registrerte operasjoner siste 5 år.',
                      label='tab:RegistrenrendeAvd'),
       include.rownames=TRUE, include.colnames=TRUE)
 @
 
+\section{Pasientkarakteristikker og sykehusets aktivitet}
+\tekstbf{HER BØR VI HA INN NOE MER FORKLARINGSTEKST.}
+\par
+Denne samlerapporten er hovedsakelig basert på registreringer som er lagret og ferdigstilt i NGER for operasjoner
+utført i perioden \Sexpr{min(RegData$InnDato)} til \Sexpr{max(RegData$InnDato)}.
 
 
 <<'Tabell:Pasientkarakterisika', results='asis', warnings=FALSE, echo=FALSE, eval=T >>=
 # Får feilmelding med duplikate radnavn. Be Are se på koden sin.
 
-TabPasKar <- NGERpasientegenskaper(RegData)
+TabPasKar <- NGERpasientegenskaper(RegDataHele[indEgetHele,])
 
-cap <- "Gjennomsnittlig BMI, fødsler, graviditeter og knivtid. Verdiene
-er gitt samlet for alle typer inngrep og splittet for laparoskopi,
-hysteroskopi og der begge prosedyrer er brukt."
+cap <- paste0("Gjennomsnittlig BMI, fødsler, graviditeter og knivtid ved ", egetSh, '. ', tidsperiodeTxt)
 
 tab <- xtable::xtable(TabPasKar, align=c("l", "l", rep("r", ncol(TabPasKar)-1)),
                       digits=c(0,0,rep(1, ncol(TabPasKar)-1)),
@@ -218,47 +222,47 @@ print(tab, include.rownames=FALSE, sanitize.text.function = function(x){x})
 
 @
 
-%DOBBELTFIGURER
-%\begin{figure}[ht]
-%\centering \includegraphics[width= \Sexpr{figKrymp1}\textwidth]{FigAlderGjsn.pdf}
-%\centering \includegraphics[width= \Sexpr{figKrymp1}\textwidth]{FigAlderMed.pdf}
+% DOBBELTFIGURER
+% \begin{figure}[ht]
+% \centering \includegraphics[width= \Sexpr{figKrymp1}\textwidth]{FigAlderGjsn.pdf}
+% \centering \includegraphics[width= \Sexpr{figKrymp1}\textwidth]{FigAlderMed.pdf}
 % \caption{Gjennomsnitt og median alder ved \Sexpr{ShTypeEgen}sykehus.}
 %  \label{fig:Alder}
-%\end{figure}
+% \end{figure}
 
 
 
 <<'ProsedyrerDiagnoser', results='asis', echo=FALSE, eval=T, >>=
 #Tabell med de 20 vanligste prosedyrer og diagnoser for egen avdeling og hele landet
 
-visVanligsteProcDiag(RegData=RegData, ant=20, prosdiag='diag')
-visVanligsteProcDiag(RegData=RegData, ant=20, prosdiag='pros')
 diagEget <- visVanligsteProcDiag(RegData=RegData[indEget,], ant=20, prosdiag='diag')
 prosEget <- visVanligsteProcDiag(RegData=RegData[indEget, ], ant=20, prosdiag='pros')
 
-xtable(diagEget,
-       caption='Vanligste diagnoser, eget sykehus. Andel angir andel av antall utførte
-       operasjoner hvor diagnosen er benyttet.',
+xtable(diagEget, digits = c(0,1,0),
+       caption=paste0('Vanligste diagnoser ved ', egetSh, '. Andel angir prosent av antall
+       operasjoner hvor diagnosen er benyttet. ', tidsperiodeTxt),
        label='tab:DiagEget')
 
-xtable(prosEget,
-       caption='Vanligste prosedyrer, eget sykehus. Andel angir andel av antall utførte
-       operasjoner hvor prosedyra er benyttet.',
+xtable(prosEget, digits = c(0,1,0),
+caption=paste0('Vanligste prosedyrer ved ', egetSh, '. Andel angir prosent av antall
+       operasjoner hvor prosedyra er benyttet.', tidsperiodeTxt),
        label='tab:ProsEget')
 
 @
+
 
 <<'ASA', results='asis', echo=FALSE, eval=T>>=
 
 Metode <- c('Laparosopi', 'Hysteroskopi')
 for (met in 1:2) {
-  ASALapHys <- addmargins(table(RegData[which(RegData$OpMetode == met), c('OpASA', 'Aar')]))
+  ASALapHys <- addmargins(table(RegDataHele[intersect(which(RegDataHele$ReshId==reshID),
+                                                      which(RegDataHele$OpMetode == met)), c('OpASA', 'Aar')]))
 
 
 
-  print(xtable::xtable(ASALapHys[ ,max(1,dim(ASALapHys)[2]-4):dim(ASALapHys)[2]], digits=0,
+  print(xtable::xtable(ASALapHys, digits=0, #[ ,max(1,dim(ASALapHys)[2]-4):dim(ASALapHys)[2]]
                        align=c('l', rep('r', max(c(1,ncol(ASALapHys)), na.rm=T))),
-                       caption=paste0('ASA-grad ved ', Metode[met], ', hele landet.'),
+                       caption=paste('ASA-grad ', Metode[met], 'ved ', egetSh),
                        label='tab:ASA'),
         include.rownames=TRUE, include.colnames=TRUE)
 }
@@ -266,19 +270,19 @@ for (met in 1:2) {
 @
 
 <<'Instrumenter', results='asis', echo=FALSE, eval=T>>=
-#!!!!!!!!!!!Denne må oppdateres slik at det fra mars 2016 blir med og uten pose.
+#!!!!!!!!!!!Fra mars 2016 er morcellator med og uten pose.Velger å ikke ta høyde for dette siden
+#det nå er gamle tall
 #LapSingelPort = portioadapter??
 #LapIntKombo = Thunderbeat
 
-if (datoTil == '2015-12-31'){
-  Instr <- c('LapMorcellatorUtenPose', 'LapHarmonicS',
-             'LapSingelPort', 'LapIntKombo', 'LapRobotKirurgi')
-  NavnInstr <- c('Morc.', 'Harm. Scalp.', 'Portioad.', 'IntKombo', 'Robotkir.')
-} else {
+# if (datoTil == '2015-12-31'){
+#   Instr <- c('LapMorcellatorUtenPose', 'LapHarmonicS',
+#              'LapSingelPort', 'LapIntKombo', 'LapRobotKirurgi')
+#   NavnInstr <- c('Morc.', 'Harm. Scalp.', 'Portioad.', 'IntKombo', 'Robotkir.')
+# } else {
   Instr <- c('LapMorcellatorUtenPose', 'LapMorcellatorMedPose', 'LapHarmonicS',
              'LapSingelPort', 'LapIntKombo', 'LapRobotKirurgi')
-  NavnInstr <- c('Morc.u/pose', 'Morc. m/pose', 'Harm. Scalp.', 'Portioad.', 'IntKombo', 'Robotkir.')
-}
+  NavnInstr <- c('Morc.u/pose', 'Morc. m/pose', 'Harm. Scalp.', 'Portioad.', 'IntKombo', 'Robotkir.') #}
 
 RegDataUtvalg <- RegData[which(RegData$OpMetode==1), c('ShNavn', Instr)]
 
@@ -293,10 +297,10 @@ InstrTab <- rbind(InstrTabDum[,2:(length(Instr)+1)],
                   Sum = Tot)
 
 colnames(InstrTab) <- NavnInstr
-rownames(InstrTab) <- c(ShNavn, 'Totalt')
+rownames(InstrTab) <- c(ShNavn, 'Hele landet')
 
 print(xtable(InstrTab, digits=0, align=c('l', rep('r', max(c(1,ncol(InstrTab)), na.rm=T))),
-       caption='Antall ganger ulike instrumenter er benyttet.',
+       caption=paste('Antall ganger ulike instrumenter er benyttet.', tidsperiodeTxt),
        label='tab:Instr'), include.rownames=TRUE, include.colnames=TRUE)
 
 @
@@ -312,7 +316,7 @@ BlodTxt <- c('Blødning', '...I abdominal vegg', '...Intraabdominal', '...Vagina
 Blod <- c('Opf0KomplBlodning', 'Opf0BlodningAbdom', 'Opf0BlodningIntraabdominal', 'Opf0BlodningVaginal')
 
 #Utstyr
-UtstyrTxt <- c('Problemer m/utstyr','...Instrumenter', '...Nett', '...Sutur')
+UtstyrTxt <- c('Problemer m/utstyr','...Instrumenter', '...Nett', '...Laparaskopisk sutur')
 Utstyr <- c('Opf0KomplUtstyr', 'Opf0UtstyrInstrumenter', 'Opf0UtstyrNett', 'Opf0UtstyrSutur')
 
 #Infeksjon:
@@ -343,22 +347,24 @@ AndelLapKomplEget <- colSums(RegDataLapKompl[indEgenLap,], na.rm=T)/length(indEg
 
 AndelLapKomplTab <- cbind(
   'Eget' = AndelLapKomplEget,
-  'Totalt' = AndelLapKompl)
+  'Hele landet' = AndelLapKompl)
 #names(AndelLapKompl)<- LapKomplTxt
-row.names(AndelLapKomplTab) <- c(LapKomplTxt, 'Totalt')
+row.names(AndelLapKomplTab) <- c(LapKomplTxt, 'Hele landet')
 print(xtable(AndelLapKomplTab, digits=c(0,1,1), align=c('l', 'l', rep('r', max(c(1,ncol(AndelLapKomplTab)-1), na.rm=T))),
-             caption=paste0('Hyppighet av laparoskopiske komplikasjoner blant ', AntLap, ' utførte laparoskopier'),
+             caption=paste0('Hyppighet av laparoskopiske komplikasjoner. ', tidsperiodeTxt,
+                            ' Totalt ble det utført ', AntLap, ' i tidsperioden.'),
              label='tab:LapKompl'), include.rownames=TRUE, include.colnames=TRUE)
 
 @
 
 <<'LapDiv', results='asis', echo=FALSE, eval=T>>=
 #Få med resultat for eget sykehus.
-RegDataLap <- RegData[which(RegData$OpMetode %in% c(1,3)), c('LapKonvertert','Aar','ReshId')]
+RegDataLap <- RegDataHele[which(RegDataHele$OpMetode %in% c(1,3)), c('LapKonvertert','Aar','ReshId')]
+RegDataLap$Aar <- as.factor(RegDataLap$Aar)
 indKonv <- which(RegDataLap$LapKonvertert == 1)
-Konv <- table(RegDataLap[indKonv,'Aar'])/table(RegDataLap$Aar[indMed])*100
-KonvEget <- table(RegDataLap[(which(RegDataLap$ReshId == reshID) %i% indKonv) , 'Aar'])/table(RegDataLap$Aar[indEget])*100
-#table(RegData$LapKonvertert[indMed,'Aar'])
+indEgenLap <- which(RegDataLap$ReshId == reshID)
+Konv <- table(RegDataLap[indKonv,'Aar'])/table(RegDataLap$Aar)*100
+KonvEget <- table(RegDataLap[(indEgenLap %i% indKonv) , 'Aar'])/table(RegDataLap$Aar[indEget])*100
 KonvTab <- rbind(
   'Konvertert' = Konv,
   'Konvertert, Eget' = KonvEget)
@@ -375,7 +381,7 @@ print(xtable(KonvTab, digits=c(0,rep(1, AntKol)), align=c('l', rep('r', AntKol, 
 #results='asis',
 dum <- NGERFigAndelTid(RegData=RegData, preprosess=0, datoFra=datoFra, valgtVar='Opf0Status', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='StatusOppf0Aar.pdf',
-                       OpMetode=OpMetode, Hastegrad=Hastegrad)
+                       OpMetode=OpMetode, Hastegrad=Hastegrad, tidsenhet = tidsenhet)
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='OpAnestesi', datoTil=datoTil,
                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='OpAnestesiLap.pdf', OpMetode = 1,
@@ -386,7 +392,8 @@ dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='O
                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='OpAnestesiHyp.pdf', OpMetode = 2,
                       Hastegrad=Hastegrad)
 
-dum <-  NGERFigAndelerGrVar(RegData=RegData, preprosess=0,datoFra=datoFra, datoTil=datoTil, valgtVar='OpAntibProfylakse',
+dum <-  NGERFigAndelerGrVar(RegData=RegData, preprosess=0,datoFra=datoFra, datoTil=datoTil,
+                            valgtVar='OpAntibProfylakse',
                             reshID=reshID, outfile='OpAntibProfylakse.pdf', OpMetode=OpMetode,
                             Hastegrad = Hastegrad)
 
@@ -401,11 +408,11 @@ dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='L
 
 dum <- NGERFigAndelTid(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplIntra', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplIntraLapAar.pdf',
-                       OpMetode=1)
+                       OpMetode=1, tidsenhet = tidsenhet)
 
 dum <- NGERFigAndelTid(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplIntra', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplIntraHysAar.pdf',
-                       OpMetode=2)
+                       OpMetode=2, tidsenhet = tidsenhet)
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplPostopType', datoTil=datoTil,
                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostLap.pdf', OpMetode = 1,
@@ -417,20 +424,20 @@ dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='K
 
 dum <- NGERFigAndelTid(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplPostop', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostLapAar.pdf',
-                       OpMetode=1)
+                       OpMetode=1, tidsenhet = tidsenhet)
 
 dum <- NGERFigAndelTid(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplPostop', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostHysAar.pdf',
-                       OpMetode=2)
+                       OpMetode=2, tidsenhet = tidsenhet)
 
 
 dum <- NGERFigAndelTid(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='Opf0Reoperasjon', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='Opf0ReoperasjonLapAar.pdf',
-                       OpMetode=1)
+                       OpMetode=1, tidsenhet = tidsenhet)
 
 dum <- NGERFigAndelTid(RegData=RegData,preprosess=0, datoFra=datoFra, valgtVar='Opf0Reoperasjon', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='Opf0ReoperasjonHysAar.pdf',
-                       OpMetode=2)
+                       OpMetode=2, tidsenhet = tidsenhet)
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='Opf0AlvorlighetsGrad', datoTil=datoTil,
                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='Opf0AlvorLap.pdf', OpMetode = 1,

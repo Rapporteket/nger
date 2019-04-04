@@ -844,6 +844,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     #OpMetode=1 el 3 (Laparoskopi eller begge)
     #29.08.2016: Thunderbeat -> To nye variable: Kob.bipolar og ultralys. Legg til «Bipolar koagulasjon og klipping»
     #LapThunderbeat -> LapIntKombo
+    #???? Kommer, NY variabel, koagulasjon og klipping
 
     retn <- 'H'
     variable <- c('LapAdherProfylakse',
@@ -896,7 +897,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
                   'LapTekniskUtstyr', #0,1
                   'LapPostoperativ') #0,1 Hører denne med?
     grtxt <- c('Uterusmanipulator', 'Tilgangsmetode', 'Hjelpeinnstikk',
-               'Intraabdominal/mini laparatomi', 'Utstyr', 'Postoperativ')
+               'Intraabdominal', 'Utstyr', 'Postoperativ')
     cexgr <- 0.85
     tittel <- 'Intraoperative komplikasjoner ved laparoskopi'
     RegData <- RegData[(RegData$LapKomplikasjoner %in% 0:1), ]
@@ -958,7 +959,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
                      andeler = 'Type infeksjon, postoperativt',
                      andelGrVar = 'Postop. komplikasjon: Infeksjon',
                      andelTid = 'Postop. komplikasjon: Infeksjon' )
-    grtxt <- c('Operasjonssår', 'Intraabdominal/mini laparatomi', 'Endometritt/Saplingitt', 'UVI', 'Annet') #, 'Ukjent')
+    grtxt <- c('Operasjonssår', 'Intraabdominal', 'Endometritt/Saplingitt', 'UVI', 'Annet') #, 'Ukjent')
     varTxt <- 'infeksjoner'
     RegData$Variabel[which(RegData$Opf0KomplInfeksjon == 1)] <- 1
   }

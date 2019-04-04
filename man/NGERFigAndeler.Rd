@@ -7,7 +7,7 @@
 NGERFigAndeler(RegData = 0, valgtVar, datoFra = "2013-01-01",
   datoTil = "2050-12-31", minald = 0, maxald = 130, outfile = "",
   reshID = 0, enhetsUtvalg = 0, OpMetode = 99, Hastegrad = "",
-  AlvorlighetKompl = "", velgDiag = 0, hentData = 0,
+  AlvorlighetKompl = "", velgAvd = "", velgDiag = 0, hentData = 0,
   preprosess = 1)
 }
 \arguments{
@@ -52,6 +52,9 @@ Angis som en vektor av tall som tekst, f.eks. c('1','2')
 2: Middels alvorlig
 3: Alvorlig
 4: Dødelig}
+
+\item{velgAvd}{Velge hvilke avdelinger som skal vises i figurer med avdelingsvise resultater.
+IKKE tatt høyde for sammenlikning mot "resten".}
 
 \item{velgDiag}{0: Alle
 1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)

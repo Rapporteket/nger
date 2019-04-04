@@ -8,13 +8,16 @@ library(tools)
 library(plyr)
 library(lubridate)
 
-reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
+reshID <- 8 #110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
+startDato <- '2018-03-01'
+sluttDato <- Sys.Date()
 setwd('C:/ResultattjenesteGIT/nger/inst/')
-load('A:/NGER/NGER2019-03-18.Rdata')
-RegData <- NGERPreprosess(RegData=RegData)
+data('NGERtulledata', package = 'nger')
+#load('A:/NGER/NGER2019-03-18.Rdata')
+RegData <- NGERPreprosess(RegData=RegData) #I App'en preprosesseres data
 
-#knitr::knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
-#tools::texi2pdf('NGERSamleRapp.tex')
+knitr::knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
+tools::texi2pdf('NGERSamleRapp.tex')
 
 knit('NGERmndRapp.Rnw', encoding = 'UTF-8')
 tools:: texi2pdf('NGERmndRapp.tex')
@@ -99,19 +102,18 @@ valgtMaal <- 'med'
 outfile <- ''
 
 
-#------------------------------ Andeler flere var --------------------------
-#------------------------------ (erstatter Fordelinger) --------------------------
-
+#------------------------------ Andeler flere var (tilsvarer Fordelinger)--------------------------
 
 valgtVar <- 'Alder'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid, Tss2Sumskaar
 
 outfile <- '' #paste0(valgtVar, '_ford.png')
-enhetsUtvalg <- 0
+enhetsUtvalg <- 1
 
 
 UtDataFraFig <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
 	reshID=reshID, enhetsUtvalg=enhetsUtvalg, OpMetode = OpMetode, outfile=outfile, preprosess = preprosess,
-  minald=minald, maxald=maxald, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad, velgDiag = velgDiag)
+  minald=minald, maxald=maxald, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad, velgDiag = velgDiag,
+	velgAvd = 1)
 
 ind <- which(RegData$InnDato<as.Date('2017-01-01') & RegData$InnDato>as.Date('2015-12-31'))
 
