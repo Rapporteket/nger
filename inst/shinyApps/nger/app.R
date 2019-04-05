@@ -213,7 +213,7 @@ h3('Registerets kvalitetsindikatorer', align='center'),
                       selectInput(
                         inputId = "valgtVarKval", label="Velg variabel",
                         choices = c('Prosessindikatorer' = 'kvalInd',
-                                    'TSS2, oppfølging' = 'TSS20',
+                                    'TSS2, oppfølging' = 'TSS0',
                                     'RAND36, oppfølging' = 'RAND0'
                         )
                       ),
@@ -264,106 +264,107 @@ h3('Registerets kvalitetsindikatorer', align='center'),
 ), #tab Kvalitetsindikatorer
 
       #--------Fordelinger-----------
-      tabPanel("Fordelinger",
-               sidebarPanel(width = 3,
-                            h3('Utvalg'),
-                            selectInput(
-                                  inputId = "valgtVar", label="Velg variabel (flere kommer)",
-                                  choices = c('Alder' = 'Alder',
-                                              'Komplikasjoner, postoperativt' = 'KomplPostopType',
-                                              'Hyppigst forekommende diagnoser' = 'Diagnoser',
-                                              'Gjennomføringsgrad av hysteroskopi' = 'HysGjforingsGrad',
-                                              'Hysteroskopi intrapoerative komplikasjoner' = 'HysKomplikasjoner',
-                                              'Postoperative komplikasjoner' = 'KomplPost',
-                           'Postoperative komplikasjoner vs. utdanning' = 'KomplPostUtd',
-                           'Reoperasjoner som følge av komplikasjon vs. utdanning' = 'KomplReopUtd',
-                           'Laparoskopiske intrapoerative komplikasjoner' = 'LapKomplikasjoner',
-                           'Laparaskopisk ekstrautstyr' = 'LapEkstrautstyr',
-                           'Laparoskopiske intraabdominale komplikasjoner' = 'LapIntraabdominell',
-                           'Antall hjelpeinnstikk' = 'LapNumHjelpeinnstikk',
-                           'Laparaskopisk tilgang, teknikk og metode' = 'LapTeknikk',
-                           'Pasientens norskkunnskaper' = 'Norsktalende',
-                           'Anestesitype' = 'OpAnestesi',
-                           'ASA-grad' = 'OpASA',
-                           'BMI-kategori' = 'OpBMI',
-                           'Alvorlighetsgrad, postop. kompl.' = 'Opf0AlvorlighetsGrad',
-                            'Type infeksjoner' = 'Opf0KomplInfeksjon',
-                            'Opfølgingsmetode' = 'Opf0metode',
-                           'Dagkirurgiske inngrep' = 'OpDagkirurgi',
-                           'Operasjon i legens vakttid' = 'OpIVaktTid',
-                           'Hastegrad av operasjon' = 'OpKategori',
-                           'Operasjonsmetode' = 'OpMetode',
-                           'Operasjonstid (minutter)' = 'OpTid',
-                           'Tidligere vaginale inngrep' = 'OpTidlVagInngrep',
-                           'Tidligere laparoskopi' = 'OpTidlLapsko',
-                           'Tidligere laparatomi' = 'OpTidlLaparotomi',
-                           'Primæroperasjon eller reoperasjon' = 'OpType',
-                           'RAND36 Fysisk funksjon' = 'R0ScorePhys',
-                           'RAND36 Begrenses av fysisk helse' = 'R0ScoreRoleLmtPhy',
-                           'RAND36 Følelsesmessig rollebegrensning' = 'R0ScoreRoleLmtEmo',
-                           'RAND36 Energinivå/vitalitet' = 'R0ScoreEnergy',
-                           'RAND36 Mental helse' = 'R0ScoreEmo',
-                           'RAND36 Sosial funksjon' = 'R0ScoreSosial',
-                           'RAND36 Smerte' = 'R0ScorePain',
-                           'RAND36 Generell helsetilstand' = 'R0ScoreGeneral',
-                          'Registreringsforsinkelse' =  'RegForsinkelse',
-                          'Hyppigst forekommende prosedyrer' = 'Prosedyrer',
-                          'Sivilstatus' = 'SivilStatus',
-                           'TSS2, sp.1 Mottak på avdelinga' = 'Tss2Mott',
-                          'TSS2, sp.2 Behandlingsopplegg' = 'Tss2Behandling',
-                          'TSS2, sp.3 Lyttet behandleren' = 'Tss2Lytte',
-                          'TSS2, sp.4 Tillit til behandleren' = 'Tss2Behandlere',
-                          'TSS2, sp.5 Enighet om målsetning' = 'Tss2Enighet',
-                          'TSS2, sp.6 Generell oppfatning av avdelinga' = 'Tss2Generelt',
-                           'Utdanning' = 'Utdanning'
-                                  )
-                            ),
+tabPanel("Fordelinger",
+         #-----
+         sidebarPanel(width = 3,
+                      h3('Utvalg'),
+                      selectInput(
+                        inputId = "valgtVar", label="Velg variabel (flere kommer)",
+                        choices = sort(c('Alder' = 'Alder',
+                                         'Alvorlighetsgrad, postop. kompl.' = 'Opf0AlvorlighetsGrad',
+                                         'Anestesitype' = 'OpAnestesi',
+                                         'ASA-grad' = 'OpASA',
+                                         'BMI-kategori' = 'OpBMI',
+                                         'Dagkirurgiske inngrep' = 'OpDagkirurgi',
+                                         'Diagnoser, hyppigste' = 'Diagnoser',
+                                         'Gjennomføringsgrad av hysteroskopi' = 'HysGjforingsGrad',
+                                         'Hastegrad av operasjon' = 'OpKategori',
+                                         'Hjelpeinnstikk, antall' = 'LapNumHjelpeinnstikk',
+                                         'Hysteroskopi intrapoerative komplikasjoner' = 'HysKomplikasjoner',
+                                         'Infeksjoner, type' = 'Opf0KomplInfeksjon',
+                                         'Komplikasjoner, postoperativt' = 'KomplPostopType',
+                                         'Laparaskopisk ekstrautstyr' = 'LapEkstrautstyr',
+                                         'Laparaskopisk tilgang, teknikk og metode' = 'LapTeknikk',
+                                         'Laparoskopiske intraabdominale komplikasjoner' = 'LapIntraabdominell',
+                                         'Laparoskopiske intrapoerative komplikasjoner' = 'LapKomplikasjoner',
+                                         'Norskkunnskaper' = 'Norsktalende',
+                                         'Opfølgingsmetode' = 'Opf0metode',
+                                         'Operasjon i legens vakttid' = 'OpIVaktTid',
+                                         'Operasjonsmetode' = 'OpMetode',
+                                         'Operasjonstid (minutter)' = 'OpTid',
+                                         'Primæroperasjon eller reoperasjon' = 'OpType',
+                                         'Prosedyrer, hyppigste' = 'Prosedyrer',
+                                         'Postoperative komplikasjoner vs. utdanning' = 'KomplPostUtd',
+                                         'RAND36 Fysisk funksjon' = 'R0ScorePhys',
+                                         'RAND36 Begrenses av fysisk helse' = 'R0ScoreRoleLmtPhy',
+                                         'RAND36 Følelsesmessig rollebegrensning' = 'R0ScoreRoleLmtEmo',
+                                         'RAND36 Energinivå/vitalitet' = 'R0ScoreEnergy',
+                                         'RAND36 Mental helse' = 'R0ScoreEmo',
+                                         'RAND36 Sosial funksjon' = 'R0ScoreSosial',
+                                         'RAND36 Smerte' = 'R0ScorePain',
+                                         'RAND36 Generell helsetilstand' = 'R0ScoreGeneral',
+                                         'Registreringsforsinkelse' =  'RegForsinkelse',
+                                         'Reoperasjoner som følge av komplikasjon vs. utdanning' = 'KomplReopUtd',
+                                         'Sivilstatus' = 'SivilStatus',
+                                         'Tidligere vaginale inngrep' = 'OpTidlVagInngrep',
+                                         'Tidligere laparoskopi' = 'OpTidlLapsko',
+                                         'Tidligere laparatomi' = 'OpTidlLaparotomi',
+                                         'TSS2, sp.1 Mottak på avdelinga' = 'Tss2Mott',
+                                         'TSS2, sp.2 Behandlingsopplegg' = 'Tss2Behandling',
+                                         'TSS2, sp.3 Lyttet behandleren' = 'Tss2Lytte',
+                                         'TSS2, sp.4 Tillit til behandleren' = 'Tss2Behandlere',
+                                         'TSS2, sp.5 Enighet om målsetning' = 'Tss2Enighet',
+                                         'TSS2, sp.6 Generell oppfatning av avdelinga' = 'Tss2Generelt',
+                                         'Utdanning' = 'Utdanning'
+                        ))
+                      ),
 
 
-                            dateRangeInput(inputId = 'datovalg', start = startDato, end = Sys.Date(),
-                                           label = "Tidsperiode", separator="t.o.m.", language="nb"),
-                            sliderInput(inputId="alder", label = "Alder", min = 0,
-                                        max = 110, value = c(0, 110)
-                            ),
-                            selectInput(inputId = 'enhetsUtvalg', label='Egen enhet og/eller landet',
-                                        choices = enhetsUtvalg
-                            ),
-                            selectInput(inputId = 'opMetode', label='Operasjonstype',
-                                        choices = opMetode
-                            ),
-                             selectInput(inputId = 'velgDiag', label='Diagnose',
-                                         choices = diag
-                             ),
-                            selectInput(inputId = 'hastegrad', label='Hastegrad',
-                                        choices = hastegrad
-                            ),
-                            selectInput(inputId = 'alvorlighetKompl',
-                                        label='Alvorlighetsgrad, postoperative komplikasjoner',
-                                        multiple = T, #selected=0,
-                                        choices = alvorKompl
-                            ),
-                            selectInput(inputId = 'velgResh', label='Velg eget Sykehus',
-                                        selected = reshID,
-                                        choices = sykehusValg)
-               ),
-               mainPanel(
-                     tabsetPanel(
-                           tabPanel(
-                                 'Figur',
-                                 br(),
-                                 em('(Høyreklikk på figuren for å laste den ned)'),
-                                 br(),
-                                 br(),
-                                 plotOutput('fordelinger')),
-                           tabPanel(
-                                 'Tabell',
-                                 uiOutput("tittelFord"),
-                                 br(),
-                                 tableOutput('fordelingTab'),
-                                 downloadButton(outputId = 'lastNed_tabFord', label='Last ned')
-                           )
-                     ))
-      ), #tab Fordelinger
+                      dateRangeInput(inputId = 'datovalg', start = startDato, end = Sys.Date(),
+                                     label = "Tidsperiode", separator="t.o.m.", language="nb"),
+                      sliderInput(inputId="alder", label = "Alder", min = 0,
+                                  max = 110, value = c(0, 110)
+                      ),
+                      selectInput(inputId = 'enhetsUtvalg', label='Egen enhet og/eller landet',
+                                  choices = enhetsUtvalg
+                      ),
+                      selectInput(inputId = 'opMetode', label='Operasjonstype',
+                                  choices = opMetode
+                      ),
+                      selectInput(inputId = 'velgDiag', label='Diagnose',
+                                  choices = diag
+                      ),
+                      selectInput(inputId = 'hastegrad', label='Hastegrad',
+                                  choices = hastegrad
+                      ),
+                      selectInput(inputId = 'alvorlighetKompl',
+                                  label='Alvorlighetsgrad, postoperative komplikasjoner',
+                                  multiple = T, #selected=0,
+                                  choices = alvorKompl
+                      ),
+                      selectInput(inputId = 'velgResh', label='Velg eget Sykehus',
+                                  selected = reshID,
+                                  choices = sykehusValg)
+         ),
+         #--------
+         mainPanel(
+           tabsetPanel(
+             tabPanel(
+               'Figur',
+               br(),
+               em('(Høyreklikk på figuren for å laste den ned)'),
+               br(),
+               br(),
+               plotOutput('fordelinger')),
+             tabPanel(
+               'Tabell',
+               uiOutput("tittelFord"),
+               br(),
+               tableOutput('fordelingTab'),
+               downloadButton(outputId = 'lastNed_tabFord', label='Last ned')
+             )
+           ))
+), #tab Fordelinger
 
 
 #----------Andeler-----------------------------
@@ -630,8 +631,6 @@ server <- function(input, output) {
 
       #---------Kvalitetsindikatorer------------
       observe({   #KvalInd
-        #print(input$datoValgKval)
-        #print(RegData$InnDato[1])
         output$kvalInd <- renderPlot({
           NGERFigKvalInd(RegData=RegData, valgtVar=input$valgtVarKval, preprosess = 0,
                          datoFra=input$datovalgKval[1], datoTil=input$datovalgKval[2],
@@ -656,15 +655,16 @@ server <- function(input, output) {
                                      enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
                                      velgAvd=input$velgReshKval)
         tabKvalInd <- lagTabavFig(UtDataFraFig = UtDataKvalInd) #lagTabavFigAndeler
+
         output$tittelKvalInd <- renderUI({
           tagList(
             h3(UtDataKvalInd$tittel),
             h5(HTML(paste0(UtDataKvalInd$utvalgTxt, '<br />')))
           )}) #, align='center'
-        output$kvalIndTab <- renderTable(
-          tabKvalInd, rownames = T)
 
-        output$KvalIndTab <- function() {
+        #output$kvalIndTab <- renderTable(tabKvalInd, rownames = T)
+
+        output$kvalIndTab <- function() {
           antKol <- ncol(tabKvalInd)
           kableExtra::kable(tabKvalInd, format = 'html'
                             , full_width=F
@@ -677,7 +677,7 @@ server <- function(input, output) {
         }
 
         output$lastNed_tabKvalInd <- downloadHandler(
-          filename = function(){paste0(input$valgtVar, '_kvalInd.csv')},
+          filename = function(){paste0(input$valgtVarKval, '_kvalInd.csv')},
           content = function(file, filename){write.csv2(tabKvalInd, file, row.names = F, na = '')
           })
       }) #observe Kvalitetsind
@@ -713,8 +713,7 @@ server <- function(input, output) {
                         h3(UtDataFord$tittel),
                         h5(HTML(paste0(UtDataFord$utvalgTxt, '<br />')))
                   )}) #, align='center'
-            output$fordelingTab <- renderTable(
-                  tabFord, rownames = T)
+            #output$fordelingTab <- renderTable(tabFord, rownames = T)
 
             output$fordelingTab <- function() { #gr1=UtDataFord$hovedgrTxt, gr2=UtDataFord$smltxt renderTable(
                   antKol <- ncol(tabFord)

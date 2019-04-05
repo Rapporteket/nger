@@ -109,6 +109,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
 }
   ###Gjør utvalg (NGERUtvalg)
   ###Kjører denne etter variabeldefinisjon for at utvalgTxt skal bli riktig
+  #if (enhetsUtvalg=0) {reshID <- 0}
   NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra,
                            datoTil = datoTil, OpMetode = OpMetode, AlvorlighetKompl=AlvorlighetKompl,
                            Hastegrad=Hastegrad, velgDiag=velgDiag, enhetsUtvalg = enhetsUtvalg,

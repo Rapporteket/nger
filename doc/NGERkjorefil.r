@@ -13,8 +13,8 @@ startDato <- '2018-03-01'
 sluttDato <- Sys.Date()
 setwd('C:/ResultattjenesteGIT/nger/inst/')
 data('NGERtulledata', package = 'nger')
-#load('A:/NGER/NGER2019-03-18.Rdata')
-RegData <- NGERPreprosess(RegData=RegData) #I App'en preprosesseres data
+load('A:/NGER/NGER2019-03-18.Rdata')
+  RegData <- NGERPreprosess(RegData=RegData) #I App'en preprosesseres data
 
 knitr::knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
 tools::texi2pdf('NGERSamleRapp.tex')
@@ -32,7 +32,7 @@ tools:: texi2pdf('NGERmndRapp.tex')
 #------------------------------Kjøre App----------------------------
 load(paste0('A:/NGER/NGER2019-03-18.Rdata'))
 
-SkjemaOversikt <- NGERPreprosess(SkjemaOversikt)
+#SkjemaOversikt <- NGERPreprosess(SkjemaOversikt)
 indAvvikDato <- which(as.numeric(as.Date(RegData$OpDato) - as.Date(RegData$HovedDato))>1)
 RegData[indAvvikDato[1:5], c('InnDato', "HovedDato")]
 #--------------------------------Datakobling--------------------------
@@ -65,7 +65,7 @@ SkjemaOversikt <- NGERSkjema[ ,c("Skjemanavn", "SkjemaRekkeflg",  "SkjemaStatus"
 
 SkjemaOversikt<- lageTulleData(RegData=SkjemaOversikt, antSh=26, antObs=20000)
 
-varBort <- c('PasRegDato', 'PersonNr', 'PersonNrType', 'FodselsDato', 'Morsmaal', 'MorsmaalAnnet', 'Norsktalende',
+varBort <- c('PasRegDato', 'PersonNr', 'PersonNrType', 'FodselsDato', 'Morsmaal', 'MorsmaalAnnet',
            'Tss2ScoreAVG', 'AvdRESHYY', 'ShNavn', 'PasientIDYY', 'PostNr', 'PostSted', 'Kommune', 'Kommunenr',
            'Fylke', 'Fylkenr', 'KryptertFnr', 'Fodselsdato', 'NorsktalendeYY', 'SivilStatusYY', 'UtdanningSSB',
            'AvdodYY', 'InnDato', 'Mnd', 'Kvartal', 'Halvaar', 'Aar',
@@ -99,12 +99,13 @@ tidsenhet <- 'Mnd'
 grVar <- 'ShNavn'
 Ngrense <- 10
 valgtMaal <- 'med'
+velgAvd <- ''
 outfile <- ''
 
 
 #------------------------------ Andeler flere var (tilsvarer Fordelinger)--------------------------
 
-valgtVar <- 'Alder'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid, Tss2Sumskaar
+valgtVar <- 'OpASA'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid, Tss2Sumskaar
 
 outfile <- '' #paste0(valgtVar, '_ford.png')
 enhetsUtvalg <- 1
@@ -113,12 +114,12 @@ enhetsUtvalg <- 1
 UtDataFraFig <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
 	reshID=reshID, enhetsUtvalg=enhetsUtvalg, OpMetode = OpMetode, outfile=outfile, preprosess = preprosess,
   minald=minald, maxald=maxald, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad, velgDiag = velgDiag,
-	velgAvd = 1)
+	velgAvd = velgAvd)
 
 ind <- which(RegData$InnDato<as.Date('2017-01-01') & RegData$InnDato>as.Date('2015-12-31'))
 
 #Teste variable
-variable <- c('Alder','HysGjforingsGrad', 'HysKomplikasjoner','KomplPost',
+variable <- c('Alder','HysGjforingsGrad', 'HysKomplikasjoner','KomplPostopType',
               'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr', 'LapKomplikasjoner','LapTeknikk',
               'LapIntraabdominell', 'LapNumHjelpeinnstikk',
               'SivilStatus', 'Opf0metode', 'OpMetode', 'Norsktalende', 'OpAnestesi', 'OpASA',
@@ -227,10 +228,10 @@ for (valgtVar in variable) {
 
 
 #-----------------------------Kvalietsindikatorer------------------------------
-valgtVar <- 'kvalInd' #RAND0, TSS0, kvalInd
+valgtVar <- 'RAND0' #RAND0, TSS0, kvalInd
 outfile <- '' #paste0(valgtVar, '_kvalInd.png')
-NGERFigKvalInd(RegData=RegData, datoFra='2017-10-01', datoTil='3000-01-02', valgtVar=valgtVar, OpMetode=99,
-               Hastegrad=99, preprosess=1, velgDiag=1, Ngrense=10, enhetsUtvalg=1, reshID = reshID,
+UtKval <- NGERFigKvalInd(RegData=RegData, datoFra='2017-10-01', datoTil='3000-01-02', valgtVar=valgtVar, OpMetode=99,
+               Hastegrad=99, preprosess=1, velgDiag=velgDiag, Ngrense=10, enhetsUtvalg=1, reshID = reshID,
                outfile=outfile)
 
 RegData <- RegData[which(as.Date(RegData$HovedDato)>= as.Date('2017-01-01')), ]

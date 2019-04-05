@@ -133,8 +133,9 @@ if (velgDiag !=0) {
   #Generere hovedgruppe og sammenlikningsgruppe
   #Trenger indeksene før genererer tall for figurer med flere variable med ulike utvalg
   if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet
-    hovedgrTxt <- as.character(RegData$ShNavn[match(reshID, RegData$ReshId)])
-  } else {hovedgrTxt <- ifelse(velgAvd[1] != '', 'Valgte sykehus', 'Hele landet')}
+    hovedgrTxt <- as.character(RegData$ShNavn[match(reshID, RegData$ReshId)])}
+  if ((velgAvd[1] != '') & (reshID==0)) {hovedgrTxt <-'Valgte sykehus'}
+
 
     ind <- list(Hoved=0, Rest=0)
 	if (enhetsUtvalg %in% c(0,2)) {		#Ikke sammenlikning

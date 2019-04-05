@@ -5,7 +5,7 @@
 #' Argumentet \emph{valgtVar} har følgende valgmuligheter:
 #'    \itemize{
 #'     \item RAND0: Alle dimensjonene i RAND36 ved oppfølging etter 4-6uker. Gjennomsnitt
-#'     \item TSS20: Alle sp?rsm?lene i TSS2 ved oppf?lging etter 4-6uker. Andel av beste svaralternativ
+#'     \item TSS0: Alle sp?rsm?lene i TSS2 ved oppf?lging etter 4-6uker. Andel av beste svaralternativ
 #'     \item kvalInd: Samling av kvalitetsindikatorer
 #'    }
 #'
@@ -56,7 +56,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd='', datoFra='2013-01-01', 
 
     KImaal <- switch(valgtVar, #dummym?l!!
                    RAND0 = 80,
-                   TSS20 = 80,
+                   TSS0 = 80,
                    kvalInd = 1:4)
 
   ind <- NGERUtvalg$ind
@@ -182,7 +182,24 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd='', datoFra='2013-01-01', 
 
   cexgr <- 1-ifelse(length(soyletxt)>20, 0.25*length(soyletxt)/60, 0)
   grtxt2 <- paste0(sprintf('%.1f',AggVerdier$Hoved), '%') #paste0('(', sprintf('%.1f',AggVerdier$Hoved), '%)')
+  names(AggVerdier$Hoved) <- grtxt
 
+  FigDataParam <- list(AggVerdier=AggVerdier,
+                       N=Nfig,
+                       Ngr=Ngr,
+                       #KImaal <- NIRVarSpes$KImaal,
+                       grtxt2=grtxt2,
+                       grtxt=grtxt,
+                       #grTypeTxt=grTypeTxt,
+                       tittel=tittel,
+                       retn='H',
+                       #subtxt=subtxt,
+                       #yAkseTxt=yAkseTxt,
+                       utvalgTxt=utvalgTxt,
+                       fargepalett=NGERUtvalg$fargepalett,
+                       medSml=medSml,
+                       hovedgrTxt=hovedgrTxt,
+                       smltxt=smltxt)
 
   ###-----------Figur---------------------------------------
   if ( max(N$Hoved) < Ngrense | 	(NGERUtvalg$medSml ==1 & max(N$Rest)< Ngrense)) {
@@ -238,8 +255,8 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd='', datoFra='2013-01-01', 
     if ( outfile != '') {dev.off()}
   }
 
-  UtData <- list(paste0(toString(tittel),'.'), AggVerdier, N, grtxt )
-  names(UtData) <- c('tittel', 'AggVerdier', 'Antall', 'GruppeTekst')
+  UtData <- FigDataParam #list(paste0(toString(tittel),'.'), AggVerdier, N, grtxt )
+  #names(UtData) <- c('tittel', 'AggVerdier', 'Antall', 'GruppeTekst')
   return(invisible(UtData))
 }
 
