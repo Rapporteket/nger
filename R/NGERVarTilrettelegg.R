@@ -397,31 +397,33 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     }
   }
   if (valgtVar == 'RegForsinkelse') {  #Andeler, GjsnGrVar
-    #NB: Leveringsdato vil oppdateres ved reåpning og kan derfor ikke brukes. mars19: Toril mener den er pålitelig nok
+    #Leveringsdato vil oppdateres ved reåpning og kan derfor ikke brukes. mars19: Toril mener den er pålitelig nok
     #Verdier: 0-3402
     RegData$Diff <- as.numeric(as.Date(RegData$Leveringsdato) - as.Date(RegData$InnDato)) #difftime(RegData$InnDato, RegData$Leveringsdato) #
     RegData <- RegData[which(RegData$OpStatus==1) %i% which(RegData$Diff > -1), ]
     tittel <- switch(figurtype,
                      andeler='Tid fra operasjon til ferdigstilt registrering',
-                     andelGrVar = 'Mer enn 4 uker fra operasjon til ferdig registrering',
-                     andelTid = 'Mer enn 4 uker fra operasjon til ferdig registrering')
-    varTxt <- 'registreringer etter 4 uker'
+                     andelGrVar = 'Mer enn 4 uker fra operasjon til registrering',
+                     andelTid = 'Mer enn 4 uker fra operasjon til registrering',
+                     gjsnGrVar = 'tid fra operasjon til registrering',
+                     gjsnTid = 'tid fra operasjon til registrering')
+    varTxt <- 'reg. mer enn 4 uker etter op.'
     RegData$Variabel[RegData$Diff > 4*7] <- 1
+    if (figurtype %in% c('gjsnGrVar', 'gjsnTid')){RegData$Variabel <- RegData$Diff}
     subtxt <- 'døgn'
     gr <- c(0,1,7,14,30,90,365,5000) #gr <- c(seq(0, 90, 10), 1000)
     RegData$VariabelGr <- cut(RegData$Diff, breaks = gr, include.lowest = TRUE, right = TRUE)
-    #plot(RegData$VariabelGr)
     grtxt <- c('<= 1', '(1-7]', '(7-14]', '(14-30]', '(30-90]', '(90-365]', '>365')
     #grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-2)], '>90')
     cexgr <- 0.9
   }
 
-  if (valgtVar == 'R0ScorePhys') {  #Andeler, #GjsnGrVar
+  if (valgtVar == 'R0ScorePhys') {  #Andeler, #GjsnGrVar, GjsnTid
     #Verdier: 0:5:100
     RegData$Variabel <- RegData$R0ScorePhys
     RegData <- RegData[which(RegData$R0Status==1) %i% which(RegData$R0ScorePhys > -1), ] #Evt. R0Metode in 1:2
     tittel <- 'Fysisk funksjon'
-    if (figurtype == 'gjsnGrVar') {tittel <- 'fysisk funksjon'}
+    if (figurtype == c('gjsnGrVar', 'gjsnTid')) {tittel <- ' fysisk funksjon'}
     subtxt <- 'sumskår (høyest er best)'
     gr <- c(seq(0, 90, 10), 100) #c(seq(0, 180, 30), 1000) #
     RegData$VariabelGr <- cut(RegData$R0ScorePhys, breaks = gr, include.lowest = TRUE, right = TRUE)
@@ -432,6 +434,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     RegData$Variabel <- RegData[ ,valgtVar]
     RegData <- RegData[which(RegData$R0Status==1) %i% which(RegData$Variabel > -1), ]
     tittel <- 'Rollebegrensning grunnet fysisk helse'
+    if (figurtype == c('gjsnGrVar', 'gjsnTid')) {tittel <- ' begrensning grunnet fysisk helse'}
     gr <- c(0,25,50,75,100) #seq(0, 100, 25) #c(seq(0, 100, 25), 100) #c(seq(0, 180, 30), 1000) #
     grtxt <- gr #c(levels(RegData$VariabelGr)[1:(length(gr)-1)])
     subtxt <- 'sumskår (høyest er best)'
@@ -442,6 +445,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     RegData <- RegData[which(RegData$R0Status==1) %i% which(RegData[,valgtVar] > -1), ]
     RegData$Variabel <- RegData[ ,valgtVar]
     tittel <- 'Følelsesmessig rollebegrensning'
+    if (figurtype == c('gjsnGrVar', 'gjsnTid')) {tittel <- ' følelsesmessig begrensning '}
     subtxt <- 'sumskår (høyest er best)'
     gr <-c(0, 30, 65, 70, 100) #seq(0, 100, 33) #c(seq(0, 90, 10), 100) #c(seq(0, 180, 30), 1000) #
     grtxt <- c(0,33,67,100) #c(levels(RegData$VariabelGr)[1:(length(gr)-1)])
@@ -454,28 +458,30 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     RegData <- RegData[which(RegData$R0Status==1) %i% which(RegData$R0ScoreEnergy > -1), ]
     RegData$Variabel <- RegData$R0ScoreEnergy
     tittel <- 'Energinivå/vitalitet'
+    if (figurtype == c('gjsnGrVar', 'gjsnTid')) {tittel <- ' begrensning i energinivå/vitalitet'}
     gr <- seq(0, 100, 20)
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
     grtxt <- levels(RegData$VariabelGr)
     subtxt <- 'sumskår (høyest er best)'
   }
-  if (valgtVar == 'R0ScoreEmo') { #Andeler#GjsnGrVar
+  if (valgtVar == 'R0ScoreEmo') { #Andeler#Gjsn
     #Verdier: 0:4:100
     RegData <- RegData[which(RegData$R0Status==1) %i% which(RegData[,valgtVar] > -1), ]
     RegData$Variabel <- RegData[ ,valgtVar]
     tittel <- 'Mental helse'
+    if (figurtype == c('gjsnGrVar', 'gjsnTid')) {tittel <- ' begrensning, mental helse '}
     subtxt <- 'sumskår (høyest er best)'
     gr <- seq(0, 100, 20)
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
     grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-1)])
   }
-  if (valgtVar == 'R0ScoreSosial') { #Andeler#GjsnGrVar
+  if (valgtVar == 'R0ScoreSosial') { #Andeler#Gjsn
     #Verdier: 0:12.5:100
     RegData <- RegData[which(RegData$R0Status==1) %i% which(RegData[,valgtVar] > -1), ]
     RegData$Variabel <- RegData[ ,valgtVar]
     tittel <- 'Sosial funksjon'
+    if (figurtype == c('gjsnGrVar', 'gjsnTid')) {tittel <- ' begrensning, sosialt'}
     #gr <- c(seq(0, 75, 25), 100) #c(seq(0, 180, 30), 1000) #
-    #RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
     subtxt <- 'sumskår (høyest er best)'
     gr <- seq(0, 100, 25)
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
@@ -487,8 +493,8 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     RegData <- RegData[which(RegData$R0Status==1) %i% which(RegData[,valgtVar] > -1), ]
     RegData$Variabel <- RegData[ ,valgtVar]
     tittel <- 'Smerte'
+    if (figurtype == c('gjsnGrVar', 'gjsnTid')) {tittel <- ' smerte'}
     #gr <- c(seq(0, 90, 10), 100) #c(seq(0, 180, 30), 1000) #
-    #grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-1)])
     subtxt <- 'sumskår (høyest er best)'
     gr <- seq(0, 100, 20)
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
@@ -628,7 +634,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
       RegData$Variabel <- RegData$Tss2Generelt-1}
   }
 
-  if (valgtVar == 'Tss2Sumskaar') {   #Andeler, #gjsnGrVar
+  if (valgtVar == 'Tss2Sumskaar') {   #Andeler, #gjsn
     #Stort sett: 0:Nei, 1:Ja, til en viss grad, 2:Ja, i ganske stor grad, 3:Ja, i svært stor grad
     #Alle variable må besvares for å kunne ferdigstille skjema.
     RegData <- RegData[which(RegData$Tss2Status == 1) %i% which(RegData$Tss2Type %in% 1:2), ]

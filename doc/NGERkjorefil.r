@@ -8,7 +8,8 @@ library(tools)
 library(plyr)
 library(lubridate)
 
-reshID <- 8 #110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
+dev.off()
+reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 startDato <- '2018-03-01'
 sluttDato <- Sys.Date()
 setwd('C:/ResultattjenesteGIT/nger/inst/')
@@ -199,16 +200,16 @@ for (valgtVar in variable) {
 #------------------------------ Sentralmål per sykehus/Tid --------------------------
 #------------------------------ (GjsnGrVar/GjsnTid) --------------------------
 
-valgtVar <- 'Alder'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
-                            #R0ScoreEmo, R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral, OpTid
+valgtVar <- 'RegForsinkelse'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
+                            #R0ScoreEmo, R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral, RegForsinkelse, OpTid
                           #'Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
                           #'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt'
 
 outfile <- ''
-outfile <- paste0(valgtVar, '_sh.png')
+#outfile <- paste0(valgtVar, '_sh.png')
 
 testGjsn <- NGERFigGjsnGrVar(RegData=RegData,valgtVar=valgtVar, datoFra='2017-01-01', datoTil=datoTil, minald=minald, maxald=maxald,
-                 OpMetode=OpMetode, valgtMaal='med', hentData=0,  grVar=grVar, Ngrense=10,
+                 OpMetode=OpMetode, valgtMaal='gjsn', hentData=0,  grVar=grVar, Ngrense=10,
                  medKI=1, outfile=outfile, velgAvd = '')#AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
 
 testGjsnTid <- NGERFigGjsnTid(RegData=RegData,valgtVar=valgtVar, datoFra='2017-01-01', datoTil=datoTil, minald=minald, maxald=maxald,

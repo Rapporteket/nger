@@ -114,10 +114,10 @@ lagTabavFig <- function(UtDataFraFig, figurtype='andeler'){ #lagTabavFigAndeler
                 AggVerdier$Rest)})}
 
   if (figurtype %in% c('andeler', 'andelTid')) {
-    colnames(tab) <- c(paste0(hovedgrTxt,', N'),
+    colnames(tab) <- c(paste0(hovedgrTxt,', Antall'),
                      paste0(hovedgrTxt, ', Andel (%)'),
                      if (medSml==1) {
-                       cbind(paste0(smltxt,', N'),
+                       cbind(paste0(smltxt,', Antall'),
                              paste0(smltxt, ', Andel (%)'))}
                  )}
 
@@ -132,6 +132,7 @@ lagTabavFig <- function(UtDataFraFig, figurtype='andeler'){ #lagTabavFigAndeler
     if (medSml==1) {
       colnames(tab) <-  c(kolnavn, paste0(smltxt, c(', N', ', Andel (%)')))}
     }
+  rownames(tab) <- grtxt
 
   # if (figurtype %in% c('andeler','gjsnGrVar'))
   #   tab <-cbind(UtDataFraFig$Ngr$Hoved,

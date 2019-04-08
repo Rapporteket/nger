@@ -384,6 +384,7 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, Gjennomføringsgrad,...'
                          'Antibiotika' = 'OpAntibProfylakse',
                          'ASA-grad > II' = 'OpASA',
                          'Fedme (BMI>30)' = 'OpBMI',
+                         'Operasjonstid (minutter)' = 'OpTid',
                          'Pasienter med høyere utdanning' = 'Utdanning',
                          'Postop. komplikasjon: Blødning' = 'Opf0KomplBlodning',
                          'Postop. komplikasjon: Problemer med ustyr' = 'Opf0KomplUtstyr',
@@ -457,6 +458,8 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, Gjennomføringsgrad,...'
                             selectInput(
                                   inputId = "valgtVarGjsn", label="Velg variabel (flere valg kommer)",
                                   choices = c('Alder' = 'Alder',
+                                              'Operasjonstid (minutter)' = 'OpTid',
+                                              'Registreringsforsinkelse' = 'RegForsinkelse',
                                               'RAND36 Fysisk funksjon' = 'R0ScorePhys',
                                               'RAND36 Begrenses av fysisk helse' = 'R0ScoreRoleLmtPhy',
                                               'RAND36 Følelsesmessig rollebegrensning' = 'R0ScoreRoleLmtEmo',
@@ -464,7 +467,8 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, Gjennomføringsgrad,...'
                                               'RAND36 Mental helse' = 'R0ScoreEmo',
                                               'RAND36 Sosial funksjon' = 'R0ScoreSosial',
                                               'RAND36 Smerte' = 'R0ScorePain',
-                                              'RAND36 Generell helsetilstand' = 'R0ScoreGeneral'
+                                              'RAND36 Generell helsetilstand' = 'R0ScoreGeneral',
+                                              'TSS2, sumskår' = 'Tss2Sumskaar'
                                              )
                             ),
                             dateRangeInput(inputId = 'datovalgGjsn', start = startDato, end = Sys.Date(),

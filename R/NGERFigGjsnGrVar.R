@@ -11,7 +11,10 @@
 #'
 #' Argumentet \emph{valgtVar} har følgende valgmuligheter:
 #'    \itemize{
-#'     \item Liggedogn: Liggetid
+#'     \item Alder: Liggetid
+#'     \item RAND36 - alle dimensjoner
+#'     \item Registreringsforsinkelse
+#'     \item TSS2
 #'    }
 #'
 #' @return Søylediagram med gjennomsnitt/median av valgt variabel for hvert sykehus
