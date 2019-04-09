@@ -206,7 +206,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
 
 #-----Kvalitetsindikatorer------------
-tabPanel("Kvalitetsindikatorer",
+tabPanel(p("Kvalitetsindikatorer", title = 'Prosessindikatorer, RAND36, TSS2'),
 h3('Registerets kvalitetsindikatorer', align='center'),
          sidebarPanel(width=3,
                       h3('Utvalg'),
@@ -264,7 +264,8 @@ h3('Registerets kvalitetsindikatorer', align='center'),
 ), #tab Kvalitetsindikatorer
 
       #--------Fordelinger-----------
-tabPanel("Fordelinger",
+tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplikasjoner, prosessvariable, prosedyrer,
+           RAND36, TSS2, utdanning'),
          #-----
          sidebarPanel(width = 3,
                       h3('Utvalg'),
@@ -368,7 +369,8 @@ tabPanel("Fordelinger",
 
 
 #----------Andeler-----------------------------
-tabPanel(p("Andeler: per sykehus og tid", title='Alder, Gjennomføringsgrad,...'),
+tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme, gjennomføringsgrad, komplikasjoner,
+           konvertering, oppfølging, registreringsforsinkelse, komplikasjoner, TSS2, utdanning'),
          h2("Sykehusvise andeler og utvikling over tid for valgt variabel", align='center'),
          h5("Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen
             til venstre. Man kan også gjøre ulike filtreringer.", align='center'),
@@ -409,8 +411,22 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, Gjennomføringsgrad,...'
                           label = "Tidsperiode", separator="t.o.m.", language="nb"),
            sliderInput(inputId="alderAndel", label = "Alder", min = 0,
                        max = 110, value = c(0, 110)),
+           selectInput(inputId = 'opMetodeAndel', label='Operasjonstype',
+                       choices = opMetode
+           ),
+           selectInput(inputId = 'velgDiagAndel', label='Diagnose',
+                       choices = diag
+           ),
+           selectInput(inputId = 'hastegradAndel', label='Hastegrad',
+                       choices = hastegrad
+           ),
+           selectInput(inputId = 'alvorlighetKomplAndel',
+                       label='Alvorlighetsgrad, postoperative komplikasjoner',
+                       multiple = T, #selected=0,
+                       choices = alvorKompl
+           ),
            br(),
-           p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid')),
+           p(em('Følgende utvalg gjelder bare figuren/tabellen som viser utvikling over tid')),
            selectInput(inputId = 'enhetsUtvalgAndel', label='Egen enhet og/eller landet',
                        choices = c("Egen mot resten av landet"=1, "Hele landet"=0, "Egen enhet"=2)),
            selectInput(inputId = "tidsenhetAndel", label="Velg tidsenhet",
@@ -447,7 +463,7 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, Gjennomføringsgrad,...'
          ), #tab
 
 #------------ Gjennomsnittresultater------------
-      tabPanel("Gjennomsnitt: per sykehus og over tid",
+      tabPanel(p("Gjennomsnitt: per sykehus og over tid",title='Alder, operasjonstid, registreringsforsinkelse, RAND36, TSS2sumskår'),
                h2('Sykehusvise gjennomsnitt/median og utvikling over tid for valgt variabel', align='center'),
                h5('Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen til venstre.
                   (Man kan også gjøre ulike filtreringer.)', align='center'),
@@ -478,8 +494,22 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, Gjennomføringsgrad,...'
                             ),
                             selectInput(inputId = "sentralmaal", label="Velg gjennomsnitt/median ",
                                                                choices = c("Gjennomsnitt"='gjsn', "Median"='med')),
+                            selectInput(inputId = 'opMetodeGjsn', label='Operasjonstype',
+                                        choices = opMetode
+                            ),
+                            selectInput(inputId = 'velgDiagGjsn', label='Diagnose',
+                                        choices = diag
+                            ),
+                            selectInput(inputId = 'hastegradGjsn', label='Hastegrad',
+                                        choices = hastegrad
+                            ),
+                            selectInput(inputId = 'alvorlighetKomplGjsn',
+                                        label='Alvorlighetsgrad, postoperative komplikasjoner',
+                                        multiple = T, #selected=0,
+                                        choices = alvorKompl
+                            ),
                             br(),
-                            p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid')),
+                            p(em('Følgende utvalg gjelder bare figuren/tabellen som viser utvikling over tid')),
                             selectInput(inputId = 'enhetsUtvalgGjsn', label='Egen enhet og/eller landet',
                                         choices = c("Egen mot resten av landet"=1, "Hele landet"=0, "Egen enhet"=2)
                             ),
@@ -517,7 +547,7 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, Gjennomføringsgrad,...'
                                  column(width = 5,
                                         h3("Utvikling over tid"),
                                         tableOutput("gjsnTidTab"),
-                                        downloadButton(outputId = 'lastNed_gjsnTidTab', label='Hvorfor virker den ikke???)'))
+                                        downloadButton(outputId = 'lastNed_gjsnTidTab', label='Last ned tabell'))
                                  )
                      )
                )
@@ -558,19 +588,19 @@ server <- function(input, output) {
   #--------------Startside------------------------------
   #-------Samlerapporter--------------------
       # funksjon for å kjøre Rnw-filer (render file funksjon)
-      contentFile <- function(file, srcFil, tmpFile, datoFra=startDato, datoTil=sluttDato) {
+      contentFile <- function(file, srcFil, tmpFil, datoFra=startDato, datoTil=Sys.Date()) {
             src <- normalizePath(system.file(srcFil, package="nger"))
 
             # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
             owd <- setwd(tempdir())
             on.exit(setwd(owd))
-            file.copy(src, tmpFile, overwrite = TRUE)
+            file.copy(src, tmpFil, overwrite = TRUE)
 
-            texfil <- knitr::knit(tmpFile, encoding = 'UTF-8')
+            texfil <- knitr::knit(tmpFil, encoding = 'UTF-8')
             tools::texi2pdf(texfil, clean = TRUE)
 
             gc() #Opprydning gc-"garbage collection"
-            file.copy(paste0(substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf'), file)
+            file.copy(paste0(substr(tmpFil, 1, nchar(tmpFil)-3), 'pdf'), file)
       }
 
 
@@ -578,7 +608,7 @@ server <- function(input, output) {
       output$mndRapp.pdf <- downloadHandler(
             filename = function(){ paste0('MndRapp', Sys.time(), '.pdf')},
             content = function(file){
-                  contentFile(file, srcFil="NGERmndRapp.Rnw", tmpFile="tmpNGERmndRapp.Rnw")
+                  contentFile(file, srcFil="NGERmndRapp.Rnw", tmpFil="tmpNGERmndRapp.Rnw")
             })
 
       output$samleDok <- downloadHandler(
@@ -586,8 +616,8 @@ server <- function(input, output) {
           paste0('samleDok', Sys.time(), '.pdf')
         },
         content = function(file){
-          contentFile(file, "NGERSamleRapp.Rnw", "tmpNGERSamleRapp.Rnw", input$datovalgSamleDok[1],
-                      input$datovalgSamleDok[2])
+          contentFile(file, srcFil="NGERSamleRapp.Rnw", tmpFil="tmpNGERSamleRapp.Rnw", datoFra=input$datovalgSamleDok[1],
+                      datoTil=input$datovalgSamleDok[2])
         }
       )
 
@@ -682,7 +712,7 @@ server <- function(input, output) {
 
         output$lastNed_tabKvalInd <- downloadHandler(
           filename = function(){paste0(input$valgtVarKval, '_kvalInd.csv')},
-          content = function(file, filename){write.csv2(tabKvalInd, file, row.names = F, na = '')
+          content = function(file, filename){write.csv2(tabKvalInd, file, row.names = T, na = '')
           })
       }) #observe Kvalitetsind
 
@@ -690,6 +720,7 @@ server <- function(input, output) {
 
       #---------Fordelinger------------
             observe({   #Fordelingsfigurer og tabeller
+             # print(input$datovalgSamleDok[1])
 
             output$fordelinger <- renderPlot({
                   NGERFigAndeler(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
@@ -733,7 +764,7 @@ server <- function(input, output) {
 
             output$lastNed_tabFord <- downloadHandler(
                   filename = function(){paste0(input$valgtVar, '_fordeling.csv')},
-                  content = function(file, filename){write.csv2(tabFord, file, row.names = F, na = '')
+                  content = function(file, filename){write.csv2(tabFord, file, row.names = T, na = '')
                   })
       }) #observe Fordeling
 
@@ -742,7 +773,11 @@ server <- function(input, output) {
       output$andelerGrVar <- renderPlot({
         NGERFigAndelerGrVar(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
                            datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
-                           minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]))
+                           minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
+        OpMetode = as.numeric(input$opMetodeAndel),
+        Hastegrad = as.numeric(input$hastegradAndel),
+        velgDiag = as.numeric(input$velgDiagAndel),
+        AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel))
       }, height = 800, width=700 #height = function() {session$clientData$output_andelerGrVarFig_width} #})
       )
 
@@ -752,7 +787,11 @@ server <- function(input, output) {
                        reshID=reshID,
                        datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
                        minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
-                       tidsenhet = input$tidsenhetAndel,
+                       OpMetode = as.numeric(input$opMetodeAndel),
+                       Hastegrad = as.numeric(input$hastegradAndel),
+                       velgDiag = as.numeric(input$velgDiagAndel),
+                       AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
+        tidsenhet = input$tidsenhetAndel,
                        enhetsUtvalg = input$enhetsUtvalgAndel)
       }, height = 300, width = 1000
       )
@@ -829,14 +868,22 @@ server <- function(input, output) {
                   NGERFigGjsnGrVar(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarGjsn,
                                  datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
                                  minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
-                                 valgtMaal = input$sentralmaal
-                  ),
+                                 valgtMaal = input$sentralmaal,
+                                 OpMetode = as.numeric(input$opMetodeGjsn),
+                                 Hastegrad = as.numeric(input$hastegradGjsn),
+                                 velgDiag = as.numeric(input$velgDiagGjsn),
+                                 AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn)
+            ),
                   width = 700, height = 800)
             UtDataGjsnGrVar <- NGERFigGjsnGrVar(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarGjsn,
                                               datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
                                               minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
-                                              valgtMaal = input$sentralmaal)
-            output$tittelGjsn <- renderUI({
+                                              valgtMaal = input$sentralmaal,
+            OpMetode = as.numeric(input$opMetodeGjsn),
+            Hastegrad = as.numeric(input$hastegradGjsn),
+            velgDiag = as.numeric(input$velgDiagGjsn),
+            AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn))
+      output$tittelGjsn <- renderUI({
                   tagList(
                         h3(UtDataGjsnGrVar$tittel),
                         h5(HTML(paste0(UtDataGjsnGrVar$utvalgTxt, '<br />')))
@@ -910,14 +957,13 @@ server <- function(input, output) {
                 row_spec(0, bold = T)
             }
 
-            output$lastNed_GjsnTidTab <- downloadHandler(
+            output$lastNed_gjsnTidTab <- downloadHandler(
               filename = function(){
                 paste0(input$valgtVarGjsn, '_tabGjsnTid .csv')
               },
               content = function(file, filename){
                 write.csv2(tabGjsnTid, file, row.names = T, na = '')
               })
-
 
                 }) #observe gjsnGrVar
 } #server

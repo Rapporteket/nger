@@ -106,7 +106,7 @@ outfile <- ''
 
 #------------------------------ Andeler flere var (tilsvarer Fordelinger)--------------------------
 
-valgtVar <- 'OpASA'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid, Tss2Sumskaar
+valgtVar <- 'Alder'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid, Tss2Sumskaar
 
 outfile <- '' #paste0(valgtVar, '_ford.png')
 enhetsUtvalg <- 1
@@ -200,7 +200,7 @@ for (valgtVar in variable) {
 #------------------------------ Sentralmål per sykehus/Tid --------------------------
 #------------------------------ (GjsnGrVar/GjsnTid) --------------------------
 
-valgtVar <- 'RegForsinkelse'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
+valgtVar <- 'OpTid'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
                             #R0ScoreEmo, R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral, RegForsinkelse, OpTid
                           #'Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
                           #'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt'
@@ -213,7 +213,7 @@ testGjsn <- NGERFigGjsnGrVar(RegData=RegData,valgtVar=valgtVar, datoFra='2017-01
                  medKI=1, outfile=outfile, velgAvd = '')#AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
 
 testGjsnTid <- NGERFigGjsnTid(RegData=RegData,valgtVar=valgtVar, datoFra='2017-01-01', datoTil=datoTil, minald=minald, maxald=maxald,
-                 valgtMaal='med', hentData=0, tidsenhet = 'Aar', enhetsUtvalg = enhetsUtvalg, #OpMetode=OpMetode, medKI=1, , velgAvd = ''
+                 valgtMaal='gjsn', hentData=0, tidsenhet = 'Kvartal', enhetsUtvalg = enhetsUtvalg, #OpMetode=OpMetode, medKI=1, , velgAvd = ''
                  outfile=outfile, reshID = reshID)#AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
 
 variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',

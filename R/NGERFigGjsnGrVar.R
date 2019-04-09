@@ -90,7 +90,7 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
     MedIQRHele <-  boxplot.stats(RegData$Variabel, do.conf = TRUE)
     MidtHele <- as.numeric(MedIQRHele$stats[3])	#median(RegData$Variabel)
     KIHele <- MedIQRHele$conf
-    xAkseTxt <- paste0('Median ',NGERVarSpes$subtxt)
+    xAkseTxt <- paste0('Median ',NGERVarSpes$xAkseTxt)
     #Hvis vil bruke vanlige konf.int:
     #j <- ceiling(N/2 - 1.96*sqrt(N/4))
     #k <- ceiling(N/2 + 1.96*sqrt(N/4))
@@ -112,7 +112,7 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
     Midt <- Gjsn[sortInd] #as.numeric(Gjsn[sortInd])
     KIned <- Gjsn[sortInd] - 2*SE[sortInd]
     KIopp <- Gjsn[sortInd] + 2*SE[sortInd]
-    xAkseTxt <- paste0('Gjennomsnittlig ', NGERVarSpes$subtxt)
+    xAkseTxt <- paste0('Gjennomsnittlig ', NGERVarSpes$xAkseTxt)
   }
 
 

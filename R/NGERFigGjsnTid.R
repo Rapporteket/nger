@@ -94,8 +94,8 @@ NGERFigGjsnTid <- function(RegData, valgtVar='alder', datoFra='2011-01-01', dato
         MidtRest <- as.numeric(MedIQRrest$stats[3, ])
         KonfRest <- MedIQRrest$conf
       } else {
-        MidtRest <- tapply(RegData[ind$Rest,'Variabel'], RegData[ind$Rest, 'TidsEnhet'], mean)	#ind$Rest
-        SDRest <- tapply(RegData[ind$Rest,'Variabel'], RegData[ind$Rest, 'TidsEnhet'], sd)
+        MidtRest <- tapply(RegData[ind$Rest,'Variabel'], RegData[ind$Rest, 'TidsEnhet'], mean, na.rm=T)	#ind$Rest
+        SDRest <- tapply(RegData[ind$Rest,'Variabel'], RegData[ind$Rest, 'TidsEnhet'], sd, na.rm=T)
         Nrest <- tapply(RegData[ind$Rest,'Variabel'], RegData[ind$Rest, 'TidsEnhet'], length)
         KonfRest <- rbind(MidtRest - 2*SDRest/sqrt(Nrest), MidtRest + 2*SDRest/sqrt(Nrest))
       }
@@ -168,8 +168,8 @@ NGERFigGjsnTid <- function(RegData, valgtVar='alder', datoFra='2011-01-01', dato
     plot(tidNum,Midt, xlim= c(xmin, xmax), ylim=c(ymin, ymax), type='n', frame.plot=FALSE, #ylim=c(ymin-0.05*ymax, ymax),
          #cex=0.8, cex.lab=0.9, cex.axis=0.9,
          ylab=c(ytxt,'med 95% konfidensintervall'),
-         xlab='Innleggelsesår', xaxt='n',
-         sub='(Tall i boksene angir antall innleggelser)', cex.sub=cexgr)	#, axes=F)
+         xlab='Operasjonstidspunkt', xaxt='n',
+         sub='(Tall i boksene angir antall operasjoner)', cex.sub=cexgr)	#, axes=F)
     axis(side=1, at = tidNum, labels = levels(RegData$TidsEnhet))
     #Sammenlikning:
     if (medSml==1) {
@@ -178,8 +178,6 @@ NGERFigGjsnTid <- function(RegData, valgtVar='alder', datoFra='2011-01-01', dato
       #          c(KonfRest[1,c(1,1:AntTidsenh, AntTidsenh)], KonfRest[2,c(AntTidsenh,AntTidsenh:1,1)]),
       #          col=fargeRestRes, border=NA)
       AntTidsenh <- max(which(!is.na(KonfRest[1,])))
-      #which(KonfRest==max(KonfRest, na.rm = T)) #Tar bare høyde for at siste tidspunkt har KonfRest=NA
-      #length(min(tidNum, na.rm = T):max(tidNum, na.rm = T)) #length(tidNum)
       polygon( c(tidNum[1]-0.01,tidNum[1:AntTidsenh], tidNum[AntTidsenh]+0.012,
                  tidNum[AntTidsenh]+0.012, tidNum[AntTidsenh:1], tidNum[1]-0.01),
                c(KonfRest[1,c(1,1:AntTidsenh, AntTidsenh)], KonfRest[2,c(AntTidsenh,AntTidsenh:1,1)]),

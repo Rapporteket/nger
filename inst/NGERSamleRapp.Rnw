@@ -140,8 +140,8 @@ at rapporterte data kan tilbakeføres til enkeltpersoner. Det er registeret sitt
 
 
 <<LasteData, echo=FALSE, eval=T>>=
-datoFra <- startDato 	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- sluttDato #Sys.Date()	#'2015-12-31'
+#datoFra <- startDato 	 # min og max dato i utvalget vises alltid i figuren.
+#datoTil <- sluttDato #Sys.Date()	#'2015-12-31'
 startAar <- '2015-01-01' #Til bruk i årstabell
 if (!exists('RegData')){
   RegData <- NGERRegDataSQL(datoFra = startAar, datoTil = datoTil)
@@ -486,7 +486,7 @@ RegDataLap$Aar <- as.factor(RegDataLap$Aar)
 indKonv <- which(RegDataLap$LapKonvertert == 1)
 indEgenLap <- which(RegDataLap$ReshId == reshID)
 Konv <- table(RegDataLap[indKonv,'Aar'])/table(RegDataLap$Aar)*100
-KonvEget <- table(RegDataLap[(indEgenLap %i% indKonv) , 'Aar'])/table(RegDataLap$Aar[indEget])*100
+KonvEget <- table(RegDataLap[(indEgenLap %i% indKonv) , 'Aar'])/table(RegDataLap$Aar[indEgenLap])*100
 KonvTab <- rbind(
   'Konvertert' = Konv,
   'Konvertert, Eget' = KonvEget)

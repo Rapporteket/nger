@@ -73,8 +73,8 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
                      andeler = 'Aldersfordeling',
                      andelGrVar = 'Pasienter over 70 år',
                      andelTid = 'Pasienter over 70 år',
-                     gjsnGrVar = 'alder ved innleggelse',
-                     gjsnTid = 'alder ved innleggelse')
+                     gjsnGrVar = 'alder ved operasjon',
+                     gjsnTid = 'alder ved operasjon')
     gr <- c(0, seq(15, 80, 5), 120)
     RegData$VariabelGr <- cut(RegData$Alder, breaks=gr, include.lowest=TRUE, right=FALSE)
     grtxt <- c('<15', levels(RegData$VariabelGr)[2:(length(gr)-2)], '80+')
