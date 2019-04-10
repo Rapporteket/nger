@@ -112,8 +112,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                               label = "Tidsperiode", separator="t.o.m.", language="nb"),
 
                downloadButton(outputId = 'samleDok', label='Last ned samledokument', class = "butt"),
-
-                            br()
+                            br(),
+               helpText('NB: Det tar litt tid å generere månedsrapport/samlerapport (10-20s).
+                        I mellomtida får du ikke sett på andre resultater')
                ),
                mainPanel(width = 8,
                          h4('Du er nå inne på Rapporteket for NGER. Rapporteket er registerets resultattjeneste.
@@ -933,7 +934,7 @@ server <- function(input, output) {
                                                 datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
                                                 minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
                                                 valgtMaal = input$sentralmaal, enhetsUtvalg =  as.numeric(input$enhetsUtvalgGjsn),
-                                            tidsenhet = input$tidsenhetGjsn)
+                                            tidsenhet = input$tidsenhetGjsn, lagFigur = 0)
 
             tabGjsnTid <- t(UtDataGjsnTid$AggVerdier)
             grtxt <-UtDataGjsnTid$grtxt

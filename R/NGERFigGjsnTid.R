@@ -20,7 +20,7 @@
 #' @export
 NGERFigGjsnTid <- function(RegData, valgtVar='alder', datoFra='2011-01-01', datoTil='3000-12-31',
                            tidsenhet='Aar', minald=0, maxald=110, reshID=0,
-                           outfile='',enhetsUtvalg=0, valgtMaal='Gjsn', preprosess=1, hentData=0){
+                           outfile='',enhetsUtvalg=0, valgtMaal='Gjsn', preprosess=1, hentData=0, lagFigur=1){
 
   if (hentData == 1) {
     RegData <- NGERRegDataSQL(datoFra, datoTil)
@@ -136,7 +136,7 @@ NGERFigGjsnTid <- function(RegData, valgtVar='alder', datoFra='2011-01-01', dato
                        smltxt=NGERUtvalg$smltxt)
 
 
-
+if (lagFigur==1) {
   #-----------Figur---------------------------------------
   if (length(ind$Hoved)<10 | ((medSml == 1) & (length(ind$Rest) < 10))) {
     figtype(outfile)
@@ -206,6 +206,7 @@ NGERFigGjsnTid <- function(RegData, valgtVar='alder', datoFra='2011-01-01', dato
     if ( outfile != '') {dev.off()}
 
   }	#end if statement for 0 observations
+} #lag figur
   return(invisible(FigDataParam))
 
 }	#end function

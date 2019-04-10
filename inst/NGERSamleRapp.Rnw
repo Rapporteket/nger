@@ -142,13 +142,14 @@ at rapporterte data kan tilbakeføres til enkeltpersoner. Det er registeret sitt
 <<LasteData, echo=FALSE, eval=T>>=
 #datoFra <- startDato 	 # min og max dato i utvalget vises alltid i figuren.
 #datoTil <- sluttDato #Sys.Date()	#'2015-12-31'
+dev.off()
 startAar <- '2015-01-01' #Til bruk i årstabell
 if (!exists('RegData')){
   RegData <- NGERRegDataSQL(datoFra = startAar, datoTil = datoTil)
 }
 @
 
-<<FellesParamOgPreprosess, echo=FALSE>>=
+<<FellesParamOgPreprosess, echo=FALSE, warnings=FALSE>>=
 
 #RegData <- NGERPreprosess(RegData)
 

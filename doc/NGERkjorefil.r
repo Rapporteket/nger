@@ -9,9 +9,9 @@ library(plyr)
 library(lubridate)
 
 dev.off()
-reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
-startDato <- '2018-03-01'
-sluttDato <- Sys.Date()
+reshID <- 8 #110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
+datoFra <- '2018-03-01'
+datoTil <- Sys.Date()
 setwd('C:/ResultattjenesteGIT/nger/inst/')
 data('NGERtulledata', package = 'nger')
 load('A:/NGER/NGER2019-03-18.Rdata')
