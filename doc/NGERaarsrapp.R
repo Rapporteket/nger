@@ -2,41 +2,49 @@
 #--------------------------------Data og parametrekobling--------------------------
 
 rm(list=ls())
-# NGERBasis <- read.table('C:/Registre/NGER/data/AlleVarNum2016-10-14.csv', sep=';', header=T, fileEncoding = 'UTF-8') #,
-# NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-10-14.csv', sep=';', header=T, fileEncoding = 'UTF-8')
-# NGEROppf <- read.table('C:/Registre/NGER/data/FollowupsNum2016-10-14.csv', sep=';', header=T, fileEncoding = 'UTF-8')
-# NGERData <- merge(NGERForlop, NGERBasis, by = "ForlopsID", suffixes = c('forl',''), all = FALSE)
-# NGERData <- merge(NGERData, NGEROppf, by = "ForlopsID", suffixes = c('','YY'),all.x = TRUE)
-# RegData <- NGERData
+dato <- '2019-03-18Aarsrapp18'
+NGERBasis <- read.table(paste0('A:/NGER/AlleVarNum', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #,
+NGERForlop <- read.table(paste0('A:/NGER/ForlopsOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
+NGERSkjema <- read.table(paste0('A:/NGER/SkjemaOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
+NGERData <- merge(NGERForlop, NGERBasis, by = "ForlopsID", suffixes = c('forl',''), all = FALSE)
+NGERData <- NGERData[(as.Date(NGERData$OpDato) >= as.Date('2016-01-01')) &
+                       (as.Date(NGERData$OpDato) <= as.Date('2018-12-31')), ]
 
-load(paste0('A:/NGER/NGER2018-09-10.Rdata'))
-NGERData <- RegData
+#--Til registerleder
+# RegData <- NGERPreprosess(NGERData)
+#Ikke nødv: RegData <- NGERUtvalgEnh(RegData, datoFra = '2016-01-01', datoTil = '2018-12-31')$RegData
+# write.table(RegData, file = "A:/NGER/Aarsrapp2018.csv", row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
+
+save(NGERData, file=paste0('A:/NGER/Aarsrapp2018', dato, '.RData'))
+
+
+load(paste0('A:/NGER/Aarsrapp2018_2019-03-18.Rdata'))
 
 
 # Inndata til funksjon:
-datoFra<- '2015-01-01'
-datoFra1aar <- '2017-01-01'
-datoTil <- '2017-12-31'
-OpType <- 99
+datoFra<- '2016-01-01'
+datoFra1aar <- '2018-01-01'
+datoTil <- '2018-12-31'
+OpMetode <- 99
 tidsenhet <- 'Aar'
 Hastegrad <- ''
 AlvorlighetKompl <- ''
 enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
-setwd("C:/ResultattjenesteGIT/nger/aarsrapp/")
+setwd("P:/Registerinfo og historie/NGER/aarsrapp/")
 library(nger)
 
 #--------------------Offentliggjøring--------------------------
 
 NGERFigAndelTid(RegData=NGERData, valgtVar='KomplIntra', datoFra=datoFra, datoTil=datoTil,
-                OpType=1, tidsenhet='Aar',
+                OpMetode=1, tidsenhet='Aar',
                 outfile='Fig1 Andel intraoperative komplikasjoner siste år, laparoskopi.png')
 
 NGERFigAndelTid(RegData=NGERData, valgtVar='LapKonvertert', datoFra=datoFra, datoTil=datoTil,
-                tidsenhet='Aar', OpType = 1,
+                tidsenhet='Aar', OpMetode = 1,
                 outfile='Fig3 Utvikling konvertering til laparotomi.png')
 
 NGERFigAndelTid(RegData=NGERData, valgtVar='KomplPostop', datoFra=datoFra, datoTil=datoTil,
-                tidsenhet='Aar', OpType = 4, Hastegrad = 1,
+                tidsenhet='Aar', OpMetode = 4, Hastegrad = 1,
                 outfile='Fig4 antall postopr kompl ved TLH per aar.png')
 
 
@@ -44,7 +52,7 @@ NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='LapIntraabdomine
                outfile='Fig2 Intraabdominelle kompl ved laparoskopi.png')
 
 NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='Opf0AlvorlighetsGrad', datoTil=datoTil,
-               OpType = 4, outfile='Fig5 Alvorlighetsgrad ved TLH.png')
+               OpMetode = 4, outfile='Fig5 Alvorlighetsgrad ved TLH.png')
 
 NGERFigAndeler(RegData=NGERData, valgtVar='Tss2Generelt', datoFra=datoFra1aar, datoTil=datoTil,
                outfile='Fig6 TSS2 Oppfatning om gynekologisk avdeling.png')
@@ -57,33 +65,31 @@ NGERFigGjsnGrVar(RegData=NGERData, valgtVar='Tss2Generelt', datoFra=datoFra1aar,
 
 #------------------------------ Andeler flere var --------------------------
 
-variable <- c('Alder', 'KomplPost','KomplPostUtd','LapIntraabdominell', 'Norsktalende', 'OpBMI',
+variable <- c('Alder', 'KomplPostop','KomplPostUtd','LapIntraabdominell', 'Norsktalende', 'OpBMI',
               'Opf0AlvorlighetsGrad','SivilStatus', 'Utdanning')
 
 for (valgtVar in variable) {
 	outfile <- paste0(valgtVar, '_ford.pdf')
-	NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil,
-		reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
+	NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil, outfile=outfile)
 }
 
 valgtVar <- 'Diagnoser'
 outfile <- paste0(valgtVar, '_ford.pdf')
-NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil,
-               reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
-OpType <- 1
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil, outfile=outfile)
+OpMetode <- 1
 outfile <- paste0(valgtVar, '_fordLap.pdf')
-NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil, OpType = OpType,
-               reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
-OpType <- 2
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil, OpMetode = OpMetode,
+               outfile=outfile)
+OpMetode <- 2
 outfile <- paste0(valgtVar, '_fordHys.pdf')
-NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil,OpType = OpType,
-               reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil,OpMetode = OpMetode,
+               outfile=outfile)
 
 for (valgtVar in c('Diagnoser', 'Prosedyrer')) {
-  for (OpType in c(1:2,99)) {
-  outfile <- paste0(valgtVar, '_fordOpType',OpType, '.pdf')
+  for (OpMetode in c(1:2,99)) {
+  outfile <- paste0(valgtVar, '_fordOpMetode',OpMetode, '.pdf')
   NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil,
-					OpType = OpType, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
+					OpMetode = OpMetode, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
   }
 }
 
@@ -95,15 +101,14 @@ variable <- c('KomplIntra','KomplPostop',
 for (valgtVar in variable) {
   outfile <- paste0(valgtVar, '_', tidsenhet, '.pdf')
   NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
-              enhetsUtvalg=0, outfile=outfile, OpType=OpType, Hastegrad=Hastegrad,
-              AlvorlighetKompl=AlvorlighetKompl, tidsenhet='Aar')
+              outfile=outfile, tidsenhet='Aar')
 }
 
 NGERFigAndelTid(RegData=NGERData, valgtVar='OpDagkirurgi', datoFra=datoFra, datoTil=datoTil,
-                enhetsUtvalg=0, OpType=1, Hastegrad=1, tidsenhet='Aar', outfile='OpDagkirLapEl_aar.pdf')
+                OpMetode=1, Hastegrad=1, tidsenhet='Aar', outfile='OpDagkirLapEl_aar.pdf')
 
 NGERFigAndelTid(RegData=NGERData, valgtVar='OpAnestesi',   datoFra='2013-01-01', datoTil=datoTil, #datoFra
-                enhetsUtvalg=0, OpType=2, Hastegrad=1, tidsenhet='Aar', outfile='') #OpAnestesiHysEl_aar.pdf')
+                OpMetode=2, Hastegrad=1, tidsenhet='Aar', outfile='') #OpAnestesiHysEl_aar.pdf')
 
 #------------------------------ Andeler per sykehus --------------------------
 #------------------------------ (AndelGrVar) --------------------------
@@ -112,25 +117,20 @@ variable <- c('Alder', 'OpAnestesi', 'OpDagkirurgi', 'Opf0Status', 'OpBMI', 'OpT
 
 for (valgtVar in variable) {
   outfile <- paste0(valgtVar, '_Shus.pdf')
-  NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil,
-              reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
+  NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil, outfile=outfile)
 }
 
 #------------------------------ Sentralmål per sykehus --------------------------
-valgtVar <- 'OpTid'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
-                            #R0ScoreEmo, R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral, OpTid
-                          #'Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
-                          #'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt'
-
 variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
               'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')
 variable <- c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
               'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')
 variable <- 'OpTid'
-valgtMaal <- 'Med'
+
+valgtMaal <- 'med'
 for (valgtVar in variable) {
   outfile <- paste0(valgtVar, '_' ,valgtMaal,'ShGjsn.pdf')
-  NGERFigGjsnGrVar(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra1aar, datoTil=datoTil,
+  NGERFigGjsnGrVar(RegData=NGERData, valgtVar=valgtVar, datoFra=datoFra1aar, datoTil=datoTil,
                       valgtMaal=valgtMaal,outfile=outfile)
 }
 
@@ -138,9 +138,10 @@ for (valgtVar in variable) {
 
 #------------------------------Tabeller-----------------------------------
 library(xtable)
+RegData <- NGERData
 RegData <- NGERPreprosess(RegData)
-NGERUtvalg <- NGERUtvalg(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra,
-                         datoTil = datoTil, OpType = OpType, Hastegrad=Hastegrad)
+NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra1aar,
+                         datoTil = datoTil, OpMetode = OpMetode, Hastegrad=Hastegrad)
 RegData <- NGERUtvalg$RegData
 
 
@@ -150,10 +151,9 @@ TabPasKar <- NGERtabVI(RegData)
 #                     caption='Pasientkarakterisika og operasjonstid.',
 #                     label='tab:TabPasKar'),
 #      include.rownames=TRUE, include.colnames=TRUE, check.names = FALSE)
-cap <- "Gjennomsnittlig BMI, fødsler, graviditeter og knivtid. Verdiene
+cap <- "Gjennomsnittlig BMI, fødsler, graviditeter og knivtid for pasienter operert i 2018. Verdiene
 er gitt samlet for alle typer inngrep og splittet for laparoskopi,
-hysteroskopi og der begge prosedyrer er brukt. Datagrunnlaget er tatt fra
-en tre-års periode."
+hysteroskopi og der begge prosedyrer er brukt. ."
 
 tab <- xtable::xtable(TabPasKar, align=c("l", "l", rep("r", ncol(TabPasKar)-1)),
                       digits=c(0,0,rep(1, ncol(TabPasKar)-1)),

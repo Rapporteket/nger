@@ -31,6 +31,7 @@ tools:: texi2pdf('NGERmndRapp.tex')
 # 'Tss2Enighet',
 # 'Tss2Generelt')
 #------------------------------Kjøre App----------------------------
+rm(list=ls())
 load(paste0('A:/NGER/NGER2019-03-18.Rdata'))
 
 #SkjemaOversikt <- NGERPreprosess(SkjemaOversikt)
@@ -55,9 +56,13 @@ NGERData <- merge(NGERBasis, NGERForlop, by = "ForlopsID", suffixes = c('','YY')
 # RegData <- NGERUtvalgEnh(RegData, datoFra = '2016-01-01', datoTil = '2018-12-31')$RegData
 # save(RegData, file=paste0('A:/NGER/Aarsrapp2018', dato, '.Rdata'))
 # write.table(RegData, file = "A:/NGER/Aarsrapp2018.csv", row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
-save(RegData, file=paste0('A:/NGER/NGER', dato, '.RData'))
+save(NGERData, file=paste0('A:/NGER/NGER', dato, '.RData'))
+save(NGERData, file=paste0('A:/NGER/Aarsrapp', dato, '.RData'))
 
+RegData <- NGERData[which(NGERData$OpDato >= as.Date('2016-01-01')) & which(NGERData$OpDato <= as.Date('2018-12-31')),]
 load(paste0('A:/NGER/NGER', dato, '.Rdata'))
+load(paste0('A:/NGER/Aarsrapp20182019-03-18.Rdata'))
+
 
 library(nger)
 #----------------------------------- Lage tulledata ------------------------------
@@ -240,6 +245,76 @@ ind <- which(as.Date(RegData$HovedDato) < '2017-03-30')
 sum(table(RegData$Opf0metode[ind], useNA = 'a')[3:4])/length(ind)
 table(RegData$Opf0Status[ind], useNA = 'a')
 table(RegData$Opf0metode[ind], useNA = 'a')
+
+
+#--------Data til Resultatportalen-----------------
+rm(list=ls())
+setwd('P:/Registerinfo og historie/NGER/Resultatportalen')
+aar <- 2016:2018
+load(paste0('A:/NGER/Aarsrapp2018_2019-03-18.Rdata'))
+RegData <- NGERData
+
+# For registeret Fil, enhetsID: EnhetsID	Enhetsnavn	HF navn	RHF navn (Toril komplettere med HF-navn)
+Enheter <- unique(NGERPreprosess(RegData=NGERData)[ ,c('ReshId','ShNavn')])
+write.table(Enheter, file = 'NGERenheter.csv', row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
+
+
+# Intraop kompl. ved laparoskopi
+dataTilResultatPort(RegData=NGERData, valgtKI='KomplIntra', OpMetode = 1, aar = aar)
+
+# Intraop kompl. ved hysteroskopi
+dataTilResultatPort(RegData=NGERData, valgtKI='KomplIntra', OpMetode = 2, aar=aar)
+
+# TSS2 - sumskår, gj.sn.
+dataTilResultatPort(RegData=NGERData, valgtKI='Tss2Sumskaar', aar=aar)
+
+# Laparoskopi: Komplikasjoner etter operasjon Middels, alvorlig, død
+#(KomplPostop)
+dataTilResultatPort(RegData=NGERData, valgtKI='Opf0AlvorlighetsGrad', figurtype='andelGrVar', OpMetode = 1, aar=aar)
+
+# Hysteroskopi: Komplikasjoner etter operasjon Middels, alvorlig, død
+dataTilResultatPort(RegData=NGERData, valgtKI='Opf0AlvorlighetsGrad',  OpMetode = 2, aar=aar)
+
+# test <- function(x) {sum(x, na.rm = T)/mean(x, na.rm = T)}
+# test(RegData$Aar)
+
+
+dataTilResultatPort <- function(RegData, valgtKI='KomplIntraLap', figurtype='andelGrVar', aar=2016:2018, OpMetode=0){
+  #  For hver kvalitetsindikator
+  #  Fil, KIdata: År	EnhetsID	Teller	Nevner	Kvalitetsindikator
+
+  #Ngrense <- 10
+  RegData <- NGERPreprosess(RegData)
+  RegData <- NGERUtvalgEnh(RegData, OpMetode = OpMetode,
+                           datoFra = paste0(aar[1],'-01-01'), datoTil = paste0(rev(aar)[1], '-12-31'))$RegData
+  RegData$Variabel <- 0
+  RegData$ShNavn <- as.factor(RegData$ShNavn)
+  RegData$ReshId <- as.factor(RegData$ReshId)
+  opMetTxt <- c('','Lap','Hys')[OpMetode+1]
+  RegData <- NGERVarTilrettelegg(RegData = RegData, valgtVar = valgtKI, figurtype=figurtype)$RegData
+
+  # if (valgtKI == 'KomplIntraLap') {
+  #   RegData <- NGERUtvalgEnh(RegData, OpMetode = 1)$RegData
+  # }
+  # if (valgtKI == 'KomplIntraHys') {
+  #   RegData <- NGERUtvalgEnh(RegData, OpMetode = 2)$RegData
+  # }
+  #
+
+  # if (valgtKI %in% c('KomplIntraLap', 'KomplIntraHys')){
+  #   indVar <- which((RegData$LapKomplikasjoner==1) | (RegData$HysKomplikasjoner==1))
+  #   RegData$Variabel[indVar] <- 1}
+
+
+  dataDum <- aggregate(data=RegData[ ,c("ReshId", 'Aar', 'Variabel' )], Variabel~ReshId+Aar,
+                       #x=RegData$Variabel, by=RegData[]
+                       FUN=function(x) {c(sum(x, na.rm=T), length(x))})
+
+  dataKI <- data.frame(dataDum[,1:2], Teller=dataDum$Variabel[,1], Nevner=dataDum$Variabel[,2], KvalInd=valgtKI)
+  write.table(dataKI, file = paste0('NGERkvalInd_', valgtKI, opMetTxt,'.csv'), row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
+
+  } #slutt funksjon
+
 
 
 ######################### LITT LEKING ##############################
