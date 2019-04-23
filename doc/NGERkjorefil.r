@@ -88,7 +88,7 @@ reshID <- 8 #110734 # 110734 (Tønsberg)  	700399
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
 datoFra <- '2018-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2019-12-31'
+datoTil <- '2018-12-31'
 preprosess <- 1
 OpMetode <- 99 #1: Laparoskopi, 2: Hysteroskopi, 3: Begge,  99: Alle
 #'                 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
@@ -174,7 +174,7 @@ for (valgtVar in variable) {
 #------------------------------ Andeler per sykehus (AndelGrVar) --------------------------
  #Ok?: Opf0KomplOrgan, Opf0Status, RegForsinkelse, Tss2Mott
 
-valgtVar <- 'Tss2Mott' #Må velge... OpAnestesi, OpDagkirurgi,OpTid
+valgtVar <- 'KomplIntra' #Må velge... OpAnestesi, OpDagkirurgi,OpTid
       #Alder, Opf0Reoperasjon, Education, Opf0AlvorlighetsGrad,
       #KomplIntra, KomplPostop, OpAntibProfylakse, OpASA, OpBMI, Opf0Status, RegForsinkelse
       #Tss2Mott, Tss2Behandling,	Tss2Lytte, Tss2Behandlere, Tss2Enighet,	Tss2Generelt
@@ -182,7 +182,8 @@ valgtVar <- 'Tss2Mott' #Må velge... OpAnestesi, OpDagkirurgi,OpTid
 outfile <- '' #paste0(valgtVar, '_Shus.png')	#Navn angis av Jasper
 #velgAvd <- '' #c(108048, 111180, 700404)
 
-UtDataFraFig <-NGERFigAndelerGrVar(RegData=RegData,  datoFra='2018-01-01', valgtVar=valgtVar, reshID=8, outfile='', preprosess = 1)
+UtDataFraFig <-NGERFigAndelerGrVar(RegData=RegData,  datoFra='2018-01-01', datoTil = '2018-12-31',
+                                   valgtVar=valgtVar, OpMetode = 2, outfile='', preprosess = 1)
 
 NGERFigAndelerGrVar(RegData=RegData, datoFra='2017-01-01', valgtVar=valgtVar, datoTil=datoTil,
             reshID=reshID, outfile=outfile, OpMetode=OpMetode,
@@ -205,15 +206,15 @@ for (valgtVar in variable) {
 #------------------------------ Sentralmål per sykehus/Tid --------------------------
 #------------------------------ (GjsnGrVar/GjsnTid) --------------------------
 
-valgtVar <- 'OpTid'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
+valgtVar <- 'Tss2Sumskaar'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
                             #R0ScoreEmo, R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral, RegForsinkelse, OpTid
                           #'Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
-                          #'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt'
+                          #'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt', 'Tss2Sumskaar'
 
 outfile <- ''
 #outfile <- paste0(valgtVar, '_sh.png')
 
-testGjsn <- NGERFigGjsnGrVar(RegData=RegData,valgtVar=valgtVar, datoFra='2017-01-01', datoTil=datoTil, minald=minald, maxald=maxald,
+testGjsn <- NGERFigGjsnGrVar(RegData=RegData,valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
                  OpMetode=OpMetode, valgtMaal='gjsn', hentData=0,  grVar=grVar, Ngrense=10,
                  medKI=1, outfile=outfile, velgAvd = '')#AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
 
@@ -310,7 +311,8 @@ dataTilResultatPort <- function(RegData, valgtKI='KomplIntraLap', figurtype='and
                        #x=RegData$Variabel, by=RegData[]
                        FUN=function(x) {c(sum(x, na.rm=T), length(x))})
 
-  dataKI <- data.frame(dataDum[,1:2], Teller=dataDum$Variabel[,1], Nevner=dataDum$Variabel[,2], KvalInd=valgtKI)
+  dataKI <- data.frame(dataDum[,1:2], Teller=dataDum$Variabel[,1], Nevner=dataDum$Variabel[,2],
+                       KvalInd=paste0(valgtKI, opMetTxt))
   write.table(dataKI, file = paste0('NGERkvalInd_', valgtKI, opMetTxt,'.csv'), row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
 
   } #slutt funksjon

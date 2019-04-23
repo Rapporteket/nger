@@ -5,8 +5,8 @@ account: lenatest
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 820449
-bundleId: 1981481
+bundleId: 2002464
 url: https://lenatest.shinyapps.io/ngerTEST/
-when: 1554213258.18093
+when: 1554968301.07993
 asMultiple: FALSE
 asStatic: FALSE

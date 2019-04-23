@@ -56,8 +56,8 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoT
 
   NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, grVar='', figurtype='andelGrVar')
   RegData <- NGERVarSpes$RegData
-  flerevar <- NGERVarSpes$flerevar
-  subtxt <- NGERVarSpes$subtxt
+  #flerevar <- NGERVarSpes$flerevar
+  #subtxt <- NGERVarSpes$subtxt
   grtxt <- NGERVarSpes$grtxt
   tittel <- NGERVarSpes$tittel
 
@@ -86,6 +86,7 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoT
   Ngrtxt <- as.character(Ngr)
   Ngrtxt[indGrUt] <- paste0('<', Ngrense)	#paste(' (<', Ngrense,')',sep='')	#
 
+  AggVerdier <- list(Hoved = NULL, Tot =NULL)
   AggVerdier$Hoved <- AndelerGr[sortInd]
   AggVerdier$Tot <- round(100*sum(RegData$Variabel)/N, 2)
   GrNavnSort <- paste0(names(Ngr)[sortInd], ' (',Ngrtxt[sortInd], ')')
