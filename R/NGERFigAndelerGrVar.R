@@ -85,6 +85,7 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoT
   sortInd <- order(as.numeric(AndelerGr), decreasing=TRUE)
   Ngrtxt <- as.character(Ngr)
   Ngrtxt[indGrUt] <- paste0('<', Ngrense)	#paste(' (<', Ngrense,')',sep='')	#
+  Ngr <- Ngr[sortInd]
 
   AggVerdier <- list(Hoved = NULL, Tot =NULL)
   AggVerdier$Hoved <- AndelerGr[sortInd]

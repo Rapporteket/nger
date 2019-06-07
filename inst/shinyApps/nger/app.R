@@ -77,8 +77,6 @@ names(sykehusValg) <- sykehusNavn$x
 
 ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
-      # title = 'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER med FIKTIVE data'
-
             # lag logo og tittel som en del av navbar
             title = div(img(src="rap/logo.svg", alt="Rapporteket", height="26px"), regTitle),
             # sett inn tittle ogsÃ¥ i browser-vindu
@@ -158,12 +156,12 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
                sidebarPanel(width=3,
                             h3('Utvalg'),
-                            conditionalPanel(condition = "input.ark == 'Antall registrerte operasjoner'",
+                            conditionalPanel(condition = "input.ark == 'Antall operasjoner'",
                                              dateInput(inputId = 'sluttDatoReg', label = 'Velg sluttdato', language="nb",
                                                        value = Sys.Date(), max = Sys.Date() )
                             ),
                             conditionalPanel(
-                              condition = "input.ark == 'Antall registrerte operasjoner'",
+                              condition = "input.ark == 'Antall operasjoner'",
                               selectInput(inputId = "tidsenhetReg", label="Velg tidsenhet",
                                           choices = rev(c('År'= 'Aar', 'Måned'='Mnd')))),
                             conditionalPanel(
@@ -181,22 +179,29 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
                mainPanel(
                  tabsetPanel(id='ark',
-                             tabPanel('Antall registrerte operasjoner',
+                             tabPanel('Antall operasjoner',
+                                      h2("Antall opphold per avdeling"),
                                       uiOutput("undertittelReg"),
                                       p("Velg tidsperiode ved å velge sluttdato/tidsenhet i menyen til venstre"),
                                       br(),
                                       fluidRow(
-                                        tableOutput("tabAntOpphShMnd12"),
-                                        downloadButton(outputId = 'lastNed_tabAntOpph', label='Last ned')
+                                        tableOutput("tabAntOpphSh")
+                                        ,downloadButton(outputId = 'lastNed_tabAntOpph', label='Last ned')
                                       )
                              ),
+                              # output$tabAntOpphSh <- renderTable({
+                             #   switch(input$tidsenhetReg,
+                             #          Mnd=tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12), #input$datovalgTab[2])
+                             #          Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg))
+                             # }, rownames = T, digits=0, spacing="xs"
+
                              tabPanel('Antall registrerte skjema',
                                       h4("Tabellen viser antall registrerte skjema for valgt tidsperiode"),
                                       p("Velg tidsperiode i menyen til venstre"),
                                       br(),
                                       fluidRow(
-                                        tableOutput("tabAntSkjema"),
-                                        downloadButton(outputId = 'lastNed_tabAntSkjema', label='Last ned')
+                                        tableOutput("tabAntSkjema")
+                                        #,downloadButton(outputId = 'lastNed_tabAntSkjema', label='Last ned')
                                       )
                              )
 
@@ -271,7 +276,7 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
          sidebarPanel(width = 3,
                       h3('Utvalg'),
                       selectInput(
-                        inputId = "valgtVar", label="Velg variabel (flere kommer)",
+                        inputId = "valgtVar", label="Velg variabel",
                         choices = sort(c('Alder' = 'Alder',
                                          'Alvorlighetsgrad, postop. kompl.' = 'Opf0AlvorlighetsGrad',
                                          'Anestesitype' = 'OpAnestesi',
@@ -645,7 +650,7 @@ server <- function(input, output) {
                                      Mnd=tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12), #input$datovalgTab[2])
                                      Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg))
         #Aar=xtable::xtable(tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg)), digits=0)
-        output$tabAntOpphShMnd12 <- renderTable(tabAntOpphShMndAar, rownames = T, digits=0, spacing="xs")
+        output$tabAntOpphSh <- renderTable(tabAntOpphShMndAar, rownames = T, digits=0, spacing="xs")
         output$lastNed_tabAntOpph <- downloadHandler(
           filename = function(){paste0('tabAntOpph.csv')},
           content = function(file, filename){write.csv2(tabAntOpphShMndAar, file, row.names = T, na = '')

@@ -269,12 +269,18 @@ dataTilResultatPort(RegData=NGERData, valgtKI='KomplIntra', OpMetode = 2, aar=aa
 # TSS2 - sumskår, gj.sn.
 dataTilResultatPort(RegData=NGERData, valgtKI='Tss2Sumskaar', aar=aar)
 
-# Laparoskopi: Komplikasjoner etter operasjon Middels, alvorlig, død
-#(KomplPostop)
-dataTilResultatPort(RegData=NGERData, valgtKI='Opf0AlvorlighetsGrad', figurtype='andelGrVar', OpMetode = 1, aar=aar)
+# # Laparoskopi: Komplikasjoner etter operasjon Middels, alvorlig, død
+# #(KomplPostop)
+# dataTilResultatPort(RegData=NGERData, valgtKI='Opf0AlvorlighetsGrad', figurtype='andelGrVar', OpMetode = 1, aar=aar)
+#
+# # Hysteroskopi: Komplikasjoner etter operasjon Middels, alvorlig, død
+# dataTilResultatPort(RegData=NGERData, valgtKI='Opf0AlvorlighetsGrad',  OpMetode = 2, aar=aar)
 
-# Hysteroskopi: Komplikasjoner etter operasjon Middels, alvorlig, død
-dataTilResultatPort(RegData=NGERData, valgtKI='Opf0AlvorlighetsGrad',  OpMetode = 2, aar=aar)
+# Laparoskopi: Komplikasjoner etter operasjon
+dataTilResultatPort(RegData=NGERData, valgtKI='KomplPostop', figurtype='andelGrVar', OpMetode = 1, aar=aar)
+
+# Hysteroskopi: Komplikasjoner etter operasjon
+dataTilResultatPort(RegData=NGERData, valgtKI='KomplPostop',  OpMetode = 2, aar=aar)
 
 # test <- function(x) {sum(x, na.rm = T)/mean(x, na.rm = T)}
 # test(RegData$Aar)
