@@ -38,8 +38,8 @@ NGERPreprosess <- function(RegData=RegData)
   RegData$InnDato <- as.Date(RegData$HovedDato, format="%Y-%m-%d")
   #RegData$InnDato <- as.Date(RegData$OpDato, format="%Y-%m-%d") #
   RegData$MndNum <- as.POSIXlt(RegData$HovedDato, format="%Y-%m-%d")$mon +1
-  RegData$Kvartal <- ceiling(RegData$Mnd/3)
-  RegData$Halvaar <- ceiling(RegData$Mnd/6)
+  RegData$Kvartal <- ceiling(RegData$MndNum/3)
+  RegData$Halvaar <- ceiling(RegData$MndNum/6)
   RegData$Aar <- 1900 + as.POSIXlt(RegData$HovedDato, format="%Y-%m-%d")$year #strptime(RegData$Innleggelsestidspunkt, format="%Y")$year
   RegData$MndAar <- format(RegData$InnDato, '%b%y')
 

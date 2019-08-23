@@ -100,7 +100,8 @@ xAkseTxt <- switch(tidsenhet,
   #-------------------------Beregning av andel-----------------------------------------
 
     AggVerdier <- list(Hoved = 0, Rest =0)
-    ind <- NGERUtvalg$ind
+    Ngr <- list(Hoved = 0, Rest =0)
+	ind <- NGERUtvalg$ind
     N <- list(Hoved = length(ind$Hoved), Rest =length(ind$Rest))
 
   #RegData$TidsEnhet <- factor(RegData$TidsEnhet, levels=as.character(tidtxt))
@@ -122,7 +123,7 @@ xAkseTxt <- switch(tidsenhet,
                       # KImaaltxt <- KImaaltxt,
                        #soyletxt=soyletxt,
                        grtxt=levels(RegData$TidsEnhet),
-                       grtxt2=grtxt2,
+                       #grtxt2=grtxt2,
                        varTxt=NGERVarSpes$varTxt,
                        #tidtxt=tidtxt, #NGERVarSpes$grtxt,
                        tittel=NGERVarSpes$tittel,

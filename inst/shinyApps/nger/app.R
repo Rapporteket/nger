@@ -5,6 +5,7 @@ library(knitr)
 library(lubridate)
 #ibrary(shinyBS) # Additional Bootstrap Controls
 library(kableExtra)
+library(rapFigurer)
 #library(zoo)
 
 startDato <- '2018-01-01' #Sys.Date()-364
