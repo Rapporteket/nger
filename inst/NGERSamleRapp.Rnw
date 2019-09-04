@@ -154,7 +154,7 @@ if (!exists('RegData')){
 #RegData <- NGERPreprosess(RegData)
 
 library(xtable)
-library(plyr)
+library(dplyr)
 outfile <- ''
 enhetsUtvalg <- 1
 OpMetode<-99
@@ -433,66 +433,68 @@ print(xtable(InstrTab, digits=0, align=c('l', rep('r', max(c(1,ncol(InstrTab)), 
 #??? Ett forløp har reoperasjon til både laparoskopi og laparatomi. Er det mulig? [Fdato: 08.06.1975	ForlopsID=9252]
 #Må legge til egetSh
 
+# #Blødning:
+# BlodTxt <- c('Blødning', '...I abdominal vegg', '...Intraabdominal', '...Vaginal')
+# Blod <- c('Opf0KomplBlodning', 'Opf0BlodningAbdom', 'Opf0BlodningIntraabdominal', 'Opf0BlodningVaginal')
+#
+# #Utstyr
+# UtstyrTxt <- c('Problemer m/utstyr','...Instrumenter', '...Nett', '...Laparaskopisk sutur')
+# Utstyr <- c('Opf0KomplUtstyr', 'Opf0UtstyrInstrumenter', 'Opf0UtstyrNett', 'Opf0UtstyrSutur')
+#
+# #Infeksjon:
+# # Opf0InfEndometritt = Salpingitt JA, ok.
+# InfTxt <- c('Infeksjon', '...Urinveisinf.', '...I operasjonssår', '...Intraabdominal ', '...Salpingitt', '...Andre inf.')
+# Infeksjon <- c('Opf0KomplInfeksjon', 'Opf0InfUVI', 'Opf0InfOpSaar'  , 'Opf0InfIntraabdominal',
+#                'Opf0InfEndometritt', 'Opf0InfAnnen')
+#
+# #Organskade
+# OrganTxt <- c('Organskade', '...Blære', '...Tarm', '...Ureter', '...Kar', '...Andre')
+# Organ <- c('Opf0KomplOrgan', 'Opf0OrganBlare', 'Opf0OrganTarm', 'Opf0OrganUreter', 'Opf0OrganKar', 'Opf0OrganAnnen')
+#
+# #Reoperasjon
+# ReopTxt <- c('Reoperasjon', '...til laparoskopi', '...laparotomi')
+# Reop <- c("Opf0Reoperasjon", "Opf0ReopLaparoskopi", "Opf0ReopLaparotomi")
+#
+#
+# indMed <- (which(RegData$Opf0Komplikasjoner %in% 0:1) %i% which(RegData$OpType %in% c(1,3)))
+#
+# LapKomplVar <- c(Blod, Utstyr, Infeksjon, Organ, Reop)
+# LapKomplTxt <- c(BlodTxt, UtstyrTxt, InfTxt, OrganTxt, ReopTxt)
+# RegDataLapKompl <- RegData[indMed, c(LapKomplVar, "Opf0Komplikasjoner")]
+#
+# indEgenLap <- which(RegData$ReshId == reshID)
+# AntLap <- dim(RegDataLapKompl)[1]
+# AndelLapKompl <- colSums(RegDataLapKompl, na.rm=T)/AntLap*100
+# AndelLapKomplEget <- colSums(RegDataLapKompl[indEgenLap,], na.rm=T)/length(indEgenLap)*100
+#
+# AndelLapKomplTab <- cbind(
+#   'Eget' = AndelLapKomplEget,
+#   'Hele landet' = AndelLapKompl)
+# #names(AndelLapKompl)<- LapKomplTxt
+# row.names(AndelLapKomplTab) <- c(LapKomplTxt, 'Hele landet')
 
-#Blødning:
-BlodTxt <- c('Blødning', '...I abdominal vegg', '...Intraabdominal', '...Vaginal')
-Blod <- c('Opf0KomplBlodning', 'Opf0BlodningAbdom', 'Opf0BlodningIntraabdominal', 'Opf0BlodningVaginal')
-
-#Utstyr
-UtstyrTxt <- c('Problemer m/utstyr','...Instrumenter', '...Nett', '...Laparaskopisk sutur')
-Utstyr <- c('Opf0KomplUtstyr', 'Opf0UtstyrInstrumenter', 'Opf0UtstyrNett', 'Opf0UtstyrSutur')
-
-#Infeksjon:
-# Opf0InfEndometritt = Salpingitt JA, ok.
-InfTxt <- c('Infeksjon', '...Urinveisinf.', '...I operasjonssår', '...Intraabdominal ', '...Salpingitt', '...Andre inf.')
-Infeksjon <- c('Opf0KomplInfeksjon', 'Opf0InfUVI', 'Opf0InfOpSaar'  , 'Opf0InfIntraabdominal',
-               'Opf0InfEndometritt', 'Opf0InfAnnen')
-
-#Organskade
-OrganTxt <- c('Organskade', '...Blære', '...Tarm', '...Ureter', '...Kar', '...Andre')
-Organ <- c('Opf0KomplOrgan', 'Opf0OrganBlare', 'Opf0OrganTarm', 'Opf0OrganUreter', 'Opf0OrganKar', 'Opf0OrganAnnen')
-
-#Reoperasjon
-ReopTxt <- c('Reoperasjon', '...til laparoskopi', '...laparotomi')
-Reop <- c("Opf0Reoperasjon", "Opf0ReopLaparoskopi", "Opf0ReopLaparotomi")
-
-
-indMed <- (which(RegData$Opf0Komplikasjoner %in% 0:1) %i% which(RegData$OpType %in% c(1,3)))
-
-LapKomplVar <- c(Blod, Utstyr, Infeksjon, Organ, Reop)
-LapKomplTxt <- c(BlodTxt, UtstyrTxt, InfTxt, OrganTxt, ReopTxt)
-RegDataLapKompl <- RegData[indMed, c(LapKomplVar, "Opf0Komplikasjoner")]
-
-indEgenLap <- which(RegData$ReshId == reshID)
-AntLap <- dim(RegDataLapKompl)[1]
-AndelLapKompl <- colSums(RegDataLapKompl, na.rm=T)/AntLap*100
-AndelLapKomplEget <- colSums(RegDataLapKompl[indEgenLap,], na.rm=T)/length(indEgenLap)*100
-
-AndelLapKomplTab <- cbind(
-  'Eget' = AndelLapKomplEget,
-  'Hele landet' = AndelLapKompl)
-#names(AndelLapKompl)<- LapKomplTxt
-row.names(AndelLapKomplTab) <- c(LapKomplTxt, 'Hele landet')
-print(xtable(AndelLapKomplTab, digits=c(0,1,1), align=c('l', 'l', rep('r', max(c(1,ncol(AndelLapKomplTab)-1), na.rm=T))),
+LapKomplData <- komplLap(RegData, reshID=reshID, datoFra='2019-01-01', datoTil=Sys.Date())
+print(xtable::xtable(LapKomplData$AndelLapKomplTab, digits=c(0,1,1),
+                     align=c('l', 'l', rep('r', max(c(1,ncol(LapKomplData$AndelLapKomplTab)-1), na.rm=T))),
              caption=paste0('Hyppighet av laparoskopiske komplikasjoner. ', tidsperiodeTxt,
-                            ' Totalt ble det utført ', AntLap, 'laparaskopier i tidsperioden.'),
+                            ' Totalt ble det utført ', LapKomplData$AntLap, ' laparaskopier i tidsperioden.'),
              label='tab:LapKompl'), include.rownames=TRUE, include.colnames=TRUE)
 
 @
 
 <<'LapDiv', results='asis', echo=FALSE, eval=T>>=
-#Få med resultat for eget sykehus.
-RegDataLap <- RegDataHele[which(RegDataHele$OpMetode %in% c(1,3)), c('LapKonvertert','Aar','ReshId')]
-RegDataLap$Aar <- as.factor(RegDataLap$Aar)
-indKonv <- which(RegDataLap$LapKonvertert == 1)
-indEgenLap <- which(RegDataLap$ReshId == reshID)
-Konv <- table(RegDataLap[indKonv,'Aar'])/table(RegDataLap$Aar)*100
-KonvEget <- table(RegDataLap[(indEgenLap %i% indKonv) , 'Aar'])/table(RegDataLap$Aar[indEgenLap])*100
-KonvTab <- rbind(
-  'Konvertert' = Konv,
-  'Konvertert, Eget' = KonvEget)
+# RegDataLap <- RegDataHele[which(RegDataHele$OpMetode %in% c(1,3)), c('LapKonvertert','Aar','ReshId')]
+# RegDataLap$Aar <- as.factor(RegDataLap$Aar)
+# indKonv <- which(RegDataLap$LapKonvertert == 1)
+# indEgenLap <- which(RegDataLap$ReshId == reshID)
+# Konv <- table(RegDataLap[indKonv,'Aar'])/table(RegDataLap$Aar)*100
+# KonvEget <- table(RegDataLap[(indEgenLap %i% indKonv) , 'Aar'])/table(RegDataLap$Aar[indEgenLap])*100
+# KonvTab <- rbind(
+#   'Konvertert' = Konv,
+#   'Konvertert, Eget' = KonvEget)
+KonvTab <- konvertertLap(RegData=RegData, reshID=reshID, datoFra='2017-01-01', datoTil=Sys.Date())
 AntKol <- ncol(KonvTab)
-print(xtable(KonvTab, digits=c(0,rep(1, AntKol)), align=c('l', rep('r', AntKol, na.rm=T)),
+print(xtable::xtable(KonvTab, digits=c(0,rep(1, AntKol)), align=c('l', rep('r', AntKol, na.rm=T)),
              caption='Andel laparoskopiske inngrep som konverteres til laparotomi.',
              label='tab:LapKonv'), include.rownames=TRUE, include.colnames=TRUE)
 

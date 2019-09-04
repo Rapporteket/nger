@@ -84,7 +84,7 @@ Argumentet \emph{valgtVar} har følgende valgmuligheter:
     \item HysGjforingsGrad: Gjennomføringsgrad av hysteroskopi
    		Koder:	1-Fullstendig, 2-Ufullstendig, 3-Mislykket
     \item HysKomplikasjoner: Hysteroskopi intrapoerative komplikasjoner
-    \item KomplPost: Postoperative komplikasjoner
+    \item KomplPostop: Postoperative komplikasjoner
     \item KomplPostUtd: Postoperative komplikasjoner for ulike utdanningsgrupper
     \item KomplReopUtd: Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper
     \item LapKomplikasjoner: Laparoskopiske intrapoerative komplikasjoner

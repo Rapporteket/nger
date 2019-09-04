@@ -3,6 +3,7 @@ library(nger)
 library(shiny)
 library(knitr)
 library(lubridate)
+library(plyr)
 #ibrary(shinyBS) # Additional Bootstrap Controls
 library(kableExtra)
 library(rapFigurer)
@@ -75,6 +76,12 @@ names(sykehusValg) <- sykehusNavn$x
                 'Elektiv'=1,
                 'Akutt'=2,
                 'Ø-hjelp'=3)
+ dagkir <- c('Alle'=9,
+             'Dagkirurgi'=1,
+             'Ikke dagkirurgi'=0)
+
+ tidsenheter <- rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
+                      'Kvartal'='Kvartal', 'Måned'='Mnd'))
 
 ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
@@ -241,6 +248,9 @@ h3('Registerets kvalitetsindikatorer', align='center'),
                       selectInput(inputId = 'hastegradKval', label='Hastegrad',
                                   choices = hastegrad
                       ),
+                      selectInput(inputId = 'dagkirKval', label='Dagkirurgi',
+                                  choices = dagkir
+                      ),
                       selectInput(inputId = 'alvorlighetKomplKval',
                                   label='Alvorlighetsgrad, postoperative komplikasjoner',
                                   multiple = T, #selected=0,
@@ -270,6 +280,50 @@ h3('Registerets kvalitetsindikatorer', align='center'),
 
 ), #tab Kvalitetsindikatorer
 
+#--------------Tabelloversikter-------------
+tabPanel(p("Tabelloversikter", title = 'Instrumentbruk'),
+         h3('Tabelloversikter', align='center'),
+         sidebarPanel(width=3,
+                      h3('Utvalg'),
+                      dateRangeInput(inputId = 'datovalgTab', start = startDato, end = Sys.Date(),
+                                     label = "Tidsperiode", separator="t.o.m.", language="nb"),
+                      selectInput(inputId = "tidsenhetTab", label="Velg tidsenhet",
+                                  choices = tidsenheter)
+         ),
+         mainPanel(
+           tabsetPanel(
+             tabPanel('Pasientegenskaper',
+                      br(),
+                      h4('Gjennomsnittlig BMI, fødsler, graviditeter og knivtid'),
+                      br(),
+                      tableOutput('tabPasEgensk')
+                      #downloadButton(outputId = 'lastNed_tabPasEgensk', label='Last ned tabell')
+             ),tabPanel('Instrumentbruk, Lap',
+                      br(),
+                      h4('Tabellen viser antall ganger ulike instrumenter er benyttet ved laparoskopi. '),
+                      br(),
+                      tableOutput('tabInstrBruk'),
+                      downloadButton(outputId = 'lastNed_tabInstrBruk', label='Last ned tabell')
+             ),
+             tabPanel('Komplikasjoner, Lap.',
+                      br(),
+                      uiOutput("tittelLapKompl"),
+                      br(),
+                      tableOutput('LapKompl'),
+                      downloadButton(outputId = 'lastNed_tabLapKompl', label='Last ned tabell')
+             ),
+             tabPanel('Konvertering til laparotomi',
+                      br(),
+                      h3('Skal denne være med..?'),
+                      h4('Andel (%) laparoskopiske inngrep som konverteres til laparotomi.'),
+                      br(),
+                      tableOutput('LapKonv')
+                      #downloadButton(outputId = 'lastNed_tabKvalInd', label='Last ned tabell')
+             )
+           ))
+),
+
+
       #--------Fordelinger-----------
 tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplikasjoner, prosessvariable, prosedyrer,
            RAND36, TSS2, utdanning'),
@@ -278,7 +332,7 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
                       h3('Utvalg'),
                       selectInput(
                         inputId = "valgtVar", label="Velg variabel",
-                        choices = sort(c('Alder' = 'Alder',
+                        choices = c('Alder' = 'Alder',
                                          'Alvorlighetsgrad, postop. kompl.' = 'Opf0AlvorlighetsGrad',
                                          'Anestesitype' = 'OpAnestesi',
                                          'ASA-grad' = 'OpASA',
@@ -324,7 +378,7 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
                                          'TSS2, sp.5 Enighet om målsetning' = 'Tss2Enighet',
                                          'TSS2, sp.6 Generell oppfatning av avdelinga' = 'Tss2Generelt',
                                          'Utdanning' = 'Utdanning'
-                        ))
+                        )
                       ),
 
 
@@ -522,8 +576,7 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
                                         choices = c("Egen mot resten av landet"=1, "Hele landet"=0, "Egen enhet"=2)
                             ),
                             selectInput(inputId = "tidsenhetGjsn", label="Velg tidsenhet",
-                                        choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
-                                                        'Kvartal'='Kvartal', 'Måned'='Mnd'))
+                                        choices = tidsenheter
                             )
 
 
@@ -637,7 +690,7 @@ server <- function(input, output) {
             digits = 0
       )
       #tabAntOpphShMnd(RegData=RegData, reshID = 8)
- #----------Tabeller, registreringsoversikter ----------------------
+ #----------Registreringsoversikter ----------------------
 
             output$undertittelReg <- renderUI({
                   br()
@@ -680,6 +733,7 @@ server <- function(input, output) {
                          minald=as.numeric(input$alderKval[1]), maxald=as.numeric(input$alderKval[2]),
                          OpMetode = as.numeric(input$opMetodeKval),
                          Hastegrad = as.numeric(input$hastegradKval),
+                         dagkir = as.numeric(input$dagkirKval),
                          velgDiag = as.numeric(input$velgDiagKval),
                         # AlvorlighetKompl = as.numeric(input$alvorlighetKompl),
                          enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
@@ -723,6 +777,44 @@ server <- function(input, output) {
           content = function(file, filename){write.csv2(tabKvalInd, file, row.names = T, na = '')
           })
       }) #observe Kvalitetsind
+
+
+      #----------Tabelloversikter ----------------------
+      observe({
+        #tidsenheter <- rev(c('År'= 'Aar', 'Halvår' = 'Halvaar', 'Kvartal'='Kvartal', 'Måned'='Mnd'))
+        tabPasEgensk <- NGERpasientegenskaper(RegData = RegData, tidsenhet = input$tidsenhetTab,
+                                           datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2])
+        output$tabPasEgensk <- renderTable(tabPasEgensk, rownames = T, digits=1, spacing="xs")
+
+
+        # tab <- xtable::xtable(TabPasKar, align=c("l", "l", rep("r", ncol(TabPasKar)-1)),
+        #                       digits=c(0,0,rep(1, ncol(TabPasKar)-1)),
+        #                       caption=cap, label="tab:pasKarakteristika")
+
+
+
+        tabInstrumentbruk <- instrumentbruk(RegData = RegData,
+                                            datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2])
+         output$tabInstrBruk <- renderTable(tabInstrumentbruk, rownames = T, digits=0, spacing="xs")
+         output$lastNed_tabInstrBruk <- downloadHandler(
+           filename = function(){paste0('tabInstrumentbruk.csv')},
+           content = function(file, filename){write.csv2(tabInstrumentbruk, file, row.names = T, na = '')})
+
+
+         LapKomplData <- komplLap(RegData=RegData, reshID=reshID, datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2])
+         output$tittelLapKompl <- renderUI(tagList(
+           h4('Hyppighet (%) av laparoskopiske komplikasjoner. '),
+           h4(paste0('Totalt ble det utført ', LapKomplData$AntLap, ' laparaskopier i tidsperioden.'))))
+         output$LapKompl <- renderTable(LapKomplData$AndelLapKomplTab, rownames = T, digits=1, spacing="xs") #,caption = tabtxtLapKompl)
+         output$lastNed_tabLapKompl <-  downloadHandler(
+           filename = function(){paste0('tabLapKompl.csv')},
+           content = function(file, filename){write.csv2(LapKomplData$AntLap, file, row.names = T, na = '')})
+
+
+        LapKonv <- konvertertLap(RegData=RegData, reshID=reshID, datoFra=input$datovalgTab[1], datoTil=input$datovalgTab[2])
+        output$LapKonv <- renderTable(LapKonv, rownames = T, digits=1, spacing="xs") #,caption = tabtxtLapKompl)
+
+      })
 
 
 

@@ -43,6 +43,7 @@ tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0){
 }
 #tabAntOpphShMnd(RegData, datoTil=Sys.Date(), antMnd=3)
 
+
 #' @section Antall opphold siste 5 år
 #' @rdname NGERtabeller
 #' @export
@@ -152,37 +153,48 @@ lagTabavFigGjsnGrVar <- function(UtDataFraFig){
 #' @rdname NGERtabeller
 #' @export
 
-NGERpasientegenskaper <- function(RegData) {
+NGERpasientegenskaper <- function(RegData, datoFra='2019-01-01', datoTil=Sys.Date(), tidsenhet='Kvartal') {
   # make dummy column for all MCEs
+  RegData <- NGERUtvalgEnh(RegData=RegData, datoFra = datoFra, datoTil = datoTil)$RegData
+  RegDataFunk <- SorterOgNavngiTidsEnhet(RegData=RegData, tidsenhet = tidsenhet)
+  RegData <- RegDataFunk$RegData
+  tidtxt <- RegDataFunk$tidtxt
+  # xAkseTxt <- switch(tidsenhet,
+  #                    Aar='Operasjonsår',
+  #                    Halvaar = 'Operasjonsår og -halvår',
+  #                    Kvartal = 'Operasjonsår og -kvartal',
+  #                    Mnd='Operasjonsår og -måned')
+
+
   n <- dim(RegData)[1]
   RegData$dummy <- rep("\\textbf{BMI, alle} ($kg/m^2$)", n)
-  myTab <- xtabs(OpBMI ~ dummy + Aar,
-                 aggregate(OpBMI~dummy+Aar,RegData,mean))
+  myTab <- xtabs(OpBMI ~ dummy + TidsEnhetSort,
+                 aggregate(OpBMI~dummy+TidsEnhetSort,RegData,mean))
   myTab <- rbind(myTab,
-                 xtabs(OpBMI ~ OpMetode + Aar,
-                       aggregate(OpBMI~OpMetode+Aar,RegData,mean)))
+                 xtabs(OpBMI ~ OpMetode + TidsEnhetSort,
+                       aggregate(OpBMI~OpMetode+TidsEnhetSort,RegData,mean)))
   RegData$dummy <- "\\textbf{Fødsler, alle} (\\textit{antall})"
   myTab <- rbind(myTab,
-                 xtabs(OpPariteter ~ dummy + Aar,
-                       aggregate(OpPariteter~dummy+Aar,RegData,mean)))
+                 xtabs(OpPariteter ~ dummy + TidsEnhetSort,
+                       aggregate(OpPariteter~dummy+TidsEnhetSort,RegData,mean)))
   myTab <- rbind(myTab,
-                 xtabs(OpPariteter ~ OpMetode + Aar,
-                       aggregate(OpPariteter~OpMetode+Aar,RegData,mean)))
+                 xtabs(OpPariteter ~ OpMetode + TidsEnhetSort,
+                       aggregate(OpPariteter~OpMetode+TidsEnhetSort,RegData,mean)))
   RegData$dummy <- "\\textbf{Graviditeter, alle} (\\textit{antall})"
   myTab <- rbind(myTab,
-                 xtabs(OpGraviditeter ~ dummy + Aar,
-                       aggregate(OpGraviditeter~dummy+Aar,RegData,mean)))
+                 xtabs(OpGraviditeter ~ dummy + TidsEnhetSort,
+                       aggregate(OpGraviditeter~dummy+TidsEnhetSort,RegData,mean)))
   myTab <- rbind(myTab,
-                 xtabs(OpGraviditeter ~ OpMetode + Aar,
-                       aggregate(OpGraviditeter~OpMetode+Aar,RegData,mean)))
+                 xtabs(OpGraviditeter ~ OpMetode + TidsEnhetSort,
+                       aggregate(OpGraviditeter~OpMetode+TidsEnhetSort,RegData,mean)))
   RegData$dummy <- "\\textbf{Knivtider, alle} (\\textit{minutt})"
   myTab <- rbind(myTab,
-                 xtabs(OpTid ~ dummy + Aar,
-                       aggregate(OpTid~dummy+Aar,RegData,mean)))
+                 xtabs(OpTid ~ dummy + TidsEnhetSort,
+                       aggregate(OpTid~dummy+TidsEnhetSort,RegData,mean)))
   myTab <- rbind(myTab,
-                 xtabs(OpTid ~ OpMetode + Aar,
-                       aggregate(OpTid~OpMetode+Aar,RegData,mean)))
-
+                 xtabs(OpTid ~ OpMetode + TidsEnhetSort,
+                       aggregate(OpTid~OpMetode+TidsEnhetSort,RegData,mean)))
+colnames(myTab) <- tidtxt
   # move rownames to its own column do allow duplicate names
   # OpMetode 1=laparo, 2=hysteroskopi, 3=begge
   pe <- rownames(myTab)
@@ -197,8 +209,123 @@ NGERpasientegenskaper <- function(RegData) {
 
 
 
+#' @section instrumentbruk, Laparaskopi
+#' @rdname NGERtabeller
+#' @export
+instrumentbruk <- function(RegData, datoFra='2019-01-01', datoTil=Sys.Date()){
+  #Fra mars 2016 er morcellator med og uten pose.Velger å ikke ta høyde for dette siden det nå er gamle tall
+  #LapSingelPort = portioadapter??
+  #LapIntKombo = Thunderbeat
+RegData <- NGERUtvalgEnh(RegData, datoFra = datoFra, datoTil = datoTil)$RegData
+  Instr <- c('LapMorcellatorUtenPose', 'LapMorcellatorMedPose', 'LapHarmonicS',
+             'LapSingelPort', 'LapIntKombo', 'LapRobotKirurgi')
+NavnInstr <- c('Morc.u/pose', 'Morc. m/pose', 'Harm. Scalp.', 'Portioad.', 'IntKombo', 'Robotkir.') #}
 
-#' @section Vise figurdata som tabell, sentralmål per sykshus
+RegDataUtvalg <- RegData[which(RegData$OpMetode==1), c('ShNavn', Instr)]
+
+#InstrTab <- plyr::daply(.data=RegDataUtvalg[ ,Instr], .(RegDataUtvalg$ShNavn), .fun=colwise(sum), na.rm=T)  #Liste m/6dim
+#Får trøbbel med at InstrTab blir liste
+
+InstrTabDum <- plyr::ddply(RegDataUtvalg[ ,Instr], .(RegDataUtvalg$ShNavn), .drop=F, colwise(sum), na.rm=T)  #Dataramme m/7dim
+Tot <- colSums(InstrTabDum[,2:(length(Instr)+1)])
+ShNavn <- InstrTabDum[,1]
+
+InstrTab <- rbind(InstrTabDum[,2:(length(Instr)+1)],
+                  Sum = Tot)
+
+colnames(InstrTab) <- NavnInstr
+rownames(InstrTab) <- c(ShNavn, 'Hele landet')
+
+# print(xtable(InstrTab, digits=0, align=c('l', rep('r', max(c(1,ncol(InstrTab)), na.rm=T))),
+#              caption=paste('Antall ganger ulike instrumenter er benyttet.', tidsperiodeTxt),
+#              label='tab:Instr'), include.rownames=TRUE, include.colnames=TRUE)
+return(invisible(InstrTab))
+}
+
+
+
+#' @section komplikasjoner, Laparaskopi
+#' @rdname NGERtabeller
+#' @export
+komplLap <- function(RegData, reshID=0, datoFra='2019-01-01', datoTil=Sys.Date()){
+
+  #Blødning:
+  BlodTxt <- c('Blødning', '...I abdominal vegg', '...Intraabdominal', '...Vaginal')
+Blod <- c('Opf0KomplBlodning', 'Opf0BlodningAbdom', 'Opf0BlodningIntraabdominal', 'Opf0BlodningVaginal')
+
+#Utstyr
+UtstyrTxt <- c('Problemer m/utstyr','...Instrumenter', '...Nett', '...Laparaskopisk sutur')
+Utstyr <- c('Opf0KomplUtstyr', 'Opf0UtstyrInstrumenter', 'Opf0UtstyrNett', 'Opf0UtstyrSutur')
+
+#Infeksjon:
+# Opf0InfEndometritt = Salpingitt JA, ok.
+InfTxt <- c('Infeksjon', '...Urinveisinf.', '...I operasjonssår', '...Intraabdominal ', '...Salpingitt', '...Andre inf.')
+Infeksjon <- c('Opf0KomplInfeksjon', 'Opf0InfUVI', 'Opf0InfOpSaar'  , 'Opf0InfIntraabdominal',
+               'Opf0InfEndometritt', 'Opf0InfAnnen')
+
+#Organskade
+OrganTxt <- c('Organskade', '...Blære', '...Tarm', '...Ureter', '...Kar', '...Andre')
+Organ <- c('Opf0KomplOrgan', 'Opf0OrganBlare', 'Opf0OrganTarm', 'Opf0OrganUreter', 'Opf0OrganKar', 'Opf0OrganAnnen')
+
+#Reoperasjon
+ReopTxt <- c('Reoperasjon', '...til laparoskopi', '...laparotomi')
+Reop <- c("Opf0Reoperasjon", "Opf0ReopLaparoskopi", "Opf0ReopLaparotomi")
+
+RegData <- NGERUtvalgEnh(RegData, datoFra = datoFra, datoTil = datoTil)$RegData
+indMed <- intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$OpType %in% c(1,3)))
+
+LapKomplVar <- c(Blod, Utstyr, Infeksjon, Organ, Reop)
+LapKomplTxt <- c(BlodTxt, UtstyrTxt, InfTxt, OrganTxt, ReopTxt)
+RegDataLapKompl <- RegData[indMed, c(LapKomplVar, "Opf0Komplikasjoner")]
+
+AntLap <- dim(RegDataLapKompl)[1]
+AndelLapKompl <- colSums(RegDataLapKompl, na.rm=T)/AntLap*100
+AndelLapKomplTab <- as.table(AndelLapKompl)
+
+if (reshID != 0) {
+  indEgenLap <- which(RegData$ReshId == reshID)
+  AndelLapKomplEget <- colSums(RegDataLapKompl[indEgenLap,], na.rm=T)/length(indEgenLap)*100
+
+  AndelLapKomplTab <- cbind(
+    'Eget' = AndelLapKomplEget,
+    'Hele landet' = AndelLapKompl)
+}
+row.names(AndelLapKomplTab) <- c(LapKomplTxt, 'Totalt')
+# print(xtable(AndelLapKomplTab, digits=c(0,1,1), align=c('l', 'l', rep('r', max(c(1,ncol(AndelLapKomplTab)-1), na.rm=T))),
+#              caption=paste0('Hyppighet av laparoskopiske komplikasjoner. ', tidsperiodeTxt,
+#                             ' Totalt ble det utført ', AntLap, 'laparaskopier i tidsperioden.'),
+#              label='tab:LapKompl'), include.rownames=TRUE, include.colnames=TRUE)
+UtData <- list(AndelLapKomplTab=AndelLapKomplTab, AntLap=AntLap)
+return(UtData)
+}
+
+
+
+#' @section Konvertert laparoskopi til laparatomi
+#' @rdname NGERtabeller
+#' @export
+konvertertLap <- function(RegData, reshID=0, datoFra='2016-01-01', datoTil=Sys.Date()){
+  RegData <- NGERUtvalgEnh(RegData = RegData, datoFra = datoFra, datoTil = datoTil)$RegData
+  RegDataLap <- RegData[which(RegData$OpMetode %in% c(1,3)), c('LapKonvertert','Aar','ReshId')]
+  RegDataLap$Aar <- as.factor(RegDataLap$Aar)
+  indKonv <- which(RegDataLap$LapKonvertert == 1)
+  Konv <- table(RegDataLap[indKonv,'Aar'])/table(RegDataLap$Aar)*100
+  KonvTab <- Konv
+if (reshID != 0){
+  indEgenLap <- which(RegDataLap$ReshId == reshID)
+  KonvEget <- table(RegDataLap[intersect(indEgenLap, indKonv) , 'Aar'])/table(RegDataLap$Aar[indEgenLap])*100
+  KonvTab <- rbind(
+    'Konvertert' = Konv,
+    'Konvertert, Eget' = KonvEget)}
+  #AntKol <- ncol(KonvTab)
+  # print(xtable(KonvTab, digits=c(0,rep(1, AntKol)), align=c('l', rep('r', AntKol, na.rm=T)),
+  #              caption='Andel laparoskopiske inngrep som konverteres til laparotomi.',
+  #              label='tab:LapKonv'), include.rownames=TRUE, include.colnames=TRUE)
+  return(invisible(KonvTab))
+}
+
+
+#' @section Vise vanligste prosedyrer eller diagnoser
 #' @rdname NGERtabeller
 #' @export
 visVanligsteProcDiag <- function(RegData, ant=20, prosdiag='pros'){

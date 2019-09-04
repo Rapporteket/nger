@@ -66,7 +66,7 @@ NGERFigGjsnGrVar(RegData=NGERData, valgtVar='Tss2Generelt', datoFra=datoFra1aar,
 
 variable <- c('Alder', 'KomplPostopType','KomplPostUtd','LapIntraabdominell', 'Norsktalende', 'OpBMI',
               'Opf0AlvorlighetsGrad','SivilStatus', 'Utdanning')
-
+variable <- 'RegForsinkelse'
 for (valgtVar in variable) {
 	outfile <- paste0(valgtVar, '_ford.pdf')
 	NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil, outfile=outfile)
@@ -97,6 +97,8 @@ for (valgtVar in c('Diagnoser', 'Prosedyrer')) {
 
 variable <- c('KomplIntra','KomplPostop',
 					'Opf0AlvorlighetsGrad','Opf0Reoperasjon', 'OpTid')
+variable <- 'RegForsinkelse'
+
 for (valgtVar in variable) {
   outfile <- paste0(valgtVar, '_', tidsenhet, '.pdf')
   NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
@@ -113,6 +115,7 @@ NGERFigAndelTid(RegData=NGERData, valgtVar='OpAnestesi',   datoFra='2013-01-01',
 #------------------------------ (AndelGrVar) --------------------------
 
 variable <- c('Alder', 'OpAnestesi', 'OpDagkirurgi', 'Opf0Status', 'OpBMI', 'OpTid' )
+variable <- 'RegForsinkelse'
 
 for (valgtVar in variable) {
   outfile <- paste0(valgtVar, '_Shus.pdf')
@@ -125,6 +128,7 @@ variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreE
 variable <- c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
               'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')
 variable <- 'OpTid'
+variable <- 'RegForsinkelse'
 
 valgtMaal <- 'med'
 for (valgtVar in variable) {
@@ -137,6 +141,8 @@ for (valgtVar in variable) {
 
 #------------------------------Tabeller-----------------------------------
 library(xtable)
+library(nger)
+load(paste0('A:/NGER/Aarsrapp2018_2019-08-05.Rdata'))
 RegData <- NGERData
 RegData <- NGERPreprosess(RegData)
 
@@ -152,13 +158,24 @@ xtable::xtable(tabAvdAarN, digits=0, align=c('l', rep('r',ncol(tabAvdAarN))),
 #Tabell med antall registreringer for hvert sykehus, splittet på lap, hys og begge
 tab <- table(RegData[ ,c('ShNavn', "OpMetode", 'Aar')])
 dimnames(tab)$OpMetode <- c('Lap', 'Hys', 'Begge')
+tab <- addmargins(tab, margin = 1)
+#colSums(tab)
 
 tabell <- cbind(tab[,,'2016'],
+                ' ',
                 tab[,,'2017'],
+                ' ',
                 tab[,,'2018'])
 
-xtable::xtable(tabell)
+xtable::xtable(tabell, align=c('l', rep('r',ncol(tabell))),)
 
+ggplot(RegData, aes(OpMetode)) +
+  geom_histogram(bins = 3) +
+  facet_wrap(~ShNavn, ncol=5) +
+  ggtitle("Eksempel")
+
+
+#----
 tabGjsnTid <- t(UtDataGjsnTid$AggVerdier)
 grtxt <-UtDataGjsnTid$grtxt
 if ((min(nchar(grtxt)) == 5) & (max(nchar(grtxt)) == 5)) {

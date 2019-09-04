@@ -14,6 +14,7 @@ Depends:
     R (>= 3.5.0),
     rapbase (>= 1.0.0)
 Remotes: 
+      Rapporteket/rapFigurer
       Rapporteket/rapbase
 Suggests:
     kableExtra,

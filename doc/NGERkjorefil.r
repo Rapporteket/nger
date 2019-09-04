@@ -5,16 +5,19 @@ rm(list=ls())
 library(nger)
 library(knitr)
 library(tools)
-library(plyr)
+library(dplyr)
 library(lubridate)
 
 dev.off()
-reshID <- 8 #110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
-datoFra <- '2018-03-01'
+reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
+reshID <- 8
+datoFra <- '2019-01-01'
 datoTil <- Sys.Date()
+sluttDato <- datoTil
 setwd('C:/ResultattjenesteGIT/nger/inst/')
 data('NGERtulledata', package = 'nger')
-load('A:/NGER/NGER2019-03-18.Rdata')
+load('A:/NGER/NGER2019-09-03.Rdata')
+RegData <- NGERData
   RegData <- NGERPreprosess(RegData=RegData) #I App'en preprosesseres data
 
 knitr::knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
@@ -41,7 +44,7 @@ RegData[indAvvikDato[1:5], c('InnDato', "HovedDato")]
 #Vil "snart" endre spørringa slik at det i hvert tilfelle spørres etter de variablene man trenger.
 
 rm(list=ls())
-dato <- '2019-03-18'
+dato <- '2019-09-03'
 dato <- '2019-03-18Aarsrapp18'
 NGERBasis <- read.table(paste0('A:/NGER/AlleVarNum', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #,
 NGERForlop <- read.table(paste0('A:/NGER/ForlopsOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
@@ -56,7 +59,8 @@ NGERData <- merge(NGERBasis, NGERForlop, by = "ForlopsID", suffixes = c('','YY')
 # RegData <- NGERUtvalgEnh(RegData, datoFra = '2016-01-01', datoTil = '2018-12-31')$RegData
 # save(RegData, file=paste0('A:/NGER/Aarsrapp2018', dato, '.Rdata'))
 # write.table(RegData, file = "A:/NGER/Aarsrapp2018.csv", row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
-save(NGERData, file=paste0('A:/NGER/NGER', dato, '.RData'))
+SkjemaOversikt <- NGERSkjema
+save(NGERData, SkjemaOversikt, file=paste0('A:/NGER/NGER', dato, '.RData'))
 save(NGERData, file=paste0('A:/NGER/Aarsrapp', dato, '.RData'))
 
 RegData <- NGERData[which(NGERData$OpDato >= as.Date('2016-01-01')) & which(NGERData$OpDato <= as.Date('2018-12-31')),]

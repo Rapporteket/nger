@@ -6,8 +6,9 @@
 \usage{
 NGERFigGjsnTid(RegData, valgtVar = "alder", datoFra = "2011-01-01",
   datoTil = "3000-12-31", tidsenhet = "Aar", minald = 0,
-  maxald = 110, reshID = 0, outfile = "", enhetsUtvalg = 0,
-  valgtMaal = "Gjsn", preprosess = 1, hentData = 0)
+  maxald = 110, reshID = 0, OpMetode = 99, Hastegrad = "",
+  AlvorlighetKompl = "", outfile = "", enhetsUtvalg = 0,
+  valgtMaal = "Gjsn", preprosess = 1, hentData = 0, lagFigur = 1)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -24,6 +25,25 @@ NGERFigGjsnTid(RegData, valgtVar = "alder", datoFra = "2011-01-01",
 
 \item{reshID}{Parameter følger fra innlogging helseregister.no og angir
 hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
+
+\item{OpMetode}{1: Laparoskopi
+2: Hysteroskopi
+3: Begge
+4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
+5: LCC11 (laparoskopisk subtotal hysterektomi)
+6: LCD11 (laparoskopisk assistert vaginal hysterektomi)}
+
+\item{Hastegrad}{Hastegrad av operasjon.
+1: Elektiv
+2: Akutt
+3: Ø-hjelp}
+
+\item{AlvorlighetKompl}{Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
+Angis som en vektor av tall som tekst, f.eks. c('1','2')
+1: Lite alvorlig
+2: Middels alvorlig
+3: Alvorlig
+4: Dødelig}
 
 \item{outfile}{Navn på fil figuren skrives til. Standard: '' (Figur skrives
 til systemets standard utdataenhet (som regel skjerm))}

@@ -19,6 +19,7 @@
 #'                1: Elektiv
 #'                2: Akutt
 #'                3: Ø-hjelp
+#' @param dagkir Dagkirurgi? 0-nei, 1-ja
 #' @param enhetsUtvalg Lag figur for
 #'                 0: Hele landet
 #'                 1: Egen enhet mot resten av landet (Standard)
@@ -33,7 +34,7 @@
 #' @export
 #'
 NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', fargepalett='BlaaOff',
-                          minald=0, maxald=110, OpMetode=0, AlvorlighetKompl=0, Hastegrad=0,
+                          minald=0, maxald=110, OpMetode=0, AlvorlighetKompl=0, Hastegrad=0, dagkir=9,
                           enhetsUtvalg=0, velgAvd='', velgDiag=0, reshID=0)
 {
   # Definer intersect-operator
@@ -104,11 +105,13 @@ if (velgDiag !=0) {
   #Hastegrad  1:3 'Elektiv', 'Akutt', 'Ø-hjelp'
   indHastegrad <- if (Hastegrad[1] %in% 1:3) {which(RegData$OpKategori %in% as.numeric(Hastegrad))
                   } else {indHastegrad <- 1:Ninn}
-
+  #Dagkirurgi 0-nei, 1-ja
+  indDagkir <- if (dagkir %in% 0:1) {which(RegData$OpDagkirurgi == as.numeric(dagkir))
+  } else {indDagkir <- 1:Ninn}
 
 
   #utvalg:
-  indMed <- indAld %i% indDato %i% indMCE %i% indAlvor %i% indHastegrad %i% indDiag
+  indMed <- indAld %i% indDato %i% indMCE %i% indAlvor %i% indHastegrad %i% indDiag %i% indDagkir
 
   RegData <- RegData[indMed,]
 
@@ -126,6 +129,7 @@ if (velgDiag !=0) {
                                                   'Lap. subtotal hysterektomi (LCC11)',
                                                   'Lap. ass. vag. hysterektomi (LCD11)')[OpMetode])},
                  if (Hastegrad[1] %in% 1:3){paste0('Hastegrad: ', paste0(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','))},
+                 if (dagkir %in% 0:1){c('Ikke dagkirurgi', 'Dagkirurgi')[as.numeric(dagkir)+1]},
                  if (AlvorlighetKompl[1] %in% 1:3){paste0('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
                                                          [as.numeric(AlvorlighetKompl)], collapse=','))},
                  if (velgDiag != 0) {paste0('Diagnose: ', diagTxt[velgDiag])},
