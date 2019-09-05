@@ -11,8 +11,7 @@ Description: Pakke for generering av resultatrapporter for NGER.
 Encoding: UTF-8
 LazyData: false
 Depends:
-    R (>= 3.5.0),
-    rapbase (>= 1.0.0)
+    R (>= 3.5.0)
 Remotes: 
       Rapporteket/rapFigurer,
       Rapporteket/rapbase
@@ -29,7 +28,9 @@ Suggests:
     zoo
 Imports:
     kableExtra,
-    knitr, 
+    knitr,
+    rapbase,
+    rapFigurer,
     shiny,
     tidyverse,
     xtable,
