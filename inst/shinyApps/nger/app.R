@@ -9,7 +9,7 @@ library(kableExtra)
 library(rapFigurer)
 #library(zoo)
 
-startDato <- '2018-01-01' #Sys.Date()-364
+startDato <- '2019-01-01' #Sys.Date()-364
 idag <- Sys.Date()
 sluttDato <- idag
 
@@ -169,7 +169,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                                        value = Sys.Date(), max = Sys.Date() )
                             ),
                             conditionalPanel(
-                              condition = "input.ark == 'Antall operasjoner'",
+                              condition = "input.ark == 'Antall operasjoner'"  ,
                               selectInput(inputId = "tidsenhetReg", label="Velg tidsenhet",
                                           choices = rev(c('År'= 'Aar', 'Måned'='Mnd')))),
                             conditionalPanel(
@@ -287,20 +287,23 @@ tabPanel(p("Tabelloversikter", title = 'Instrumentbruk'),
                       h3('Utvalg'),
                       dateRangeInput(inputId = 'datovalgTab', start = startDato, end = Sys.Date(),
                                      label = "Tidsperiode", separator="t.o.m.", language="nb"),
-                      selectInput(inputId = "tidsenhetTab", label="Velg tidsenhet",
-                                  choices = tidsenheter)
+                      conditionalPanel(
+                        condition = "input.tab == 'Pasientegenskaper'"  ,
+                       selectInput(inputId = "tidsenhetTab", label="Velg tidsenhet",
+                                  choices = tidsenheter))
          ),
          mainPanel(
-           tabsetPanel(
+           tabsetPanel(id='tab',
              tabPanel('Pasientegenskaper',
                       br(),
-                      h4('Gjennomsnittlig BMI, fødsler, graviditeter og knivtid'),
+                      h3('Fjerne eller fixe??'),
+                      h4('Det er vel egentlig bare knivtid som er interessant å overvåke?'),
                       br(),
                       tableOutput('tabPasEgensk')
                       #downloadButton(outputId = 'lastNed_tabPasEgensk', label='Last ned tabell')
              ),tabPanel('Instrumentbruk, Lap',
                       br(),
-                      h4('Tabellen viser antall ganger ulike instrumenter er benyttet ved laparoskopi. '),
+                      h4('Tabellen viser antall ganger i den valgte tidsperioden ulike instrumenter er benyttet ved laparoskopi. '),
                       br(),
                       tableOutput('tabInstrBruk'),
                       downloadButton(outputId = 'lastNed_tabInstrBruk', label='Last ned tabell')
@@ -315,6 +318,8 @@ tabPanel(p("Tabelloversikter", title = 'Instrumentbruk'),
              tabPanel('Konvertering til laparotomi',
                       br(),
                       h3('Skal denne være med..?'),
+                      h3('Finnes fra før som figur og tabell under andeler'),
+                      br(),
                       h4('Andel (%) laparoskopiske inngrep som konverteres til laparotomi.'),
                       br(),
                       tableOutput('LapKonv')
@@ -784,7 +789,7 @@ server <- function(input, output) {
         #tidsenheter <- rev(c('År'= 'Aar', 'Halvår' = 'Halvaar', 'Kvartal'='Kvartal', 'Måned'='Mnd'))
         tabPasEgensk <- NGERpasientegenskaper(RegData = RegData, tidsenhet = input$tidsenhetTab,
                                            datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2])
-        output$tabPasEgensk <- renderTable(tabPasEgensk, rownames = T, digits=1, spacing="xs")
+        output$tabPasEgensk <- renderTable(xtable::xtable(tabPasEgensk), rownames = T, digits=1, spacing="xs")
 
 
         # tab <- xtable::xtable(TabPasKar, align=c("l", "l", rep("r", ncol(TabPasKar)-1)),
