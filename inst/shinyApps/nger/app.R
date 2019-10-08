@@ -35,7 +35,7 @@ if (context == "TEST" | context == "QA" | context == "PRODUCTION") {
 if (!exists('RegData')) {
   data('NGERtulledata', package = 'nger')
   reshID <- 8
-  SkjemaOversikt <- plyr::rename(SkjemaOversikt, replace=c('SykehusNavn'='ShNavn'))
+  #SkjemaOversikt <- plyr::rename(SkjemaOversikt, replace=c('SykehusNavn'='ShNavn'))
 }
 
 RegData <- NGERPreprosess(RegData)
@@ -774,7 +774,8 @@ server <- function(input, output) {
            content = function(file, filename){write.csv2(tabInstrumentbruk, file, row.names = T, na = '')})
 
 
-         LapKomplData <- komplLap(RegData=RegData, reshID=reshID, datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2])
+         LapKomplData <- komplLap(RegData=RegData, reshID=reshID,
+                                  datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2])
          output$tittelLapKompl <- renderUI(tagList(
            h4('Hyppighet (%) av laparoskopiske komplikasjoner. '),
            h4(paste0('Totalt ble det utført ', LapKomplData$AntLap, ' laparaskopier i tidsperioden.'))))
@@ -782,7 +783,7 @@ server <- function(input, output) {
          output$lastNed_tabLapKompl <-  downloadHandler(
            filename = function(){paste0('tabLapKompl.csv')},
            content = function(file, filename){write.csv2(LapKomplData$AntLap, file, row.names = T, na = '')})
-         ) #,caption = tabtxtLapKompl)
+          #,caption = tabtxtLapKompl)
 
       })
 
