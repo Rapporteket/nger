@@ -170,7 +170,7 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
       #|(grVar=='' & length(enhetsUtvalg %in% c(1,3)))
     {
       #-----------Figur---------------------------------------
-      FigTypUt <-figtype(outfile)  #FigTypUt <- figtype(outfile)
+      FigTypUt <-rapFigurer::figtype(outfile)  #FigTypUt <- rapFigurer::figtype(outfile)
       farger <- FigTypUt$farger
       plot.new()
       title(tittel)	#, line=-6)
@@ -185,7 +185,7 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
       #Plottspesifikke parametre:
       #Høyde må avhenge av antall grupper
       hoyde <- ifelse(length(AggVerdier$Hoved)>20, 3*800, 3*600)
-      FigTypUt <- figtype(outfile, height=hoyde, fargepalett=NGERUtvalg$fargepalett)
+      FigTypUt <- rapFigurer::figtype(outfile, height=hoyde, fargepalett=NGERUtvalg$fargepalett)
       #Tilpasse marger for å kunne skrive utvalgsteksten
       NutvTxt <- length(utvalgTxt)
       vmarg <- switch('H', V=0.04, H=min(1,max(0, strwidth(GrNavnSort, units='figure', cex=cexgr)*0.75)))

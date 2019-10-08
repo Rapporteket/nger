@@ -14,7 +14,7 @@ Depends:
     R (>= 3.5.0)
 Remotes: 
       Rapporteket/rapFigurer,
-      Rapporteket/rapbase
+      Rapporteket/rapbase@rel
 Suggests:
     kableExtra,
     knitr, 

@@ -177,8 +177,10 @@ for (valgtVar in variable) {
 
 #------------------------------ Andeler per sykehus (AndelGrVar) --------------------------
  #Ok?: Opf0KomplOrgan, Opf0Status, RegForsinkelse, Tss2Mott
+load('A:/NGER/Aarsrapp2018_2019-08-05.Rdata')
+RegData <- NGERData
 
-valgtVar <- 'KomplIntra' #Må velge... OpAnestesi, OpDagkirurgi,OpTid
+valgtVar <- 'RegForsinkelse' #Må velge... OpAnestesi, OpDagkirurgi,OpTid
       #Alder, Opf0Reoperasjon, Education, Opf0AlvorlighetsGrad,
       #KomplIntra, KomplPostop, OpAntibProfylakse, OpASA, OpBMI, Opf0Status, RegForsinkelse
       #Tss2Mott, Tss2Behandling,	Tss2Lytte, Tss2Behandlere, Tss2Enighet,	Tss2Generelt
@@ -187,9 +189,9 @@ outfile <- '' #paste0(valgtVar, '_Shus.png')	#Navn angis av Jasper
 #velgAvd <- '' #c(108048, 111180, 700404)
 
 UtDataFraFig <-NGERFigAndelerGrVar(RegData=RegData,  datoFra='2018-01-01', datoTil = '2018-12-31',
-                                   valgtVar=valgtVar, OpMetode = 2, outfile='', preprosess = 1)
+                                   valgtVar=valgtVar,  outfile='', preprosess = 1)
 
-NGERFigAndelerGrVar(RegData=RegData, datoFra='2017-01-01', valgtVar=valgtVar, datoTil=datoTil,
+NGERFigAndelerGrVar(RegData=RegData, datoFra='2018-01-01', valgtVar=valgtVar, datoTil=datoTil,
             reshID=reshID, outfile=outfile, OpMetode=OpMetode,
             minald=minald, maxald=maxald, Hastegrad = Hastegrad, preprosess = 1, velgAvd='' )
 
@@ -254,9 +256,10 @@ table(RegData$Opf0metode[ind], useNA = 'a')
 
 #--------Data til Resultatportalen-----------------
 rm(list=ls())
+library(nger)
 setwd('P:/Registerinfo og historie/NGER/Resultatportalen')
 aar <- 2016:2018
-load(paste0('A:/NGER/Aarsrapp2018_2019-03-18.Rdata'))
+load(paste0('A:/NGER/Aarsrapp2018_2019-08-05.Rdata'))
 RegData <- NGERData
 
 # For registeret Fil, enhetsID: EnhetsID	Enhetsnavn	HF navn	RHF navn (Toril komplettere med HF-navn)
@@ -272,6 +275,9 @@ dataTilResultatPort(RegData=NGERData, valgtKI='KomplIntra', OpMetode = 2, aar=aa
 
 # TSS2 - sumskår, gj.sn.
 dataTilResultatPort(RegData=NGERData, valgtKI='Tss2Sumskaar', aar=aar)
+
+# TSS2 - positiv + svært positiv. NB: Må endre utvalget i Tilrettelegg-fila.
+dataTilResultatPort(RegData=NGERData, valgtKI='Tss2Generelt', aar=aar)
 
 # # Laparoskopi: Komplikasjoner etter operasjon Middels, alvorlig, død
 # #(KomplPostop)

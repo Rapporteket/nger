@@ -114,8 +114,7 @@ NGERFigAndelTid(RegData=NGERData, valgtVar='OpAnestesi',   datoFra='2013-01-01',
 #------------------------------ Andeler per sykehus --------------------------
 #------------------------------ (AndelGrVar) --------------------------
 
-variable <- c('Alder', 'OpAnestesi', 'OpDagkirurgi', 'Opf0Status', 'OpBMI', 'OpTid' )
-variable <- 'RegForsinkelse'
+variable <- c('Alder', 'OpAnestesi', 'OpDagkirurgi', 'Opf0Status', 'OpBMI', 'OpTid', 'RegForsinkelse' )
 
 for (valgtVar in variable) {
   outfile <- paste0(valgtVar, '_Shus.pdf')

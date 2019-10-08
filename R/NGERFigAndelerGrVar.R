@@ -85,7 +85,7 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoT
   sortInd <- order(as.numeric(AndelerGr), decreasing=TRUE)
   Ngrtxt <- as.character(Ngr)
   Ngrtxt[indGrUt] <- paste0('<', Ngrense)	#paste(' (<', Ngrense,')',sep='')	#
-  Ngr <- Ngr[sortInd]
+  Ngr <- Ngr
 
   AggVerdier <- list(Hoved = NULL, Tot =NULL)
   AggVerdier$Hoved <- AndelerGr[sortInd]
@@ -112,7 +112,7 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoT
 
   #-----------Figur---------------------------------------
   if 	( max(Ngr) < Ngrense)	{#Dvs. hvis ALLE er mindre enn grensa.
-    FigTypUt <- figtype(outfile)
+    FigTypUt <- rapFigurer::figtype(outfile)
     farger <- FigTypUt$farger
     plot.new()
     if (dim(RegData)[1]>0) {
@@ -129,7 +129,7 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoT
     #Innparametre: ...
 
 
-    FigTypUt <- figtype(outfile, fargepalett=NGERUtvalg$fargepalett)	#height=3*800,
+    FigTypUt <- rapFigurer::figtype(outfile, fargepalett=NGERUtvalg$fargepalett)	#height=3*800,
     farger <- FigTypUt$farger
     #Tilpasse marger for å kunne skrive utvalgsteksten
     NutvTxt <- length(utvalgTxt)

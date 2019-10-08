@@ -140,7 +140,7 @@ xAkseTxt <- switch(tidsenhet,
   #Hvis for få observasjoner..
   if (length(ind$Hoved) < 10 | (medSml ==1 & length(ind$Rest)<10)) {
     #-----------Figur---------------------------------------
-    FigTypUt <- figtype(outfile)
+    FigTypUt <- rapFigurer::figtype(outfile)
     farger <- FigTypUt$farger
     plot.new()
     title(main=paste0('variabel: ', valgtVar))	#, line=-6)
@@ -156,7 +156,7 @@ xAkseTxt <- switch(tidsenhet,
     #-----------Figur---------------------------------------
 
     #Plottspesifikke parametre:
-    FigTypUt <- figtype(outfile, fargepalett=NGERUtvalg$fargepalett)
+    FigTypUt <- rapFigurer::figtype(outfile, fargepalett=NGERUtvalg$fargepalett)
     farger <- FigTypUt$farger
     fargeHoved <- farger[3]
     fargeRest <- farger[1]

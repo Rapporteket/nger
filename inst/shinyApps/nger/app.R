@@ -18,28 +18,25 @@ addResourcePath('rap', system.file('www', package='rapbase'))
 
 regTitle = 'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER med FIKTIVE data'
 
+reshID <- 110734
+rolle <- 'SC' #LU
 
 #----------Hente data og evt. parametre som er statistke i appen----------
 context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
 if (context == "TEST" | context == "QA" | context == "PRODUCTION") {
-
-  registryName <- "nger"
-  dbType <- "mysql"
-
-  query <- paste0('SELECT  ...')
-
   #RegData <- NGERRegDataSQL(valgtVar = valgtVar) #datoFra = datoFra, datoTil = datoTil)
-  HovedSkjema <- NGERRegDataSQL() #datoFra = datoFra, datoTil = datoTil)
-  Livskvalitet <- rapbase::LoadRegData(registryName, qLivs, dbType)
+  RegData <- NGERRegDataSQL() #datoFra = datoFra, datoTil = datoTil)
+
+  qSkjemaOversikt <- 'SELECT * FROM SkjemaOversikt'
+  SkjemaOversikt <- rapbase::LoadRegData(registryName='nger',
+                                         query=qSkjemaOversikt, dbType='mysql')
 } #hente data på server
 
-reshID <- 8 #110734
-#     if (!exists('RegData')) {
-data('NGERtulledata', package = 'nger')
-reshID <- 8
-#SkjemaOversikt <- plyr::rename(SkjemaOversikt, replace=c('SykehusNavn'='ShNavn'))
-#      }
-rolle <- 'SC' #LU
+if (!exists('RegData')) {
+  data('NGERtulledata', package = 'nger')
+  reshID <- 8
+  SkjemaOversikt <- plyr::rename(SkjemaOversikt, replace=c('SykehusNavn'='ShNavn'))
+}
 
 RegData <- NGERPreprosess(RegData)
 SkjemaOversikt <- NGERPreprosess(RegData = SkjemaOversikt)
@@ -294,14 +291,7 @@ tabPanel(p("Tabelloversikter", title = 'Instrumentbruk'),
          ),
          mainPanel(
            tabsetPanel(id='tab',
-             tabPanel('Pasientegenskaper',
-                      br(),
-                      h3('Fjerne eller fixe??'),
-                      h4('Det er vel egentlig bare knivtid som er interessant å overvåke?'),
-                      br(),
-                      tableOutput('tabPasEgensk')
-                      #downloadButton(outputId = 'lastNed_tabPasEgensk', label='Last ned tabell')
-             ),tabPanel('Instrumentbruk, Lap',
+             tabPanel('Instrumentbruk, Lap',
                       br(),
                       h4('Tabellen viser antall ganger i den valgte tidsperioden ulike instrumenter er benyttet ved laparoskopi. '),
                       br(),
@@ -314,16 +304,6 @@ tabPanel(p("Tabelloversikter", title = 'Instrumentbruk'),
                       br(),
                       tableOutput('LapKompl'),
                       downloadButton(outputId = 'lastNed_tabLapKompl', label='Last ned tabell')
-             ),
-             tabPanel('Konvertering til laparotomi',
-                      br(),
-                      h3('Skal denne være med..?'),
-                      h3('Finnes fra før som figur og tabell under andeler'),
-                      br(),
-                      h4('Andel (%) laparoskopiske inngrep som konverteres til laparotomi.'),
-                      br(),
-                      tableOutput('LapKonv')
-                      #downloadButton(outputId = 'lastNed_tabKvalInd', label='Last ned tabell')
              )
            ))
 ),
@@ -786,18 +766,6 @@ server <- function(input, output) {
 
       #----------Tabelloversikter ----------------------
       observe({
-        #tidsenheter <- rev(c('År'= 'Aar', 'Halvår' = 'Halvaar', 'Kvartal'='Kvartal', 'Måned'='Mnd'))
-        tabPasEgensk <- NGERpasientegenskaper(RegData = RegData, tidsenhet = input$tidsenhetTab,
-                                           datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2])
-        output$tabPasEgensk <- renderTable(xtable::xtable(tabPasEgensk), rownames = T, digits=1, spacing="xs")
-
-
-        # tab <- xtable::xtable(TabPasKar, align=c("l", "l", rep("r", ncol(TabPasKar)-1)),
-        #                       digits=c(0,0,rep(1, ncol(TabPasKar)-1)),
-        #                       caption=cap, label="tab:pasKarakteristika")
-
-
-
         tabInstrumentbruk <- instrumentbruk(RegData = RegData,
                                             datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2])
          output$tabInstrBruk <- renderTable(tabInstrumentbruk, rownames = T, digits=0, spacing="xs")
@@ -814,10 +782,7 @@ server <- function(input, output) {
          output$lastNed_tabLapKompl <-  downloadHandler(
            filename = function(){paste0('tabLapKompl.csv')},
            content = function(file, filename){write.csv2(LapKomplData$AntLap, file, row.names = T, na = '')})
-
-
-        LapKonv <- konvertertLap(RegData=RegData, reshID=reshID, datoFra=input$datovalgTab[1], datoTil=input$datovalgTab[2])
-        output$LapKonv <- renderTable(LapKonv, rownames = T, digits=1, spacing="xs") #,caption = tabtxtLapKompl)
+         ) #,caption = tabtxtLapKompl)
 
       })
 

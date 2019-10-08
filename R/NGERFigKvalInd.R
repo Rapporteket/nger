@@ -203,7 +203,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd='', datoFra='2013-01-01', 
 
   ###-----------Figur---------------------------------------
   if ( max(N$Hoved) < Ngrense | 	(NGERUtvalg$medSml ==1 & max(N$Rest)< Ngrense)) {
-    FigTypUt <- figtype(outfile)
+    FigTypUt <- rapFigurer::figtype(outfile)
     farger <- FigTypUt$farger
     plot.new()
     title(main=tittel)	#
@@ -216,7 +216,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd='', datoFra='2013-01-01', 
 
 
     ###Innparametre til evt. funksjon: subtxt, grtxt, grtxt2, tittel, AggVerdier, utvalgTxt, retn, cexgr
-    FigTypUt <- figtype(outfile, fargepalett=NGERUtvalg$fargepalett)
+    FigTypUt <- rapFigurer::figtype(outfile, fargepalett=NGERUtvalg$fargepalett)
     #Tilpasse marger for ? kunne skrive utvalgsteksten
     NutvTxt <- length(utvalgTxt)
     vmarg <- max(0, strwidth(grtxt, units='figure', cex=cexgr)*0.65)

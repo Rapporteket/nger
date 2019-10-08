@@ -141,7 +141,7 @@ NGERFigGjsnTid <- function(RegData, valgtVar='alder', datoFra='2011-01-01', dato
 if (lagFigur==1) {
   #-----------Figur---------------------------------------
   if (length(ind$Hoved)<10 | ((medSml == 1) & (length(ind$Rest) < 10))) {
-    figtype(outfile)
+    rapFigurer::figtype(outfile)
     plot.new()
     title(main=tittel)
     text(0.5, 0.65, 'Færre enn 10 registreringer i hoved-', cex=1.2)
@@ -158,7 +158,7 @@ if (lagFigur==1) {
     ytxt <- maaltxt #paste0(maaltxt, ytxt1, sep='')
 
     #Plottspesifikke parametre:
-    FigTypUt <- figtype(outfile, fargepalett=NGERUtvalg$fargepalett)
+    FigTypUt <- rapFigurer::figtype(outfile, fargepalett=NGERUtvalg$fargepalett)
     #Tilpasse marger for å kunne skrive utvalgsteksten
     NutvTxt <- length(utvalgTxt)
     par('fig'=c(0, 1, 0, 1-0.02*(max((NutvTxt-1),0))))

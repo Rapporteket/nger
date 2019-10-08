@@ -197,7 +197,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
                            smltxt=smltxt)
   ###-----------Figur---------------------------------------
   if ( Nfig$Hoved %in% 1:5 | 	(NGERUtvalg$medSml ==1 & Nfig$Rest<10)) {
-    FigTypUt <- figtype(outfile)
+    FigTypUt <- rapFigurer::figtype(outfile)
     farger <- FigTypUt$farger
     plot.new()
     title(main=tittel)	#
@@ -209,7 +209,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
 
 
     ###Innparametre til evt. funksjon: subtxt, grtxt, grtxt2, tittel, AggVerdier, utvalgTxt, retn, cexgr
-    FigTypUt <- figtype(outfile, fargepalett=NGERUtvalg$fargepalett)
+    FigTypUt <- rapFigurer::figtype(outfile, fargepalett=NGERUtvalg$fargepalett)
     #Tilpasse marger for å kunne skrive utvalgsteksten
     NutvTxt <- length(utvalgTxt)
     antDesTxt <- paste0('%.', antDes, 'f')
