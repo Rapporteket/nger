@@ -130,7 +130,7 @@ query <- paste0('SELECT
     ,ForlopsOversikt.SykehusNavn
     FROM AlleVarNum
     INNER JOIN ForlopsOversikt
-    ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID)
+    ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID')
 
 # WHERE HovedDato >= \'', datoFra, '\' AND HovedDato <= \'', datoTil, '\'')
 
