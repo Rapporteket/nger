@@ -23,20 +23,20 @@ rolle <- 'SC' #LU
 
 #----------Hente data og evt. parametre som er statistke i appen----------
 context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-if (context == "TEST" | context == "QA" | context == "PRODUCTION") {
-  #RegData <- NGERRegDataSQL(valgtVar = valgtVar) #datoFra = datoFra, datoTil = datoTil)
-  RegData <- NGERRegDataSQL() #datoFra = datoFra, datoTil = datoTil)
-
-  qSkjemaOversikt <- 'SELECT * FROM SkjemaOversikt'
-  SkjemaOversikt <- rapbase::LoadRegData(registryName='nger',
-                                         query=qSkjemaOversikt, dbType='mysql')
-} #hente data på server
-
-if (!exists('RegData')) {
+# if (context == "TEST" | context == "QA" | context == "PRODUCTION") {
+#   #RegData <- NGERRegDataSQL(valgtVar = valgtVar) #datoFra = datoFra, datoTil = datoTil)
+#   RegData <- NGERRegDataSQL() #datoFra = datoFra, datoTil = datoTil)
+#
+#   qSkjemaOversikt <- 'SELECT * FROM SkjemaOversikt'
+#   SkjemaOversikt <- rapbase::LoadRegData(registryName='nger',
+#                                          query=qSkjemaOversikt, dbType='mysql')
+# } #hente data på server
+#
+# if (!exists('RegData')) {
   data('NGERtulledata', package = 'nger')
   reshID <- 8
   #SkjemaOversikt <- plyr::rename(SkjemaOversikt, replace=c('SykehusNavn'='ShNavn'))
-}
+#}
 
 RegData <- NGERPreprosess(RegData)
 SkjemaOversikt <- NGERPreprosess(RegData = SkjemaOversikt)
