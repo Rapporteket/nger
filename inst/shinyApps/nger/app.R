@@ -18,41 +18,44 @@ addResourcePath('rap', system.file('www', package='rapbase'))
 
 regTitle = 'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER med FIKTIVE data'
 
-reshID <- 110734
-rolle <- 'SC' #LU
 
-#----------Hente data og evt. parametre som er statistke i appen----------
+#----------Hente data og evt. parametre som er statiske i appen----------
 context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
 if (context == "TEST" | context == "QA" | context == "PRODUCTION") {
-  #RegData <- NGERRegDataSQL(valgtVar = valgtVar) #datoFra = datoFra, datoTil = datoTil)
   RegData <- NGERRegDataSQL() #datoFra = datoFra, datoTil = datoTil)
 
   qSkjemaOversikt <- 'SELECT * FROM SkjemaOversikt'
   SkjemaOversikt <- rapbase::LoadRegData(registryName='nger',
                                          query=qSkjemaOversikt, dbType='mysql')
-} #hente data på server
+  #hospitalName <-getHospitalName(rapbase::getUserReshId(session))
+  reshID <- rapbase::getUserReshId(session)
+  #rolle <- rapbase::getShinyUserRole(shinySession=session)
 
-print(context)
+} #hente data på server
 
 if (!exists('RegData')) {
   data('NGERtulledata', package = 'nger')
-  reshID <- 8
   #SkjemaOversikt <- plyr::rename(SkjemaOversikt, replace=c('SykehusNavn'='ShNavn'))
 }
+if (context=='') {
+  reshID <- 8
+  rolle <- 'LU' #LU
+}
+
 
 RegData <- NGERPreprosess(RegData)
 SkjemaOversikt <- NGERPreprosess(RegData = SkjemaOversikt)
 
 
+#-----Definere utvalgsinnhold
 #Definere utvalgsinnhold
+#sykehusValg = uiOutput("sykehusNavnResh")
 sykehusNavn <- sort(unique(RegData$ShNavn), index.return=T)
 sykehusValg <- unique(RegData$ReshId)[sykehusNavn$ix]
 names(sykehusValg) <- sykehusNavn$x
-# sykehusValg <- c(reshID,unique(RegData$ReshId)[sykehusNavn$ix])
-# names(sykehusValg) <- c(RegData$ShNavn[match(reshID, RegData$ReshId)], sykehusNavn$x)
 
 
- enhetsUtvalg <- c("Egen mot resten av landet"=1,
+enhetsUtvalg <- c("Egen mot resten av landet"=1,
                         "Hele landet"=0,
                         "Egen enhet"=2)
  diag <- 0:3
@@ -122,6 +125,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                         I mellomtida får du ikke sett på andre resultater')
                ),
                mainPanel(width = 8,
+                         rapbase::appNavbarUserWidget(user = uiOutput("appUserName"),
+                                             organization = uiOutput("appOrgName"),
+                                             addUserInfo = TRUE),
                          h4('Du er nå inne på Rapporteket for NGER. Rapporteket er registerets resultattjeneste.
                             Disse sidene inneholder en samling av figurer og tabeller som viser resultater fra registeret.
                             På hver av sidene kan man gjøre utvalg i menyene til venstre. Alle resultater er basert
@@ -609,29 +615,38 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
 
 
 #----- Define server logic required to draw a histogram-------
-server <- function(input, output) {
+server <- function(input, output, session) {
 
-  # reshID <- reactive({
-  #   ifelse(onServer, as.numeric(rapbase::getShinyUserReshId(session, testCase = TRUE)), 601225)
-  #   # as.numeric(rapbase::getUserReshId(session))
-  # })
-  userRole <- reactive({
-    'SC' #FUNKER IKKE..
-    #ifelse(onServer, rapbase::getShinyUserRole(session, testCase = TRUE), 'SC')
-    # rapbase::getUserRole(session)
-    #reshID <- input$velgResh
-  })
+  #raplog::appLogger(session)
+  system.file('NGERmndRapp.Rnw', package='nger')
 
-  observe(
-    if (userRole() != 'SC') {
-      shinyjs::hide(id = 'velgResh')
-      shinyjs::hide(id = 'velgReshKval')
-      shinyjs::hide(id = 'velgShus')
-      #      hideTab(inputId = "tabs_andeler", target = "Figur, sykehusvisning")
-#      hideTab(inputId = "tabs_andeler", target = "Tabell, sykehusvisning")
-    }
 
-  )
+
+  #Definere utvalgsinnhold
+  # sykehusNavn <- sort(unique(RegData$ShNavn), index.return=T)
+  # sykehusValg <- unique(RegData$ReshId)[sykehusNavn$ix]
+  # names(sykehusValg) <- sykehusNavn$x
+  #sykehusValg <- renderText(sykehusValg)
+
+  # shinyjs::hide(id = 'velgResh')
+  # shinyjs::hide(id = 'velgReshKval')
+  # shinyjs::hide(id = 'velgShus')
+observe(
+  rolle <- 'LU',
+
+  shinyjs::toggle(id = 'velgResh', condition = (rolle=='SC'))
+)
+
+#   observe(
+#     rolle <- 'LU',
+#     if (rolle == 'LU') {
+#       shinyjs::hide(id = 'velgResh')
+#       shinyjs::hide(id = 'velgReshKval')
+#       shinyjs::hide(id = 'velgShus')
+#       #      hideTab(inputId = "tabs_andeler", target = "Figur, sykehusvisning")
+# #      hideTab(inputId = "tabs_andeler", target = "Tabell, sykehusvisning")
+#     }
+#   )
 
   #--------------Startside------------------------------
   #-------Samlerapporter--------------------

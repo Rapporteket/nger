@@ -1,3 +1,9 @@
+#Hente inn fra kodebok:
+library(tidyverse)
+klokebok = read_delim(mappeplassering_til_klokebok)
+kodebok_kategorier = klokebok %>% filter(type == 'Listevariabel')
+
+
 
 #--------------------------------------SamleRAPPORTER-----------------------------------
 
@@ -41,10 +47,9 @@ load(paste0('A:/NGER/NGER2019-03-18.Rdata'))
 indAvvikDato <- which(as.numeric(as.Date(RegData$OpDato) - as.Date(RegData$HovedDato))>1)
 RegData[indAvvikDato[1:5], c('InnDato', "HovedDato")]
 #--------------------------------Datakobling--------------------------
-#Vil "snart" endre spørringa slik at det i hvert tilfelle spørres etter de variablene man trenger.
 
 rm(list=ls())
-dato <- '2019-09-03'
+dato <- '2019-10-08'
 dato <- '2019-03-18Aarsrapp18'
 NGERBasis <- read.table(paste0('A:/NGER/AlleVarNum', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #,
 NGERForlop <- read.table(paste0('A:/NGER/ForlopsOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
@@ -61,6 +66,7 @@ NGERData <- merge(NGERBasis, NGERForlop, by = "ForlopsID", suffixes = c('','YY')
 # write.table(RegData, file = "A:/NGER/Aarsrapp2018.csv", row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
 SkjemaOversikt <- NGERSkjema
 save(NGERData, SkjemaOversikt, file=paste0('A:/NGER/NGER', dato, '.RData'))
+save(RegData, SkjemaOversikt, file=paste0('A:/NGER/NGERtestdata.RData'))
 save(NGERData, file=paste0('A:/NGER/Aarsrapp', dato, '.RData'))
 
 RegData <- NGERData[which(NGERData$OpDato >= as.Date('2016-01-01')) & which(NGERData$OpDato <= as.Date('2018-12-31')),]
