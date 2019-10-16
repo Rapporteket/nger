@@ -41,7 +41,7 @@ tools:: texi2pdf('NGERmndRapp.tex')
 # 'Tss2Generelt')
 #------------------------------Kjøre App----------------------------
 rm(list=ls())
-load(paste0('A:/NGER/NGER2019-03-18.Rdata'))
+load(paste0('A:/NGER/NGER2019-09-03.Rdata'))
 
 #SkjemaOversikt <- NGERPreprosess(SkjemaOversikt)
 indAvvikDato <- which(as.numeric(as.Date(RegData$OpDato) - as.Date(RegData$HovedDato))>1)
@@ -49,8 +49,8 @@ RegData[indAvvikDato[1:5], c('InnDato', "HovedDato")]
 #--------------------------------Datakobling--------------------------
 
 rm(list=ls())
-dato <- '2019-10-08'
-dato <- '2019-03-18Aarsrapp18'
+dato <- '2019-09-03'
+#dato <- '2019-03-18Aarsrapp18'
 NGERBasis <- read.table(paste0('A:/NGER/AlleVarNum', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #,
 NGERForlop <- read.table(paste0('A:/NGER/ForlopsOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
 NGERSkjema <- read.table(paste0('A:/NGER/SkjemaOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
@@ -59,13 +59,13 @@ NGERSkjema <- read.table(paste0('A:/NGER/SkjemaOversikt', dato, '.csv'), sep=';'
 #NGERData <- merge(NGERData, NGEROppf, by = "ForlopsID", suffixes = c('','YY'),all.x = TRUE)
 NGERData <- merge(NGERBasis, NGERForlop, by = "ForlopsID", suffixes = c('','YY'),all.x = TRUE, all.y=FALSE)
 #write.table(NGERData, file = paste0("NGER", dato), row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
-# RegData <- NGERData
+ RegData <- NGERData
 # RegData <- NGERPreprosess(NGERData)
 # RegData <- NGERUtvalgEnh(RegData, datoFra = '2016-01-01', datoTil = '2018-12-31')$RegData
 # save(RegData, file=paste0('A:/NGER/Aarsrapp2018', dato, '.Rdata'))
 # write.table(RegData, file = "A:/NGER/Aarsrapp2018.csv", row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
 SkjemaOversikt <- NGERSkjema
-save(NGERData, SkjemaOversikt, file=paste0('A:/NGER/NGER', dato, '.RData'))
+save(RegData, SkjemaOversikt, file=paste0('A:/NGER/NGER', dato, '.RData'))
 save(RegData, SkjemaOversikt, file=paste0('A:/NGER/NGERtestdata.RData'))
 save(NGERData, file=paste0('A:/NGER/Aarsrapp', dato, '.RData'))
 

@@ -35,17 +35,17 @@
 #'
 NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', fargepalett='BlaaOff',
                           minald=0, maxald=110, OpMetode=0, AlvorlighetKompl=0, Hastegrad=0, dagkir=9,
-                          enhetsUtvalg=0, velgAvd='', velgDiag=0, reshID=0)
+                          enhetsUtvalg=0, velgAvd=0, velgDiag=0, reshID=0)
 {
   # Definer intersect-operator
   "%i%" <- intersect
 
   #Velge hva som er eget sykehus
-  if ((reshID!=0) & (length(velgAvd)==1) & (velgAvd != '')) {
+  if ((reshID!=0) & (length(velgAvd)==1) & (velgAvd != 0)) {
     reshID <- velgAvd}
 
   #Velge hvilke sykehus som skal være med:
-  if (velgAvd[1] != '' & reshID==0) {
+  if (velgAvd[1] != 0 & reshID==0) {
     #if (enhetsUtvalg !=0) {stop("enhetsUtvalg må være 0 (alle)")}
     #Utvalg på avdelinger:
     #RegData <- RegData[which(as.character(RegData$ShNavn) %in% velgAvd),]
@@ -133,12 +133,12 @@ if (velgDiag !=0) {
                  if (AlvorlighetKompl[1] %in% 1:3){paste0('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
                                                          [as.numeric(AlvorlighetKompl)], collapse=','))},
                  if (velgDiag != 0) {paste0('Diagnose: ', diagTxt[velgDiag])},
-                 if (velgAvd[1] != '' & reshID==0) {'Viser valgte sykehus'})
+                 if (velgAvd[1] != 0 & reshID==0) {'Viser valgte sykehus'})
   #Generere hovedgruppe og sammenlikningsgruppe
   #Trenger indeksene før genererer tall for figurer med flere variable med ulike utvalg
   if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet
     hovedgrTxt <- as.character(RegData$ShNavn[match(reshID, RegData$ReshId)])}
-  if ((velgAvd[1] != '') & (reshID==0)) {hovedgrTxt <-'Valgte sykehus'}
+  if ((velgAvd[1] != 0) & (reshID==0)) {hovedgrTxt <-'Valgte sykehus'}
 
 
     ind <- list(Hoved=0, Rest=0)

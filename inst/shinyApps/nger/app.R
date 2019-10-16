@@ -7,6 +7,7 @@ library(plyr)
 #ibrary(shinyBS) # Additional Bootstrap Controls
 library(kableExtra)
 library(rapFigurer)
+library(shinyjs)
 #library(zoo)
 
 startDato <- '2019-01-01' #Sys.Date()-364
@@ -21,27 +22,19 @@ regTitle = 'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER med FIKTIVE data'
 
 #----------Hente data og evt. parametre som er statiske i appen----------
 context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-if (context == "TEST" | context == "QA" | context == "PRODUCTION") {
+paaServer <- (context == "TEST" | context == "QA" | context == "PRODUCTION")
+if (paaServer) {
   RegData <- NGERRegDataSQL() #datoFra = datoFra, datoTil = datoTil)
-
   qSkjemaOversikt <- 'SELECT * FROM SkjemaOversikt'
   SkjemaOversikt <- rapbase::LoadRegData(registryName='nger',
                                          query=qSkjemaOversikt, dbType='mysql')
-  #hospitalName <-getHospitalName(rapbase::getUserReshId(session))
-  reshID <- rapbase::getUserReshId(session)
-  #rolle <- rapbase::getShinyUserRole(shinySession=session)
-
-} #hente data på server
+}
 
 if (!exists('RegData')) {
   data('NGERtulledata', package = 'nger')
   #SkjemaOversikt <- plyr::rename(SkjemaOversikt, replace=c('SykehusNavn'='ShNavn'))
-}
-if (context=='') {
   reshID <- 8
-  rolle <- 'LU' #LU
-}
-
+  rolle <- 'SC'}
 
 RegData <- NGERPreprosess(RegData)
 SkjemaOversikt <- NGERPreprosess(RegData = SkjemaOversikt)
@@ -49,11 +42,12 @@ SkjemaOversikt <- NGERPreprosess(RegData = SkjemaOversikt)
 
 #-----Definere utvalgsinnhold
 #Definere utvalgsinnhold
-#sykehusValg = uiOutput("sykehusNavnResh")
+#sykehusNavn <- sort(c('',unique(RegData$ShNavn)), index.return=T)
+#sykehusValg <- c(0,unique(RegData$ReshId))[sykehusNavn$ix]
 sykehusNavn <- sort(unique(RegData$ShNavn), index.return=T)
 sykehusValg <- unique(RegData$ReshId)[sykehusNavn$ix]
-names(sykehusValg) <- sykehusNavn$x
-
+sykehusValg <- c(0,sykehusValg)
+names(sykehusValg) <- c(' ',sykehusNavn$x)
 
 enhetsUtvalg <- c("Egen mot resten av landet"=1,
                         "Hele landet"=0,
@@ -95,12 +89,11 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
             #theme = "rap/bootstrap.css",
 
 
-
-
 #------------Startside--------------------------
       tabPanel("Startside",
                #fluidRow(
                #column(width=5,
+               shinyjs::useShinyjs(),
                br(),
                tags$head(tags$style(".butt{background-color:#6baed6;} .butt{color: white;}")), # background color and font color
                h2('Velkommen til Rapporteket - Norsk Gynekologisk Endoskopiregister!', align='center'),
@@ -262,7 +255,7 @@ h3('Registerets kvalitetsindikatorer', align='center'),
                                   choices = alvorKompl
                       ),
                       selectInput(inputId = 'velgReshKval', label='Velg eget Sykehus',
-                                  selected = reshID,
+                                  #selected = 0,
                                   choices = sykehusValg)
          ),
          mainPanel(
@@ -398,7 +391,7 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
                                   choices = alvorKompl
                       ),
                       selectInput(inputId = 'velgResh', label='Velg eget Sykehus',
-                                  selected = reshID,
+                                  selected = 0,
                                   choices = sykehusValg)
          ),
          #--------
@@ -620,34 +613,25 @@ server <- function(input, output, session) {
   #raplog::appLogger(session)
   system.file('NGERmndRapp.Rnw', package='nger')
 
+    #hospitalName <-getHospitalName(rapbase::getUserReshId(session))
+    reshID <- reactive({ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)})
+    #reshID <- ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)
+    rolle <- reactive({ifelse(paaServer, rapbase::getShinyUserRole(shinySession=session), 'SC')})
+    #rolle <- ifelse(paaServer, rapbase::getShinyUserRole(shinySession=session), 'LU')
+    #userRole <- reactive({ifelse(onServer, rapbase::getUserRole(session), 'SC')})
 
 
-  #Definere utvalgsinnhold
-  # sykehusNavn <- sort(unique(RegData$ShNavn), index.return=T)
-  # sykehusValg <- unique(RegData$ReshId)[sykehusNavn$ix]
-  # names(sykehusValg) <- sykehusNavn$x
-  #sykehusValg <- renderText(sykehusValg)
+    output$reshID <- renderText({ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)}) #evt renderUI
 
-  # shinyjs::hide(id = 'velgResh')
-  # shinyjs::hide(id = 'velgReshKval')
-  # shinyjs::hide(id = 'velgShus')
-observe(
-  rolle <- 'LU',
-
-  shinyjs::toggle(id = 'velgResh', condition = (rolle=='SC'))
-)
-
-#   observe(
-#     rolle <- 'LU',
-#     if (rolle == 'LU') {
-#       shinyjs::hide(id = 'velgResh')
-#       shinyjs::hide(id = 'velgReshKval')
-#       shinyjs::hide(id = 'velgShus')
-#       #      hideTab(inputId = "tabs_andeler", target = "Figur, sykehusvisning")
-# #      hideTab(inputId = "tabs_andeler", target = "Tabell, sykehusvisning")
-#     }
-#   )
-
+    reactive({if (rolle() != 'SC') {
+      shinyjs::hide(id = 'velgResh')
+      shinyjs::hide(id = 'velgReshKval')
+     #hideTab(inputId = "tabs_andeler", target = "Figur, sykehusvisning")
+    }
+    })
+ # widget
+  output$appUserName <- renderText(rapbase::getUserFullName(session))
+  output$appOrgName <- renderText(rapbase::getUserReshId(session))
   #--------------Startside------------------------------
   #-------Samlerapporter--------------------
       # funksjon for å kjøre Rnw-filer (render file funksjon)
@@ -687,7 +671,7 @@ observe(
       #output$lenkeNorScir <- renderUI({tagList("www.norscir.no", www.norscir.no)})
 
      output$tabEgneReg <- renderTable({
-       xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12, reshID = reshID))},
+       xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12, reshID = reshID()))},
             rownames=T,
             digits = 0
       )
@@ -731,7 +715,7 @@ observe(
         output$kvalInd <- renderPlot({
           NGERFigKvalInd(RegData=RegData, valgtVar=input$valgtVarKval, preprosess = 0,
                          datoFra=input$datovalgKval[1], datoTil=input$datovalgKval[2],
-                         reshID = reshID,
+                         reshID = reshID(),
                          minald=as.numeric(input$alderKval[1]), maxald=as.numeric(input$alderKval[2]),
                          OpMetode = as.numeric(input$opMetodeKval),
                          Hastegrad = as.numeric(input$hastegradKval),
@@ -745,7 +729,7 @@ observe(
         #RegData må hentes ut fra valgtVar
         UtDataKvalInd <- NGERFigKvalInd(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarKval,
                                      datoFra=input$datovalgKval[1], datoTil=input$datovalgKval[2],
-                                     reshID = reshID,
+                                     reshID = reshID(),
                                      minald=as.numeric(input$alderKval[1]), maxald=as.numeric(input$alderKval[2]),
                                      OpMetode = as.numeric(input$opMetodeKval),
                                      Hastegrad = as.numeric(input$hastegradKval),
@@ -791,7 +775,7 @@ observe(
            content = function(file, filename){write.csv2(tabInstrumentbruk, file, row.names = T, na = '')})
 
 
-         LapKomplData <- komplLap(RegData=RegData, reshID=reshID,
+         LapKomplData <- komplLap(RegData=RegData, reshID=reshID(),
                                   datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2])
          output$tittelLapKompl <- renderUI(tagList(
            h4('Hyppighet (%) av laparoskopiske komplikasjoner. '),
@@ -811,9 +795,10 @@ observe(
              # print(input$datovalgSamleDok[1])
 
             output$fordelinger <- renderPlot({
+              print(input$velgResh)
                   NGERFigAndeler(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
                                datoFra=input$datovalg[1], datoTil=input$datovalg[2],
-                               reshID = reshID,
+                               reshID = reshID(),
                                minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
                                OpMetode = as.numeric(input$opMetode),
                                Hastegrad = as.numeric(input$hastegrad),
@@ -826,7 +811,7 @@ observe(
             #RegData må hentes ut fra valgtVar
             UtDataFord <- NGERFigAndeler(RegData=RegData, preprosess = 0, valgtVar=input$valgtVar,
                                        datoFra=input$datovalg[1], datoTil=input$datovalg[2],
-                                       reshID = reshID,
+                                       reshID = reshID(),
                                        minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
                                        enhetsUtvalg=as.numeric(input$enhetsUtvalg),
                                        velgAvd=input$velgResh)
@@ -872,7 +857,7 @@ observe(
       output$andelTid <- renderPlot({
 
         NGERFigAndelTid(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
-                       reshID=reshID,
+                       reshID= reshID(),
                        datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
                        minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
                        OpMetode = as.numeric(input$opMetodeAndel),
@@ -887,7 +872,7 @@ observe(
       observe({
         #AndelTid
         AndelerTid <- NGERFigAndelTid(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
-                                     reshID=reshID,
+                                     reshID= reshID(),
                                      datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
                                      minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
                                      tidsenhet = input$tidsenhetAndel,
@@ -1010,14 +995,14 @@ observe(
             #------gjsnTid
 
             output$gjsnTid <- renderPlot(
-              NGERFigGjsnTid(RegData=RegData, reshID=reshID, preprosess = 0, valgtVar=input$valgtVarGjsn,
+              NGERFigGjsnTid(RegData=RegData, reshID= reshID(), preprosess = 0, valgtVar=input$valgtVarGjsn,
                                datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
                                minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
                                valgtMaal = input$sentralmaal, enhetsUtvalg =  as.numeric(input$enhetsUtvalgGjsn),
                             tidsenhet = input$tidsenhetGjsn
               ),
               width = 1000, height = 300)
-            UtDataGjsnTid <- NGERFigGjsnTid(RegData=RegData, reshID=reshID, preprosess = 0, valgtVar=input$valgtVarGjsn,
+            UtDataGjsnTid <- NGERFigGjsnTid(RegData=RegData, reshID= reshID(), preprosess = 0, valgtVar=input$valgtVarGjsn,
                                                 datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
                                                 minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
                                                 valgtMaal = input$sentralmaal, enhetsUtvalg =  as.numeric(input$enhetsUtvalgGjsn),
