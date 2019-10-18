@@ -111,7 +111,7 @@
 
 <<setup, include=FALSE, cache=FALSE>>=
 knitr::opts_chunk$set()	#Settes også i rapbase
-knitr::opts_knit$set(root.dir = './')	#Settes også i rapbase
+#knitr::opts_knit$set(root.dir = './')	#Settes også i rapbase
 knitr::opts_chunk$set(warnings=FALSE,echo=FALSE)
 knitr::opts_chunk$set(fig.align='center', fig.show='hold', out.width='.8\\textwidth',cache=FALSE)
 options(replace.assign=TRUE, width=90)
@@ -142,7 +142,7 @@ at rapporterte data kan tilbakeføres til enkeltpersoner. Det er registeret sitt
 <<LasteData, echo=FALSE, eval=T>>=
 #datoFra <- startDato 	 # min og max dato i utvalget vises alltid i figuren.
 #datoTil <- sluttDato #Sys.Date()	#'2015-12-31'
-dev.off()
+#dev.off()
 startAar <- '2015-01-01' #Til bruk i årstabell
 if (!exists('RegData')){
   RegData <- NGERRegDataSQL(datoFra = startAar, datoTil = datoTil)
@@ -233,7 +233,7 @@ print(tab, include.rownames=FALSE, sanitize.text.function = function(x){x})
 
 @
 
-<<'DivFig1', echo=FALSE, eval=T>>=
+<<'DivFig1', echo=FALSE, results='asis', eval=T>>=
 #results='asis',
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='Alder', datoTil=datoTil,
                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='AlderFord.pdf')
@@ -569,6 +569,7 @@ utvikling over tid.}
 \clearpage
 
 <<'DivFig2', results='asis', echo=FALSE, eval=T>>=
+dev.off()
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplPostUtd', datoTil=datoTil,
                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostUtd.pdf', OpMetode = '',
                       Hastegrad=Hastegrad)

@@ -17,12 +17,13 @@ sluttDato <- idag
 # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
 addResourcePath('rap', system.file('www', package='rapbase'))
 
-regTitle = 'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER med FIKTIVE data'
+context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
+paaServer <- (context == "TEST" | context == "QA" | context == "PRODUCTION")
+regTitle = ifelse(paaServer,'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER',
+							'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER med FIKTIVE data')
 
 
 #----------Hente data og evt. parametre som er statiske i appen----------
-context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-paaServer <- (context == "TEST" | context == "QA" | context == "PRODUCTION")
 if (paaServer) {
   RegData <- NGERRegDataSQL() #datoFra = datoFra, datoTil = datoTil)
   qSkjemaOversikt <- 'SELECT * FROM SkjemaOversikt'
@@ -30,11 +31,12 @@ if (paaServer) {
                                          query=qSkjemaOversikt, dbType='mysql')
 }
 
+tulledata <- 0
 if (!exists('RegData')) {
   data('NGERtulledata', package = 'nger')
   #SkjemaOversikt <- plyr::rename(SkjemaOversikt, replace=c('SykehusNavn'='ShNavn'))
-  reshID <- 8
-  rolle <- 'SC'}
+  tulledata <- 1 #Må få med denne i tulledatafila..
+  }
 
 RegData <- NGERPreprosess(RegData)
 SkjemaOversikt <- NGERPreprosess(RegData = SkjemaOversikt)
@@ -611,17 +613,18 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
 server <- function(input, output, session) {
 
   #raplog::appLogger(session)
-  system.file('NGERmndRapp.Rnw', package='nger')
+  #system.file('NGERmndRapp.Rnw', package='nger')
 
     #hospitalName <-getHospitalName(rapbase::getUserReshId(session))
-    reshID <- reactive({ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)})
+    reshID <- reactive({ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)),
+                               ifelse(tulledata==1, 8, 105460))})
     #reshID <- ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)
     rolle <- reactive({ifelse(paaServer, rapbase::getShinyUserRole(shinySession=session), 'SC')})
     #rolle <- ifelse(paaServer, rapbase::getShinyUserRole(shinySession=session), 'LU')
     #userRole <- reactive({ifelse(onServer, rapbase::getUserRole(session), 'SC')})
 
 
-    output$reshID <- renderText({ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)}) #evt renderUI
+    #output$reshID <- renderText({ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)}) #evt renderUI
 
     reactive({if (rolle() != 'SC') {
       shinyjs::hide(id = 'velgResh')
@@ -630,12 +633,24 @@ server <- function(input, output, session) {
     }
     })
  # widget
+    if (paaServer) {
   output$appUserName <- renderText(rapbase::getUserFullName(session))
-  output$appOrgName <- renderText(rapbase::getUserReshId(session))
+  output$appOrgName <- renderText(rapbase::getUserReshId(session))}
   #--------------Startside------------------------------
   #-------Samlerapporter--------------------
       # funksjon for å kjøre Rnw-filer (render file funksjon)
-      contentFile <- function(file, srcFil, tmpFil, datoFra=startDato, datoTil=Sys.Date()) {
+
+
+
+  # filename function for re-use
+  downloadFilename <- function(fileBaseName, type='') {
+    paste0(fileBaseName, as.character(as.integer(as.POSIXct(Sys.time()))), '.pdf')
+    }
+
+
+
+        contentFile <- function(file, srcFil, tmpFil,
+                                reshID=0, datoFra=startDato, datoTil=Sys.Date()) {
             src <- normalizePath(system.file(srcFil, package="nger"))
 
             # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
@@ -647,23 +662,22 @@ server <- function(input, output, session) {
             tools::texi2pdf(texfil, clean = TRUE)
 
             gc() #Opprydning gc-"garbage collection"
-            file.copy(paste0(substr(tmpFil, 1, nchar(tmpFil)-3), 'pdf'), file)
+            file.rename(stringr::str_replace(texfil,'tex','pdf'), file)
       }
 
-
-
       output$mndRapp.pdf <- downloadHandler(
-            filename = function(){ paste0('MndRapp', Sys.time(), '.pdf')},
+            filename = function(){ downloadFilename('NGERmaanedsrapport')},
             content = function(file){
-                  contentFile(file, srcFil="NGERmndRapp.Rnw", tmpFil="tmpNGERmndRapp.Rnw")
+                  contentFile(file, srcFil="NGERmndRapp.Rnw", tmpFil="tmpNGERmndRapp.Rnw",
+                              reshID = reshID())
             })
 
       output$samleDok <- downloadHandler(
-        filename = function(){
-          paste0('samleDok', Sys.time(), '.pdf')
-        },
+        filename = function(){ downloadFilename('Samledokument')},
         content = function(file){
-          contentFile(file, srcFil="NGERSamleRapp.Rnw", tmpFil="tmpNGERSamleRapp.Rnw", datoFra=input$datovalgSamleDok[1],
+          contentFile(file, srcFil="NGERSamleRapp.Rnw", tmpFil="tmpNGERSamleRapp.Rnw",
+                      reshID = reshID(),
+                      datoFra=input$datovalgSamleDok[1],
                       datoTil=input$datovalgSamleDok[2])
         }
       )
@@ -671,7 +685,8 @@ server <- function(input, output, session) {
       #output$lenkeNorScir <- renderUI({tagList("www.norscir.no", www.norscir.no)})
 
      output$tabEgneReg <- renderTable({
-       xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12, reshID = reshID()))},
+       xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg,
+                                      antMnd=12, reshID = reshID()))},
             rownames=T,
             digits = 0
       )
@@ -845,12 +860,12 @@ server <- function(input, output, session) {
 #--------------Andeler-----------------------------------
       output$andelerGrVar <- renderPlot({
         NGERFigAndelerGrVar(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
-                           datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
-                           minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
-        OpMetode = as.numeric(input$opMetodeAndel),
-        Hastegrad = as.numeric(input$hastegradAndel),
-        velgDiag = as.numeric(input$velgDiagAndel),
-        AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel))
+                            datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
+                            minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
+                            OpMetode = as.numeric(input$opMetodeAndel),
+                            Hastegrad = as.numeric(input$hastegradAndel),
+                            velgDiag = as.numeric(input$velgDiagAndel),
+                            AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel))
       }, height = 800, width=700 #height = function() {session$clientData$output_andelerGrVarFig_width} #})
       )
 
