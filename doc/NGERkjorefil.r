@@ -104,6 +104,7 @@ OpMetode <- 99 #1: Laparoskopi, 2: Hysteroskopi, 3: Begge,  99: Alle
 #'                 5: LCC11 (laparoskopisk subtotal hysterektomi)
 #'                 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
 velgDiag <- 0
+dagkir <- 9
 Hastegrad <- ''
 AlvorlighetKompl <- ''#c('2','3')
 hentData <- 0
@@ -114,7 +115,7 @@ tidsenhet <- 'Mnd'
 grVar <- 'ShNavn'
 Ngrense <- 10
 valgtMaal <- 'med'
-velgAvd <- ''
+velgAvd <- 0
 outfile <- ''
 
 
@@ -246,10 +247,11 @@ for (valgtVar in variable) {
 
 
 #-----------------------------Kvalietsindikatorer------------------------------
-valgtVar <- 'RAND0' #RAND0, TSS0, kvalInd
+#valgtVar <- 'kvalInd' #RAND0, TSS0, kvalInd
 outfile <- '' #paste0(valgtVar, '_kvalInd.png')
-UtKval <- NGERFigKvalInd(RegData=RegData, datoFra='2017-10-01', datoTil='3000-01-02', valgtVar=valgtVar, OpMetode=99,
-               Hastegrad=99, preprosess=1, velgDiag=velgDiag, Ngrense=10, enhetsUtvalg=1, reshID = reshID,
+data("NGERtulledata")
+UtKval <- NGERFigKvalInd(RegData=RegData, datoFra='2017-10-01', datoTil='3000-01-02', valgtVar='kvalInd', OpMetode=99,
+               Hastegrad=99, preprosess=0, Ngrense=10, enhetsUtvalg=1, reshID = 8, velgAvd = 0,
                outfile=outfile)
 
 RegData <- RegData[which(as.Date(RegData$HovedDato)>= as.Date('2017-01-01')), ]

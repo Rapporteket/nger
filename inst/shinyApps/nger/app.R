@@ -17,7 +17,7 @@ sluttDato <- idag
 addResourcePath('rap', system.file('www', package='rapbase'))
 
 context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-paaServer <- rapbase::isRapContext()
+paaServer <- paaServer <- (context == "TEST" | context == "QA" | context == "PRODUCTION") #rapbase::isRapContext()
 regTitle = ifelse(paaServer,'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER',
 							'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER med FIKTIVE data')
 
@@ -619,7 +619,7 @@ server <- function(input, output, session) {
     reshID <- reactive({ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)),
                                ifelse(tulledata==1, 8, 105460))})
     #reshID <- ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)
-    rolle <- reactive({ifelse(paaServer, rapbase::getShinyUserRole(shinySession=session), 'LU')})
+    rolle <- reactive({ifelse(paaServer, rapbase::getShinyUserRole(shinySession=session), 'SC')})
     #rolle <- ifelse(paaServer, rapbase::getShinyUserRole(shinySession=session), 'LU')
     #userRole <- reactive({ifelse(onServer, rapbase::getUserRole(session), 'SC')})
 
@@ -673,7 +673,7 @@ server <- function(input, output, session) {
         filename = function(){ downloadFilename('Samledokument')},
         content = function(file){
           contentFile(file, srcFil="NGERSamleRapp.Rnw", tmpFil="tmpNGERSamleRapp.Rnw",
-                      reshID = reshID(),
+                      reshID = reshID(), package = 'nger',
                       datoFra=input$datovalgSamleDok[1],
                       datoTil=input$datovalgSamleDok[2])
         }
@@ -724,6 +724,8 @@ server <- function(input, output, session) {
 
       #---------Kvalitetsindikatorer------------
       observe({   #KvalInd
+        print(reshID())
+        print(input$velgReshKval)
         output$kvalInd <- renderPlot({
           NGERFigKvalInd(RegData=RegData, valgtVar=input$valgtVarKval, preprosess = 0,
                          datoFra=input$datovalgKval[1], datoTil=input$datovalgKval[2],
