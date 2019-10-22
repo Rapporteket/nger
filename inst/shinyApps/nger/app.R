@@ -17,7 +17,7 @@ sluttDato <- idag
 addResourcePath('rap', system.file('www', package='rapbase'))
 
 context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-paaServer <- (context == "TEST" | context == "QA" | context == "PRODUCTION")
+paaServer <- rapbase::isRapContext()
 regTitle = ifelse(paaServer,'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER',
 							'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER med FIKTIVE data')
 
