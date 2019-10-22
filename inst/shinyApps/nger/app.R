@@ -13,7 +13,6 @@ library(shinyjs)
 startDato <- '2019-01-01' #Sys.Date()-364
 idag <- Sys.Date()
 sluttDato <- idag
-
 # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
 addResourcePath('rap', system.file('www', package='rapbase'))
 
@@ -91,11 +90,12 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
             #theme = "rap/bootstrap.css",
 
 
+
 #------------Startside--------------------------
       tabPanel("Startside",
+               shinyjs::useShinyjs(),
                #fluidRow(
                #column(width=5,
-               shinyjs::useShinyjs(),
                br(),
                tags$head(tags$style(".butt{background-color:#6baed6;} .butt{color: white;}")), # background color and font color
                h2('Velkommen til Rapporteket - Norsk Gynekologisk Endoskopiregister!', align='center'),
@@ -619,14 +619,14 @@ server <- function(input, output, session) {
     reshID <- reactive({ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)),
                                ifelse(tulledata==1, 8, 105460))})
     #reshID <- ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)
-    rolle <- reactive({ifelse(paaServer, rapbase::getShinyUserRole(shinySession=session), 'SC')})
+    rolle <- reactive({ifelse(paaServer, rapbase::getShinyUserRole(shinySession=session), 'LU')})
     #rolle <- ifelse(paaServer, rapbase::getShinyUserRole(shinySession=session), 'LU')
     #userRole <- reactive({ifelse(onServer, rapbase::getUserRole(session), 'SC')})
 
 
     #output$reshID <- renderText({ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)}) #evt renderUI
 
-    reactive({if (rolle() != 'SC') {
+    observe({if (rolle() != 'SC') { #
       shinyjs::hide(id = 'velgResh')
       shinyjs::hide(id = 'velgReshKval')
      #hideTab(inputId = "tabs_andeler", target = "Figur, sykehusvisning")
@@ -638,20 +638,16 @@ server <- function(input, output, session) {
   output$appOrgName <- renderText(rapbase::getUserReshId(session))}
   #--------------Startside------------------------------
   #-------Samlerapporter--------------------
-      # funksjon for å kjøre Rnw-filer (render file funksjon)
 
-
-
-  # filename function for re-use
+  # filename function for re-use - i dette tilfellet vil det funke fint å hardkode det samme..
   downloadFilename <- function(fileBaseName, type='') {
     paste0(fileBaseName, as.character(as.integer(as.POSIXct(Sys.time()))), '.pdf')
     }
 
-
-
-        contentFile <- function(file, srcFil, tmpFil,
+        contentFile <- function(file, srcFil, tmpFil, package,
                                 reshID=0, datoFra=startDato, datoTil=Sys.Date()) {
             src <- normalizePath(system.file(srcFil, package="nger"))
+            dev.off()
 
             # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
             owd <- setwd(tempdir())
@@ -669,6 +665,7 @@ server <- function(input, output, session) {
             filename = function(){ downloadFilename('NGERmaanedsrapport')},
             content = function(file){
                   contentFile(file, srcFil="NGERmndRapp.Rnw", tmpFil="tmpNGERmndRapp.Rnw",
+                              package = "nger",
                               reshID = reshID())
             })
 
@@ -810,7 +807,6 @@ server <- function(input, output, session) {
              # print(input$datovalgSamleDok[1])
 
             output$fordelinger <- renderPlot({
-              print(input$velgResh)
                   NGERFigAndeler(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
                                datoFra=input$datovalg[1], datoTil=input$datovalg[2],
                                reshID = reshID(),

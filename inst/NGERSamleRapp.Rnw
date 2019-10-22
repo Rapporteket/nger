@@ -113,8 +113,8 @@
 knitr::opts_chunk$set()	#Settes også i rapbase
 #knitr::opts_knit$set(root.dir = './')	#Settes også i rapbase
 knitr::opts_chunk$set(warnings=FALSE,echo=FALSE)
-knitr::opts_chunk$set(fig.align='center', fig.show='hold', out.width='.8\\textwidth',cache=FALSE)
-options(replace.assign=TRUE, width=90)
+#knitr::opts_chunk$set(fig.align='center', fig.show='hold', out.width='.8\\textwidth',cache=FALSE)
+#options(replace.assign=TRUE, width=90)
 @
 
 \section{Informasjonsgrunnlag og ansvarsforhold}
@@ -218,7 +218,6 @@ Denne samlerapporten er hovedsakelig basert på registreringer som er lagret og 
 utført i perioden \Sexpr{min(RegData$InnDato)} til \Sexpr{max(RegData$InnDato)}.
 
 <<'Tabell:Pasientkarakterisika', results='asis', warnings=FALSE, echo=FALSE, eval=T >>=
-# Får feilmelding med duplikate radnavn. Be Are se på koden sin.
 
 TabPasKar <- NGERpasientegenskaper(RegDataHele[indEgetHele,])
 
@@ -569,7 +568,7 @@ utvikling over tid.}
 \clearpage
 
 <<'DivFig2', results='asis', echo=FALSE, eval=T>>=
-dev.off()
+
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplPostUtd', datoTil=datoTil,
                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostUtd.pdf', OpMetode = '',
                       Hastegrad=Hastegrad)

@@ -23,8 +23,7 @@ sluttDato <- datoTil
 setwd('C:/ResultattjenesteGIT/nger/inst/')
 data('NGERtulledata', package = 'nger')
 load('A:/NGER/NGER2019-09-03.Rdata')
-RegData <- NGERData
-  RegData <- NGERPreprosess(RegData=RegData) #I App'en preprosesseres data
+RegData <- NGERPreprosess(RegData=RegData) #I App'en preprosesseres data
 
 knitr::knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
 tools::texi2pdf('NGERSamleRapp.tex')
