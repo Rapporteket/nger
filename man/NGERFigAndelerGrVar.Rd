@@ -5,7 +5,7 @@
 \title{Søylediagram med andeler for hver grupperingsenhet (sykehus, RHF, ...)}
 \usage{
 NGERFigAndelerGrVar(RegData = 0, valgtVar, datoFra = "2013-01-01",
-  datoTil = "3000-12-31", velgAvd = "", minald = 0, maxald = 130,
+  datoTil = "3000-12-31", velgAvd = 0, minald = 0, maxald = 130,
   OpMetode = 99, Hastegrad = "", AlvorlighetKompl = "",
   Ngrense = 10, reshID = 0, outfile = "", enhetsUtvalg = 0,
   velgDiag = 0, preprosess = 1, hentData = 0)

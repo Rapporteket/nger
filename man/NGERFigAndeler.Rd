@@ -7,7 +7,7 @@
 NGERFigAndeler(RegData = 0, valgtVar, datoFra = "2013-01-01",
   datoTil = "2050-12-31", minald = 0, maxald = 130, outfile = "",
   reshID = 0, enhetsUtvalg = 0, OpMetode = 99, Hastegrad = "",
-  AlvorlighetKompl = "", velgAvd = "", velgDiag = 0, hentData = 0,
+  AlvorlighetKompl = "", velgAvd = 0, velgDiag = 0, hentData = 0,
   preprosess = 1)
 }
 \arguments{

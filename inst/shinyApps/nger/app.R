@@ -17,7 +17,7 @@ sluttDato <- idag
 addResourcePath('rap', system.file('www', package='rapbase'))
 
 context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-paaServer <- paaServer <- (context == "TEST" | context == "QA" | context == "PRODUCTION") #rapbase::isRapContext()
+paaServer <- (context %in% c("DEV", "TEST", "QA", "PRODUCTION")) #rapbase::isRapContext()
 regTitle = ifelse(paaServer,'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER',
 							'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER med FIKTIVE data')
 
@@ -86,8 +86,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
             title = div(img(src="rap/logo.svg", alt="Rapporteket", height="26px"), regTitle),
             # sett inn tittle ogsÃ¥ i browser-vindu
             windowTitle = regTitle,
-            # velg css (forelÃ¸pig den eneste bortsett fra "naken" utgave)
-            #theme = "rap/bootstrap.css",
+            theme = "rap/bootstrap.css",
 
 
 
@@ -120,6 +119,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                         I mellomtida får du ikke sett på andre resultater')
                ),
                mainPanel(width = 8,
+                         tags$head(tags$link(rel="shortcut icon", href="rap/favicon.ico")),
                          rapbase::appNavbarUserWidget(user = uiOutput("appUserName"),
                                              organization = uiOutput("appOrgName"),
                                              addUserInfo = TRUE),
@@ -143,9 +143,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                             Man kan velge hvilken tidsskala man vi se på.'),
                          h4(tags$b('Gjennomsnitt: per sykehus og over tid'), ' viser gjennomsnittsverdier per sykehus og utvikling over tid.
                             Man kan velge om man vil se gjennomsnitt eller median.'),
-                         h4('Årsaken til at resultater deles inn i gjennomsnitt og andeler er
-                            at dette er programmeringsmessig effektivt. Gi gjerne innspill til registerledelsen om ønsket organisering
-                            av innholdet på Rapporteket-NGER.'),
+                         h4('Gi gjerne innspill og tilbakemeldinger til registerledelsen vedrørende organisering
+                            av og innhold på Rapporteket-NGER.'),
                          br(),
                          br(),
                          h4('Antall registreringer ved eget sykehus siste år:'),
@@ -281,7 +280,7 @@ h3('Registerets kvalitetsindikatorer', align='center'),
 ), #tab Kvalitetsindikatorer
 
 #--------------Tabelloversikter-------------
-tabPanel(p("Tabelloversikter", title = 'Instrumentbruk'),
+tabPanel(p("Tabelloversikter", title = c('Instrumentbruk', 'komplikasjoner')),
          h3('Tabelloversikter', align='center'),
          sidebarPanel(width=3,
                       h3('Utvalg'),
@@ -619,8 +618,8 @@ server <- function(input, output, session) {
     reshID <- reactive({ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)),
                                ifelse(tulledata==1, 8, 105460))})
     #reshID <- ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)
-    rolle <- reactive({ifelse(paaServer, rapbase::getShinyUserRole(shinySession=session), 'SC')})
-    #rolle <- ifelse(paaServer, rapbase::getShinyUserRole(shinySession=session), 'LU')
+    rolle <- reactive({ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')})
+    #rolle <- ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'LU')
     #userRole <- reactive({ifelse(onServer, rapbase::getUserRole(session), 'SC')})
 
 
@@ -633,9 +632,20 @@ server <- function(input, output, session) {
     }
     })
  # widget
+    # widget
     if (paaServer) {
-  output$appUserName <- renderText(rapbase::getUserFullName(session))
-  output$appOrgName <- renderText(rapbase::getUserReshId(session))}
+      output$appUserName <- renderText(rapbase::getUserFullName(session))
+      output$appOrgName <- renderText(paste0('rolle: ', rolle(), '<br> ReshID: ', reshID()) )}
+
+    # User info in widget
+    userInfo <- rapbase::howWeDealWithPersonalData(session)
+    observeEvent(input$userInfo, {
+      shinyalert::shinyalert("Dette vet Rapporteket om deg:", userInfo,
+                             type = "", imageUrl = "rap/logo.svg",
+                             closeOnEsc = TRUE, closeOnClickOutside = TRUE,
+                             html = TRUE, confirmButtonText = rapbase::noOptOutOk())
+    })
+
   #--------------Startside------------------------------
   #-------Samlerapporter--------------------
 
@@ -724,8 +734,8 @@ server <- function(input, output, session) {
 
       #---------Kvalitetsindikatorer------------
       observe({   #KvalInd
-        print(reshID())
-        print(input$velgReshKval)
+        #print(reshID())
+        #print(input$velgReshKval)
         output$kvalInd <- renderPlot({
           NGERFigKvalInd(RegData=RegData, valgtVar=input$valgtVarKval, preprosess = 0,
                          datoFra=input$datovalgKval[1], datoTil=input$datovalgKval[2],
@@ -787,9 +797,11 @@ server <- function(input, output, session) {
          output$lastNed_tabInstrBruk <- downloadHandler(
            filename = function(){paste0('tabInstrumentbruk.csv')},
            content = function(file, filename){write.csv2(tabInstrumentbruk, file, row.names = T, na = '')})
-
-
-         LapKomplData <- komplLap(RegData=RegData, reshID=reshID(),
+# print(dim(RegData))
+# print(input$datovalgTab[1])
+# print(reshID())
+         #komplLap(RegData=RegData)
+         LapKomplData <- KomplLapTab(RegData=RegData, reshID=reshID(),
                                   datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2])
          output$tittelLapKompl <- renderUI(tagList(
            h4('Hyppighet (%) av laparoskopiske komplikasjoner. '),

@@ -247,7 +247,7 @@ return(invisible(InstrTab))
 #' @section komplikasjoner, Laparaskopi
 #' @rdname NGERtabeller
 #' @export
-komplLap <- function(RegData, reshID=0, datoFra='2019-01-01', datoTil=Sys.Date()){
+KomplLapTab <- function(RegData, reshID=0, datoFra='2019-01-01', datoTil=Sys.Date()){
 
   #Blødning:
   BlodTxt <- c('Blødning', '...I abdominal vegg', '...Intraabdominal', '...Vaginal')

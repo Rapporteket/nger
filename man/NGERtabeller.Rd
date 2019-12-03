@@ -9,7 +9,7 @@
 \alias{lagTabavFigGjsnGrVar}
 \alias{NGERpasientegenskaper}
 \alias{instrumentbruk}
-\alias{komplLap}
+\alias{KomplLapTab}
 \alias{konvertertLap}
 \alias{visVanligsteProcDiag}
 \title{Funksjoner for å lage tabeller Group of functions page title}
@@ -31,7 +31,7 @@ NGERpasientegenskaper(RegData, datoFra = "2019-01-01",
 
 instrumentbruk(RegData, datoFra = "2019-01-01", datoTil = Sys.Date())
 
-komplLap(RegData, reshID = 0, datoFra = "2019-01-01",
+KomplLapTab(RegData, reshID = 0, datoFra = "2019-01-01",
   datoTil = Sys.Date())
 
 konvertertLap(RegData, reshID = 0, datoFra = "2016-01-01",
