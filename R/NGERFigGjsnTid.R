@@ -20,7 +20,7 @@
 #' @export
 NGERFigGjsnTid <- function(RegData, valgtVar='alder', datoFra='2011-01-01', datoTil='3000-12-31',
                            tidsenhet='Aar', minald=0, maxald=110, reshID=0,
-                           OpMetode=99, Hastegrad='', AlvorlighetKompl='',
+                           OpMetode=99, Hastegrad='', AlvorlighetKompl='', velgDiag = 0,
                            outfile='',enhetsUtvalg=0, valgtMaal='Gjsn', preprosess=1, hentData=0, lagFigur=1){
 
   if (hentData == 1) {
@@ -41,7 +41,8 @@ NGERFigGjsnTid <- function(RegData, valgtVar='alder', datoFra='2011-01-01', dato
 
   NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, #aar=aar,
                               minald=minald, maxald=maxald,
-                              OpMetode=OpMetode, Hastegrad=Hastegrad, AlvorlighetKompl=AlvorlighetKompl,
+                              OpMetode=OpMetode, Hastegrad=Hastegrad,
+                              AlvorlighetKompl=AlvorlighetKompl, velgDiag = velgDiag,
                               reshID=reshID, enhetsUtvalg=enhetsUtvalg) #overfPas = overfPas,
   RegData <- NGERUtvalg$RegData
   utvalgTxt <- NGERUtvalg$utvalgTxt
