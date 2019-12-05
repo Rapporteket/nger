@@ -2,7 +2,7 @@ Package: nger
 Type: Package
 Title: Resultatrapporter for NGER
 Version: 3.0.0
-Date: 2019-03-09
+Date: 2019-12-04
 Authors@R: c(person("Edvardsen", "Are", email = "are.edvardsen@helse-nord.no",
     role = "aut"), person("Olsen", "Lena", email = "Lena.Ringstad.Olsen@unn.no",
     role = c("cre", "aut")))
@@ -14,24 +14,20 @@ Depends:
     R (>= 3.5.0)
 Remotes: 
       Rapporteket/rapFigurer,
-      Rapporteket/rapbase@rel
-Suggests:
-    kableExtra,
-    knitr, 
-    lubridate,
-    plyr,
-    prodlim,
-    rmarkdown,
-    shiny,
-    testthat, 
-    xtable,
-    zoo
+      Rapporteket/rapbase@rel,
+      Rapporteket/raplog
 Imports:
     kableExtra,
     knitr,
+    lubridate,
+    plyr,
+    prodlim,
     rapbase,
     rapFigurer,
+    raplog,
+    rmarkdown,
     shiny,
+    testthat, 
     tidyverse,
     xtable,
     zoo

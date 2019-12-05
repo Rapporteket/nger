@@ -30,20 +30,20 @@
 \usepackage{graphicx}
 
 %Offentliggjøringsfargene 1-6, lys-mørk, benytter 2-5
-\definecolor{OffBlaa2}{rgb}{0.42, 0.68, 0.84}	%107/255, 174/255, 214/255}
-\definecolor{OffBlaa3}{rgb}{0.26, 0.57, 0.78}	%66/255, 146/255, 198/255}
-\definecolor{OffBlaa4}{rgb}{ 0.13 0.44 0.71}	%33/255, 113/255, 181/255}
-\definecolor{OffBlaa5}{rgb}{0.03 0.27 0.58}		%8/255,  69/255, 148/255}
+% \definecolor{OffBlaa2}{rgb}{0.42, 0.68, 0.84}	%107/255, 174/255, 214/255}
+% \definecolor{OffBlaa3}{rgb}{0.26, 0.57, 0.78}	%66/255, 146/255, 198/255}
+% \definecolor{OffBlaa4}{rgb}{ 0.13 0.44 0.71}	%33/255, 113/255, 181/255}
+% \definecolor{OffBlaa5}{rgb}{0.03 0.27 0.58}		%8/255,  69/255, 148/255}
 %\definecolor{SKDE}{rgb}{0,0.32,0.61}
 %\definecolor{moerkgraa}{rgb}{0.25,0.25,0.25}
 %\color{moerkgraa}
 
-\usepackage[pdftex, colorlinks, linkcolor=OffBlaa3, urlcolor=OffBlaa3]{hyperref}
+%\usepackage[pdftex, colorlinks, linkcolor=OffBlaa3, urlcolor=OffBlaa3]{hyperref}
 
 %bytte overskrifter
 \usepackage[compact]{titlesec}
-\titleformat{\section} {\vspace*{10pt}\color{OffBlaa5}\normalfont\Large\bfseries} {\thesection}{}{}
-\titleformat{\subsection} {\color{OffBlaa3}\normalfont\large\bfseries} {\thesection}{}{}
+\titleformat{\section} {\vspace*{10pt}\normalfont\Large\bfseries} {\thesection}{}{} %\color{OffBlaa5}
+\titleformat{\subsection} {\normalfont\large\bfseries} {\thesection}{}{} %\color{OffBlaa3}
 
 %topptekst og vertikal sidenummer
 \fancyhead{}\fancyfoot{}  % clear all fields
@@ -51,14 +51,14 @@
 \fancyfootoffset[LO]{1.5cm}
 \fancyfootoffset[RE]{1.5cm}
 %Stripe øverst på sida med registerets navn
-\fancyhead[LO]{\colorbox{OffBlaa5}{\textcolor{white}{\hspace*{2cm}\scshape\small Norsk Gynekologisk Endoskopiregister}}} %Lengde på stripa
-\fancyfoot[LO]{\colorbox{OffBlaa5}{\textcolor{white}{\scshape\small\thepage}}}
-\fancyfoot[RE]{\colorbox{OffBlaa5}{\textcolor{white}{\scshape\small\thepage}}}
+\fancyhead[LO]{{\textcolor{white}{\hspace*{2cm}\scshape\small Norsk Gynekologisk Endoskopiregister}}} %Lengde på stripa \colorbox{OffBlaa5}
+\fancyfoot[LO]{{\textcolor{white}{\scshape\small\thepage}}} %\colorbox{OffBlaa5}
+\fancyfoot[RE]{{\textcolor{white}{\scshape\small\thepage}}} %\colorbox{OffBlaa5}
 \renewcommand{\headrulewidth}{0pt} %\iffloatpage{0pt}{0.4pt}
 \renewcommand{\footrulewidth}{0pt}
 %evt. horisontal sidenummer
-\fancyfoot[LO]{\colorbox{OffBlaa5}{\textcolor{white}{\hspace*{2cm} \small \thepage}}} \fancyfootoffset[LO]{4.4cm}
-\fancyfoot[RE]{\hspace*{2cm}\colorbox{OffBlaa5}{\textcolor{white}{\small \thepage \hspace*{3cm}}}}  \fancyfootoffset[RE]{5.3cm}
+\fancyfoot[LO]{{\textcolor{white}{\hspace*{2cm} \small \thepage}}} \fancyfootoffset[LO]{4.4cm} %\colorbox{OffBlaa5}
+\fancyfoot[RE]{\hspace*{2cm}{\textcolor{white}{\small \thepage \hspace*{3cm}}}}  \fancyfootoffset[RE]{5.3cm} %\colorbox{OffBlaa5}
 \setcounter{secnumdepth}{-1}
 
 
@@ -141,17 +141,16 @@ at rapporterte data kan tilbakeføres til enkeltpersoner. Det er registeret sitt
 
 <<LasteData, echo=FALSE, eval=T>>=
 #datoFra <- startDato 	 # min og max dato i utvalget vises alltid i figuren.
-#datoTil <- sluttDato #Sys.Date()	#'2015-12-31'
+#datoTil <- Sys.Date()	#'2015-12-31'
 #dev.off()
-startAar <- '2015-01-01' #Til bruk i årstabell
+startAar <- '2016-01-01' #Til bruk i årstabell
 if (!exists('RegData')){
-  RegData <- NGERRegDataSQL(datoFra = startAar, datoTil = datoTil)
+  RegData <- NGERRegDataSQL(datoFra = startAar)
+  RegData <- NGERPreprosess(RegData)
 }
 @
 
 <<FellesParamOgPreprosess, echo=FALSE, warnings=FALSE>>=
-
-#RegData <- NGERPreprosess(RegData)
 
 library(xtable)
 library(dplyr)
@@ -162,7 +161,7 @@ Hastegrad <- ''
 tidsenhet <- 'Mnd'
 tidsspenn <- difftime(datoTil,datoFra, units = 'weeks')
 if (tidsspenn > 60) {tidsenhet <- 'Kvartal'}
-if (tidsspenn > 300) {tidsenhet <- 'Aar'}
+if (tidsspenn > 200) {tidsenhet <- 'Aar'}
 tidsperiodeTxt <- paste0('Operasjonene er utført i perioden ', datoFra, ' til ', datoTil,'.' )
 
 RegDataHele <- NGERUtvalgEnh(RegData = RegData, datoFra = startAar, datoTil = datoTil)$RegData
@@ -192,11 +191,13 @@ viser antall registreringer siste 5 år.
 
 
 <<'Tabell:RegistrerendeAvd', results='asis', echo=FALSE, eval=T >>=
+# NGERFigAndelTid(RegData=RegData, preprosess=0, valgtVar='Opf0Status', reshID=110734, enhetsUtvalg=1,
+#                 datoFra=2018-06-01, tidsenhet = 'Mnd')
 dum <- NGERFigAndelTid(RegData=RegData, preprosess=0, datoFra=datoFra, valgtVar='Opf0Status', datoTil=datoTil,
-                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='StatusOppf0Aar.pdf',
-                       OpMetode=OpMetode, Hastegrad=Hastegrad, tidsenhet = tidsenhet)
+                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='StatusOppf0Tid.pdf',
+                       tidsenhet = tidsenhet)
 
-tabAvdN <- tabAntOpphSh5Aar(RegDataHele, datoTil=sluttDato)
+tabAvdN <- tabAntOpphSh5Aar(RegDataHele, datoTil=datoTil)
 
 print(xtable::xtable(tabAvdN, digits=0, align=c('l', rep('r', max(c(1,ncol(tabAvdN)), na.rm=T))),
                      caption='Antall registrerte operasjoner siste 5 år.',
@@ -206,7 +207,7 @@ print(xtable::xtable(tabAvdN, digits=0, align=c('l', rep('r', max(c(1,ncol(tabAv
 
 
 \begin{figure}[ht]
-\centering \includegraphics[width= \Sexpr{figKrymp1}\textwidth]{StatusOppf0Aar.pdf}
+\centering \includegraphics[width= \Sexpr{figKrymp1}\textwidth]{StatusOppf0Tid.pdf}
 \caption{\label{fig:StatusOppf0Aar} Andel som har svart på postoperativ oppfølging.}
 \end{figure}
 
@@ -219,7 +220,7 @@ utført i perioden \Sexpr{min(RegData$InnDato)} til \Sexpr{max(RegData$InnDato)}
 
 <<'Tabell:Pasientkarakterisika', results='asis', warnings=FALSE, echo=FALSE, eval=T >>=
 
-TabPasKar <- NGERpasientegenskaper(RegDataHele[indEgetHele,])
+TabPasKar <- tabNGERpasientegenskaper(RegDataHele[indEgetHele,])
 
 cap <- paste0("Gjennomsnittlig BMI, fødsler, graviditeter og knivtid ved ", egetSh, '. ', tidsperiodeTxt)
 
@@ -353,7 +354,7 @@ for (met in 1:2) {
   print(xtable::xtable(ASALapHys, digits=0, #[ ,max(1,dim(ASALapHys)[2]-4):dim(ASALapHys)[2]]
                        align=c('l', rep('r', max(c(1,ncol(ASALapHys)), na.rm=T))),
                        caption=paste('ASA-grad ', Metode[met], 'ved ', egetSh),
-                       label='tab:ASA'),
+                       label=paste0('tab:ASA', met),
         include.rownames=TRUE, include.colnames=TRUE)
 }
 

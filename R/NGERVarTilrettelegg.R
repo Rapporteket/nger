@@ -366,7 +366,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     #Andel med RegData$Opf0metode %in% 1:2 (av samtlige, også tomme reg. 9-oppf. ikke mulig)
     #Kode: tomme, -1,0,1
     #Tar ut hendelser siste 8 uker:
-    datoTil <- as.POSIXlt(Sys.Date() - 8*7)  #min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 8*7))
+    datoTil <- as.Date(Sys.Date() - 8*7)  #min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 8*7))
     RegData <- RegData[which(as.Date(RegData$InnDato) <= datoTil),]
 
     RegData$Variabel[RegData$Opf0metode %in% 1:2] <- 1 #Opf0Status==1

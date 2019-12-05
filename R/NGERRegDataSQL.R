@@ -11,9 +11,6 @@
 #'
 NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = '2099-01-01') {
 
-  registryName <- "nger"
-  dbType <- "mysql"
-
 #  query <- paste0('SELECT ',
 #  paste0('AlleVarNum.',varUtvalg,suffix=', \n'),
 query <- paste0('SELECT
@@ -148,18 +145,9 @@ query <- paste0('SELECT
     ,ForlopsOversikt.SykehusNavn
     FROM AlleVarNum
     INNER JOIN ForlopsOversikt
-    ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID')
+    ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID
+ WHERE HovedDato >= \'', datoFra, '\' AND HovedDato <= \'', datoTil, '\'')
 
-# WHERE HovedDato >= \'', datoFra, '\' AND HovedDato <= \'', datoTil, '\'')
-
-# datoTil <- Sys.Date()
-# query <- paste0('SELECT
-# HysGjforingsGrad,
-# HysKomplikasjoner
-# FROM AlleVarNum
-# INNER JOIN ForlopsOversikt
-# ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID
-# WHERE HovedDato >= \'', datoFra, '\' AND HovedDato <= \'', datoTil, '\'')
 
 #  FROM AlleVarNum
 #  INNER JOIN ForlopsOversikt
@@ -173,14 +161,14 @@ query <- paste0('SELECT
   #?    OpOptimeCount,
   #?    OpParities,
   #?    OpPregnancies,
+#ForlopsOversikt.PasientAlder
+#Tatt ut av alleVarNum: 	AVD_RESH,
 
   #FROM alleVarNum INNER JOIN ForlopsOversikt ON alleVarNum.MCEID = ForlopsOversikt.ForlopsID
 
 
-  RegData <- rapbase::LoadRegData(registryName, query, dbType)
+  RegData <- rapbase::LoadRegData(registryName = "nger", query, dbType = "mysql")
 
-#ForlopsOversikt.PasientAlder
-#Tatt ut av alleVarNum: 	AVD_RESH,
 
 return(RegData)
 }

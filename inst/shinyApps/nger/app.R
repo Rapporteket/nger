@@ -105,18 +105,20 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                             #h2('Nedlastbare dokumenter med samling av resultater'),
                             h3("Månedsrapport"), #),
                             downloadButton(outputId = 'mndRapp.pdf', label='Last ned MÅNEDSRAPPORT', class = "butt"),
-                            br(),
-                            br(),
-               h3('Samledokument'),
-               helpText('Samledokumentet er ei samling av utvalgte tabeller og figurer basert på
-                        operasjoner utført i valgte tidsperiode'),
-               dateRangeInput(inputId = 'datovalgSamleDok', start = startDato, end = Sys.Date(),
-                              label = "Tidsperiode", separator="t.o.m.", language="nb"),
+                            #br(),
+                            #br(),
+               # h3('Samledokument'),
+               # helpText('Samledokumentet er ei samling av utvalgte tabeller og figurer basert på
+               #          operasjoner utført fra og med 2015.'),
+               #dateRangeInput(inputId = 'datovalgSamleDok', start = startDato, end = Sys.Date(),
+                #              label = "Tidsperiode", separator="t.o.m.", language="nb"),
 
-               downloadButton(outputId = 'samleDok', label='Last ned samledokument', class = "butt"),
-                            br(),
-               helpText('NB: Det tar litt tid å generere månedsrapport/samlerapport (10-20s).
-                        I mellomtida får du ikke sett på andre resultater')
+               # downloadButton(outputId = 'samleDok', label='Last ned samledokument', class = "butt"),
+               #              br(),
+               helpText('Det tar noen sekunder å generere månedsrapporten.
+                        I mellomtida får du ikke sett på andre resultater'),
+               helpText('Ønsker du månedsrapporten tilsendt regelmessig på e-post,
+                        kan du bestille dette under fanen "Abonnement"')
                ),
                mainPanel(width = 8,
                          tags$head(tags$link(rel="shortcut icon", href="rap/favicon.ico")),
@@ -654,40 +656,39 @@ server <- function(input, output, session) {
     paste0(fileBaseName, as.character(as.integer(as.POSIXct(Sys.time()))), '.pdf')
     }
 
-        contentFile <- function(file, srcFil, tmpFil, package,
-                                reshID=0, datoFra=startDato, datoTil=Sys.Date()) {
-            src <- normalizePath(system.file(srcFil, package="nger"))
-            dev.off()
-
-            # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
-            owd <- setwd(tempdir())
-            on.exit(setwd(owd))
-            file.copy(src, tmpFil, overwrite = TRUE)
-
-            texfil <- knitr::knit(tmpFil, encoding = 'UTF-8')
-            tools::texi2pdf(texfil, clean = TRUE)
-
-            gc() #Opprydning gc-"garbage collection"
-            file.rename(stringr::str_replace(texfil,'tex','pdf'), file)
-      }
-
-      output$mndRapp.pdf <- downloadHandler(
+        # contentFile <- function(file, srcFil, tmpFil, package,
+      #                           reshID=0, datoFra=startDato, datoTil=Sys.Date()) {
+      #       src <- normalizePath(system.file(srcFil, package="nger"))
+      #       #dev.off()
+      #
+      #       # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
+      #       owd <- setwd(tempdir())
+      #       on.exit(setwd(owd))
+      #       file.copy(src, tmpFil, overwrite = TRUE)
+      #
+      #       #texfil <- knitr::knit(tmpFil, encoding = 'UTF-8')
+      #       #tools::texi2pdf(texfil, clean = TRUE)
+      #       knitr::knit2pdf(tmpFil)
+      #
+      #       gc() #Opprydning gc-"garbage collection"
+      #       file.rename(stringr::str_replace(texfil,'tex','pdf'), file)
+      # }
+       output$mndRapp.pdf <- downloadHandler(
             filename = function(){ downloadFilename('NGERmaanedsrapport')},
             content = function(file){
-                  contentFile(file, srcFil="NGERmndRapp.Rnw", tmpFil="tmpNGERmndRapp.Rnw",
-                              package = "nger",
-                              reshID = reshID())
+              henteSamlerapporter(file, rnwFil="NGERmndRapp.Rnw",
+                                  reshID = reshID())
             })
 
-      output$samleDok <- downloadHandler(
-        filename = function(){ downloadFilename('Samledokument')},
-        content = function(file){
-          contentFile(file, srcFil="NGERSamleRapp.Rnw", tmpFil="tmpNGERSamleRapp.Rnw",
-                      reshID = reshID(), package = 'nger',
-                      datoFra=input$datovalgSamleDok[1],
-                      datoTil=input$datovalgSamleDok[2])
-        }
-      )
+      # output$samleDok <- downloadHandler(
+      #   filename = function(){ downloadFilename('Samledokument')},
+      #   content = function(file){
+      #     henteSamlerapporter(file, rnwFil="NGERSamleRapp.Rnw",
+      #                 reshID = reshID(),
+      #                 datoFra= '2015-01-01', #input$datovalgSamleDok[1],
+      #                 datoTil=Sys.Date()) #input$datovalgSamleDok[2])
+      #   }
+      # )
 
       #output$lenkeNorScir <- renderUI({tagList("www.norscir.no", www.norscir.no)})
 
@@ -760,6 +761,11 @@ server <- function(input, output, session) {
                                      velgDiag = as.numeric(input$velgDiagKval),
                                      enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
                                      velgAvd=input$velgReshKval)
+        # testData <- NGERFigKvalInd(RegData=RegData, preprosess = 0, valgtVar='kvalInd',
+        #                            datoFra='2019-01-01', datoTil=Sys.Date(),
+        #                            reshID = 110734,
+        #                            enhetsUtvalg=1)
+        # tabKvalInd <- lagTabavFig(UtDataFraFig = testData)
         tabKvalInd <- lagTabavFig(UtDataFraFig = UtDataKvalInd) #lagTabavFigAndeler
 
         output$tittelKvalInd <- renderUI({

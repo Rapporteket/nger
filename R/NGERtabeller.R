@@ -111,7 +111,8 @@ lagTabavFig <- function(UtDataFraFig, figurtype='andeler'){ #lagTabavFigAndeler
               AggVerdier$Hoved,
               if (medSml==1){cbind(
                 Ngr$Rest,
-                AggVerdier$Rest)})}
+                AggVerdier$Rest)})
+  }
 
   if (figurtype %in% c('andeler', 'andelTid')) {
     colnames(tab) <- c(paste0(hovedgrTxt,', Antall'),
@@ -132,7 +133,8 @@ lagTabavFig <- function(UtDataFraFig, figurtype='andeler'){ #lagTabavFigAndeler
     if (medSml==1) {
       colnames(tab) <-  c(kolnavn, paste0(smltxt, c(', Antall', ', Andel (%)')))}
     }
-  rownames(tab) <- grtxt
+
+  rownames(tab) <- UtDataFraFig$grtxt
   return(tab)
 }
 
@@ -153,7 +155,7 @@ lagTabavFigGjsnGrVar <- function(UtDataFraFig){
 #' @rdname NGERtabeller
 #' @export
 
-NGERpasientegenskaper <- function(RegData, datoFra='2019-01-01', datoTil=Sys.Date(), tidsenhet='Kvartal') {
+tabNGERpasientegenskaper <- function(RegData, datoFra='2019-01-01', datoTil=Sys.Date(), tidsenhet='Kvartal') {
   # make dummy column for all MCEs
   RegData <- NGERUtvalgEnh(RegData=RegData, datoFra = datoFra, datoTil = datoTil)$RegData
   RegDataFunk <- SorterOgNavngiTidsEnhet(RegData=RegData, tidsenhet = tidsenhet)

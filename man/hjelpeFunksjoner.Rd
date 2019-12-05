@@ -4,11 +4,15 @@
 \alias{hjelpeFunksjoner}
 \alias{SorterOgNavngiTidsEnhet}
 \alias{lageTulleData}
+\alias{henteSamlerapporter}
 \title{Hjelpefunksjoner. Group of functions page title}
 \usage{
 SorterOgNavngiTidsEnhet(RegData, tidsenhet = "Aar", tab = 0)
 
 lageTulleData(RegData, varBort = NA, antSh = 26, antObs = 20000)
+
+henteSamlerapporter(filnavn, rnwFil, reshID = 0, datoFra = Sys.Date() -
+  180, datoTil = Sys.Date())
 }
 \arguments{
 \item{RegData}{data}
@@ -39,6 +43,10 @@ see the information flow.
 }
 
 \section{Lage tulledata (simulerte data)}{
+NA
+}
+
+\section{Generere samlerapporter i app}{
 NA
 }
 

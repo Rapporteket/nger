@@ -40,8 +40,8 @@ SorterOgNavngiTidsEnhet <- function(RegData, tidsenhet='Aar', tab=0) {
                                       Halvaar = RegData$Halvaar-min(RegData$Halvaar[RegData$Aar==min(RegData$Aar)])+1+
                                             (RegData$Aar-min(RegData$Aar))*2
       )
-      format.Date(seq(from=as.Date('2018-01-01'),
-                      to=as.Date('2018-09-01'), by='month'), format = '%b%y')
+      # format.Date(seq(from=as.Date('2018-01-01'),
+      #                 to=as.Date('2018-09-01'), by='month'), format = '%b%y')
 
       tidtxt <- switch(tidsenhet,
                        #Mnd = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhetSort), RegData$TidsEnhetSort)], 3,4),
@@ -98,4 +98,23 @@ lageTulleData <- function(RegData, varBort=NA, antSh=26, antObs=20000) {
 	  return(RegData)
 }
 
+#' @section Generere samlerapporter i app
+# Probably better if all sections come first, uless have one section per function(?)
+#' @rdname hjelpeFunksjoner
+#' @export
+henteSamlerapporter <- function(filnavn, rnwFil, reshID=0,
+                                datoFra=Sys.Date()-180, datoTil=Sys.Date()) {
+  tmpFile <- paste0('tmp',rnwFil)
+  src <- normalizePath(system.file(rnwFil, package='nger'))
+  # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
+  owd <- setwd(tempdir())
+  #on.exit(setwd(owd))
+  file.copy(src, tmpFile, overwrite = TRUE)
+
+  knitr::knit2pdf(tmpFile)
+
+  gc() #Opprydning gc-"garbage collection"
+  file.copy(paste0(substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf'), filnavn)
+  # file.rename(paste0(substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf'), file)
+}
 
