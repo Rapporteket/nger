@@ -117,8 +117,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                #              br(),
                helpText('Det tar noen sekunder å generere månedsrapporten.
                         I mellomtida får du ikke sett på andre resultater'),
-               helpText('Ønsker du månedsrapporten tilsendt regelmessig på e-post,
-                        kan du bestille dette under fanen "Abonnement"')
+               helpText(tags$b('Ønsker du månedsrapporten tilsendt regelmessig på e-post,
+                        kan du bestille dette under fanen "Abonnement."'))
                ),
                mainPanel(width = 8,
                          tags$head(tags$link(rel="shortcut icon", href="rap/favicon.ico")),
@@ -601,7 +601,31 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
                                  )
                      )
                )
-) #GjsnGrVar/Tid
+), #GjsnGrVar/Tid
+
+#----------Abonnement-----------------
+tabPanel(p("Abonnement",
+           title='Bestill automatisk utsending av rapporter på e-post'),
+         sidebarLayout(
+           sidebarPanel(width = 3,
+                        selectInput("subscriptionRep", "Rapport:",
+                                    c("Månedsrapport")), #, "Samlerapport"
+                        selectInput("subscriptionFreq", "Frekvens:",
+                                    list(Årlig="Årlig-year",
+                                          Kvartalsvis="Kvartalsvis-quarter",
+                                          Månedlig="Månedlig-month",
+                                          Ukentlig="Ukentlig-week",
+                                          Daglig="Daglig-DSTday"),
+                                    selected = "Månedlig-month"),
+                        #selectInput("subscriptionFileFormat", "Format:",
+                        #            c("html", "pdf")),
+                        actionButton("subscribe", "Bestill!")
+           ),
+           mainPanel(
+             uiOutput("subscriptionContent")
+           )
+         )
+) #tab abonnement
 
 
 
@@ -1070,6 +1094,77 @@ server <- function(input, output, session) {
               })
 
                 }) #observe gjsnGrVar
+
+
+      #------------------ Abonnement ----------------------------------------------
+      ## reaktive verdier for å holde rede på endringer som skjer mens
+      ## applikasjonen kjører
+      rv <- reactiveValues(
+        subscriptionTab = rapbase::makeUserSubscriptionTab(session))
+
+      ## lag tabell over gjeldende status for abonnement
+      output$activeSubscriptions <- DT::renderDataTable(
+        rv$subscriptionTab, server = FALSE, escape = FALSE, selection = 'none',
+        rownames = FALSE, options = list(dom = 't')
+      )
+
+      ## lag side som viser status for abonnement, også når det ikke finnes noen
+      output$subscriptionContent <- renderUI({
+        fullName <- rapbase::getUserFullName(session)
+        if (length(rv$subscriptionTab) == 0) {
+          p(paste("Ingen aktive abonnement for", fullName))
+        } else {
+          tagList(
+            p(paste("Aktive abonnement for", fullName, "som sendes per epost til ",
+                    rapbase::getUserEmail(session), ":")),
+            DT::dataTableOutput("activeSubscriptions")
+          )
+        }
+      })
+
+      ## nye abonnement
+      observeEvent (input$subscribe, { #MÅ HA
+        package <- "intensiv"
+        owner <- rapbase::getUserName(session)
+        interval <- strsplit(input$subscriptionFreq, "-")[[1]][2]
+        intervalName <- strsplit(input$subscriptionFreq, "-")[[1]][1]
+        organization <- rapbase::getUserReshId(session)
+        runDayOfYear <- rapbase::makeRunDayOfYearSequence(
+          interval = interval
+        )
+        email <- rapbase::getUserEmail(session)
+        if (input$subscriptionRep == "Månedsrapport") {
+          synopsis <- "NGER/Rapporteket: månedsrapport"
+          rnwFil <- "NGERmndRapp.Rnw" #Navn på fila
+          #print(rnwFil)
+        }
+        # if (input$subscriptionRep == "Samlerapport") {
+        #   synopsis <- "Intensiv/Rapporteket: Samlerapport"
+        #   rnwFil <- "NIRSamleRapp.Rnw" #Navn på fila
+        #   #print(rnwFil)
+        # }
+
+        fun <- "abonnementNGER"  #"henteSamlerapporter"
+        paramNames <- c('rnwFil', 'brukernavn', "reshID") #, "datoFra", 'datoTil')
+        paramValues <- c(rnwFil, brukernavn(), reshID()) #, startDato, Sys.Date()) #input$subscriptionFileFormat)
+        #abonnement('NIRmndRapp.Rnw')
+
+        rapbase::createAutoReport(synopsis = synopsis, package = package,
+                                  fun = fun, paramNames = paramNames,
+                                  paramValues = paramValues, owner = owner,
+                                  email = email, organization = organization,
+                                  runDayOfYear = runDayOfYear, interval = interval,
+                                  intervalName = intervalName)
+        rv$subscriptionTab <- rapbase::makeUserSubscriptionTab(session)
+      })
+
+      ## slett eksisterende abonnement
+      observeEvent(input$del_button, {
+        selectedRepId <- strsplit(input$del_button, "_")[[1]][2]
+        rapbase::deleteAutoReport(selectedRepId)
+        rv$subscriptionTab <- rapbase::makeUserSubscriptionTab(session)
+      })
+
 } #server
 # Run the application
 shinyApp(ui = ui, server = server)

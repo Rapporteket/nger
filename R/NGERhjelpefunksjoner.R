@@ -118,3 +118,25 @@ henteSamlerapporter <- function(filnavn, rnwFil, reshID=0,
   # file.rename(paste0(substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf'), file)
 }
 
+#' Kjøre samlerapporter for abonnement i NGER
+#'
+#' @param rnwFil NoWeb-fil med filending: eksempel.rnw
+#' @param brukernavn innlogget bruker
+#' @param reshID brukerens reshID
+#'
+#' @return gir filsti til pdf-samledokument
+#' @export
+#'
+abonnementNGER <- function(rnwFil, brukernavn='tullebukk', reshID=0) {
+  filbase <- substr(rnwFil, 1, nchar(rnwFil)-4)
+  tmpFile <- paste0(filbase, Sys.Date(),'_',digest::digest(brukernavn), '.Rnw')
+  src <- normalizePath(system.file(rnwFil, package='nger'))
+  # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
+  owd <- setwd(tempdir())
+  file.copy(src, tmpFile, overwrite = TRUE)
+  knitr::knit2pdf(input=tmpFile) #, output = paste0(filbase, digest::digest(brukernavn),'.tex'))
+  utfil <- paste0(owd, '/', substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf')
+  return(utfil)
+}
+
+

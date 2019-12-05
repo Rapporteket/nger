@@ -7,7 +7,7 @@
 \alias{tabAntSkjema}
 \alias{lagTabavFig}
 \alias{lagTabavFigGjsnGrVar}
-\alias{NGERpasientegenskaper}
+\alias{tabNGERpasientegenskaper}
 \alias{instrumentbruk}
 \alias{KomplLapTab}
 \alias{konvertertLap}
@@ -26,7 +26,7 @@ lagTabavFig(UtDataFraFig, figurtype = "andeler")
 
 lagTabavFigGjsnGrVar(UtDataFraFig)
 
-NGERpasientegenskaper(RegData, datoFra = "2019-01-01",
+tabNGERpasientegenskaper(RegData, datoFra = "2019-01-01",
   datoTil = Sys.Date(), tidsenhet = "Kvartal")
 
 instrumentbruk(RegData, datoFra = "2019-01-01", datoTil = Sys.Date())
