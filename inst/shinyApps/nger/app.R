@@ -84,7 +84,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
             # lag logo og tittel som en del av navbar
             title = div(img(src="rap/logo.svg", alt="Rapporteket", height="26px"), regTitle),
-            # sett inn tittle ogsÃ¥ i browser-vindu
+            # sett inn tittel også i browser-vindu
             windowTitle = regTitle,
             theme = "rap/bootstrap.css",
 

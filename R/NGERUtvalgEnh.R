@@ -128,9 +128,12 @@ if (velgDiag !=0) {
                                                   'Tot. lap. hysterektomi (LCD01/LCD04)',
                                                   'Lap. subtotal hysterektomi (LCC11)',
                                                   'Lap. ass. vag. hysterektomi (LCD11)')[OpMetode])},
-                 if (Hastegrad[1] %in% 1:3){paste0('Hastegrad: ', paste0(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','))},
+                 if (Hastegrad[1] %in% 1:3){
+                   paste0('Hastegrad: ',
+                          paste0(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','))},
                  if (dagkir %in% 0:1){c('Ikke dagkirurgi', 'Dagkirurgi')[as.numeric(dagkir)+1]},
-                 if (AlvorlighetKompl[1] %in% 1:3){paste0('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
+                 if (AlvorlighetKompl[1] %in% 1:3){
+                   paste0('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
                                                          [as.numeric(AlvorlighetKompl)], collapse=','))},
                  if (velgDiag != 0) {paste0('Diagnose: ', diagTxt[velgDiag])},
                  if (velgAvd[1] != 0 & reshID==0) {'Viser valgte sykehus'})
