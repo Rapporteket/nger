@@ -282,7 +282,7 @@ h3('Registerets kvalitetsindikatorer', align='center'),
 ), #tab Kvalitetsindikatorer
 
 #--------------Tabelloversikter-------------
-tabPanel(p("Tabelloversikter", title = c('Instrumentbruk', 'komplikasjoner')),
+tabPanel(p("Tabelloversikter", title = 'Instrumentbruk, komplikasjoner'),
          h3('Tabelloversikter', align='center'),
          sidebarPanel(width=3,
                       h3('Utvalg'),
@@ -310,7 +310,7 @@ tabPanel(p("Tabelloversikter", title = c('Instrumentbruk', 'komplikasjoner')),
                       downloadButton(outputId = 'lastNed_tabLapKompl', label='Last ned tabell')
              )
            ))
-),
+), #Tab tabelloversikter
 
 
       #--------Fordelinger-----------
@@ -628,7 +628,7 @@ tabPanel(p("Abonnement",
          )
 ) #tab abonnement
 
-
+#--------slutt tab'er----------
 
 ) #ui-del
 
