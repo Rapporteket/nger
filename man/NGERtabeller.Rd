@@ -15,9 +15,10 @@
 \title{Funksjoner for å lage tabeller Group of functions page title}
 \usage{
 tabAntOpphShMnd(RegData, datoTil = Sys.Date(), antMnd = 6,
-  reshID = 0)
+  reshID = 0, OpMetode = 99, velgDiag = 0)
 
-tabAntOpphSh5Aar(RegData, datoTil = Sys.Date())
+tabAntOpphSh5Aar(RegData, datoTil = Sys.Date(), OpMetode = 99,
+  velgDiag = 0)
 
 tabAntSkjema(SkjemaOversikt, datoFra = "2019-01-01",
   datoTil = Sys.Date(), skjemastatus = 1)

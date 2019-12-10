@@ -160,7 +160,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                          br()
                              )
       ), #tab
-      #-----Registreringsoversikter------------
+#-----Registreringsoversikter------------
       tabPanel("Registreringsoversikter",
 
                sidebarPanel(width=3,
@@ -183,6 +183,12 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                                       "Åpen"=-1)
                               )
 
+                            ),
+                            selectInput(inputId = 'opMetodeReg', label='Operasjonstype',
+                                        choices = opMetode
+                            ),
+                            selectInput(inputId = 'velgDiagReg', label='Diagnose',
+                                        choices = diag
                             )
                ),
 
@@ -313,7 +319,7 @@ tabPanel(p("Tabelloversikter", title = 'Instrumentbruk, komplikasjoner'),
 ), #Tab tabelloversikter
 
 
-      #--------Fordelinger-----------
+#--------Fordelinger-----------
 tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplikasjoner, prosessvariable, prosedyrer,
            RAND36, TSS2, utdanning'),
          #-----
@@ -601,7 +607,7 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
                                         downloadButton(outputId = 'lastNed_gjsnTidTab', label='Last ned tabell'))
                                  )
                      )
-               )
+                )
 ), #GjsnGrVar/Tid
 
 #----------Abonnement-----------------
@@ -727,16 +733,36 @@ server <- function(input, output, session) {
  #----------Registreringsoversikter ----------------------
 
             output$undertittelReg <- renderUI({
-                  br()
-                  t1 <- 'Tabellen viser operasjoner '
-                  h4(HTML(switch(input$tidsenhetReg, #undertittel <-
+              t1 <- 'Tabellen viser operasjoner '
+              tagList(
+                    br(),
+                  h4(HTML(switch(input$tidsenhetReg,
                          Mnd = paste0(t1, 'siste 12 måneder før ', input$sluttDatoReg, '<br />'),
-                         Aar = paste0(t1, 'siste 5 år før ', input$sluttDatoReg, '<br />'))
-                  ))})
+                         Aar = paste0(t1, 'siste 5 år før ', input$sluttDatoReg, '<br />'))),
+
+                    if(as.numeric(input$opMetodeReg)!=0){
+                      HTML(paste0('Operasjonsmetode: ',
+                        names(opMetode[opMetode==as.numeric(input$opMetodeReg)]), '<br />'))},
+                    if(as.numeric(input$velgDiagReg)!=0){
+                      paste0('Diagnose: ', names(diag[diag==as.numeric(input$velgDiagReg)]))}) #, '<br />'
+                  )
+                  #print(names(diag[diag==as.numeric(input$velgDiagReg)]))
+                  #names(diag[diag==as.numeric(2)])
+                  # h4(HTML(paste0(names(opMetode[opMetode==as.numeric(input$opMetodeReg)]), '<br />'),
+                   #       names(velgDiag[velgDiag==as.numeric(input$velgDiag)]), '<br />'))
+                  })
       observe({
+        # RegData <- NGERRegDataSQL()
+        # RegData <- NGERPreprosess(RegData)
+        # tabAntOpphShMnd(RegData = RegData)
         tabAntOpphShMndAar <- switch(input$tidsenhetReg,
-                                     Mnd=tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12), #input$datovalgTab[2])
-                                     Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg))
+                                     Mnd=tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12,
+                                                         OpMetode=as.numeric(input$opMetodeReg),
+                                                         velgDiag=as.numeric(input$velgDiagReg)), #input$datovalgTab[2])
+                                     Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg,
+                                                          OpMetode=as.numeric(input$opMetodeReg),
+                                                          velgDiag=as.numeric(input$velgDiagReg)))
+        #utvalg <- tabAntOpphShMndAarDUM[[2]]
         #Aar=xtable::xtable(tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg)), digits=0)
         output$tabAntOpphSh <- renderTable(tabAntOpphShMndAar, rownames = T, digits=0, spacing="xs")
         output$lastNed_tabAntOpph <- downloadHandler(
@@ -747,7 +773,9 @@ server <- function(input, output, session) {
 
 
         #RegData som har tilknyttede skjema av ulik type
-        AntSkjemaAvHver <- tabAntSkjema(SkjemaOversikt=SkjemaOversikt, datoFra = input$datovalgReg[1], datoTil=input$datovalgReg[2],
+        AntSkjemaAvHver <- tabAntSkjema(SkjemaOversikt=SkjemaOversikt,
+                                        datoFra = input$datovalgReg[1],
+                                        datoTil=input$datovalgReg[2],
                                         skjemastatus=as.numeric(input$skjemastatus))
         output$tabAntSkjema <- renderTable(AntSkjemaAvHver
                                            ,rownames = T, digits=0, spacing="xs" )

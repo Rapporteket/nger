@@ -7,8 +7,9 @@
 NGERFigGjsnTid(RegData, valgtVar = "alder", datoFra = "2011-01-01",
   datoTil = "3000-12-31", tidsenhet = "Aar", minald = 0,
   maxald = 110, reshID = 0, OpMetode = 99, Hastegrad = "",
-  AlvorlighetKompl = "", outfile = "", enhetsUtvalg = 0,
-  valgtMaal = "Gjsn", preprosess = 1, hentData = 0, lagFigur = 1)
+  AlvorlighetKompl = "", velgDiag = 0, outfile = "",
+  enhetsUtvalg = 0, valgtMaal = "Gjsn", preprosess = 1,
+  hentData = 0, lagFigur = 1)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -44,6 +45,11 @@ Angis som en vektor av tall som tekst, f.eks. c('1','2')
 2: Middels alvorlig
 3: Alvorlig
 4: Dødelig}
+
+\item{velgDiag}{0: Alle
+1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
+2: Endometriose, livmorvegg (N80.0)
+3: Endometriose, unntatt livmorvegg.}
 
 \item{outfile}{Navn på fil figuren skrives til. Standard: '' (Figur skrives
 til systemets standard utdataenhet (som regel skjerm))}
