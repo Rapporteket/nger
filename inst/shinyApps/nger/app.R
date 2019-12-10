@@ -654,7 +654,7 @@ server <- function(input, output, session) {
     #reshID <- ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)
     rolle <- reactive({ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')})
     #rolle <- ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'LU')
-    #userRole <- reactive({ifelse(onServer, rapbase::getUserRole(session), 'SC')})
+    brukernavn <- reactive({ifelse(paaServer, rapbase::getUserName(session), 'inkognito')})
 
 
     #output$reshID <- renderText({ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)}) #evt renderUI
