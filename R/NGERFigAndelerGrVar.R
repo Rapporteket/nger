@@ -37,10 +37,14 @@
 #' @inheritParams NGERUtvalgEnh
 #' @export
 
-NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', datoFra='2013-01-01', datoTil='3000-12-31', velgAvd=0,
-                                minald=0, maxald=130, OpMetode=99, Hastegrad='', AlvorlighetKompl='', Ngrense=10,
-                                reshID=0, outfile='', enhetsUtvalg=0, velgDiag=0, preprosess=1, hentData=0) {
-
+NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', datoFra='2013-01-01', datoTil='3000-12-31',
+                                velgAvd=0, minald=0, maxald=130, OpMetode=99, Hastegrad='',
+                                AlvorlighetKompl='', Ngrense=10, reshID=0, outfile='', enhetsUtvalg=0,
+                                velgDiag=0, preprosess=1, hentData=0, ...
+                                ) {
+  if ("session" %in% names(list(...))) {
+    raplog::repLogger(session = list(...)[["session"]], msg = paste0('FigAndelerGrVar: ',valgtVar))
+  }
   ## Hvis spørring skjer fra R på server. ######################
   if(hentData == 1){
     RegData <- NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil)

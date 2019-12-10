@@ -23,10 +23,14 @@
 
 
 NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31',
-                             valgtVar, minald=0, maxald=130, OpMetode=99, AlvorlighetKompl=99, Hastegrad=99,
-                             valgtMaal='gjsn', hentData=0, preprosess=1, grVar='ShNavn', velgAvd=0, velgDiag=0,
-                             Ngrense=10,medKI=1, lagFig=1, outfile='') {     #aar=0,
+                             valgtVar, minald=0, maxald=130, OpMetode=99, AlvorlighetKompl=99,
+                             Hastegrad=99, valgtMaal='gjsn', hentData=0, preprosess=1,
+                             grVar='ShNavn', velgAvd=0, velgDiag=0, Ngrense=10,medKI=1,
+                             lagFig=1, outfile='',...) {     #aar=0,
 
+  if ("session" %in% names(list(...))) {
+    raplog::repLogger(session = list(...)[["session"]], msg = paste0('Figur, sentralmål: ',valgtVar))
+  }
   if (hentData == 1) {
     RegData <- NGERRegDataSQL(datoFra, datoTil)
   }

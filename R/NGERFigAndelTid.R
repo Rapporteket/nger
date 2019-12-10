@@ -28,11 +28,14 @@
 #'
 #' @export
 
-
 NGERFigAndelTid <- function(RegData=0, valgtVar, datoFra='2015-01-01', datoTil=Sys.Date(),
                             minald=0, maxald=130, OpMetode=99, Hastegrad='', AlvorlighetKompl='', reshID=0, outfile='',
-                            enhetsUtvalg=0, velgDiag=0, preprosess=1, hentData=0, tidsenhet='Aar') {
+                            enhetsUtvalg=0, velgDiag=0, preprosess=1, hentData=0, tidsenhet='Aar',
+                            ...) {
 
+  if ("session" %in% names(list(...))) {
+    raplog::repLogger(session = list(...)[["session"]], msg = paste0('FigAndelTid: ',valgtVar))
+  }
 
   ## Hvis spørring skjer fra R på server. ######################
   if(hentData == 1){

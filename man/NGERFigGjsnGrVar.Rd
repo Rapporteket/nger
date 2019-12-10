@@ -9,7 +9,7 @@ NGERFigGjsnGrVar(RegData, datoFra = "2013-01-01",
   OpMetode = 99, AlvorlighetKompl = 99, Hastegrad = 99,
   valgtMaal = "gjsn", hentData = 0, preprosess = 1,
   grVar = "ShNavn", velgAvd = 0, velgDiag = 0, Ngrense = 10,
-  medKI = 1, lagFig = 1, outfile = "")
+  medKI = 1, lagFig = 1, outfile = "", ...)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}

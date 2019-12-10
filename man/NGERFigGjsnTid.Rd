@@ -9,7 +9,7 @@ NGERFigGjsnTid(RegData, valgtVar = "alder", datoFra = "2011-01-01",
   maxald = 110, reshID = 0, OpMetode = 99, Hastegrad = "",
   AlvorlighetKompl = "", velgDiag = 0, outfile = "",
   enhetsUtvalg = 0, valgtMaal = "Gjsn", preprosess = 1,
-  hentData = 0, lagFigur = 1)
+  hentData = 0, lagFigur = 1, ...)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}

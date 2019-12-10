@@ -21,8 +21,12 @@
 NGERFigGjsnTid <- function(RegData, valgtVar='alder', datoFra='2011-01-01', datoTil='3000-12-31',
                            tidsenhet='Aar', minald=0, maxald=110, reshID=0,
                            OpMetode=99, Hastegrad='', AlvorlighetKompl='', velgDiag = 0,
-                           outfile='',enhetsUtvalg=0, valgtMaal='Gjsn', preprosess=1, hentData=0, lagFigur=1){
+                           outfile='',enhetsUtvalg=0, valgtMaal='Gjsn', preprosess=1, hentData=0,
+                           lagFigur=1,...){
 
+  if ("session" %in% names(list(...))) {
+    raplog::repLogger(session = list(...)[["session"]], msg = paste0('FigGjsnTid: ',valgtVar))
+  }
   if (hentData == 1) {
     RegData <- NGERRegDataSQL(datoFra, datoTil)
   }

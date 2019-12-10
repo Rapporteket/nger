@@ -128,6 +128,10 @@ henteSamlerapporter <- function(filnavn, rnwFil, reshID=0,
 #' @export
 #'
 abonnementNGER <- function(rnwFil, brukernavn='tullebukk', reshID=0) {
+
+    raplog::subLogger(author = brukernavn, reshId = reshID[[1]],
+                      msg = "Abonnement, månedsrapport")
+
   filbase <- substr(rnwFil, 1, nchar(rnwFil)-4)
   tmpFile <- paste0(filbase, Sys.Date(),'_',digest::digest(brukernavn), '.Rnw')
   src <- normalizePath(system.file(rnwFil, package='nger'))

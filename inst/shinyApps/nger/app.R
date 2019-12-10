@@ -645,7 +645,7 @@ tabPanel(p("Abonnement",
 #----- Define server logic required to draw a histogram-------
 server <- function(input, output, session) {
 
-  #raplog::appLogger(session)
+  raplog::appLogger(session)
   #system.file('NGERmndRapp.Rnw', package='nger')
 
     #hospitalName <-getHospitalName(rapbase::getUserReshId(session))
@@ -802,7 +802,8 @@ server <- function(input, output, session) {
                          velgDiag = as.numeric(input$velgDiagKval),
                         # AlvorlighetKompl = as.numeric(input$alvorlighetKompl),
                          enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
-                         velgAvd=input$velgReshKval)
+                         velgAvd=input$velgReshKval,
+                        session = session)
         }, height=800, width=800 #height = function() {session$clientData$output_fordelinger_width}
         )
         #RegData må hentes ut fra valgtVar
@@ -814,7 +815,8 @@ server <- function(input, output, session) {
                                      Hastegrad = as.numeric(input$hastegradKval),
                                      velgDiag = as.numeric(input$velgDiagKval),
                                      enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
-                                     velgAvd=input$velgReshKval)
+                                     velgAvd=input$velgReshKval,
+                                     session = session)
         # testData <- NGERFigKvalInd(RegData=RegData, preprosess = 0, valgtVar='kvalInd',
         #                            datoFra='2019-01-01', datoTil=Sys.Date(),
         #                            reshID = 110734,
@@ -884,13 +886,15 @@ server <- function(input, output, session) {
                   NGERFigAndeler(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
                                datoFra=input$datovalg[1], datoTil=input$datovalg[2],
                                reshID = reshID(),
-                               minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
+                               minald=as.numeric(input$alder[1]),
+                               maxald=as.numeric(input$alder[2]),
                                OpMetode = as.numeric(input$opMetode),
                                Hastegrad = as.numeric(input$hastegrad),
                                velgDiag = as.numeric(input$velgDiag),
                                AlvorlighetKompl = as.numeric(input$alvorlighetKompl),
                                enhetsUtvalg=as.numeric(input$enhetsUtvalg),
-                               velgAvd=input$velgResh)
+                               velgAvd=input$velgResh,
+                               session = session)
             }, height=800, width=800 #height = function() {session$clientData$output_fordelinger_width}
             )
             #RegData må hentes ut fra valgtVar
@@ -903,7 +907,8 @@ server <- function(input, output, session) {
                                        velgDiag = as.numeric(input$velgDiag),
                                        AlvorlighetKompl = as.numeric(input$alvorlighetKompl),
                                        enhetsUtvalg=as.numeric(input$enhetsUtvalg),
-                                       velgAvd=input$velgResh)
+                                       velgAvd=input$velgResh,
+                                       session = session)
             tabFord <- lagTabavFig(UtDataFraFig = UtDataFord) #lagTabavFigAndeler
             output$tittelFord <- renderUI({
                   tagList(
@@ -939,7 +944,8 @@ server <- function(input, output, session) {
                             OpMetode = as.numeric(input$opMetodeAndel),
                             Hastegrad = as.numeric(input$hastegradAndel),
                             velgDiag = as.numeric(input$velgDiagAndel),
-                            AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel))
+                            AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
+                            session=session)
       }, height = 800, width=700 #height = function() {session$clientData$output_andelerGrVarFig_width} #})
       )
 
@@ -953,8 +959,9 @@ server <- function(input, output, session) {
                        Hastegrad = as.numeric(input$hastegradAndel),
                        velgDiag = as.numeric(input$velgDiagAndel),
                        AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
-        tidsenhet = input$tidsenhetAndel,
-                       enhetsUtvalg = input$enhetsUtvalgAndel)
+                       tidsenhet = input$tidsenhetAndel,
+                       enhetsUtvalg = input$enhetsUtvalgAndel,
+                       session=session)
       }, height = 300, width = 1000
       )
 
@@ -969,7 +976,8 @@ server <- function(input, output, session) {
                                      velgDiag = as.numeric(input$velgDiagAndel),
                                      AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
                                      tidsenhet = input$tidsenhetAndel,
-                                     enhetsUtvalg = input$enhetsUtvalgAndel) #,lagFig=0)
+                                     enhetsUtvalg = input$enhetsUtvalgAndel,
+                                     session=session) #,lagFig=0)
         tabAndelTid <- lagTabavFig(UtDataFraFig = AndelerTid, figurtype = 'andelTid')
 
 
@@ -1000,7 +1008,8 @@ server <- function(input, output, session) {
                                           OpMetode = as.numeric(input$opMetodeAndel),
                                           Hastegrad = as.numeric(input$hastegradAndel),
                                           velgDiag = as.numeric(input$velgDiagAndel),
-                                          AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel)) #, lagFig = 0))
+                                          AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
+                                          session=session) #, lagFig = 0))
         tabAndelerShus <- cbind(Antall=AndelerShus$Ngr,
                                 Andeler = AndelerShus$AggVerdier$Hoved)
 
@@ -1042,17 +1051,20 @@ server <- function(input, output, session) {
                                  OpMetode = as.numeric(input$opMetodeGjsn),
                                  Hastegrad = as.numeric(input$hastegradGjsn),
                                  velgDiag = as.numeric(input$velgDiagGjsn),
-                                 AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn)
+                                 AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn),
+                                 session = session
             ),
                   width = 700, height = 800)
             UtDataGjsnGrVar <- NGERFigGjsnGrVar(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarGjsn,
                                               datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
-                                              minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
+                                              minald=as.numeric(input$alderGjsn[1]),
+                                              maxald=as.numeric(input$alderGjsn[2]),
                                               valgtMaal = input$sentralmaal,
                                               OpMetode = as.numeric(input$opMetodeGjsn),
                                               Hastegrad = as.numeric(input$hastegradGjsn),
                                               velgDiag = as.numeric(input$velgDiagGjsn),
-                                              AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn))
+                                              AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn),
+                                              session = session)
       output$tittelGjsn <- renderUI({
                   tagList(
                         h3(UtDataGjsnGrVar$tittel),
@@ -1100,18 +1112,23 @@ server <- function(input, output, session) {
                              Hastegrad = as.numeric(input$hastegradGjsn),
                              velgDiag = as.numeric(input$velgDiagGjsn),
                              AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn),
-                            tidsenhet = input$tidsenhetGjsn
+                            tidsenhet = input$tidsenhetGjsn,
+                            session = session
               ),
               width = 1000, height = 300)
-            UtDataGjsnTid <- NGERFigGjsnTid(RegData=RegData, reshID= reshID(), preprosess = 0, valgtVar=input$valgtVarGjsn,
+            UtDataGjsnTid <- NGERFigGjsnTid(RegData=RegData, reshID= reshID(), preprosess = 0,
+                                            valgtVar=input$valgtVarGjsn,
                                                 datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
-                                                minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
-                                                valgtMaal = input$sentralmaal, enhetsUtvalg =  as.numeric(input$enhetsUtvalgGjsn),
+                                                minald=as.numeric(input$alderGjsn[1]),
+                                            maxald=as.numeric(input$alderGjsn[2]),
+                                                valgtMaal = input$sentralmaal,
+                                            enhetsUtvalg =  as.numeric(input$enhetsUtvalgGjsn),
                                             OpMetode = as.numeric(input$opMetodeGjsn),
                                             Hastegrad = as.numeric(input$hastegradGjsn),
                                             velgDiag = as.numeric(input$velgDiagGjsn),
                                             AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn),
-                                            tidsenhet = input$tidsenhetGjsn, lagFigur = 0)
+                                            tidsenhet = input$tidsenhetGjsn, lagFigur = 0,
+                                            session = session)
 
             tabGjsnTid <- t(UtDataGjsnTid$AggVerdier)
             grtxt <-UtDataGjsnTid$grtxt

@@ -20,9 +20,13 @@
 
 
 NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', datoTil='3000-12-31',
-                             valgtVar='kvalInd', enhetsUtvalg=0, minald=0, maxald=130, OpMetode=99, Hastegrad=99,
-                           dagkir=9, hentData=0, preprosess=1, velgDiag=0, Ngrense=10, outfile='') {
+                           valgtVar='kvalInd', enhetsUtvalg=0, minald=0, maxald=130, OpMetode=99,
+                           Hastegrad=99, dagkir=9, hentData=0, preprosess=1, velgDiag=0, Ngrense=10,
+                           outfile='', ...) {
 
+  if ("session" %in% names(list(...))) {
+    raplog::repLogger(session = list(...)[["session"]], msg = paste0('FigKvalInd: ',valgtVar))
+  }
   if (hentData == 1) {
     RegData <- NGERRegDataSQL(datoFra, datoTil)
   }
