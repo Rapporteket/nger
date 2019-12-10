@@ -113,8 +113,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                #dateRangeInput(inputId = 'datovalgSamleDok', start = startDato, end = Sys.Date(),
                 #              label = "Tidsperiode", separator="t.o.m.", language="nb"),
 
-               # downloadButton(outputId = 'samleDok', label='Last ned samledokument', class = "butt"),
-               #              br(),
+                downloadButton(outputId = 'samleDok.pdf', label='Last ned samledokument', class = "butt"),
+                             br(),
                helpText('Det tar noen sekunder å generere månedsrapporten.
                         I mellomtida får du ikke sett på andre resultater'),
                helpText(tags$b('Ønsker du månedsrapporten tilsendt regelmessig på e-post,
@@ -712,15 +712,15 @@ server <- function(input, output, session) {
                                   reshID = reshID())
             })
 
-      # output$samleDok <- downloadHandler(
-      #   filename = function(){ downloadFilename('Samledokument')},
-      #   content = function(file){
-      #     henteSamlerapporter(file, rnwFil="NGERSamleRapp.Rnw",
-      #                 reshID = reshID(),
-      #                 datoFra= '2015-01-01', #input$datovalgSamleDok[1],
-      #                 datoTil=Sys.Date()) #input$datovalgSamleDok[2])
-      #   }
-      # )
+      output$samleDok.pdf <- downloadHandler(
+        filename = function(){ downloadFilename('Samledokument')},
+        content = function(file){
+          henteSamlerapporter(file, rnwFil="NGERSamleRapp.Rnw",
+                      reshID = reshID(),
+                      datoFra= '2015-01-01', #input$datovalgSamleDok[1],
+                      datoTil=Sys.Date()) #input$datovalgSamleDok[2])
+        }
+      )
 
       #output$lenkeNorScir <- renderUI({tagList("www.norscir.no", www.norscir.no)})
 
