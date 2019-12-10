@@ -167,7 +167,14 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                             h3('Utvalg'),
                             conditionalPanel(condition = "input.ark == 'Antall operasjoner'",
                                              dateInput(inputId = 'sluttDatoReg', label = 'Velg sluttdato', language="nb",
-                                                       value = Sys.Date(), max = Sys.Date() )
+                                                       value = Sys.Date(), max = Sys.Date() ),
+                                             selectInput(inputId = 'opMetodeReg', label='Operasjonstype',
+                                                         choices = opMetode
+                                             ),
+                                             selectInput(inputId = 'velgDiagReg', label='Diagnose',
+                                                         choices = diag
+                                             )
+
                             ),
                             conditionalPanel(
                               condition = "input.ark == 'Antall operasjoner'"  ,
@@ -183,12 +190,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                                       "Åpen"=-1)
                               )
 
-                            ),
-                            selectInput(inputId = 'opMetodeReg', label='Operasjonstype',
-                                        choices = opMetode
-                            ),
-                            selectInput(inputId = 'velgDiagReg', label='Diagnose',
-                                        choices = diag
                             )
                ),
 
