@@ -2,7 +2,7 @@
 
 \addtolength{\hoffset}{-0.5cm}
 \addtolength{\textwidth}{1cm}
-\addtolength{\voffset}{-1cm}
+\addtolength{\voffset}{-2cm}
 \addtolength{\textheight}{2cm}
 
 %for nice looking tabs
@@ -47,7 +47,7 @@
 
 %bytte overskrifter
 \usepackage[compact]{titlesec}
-\titleformat{\section} {\vspace*{10pt}\color{OffBlaa5}\normalfont\Large\bfseries} {\thesection}{}{}
+\titleformat{\section} {\vspace*{13pt}\color{OffBlaa5}\normalfont\Large\bfseries} {\thesection}{}{}
 \titleformat{\subsection} {\color{OffBlaa3}\normalfont\large\bfseries} {\thesection}{}{}
 % \titleformat{\section} {\vspace*{10pt}\normalfont\Large\bfseries} {\thesection}{}{} %\color{OffBlaa5}
 % \titleformat{\subsection} {\normalfont\large\bfseries} {\thesection}{}{} %\color{OffBlaa3}
@@ -94,8 +94,8 @@
 %\Large Utarbeidet av: \\
 %\huge{NGER og SKDE}\\[3cm] % Your name
 
-%	DATE SECTION
-{\Large \today}\\[2cm] % Date, change the \today to a set date if you want to be precise
+%	DATE page
+%{\Large \today}\\[2cm] % Date, change the \today to a set date if you want to be precise
 
 %\vspace{7cm}
 
@@ -117,7 +117,7 @@
 
 <<setup, include=FALSE, cache=FALSE>>=
 ##options(replace.assign=TRUE, width=90)
-knitr::opts_chunk$set(warnings=FALSE,echo=FALSE)
+knitr::opts_chunk$set(warnings=FALSE, echo = FALSE)
 knitr::opts_chunk$set()	#Settes også i rapbase
 #knitr::opts_knit$set(root.dir = './')	#Settes også i rapbase
 knitr::opts_chunk$set(fig.align='center', fig.show='hold', out.width='.8\\textwidth', cache=FALSE)
@@ -148,11 +148,11 @@ at rapporterte data kan tilbakeføres til enkeltpersoner. Det er registeret sitt
 
 
 <<LasteData, echo=FALSE, eval=T>>=
-#datoFra <- startDato 	 # min og max dato i utvalget vises alltid i figuren.
+#datoFra <- startDato 	 #'2018-01-01'
 #datoTil <- Sys.Date()	#'2015-12-31'
 #dev.off()
+
 startAar <- '2016-01-01' #Til bruk i årstabell
-datoFra <- '2018-01-01'
 if (!exists('RegData')){
   RegData <- NGERRegDataSQL(datoFra = startAar)
   RegData <- NGERPreprosess(RegData)
@@ -196,6 +196,8 @@ Neget <- length(indEget)
 
 Norsk Gynekologisk Endoskopiregister startet elektronisk registrering i 2013. Tabell \ref{tab:RegistrenrendeAvd}
 viser antall registreringer siste 5 år.
+Denne samlerapporten er hovedsakelig basert på registreringer som er lagret og ferdigstilt i NGER for operasjoner
+utført i perioden \Sexpr{min(RegData$InnDato)} til \Sexpr{max(RegData$InnDato)}.
 
 
 
@@ -224,8 +226,6 @@ print(xtable::xtable(tabAvdN, digits=0, align=c('l', rep('r', max(c(1,ncol(tabAv
 
 \section{Pasientkarakteristikker}
 \par
-Denne samlerapporten er hovedsakelig basert på registreringer som er lagret og ferdigstilt i NGER for operasjoner
-utført i perioden \Sexpr{min(RegData$InnDato)} til \Sexpr{max(RegData$InnDato)}.
 
 <<'Tabell:Pasientkarakterisika', results='asis', warnings=FALSE, echo=FALSE, eval=T >>=
 

@@ -8,10 +8,11 @@ library(plyr)
 library(kableExtra)
 library(rapFigurer)
 library(shinyjs)
+library(rapbase)
 #library(zoo)
 
-startDato <- '2019-01-01' #Sys.Date()-364
 idag <- Sys.Date()
+startDato <- startDato <- paste0(as.numeric(format(idag-100, "%Y")), '-01-01') #'2019-01-01' #Sys.Date()-364
 sluttDato <- idag
 # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
 addResourcePath('rap', system.file('www', package='rapbase'))
@@ -101,21 +102,22 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                br(),
 
                sidebarPanel(width = 3,
-               #             br(),
-                            #h2('Nedlastbare dokumenter med samling av resultater'),
+                           h3('Nedlastbare dokumenter med samling av resultater'),
                             h3("Månedsrapport"), #),
                             downloadButton(outputId = 'mndRapp.pdf', label='Last ned MÅNEDSRAPPORT', class = "butt"),
-                            #br(),
-                            #br(),
-               # h3('Samledokument'),
-               # helpText('Samledokumentet er ei samling av utvalgte tabeller og figurer basert på
-               #          operasjoner utført fra og med 2015.'),
-               #dateRangeInput(inputId = 'datovalgSamleDok', start = startDato, end = Sys.Date(),
-                #              label = "Tidsperiode", separator="t.o.m.", language="nb"),
+                            br(),
+                            br(),
+               h3('Samledokument'),
+               helpText('Samledokumentet er ei samling av utvalgte tabeller og figurer basert på
+                        operasjoner i valgt tidsrom.'),
+               dateRangeInput(inputId = 'datovalgSamleDok', start = startDato, end = Sys.Date(),
+                            label = "Tidsperiode", separator="t.o.m.", language="nb"),
 
                 downloadButton(outputId = 'samleDok.pdf', label='Last ned samledokument', class = "butt"),
                              br(),
-               helpText('Det tar noen sekunder å generere månedsrapporten.
+               br(),
+               br(),
+               helpText('Det tar noen sekunder å generere en samlerapport/månedsrapport.
                         I mellomtida får du ikke sett på andre resultater'),
                helpText(tags$b('Ønsker du månedsrapporten tilsendt regelmessig på e-post,
                         kan du bestille dette under fanen "Abonnement."'))
@@ -123,8 +125,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                mainPanel(width = 8,
                          tags$head(tags$link(rel="shortcut icon", href="rap/favicon.ico")),
                          rapbase::appNavbarUserWidget(user = uiOutput("appUserName"),
-                                             organization = uiOutput("appOrgName"),
-                                             addUserInfo = TRUE),
+                                             organization = uiOutput("appOrgName")
+                                             , addUserInfo = TRUE
+                                             ),
                          h4('Du er nå inne på Rapporteket for NGER. Rapporteket er registerets resultattjeneste.
                             Disse sidene inneholder en samling av figurer og tabeller som viser resultater fra registeret.
                             På hver av sidene kan man gjøre utvalg i menyene til venstre. Alle resultater er basert
@@ -617,7 +620,7 @@ tabPanel(p("Abonnement",
          sidebarLayout(
            sidebarPanel(width = 3,
                         selectInput("subscriptionRep", "Rapport:",
-                                    c("Månedsrapport")), #, "Samlerapport"
+                                    c("Månedsrapport", "Samlerapport")),
                         selectInput("subscriptionFreq", "Frekvens:",
                                     list(Årlig="Årlig-year",
                                           Kvartalsvis="Kvartalsvis-quarter",
@@ -717,8 +720,8 @@ server <- function(input, output, session) {
         content = function(file){
           henteSamlerapporter(file, rnwFil="NGERSamleRapp.Rnw",
                       reshID = reshID(),
-                      datoFra= '2015-01-01', #input$datovalgSamleDok[1],
-                      datoTil=Sys.Date()) #input$datovalgSamleDok[2])
+                      datoFra = input$datovalgSamleDok[1],
+                      datoTil = input$datovalgSamleDok[2])
         }
       )
 
@@ -1201,19 +1204,17 @@ server <- function(input, output, session) {
         )
         email <- rapbase::getUserEmail(session)
         if (input$subscriptionRep == "Månedsrapport") {
-          synopsis <- "NGER/Rapporteket: månedsrapport"
+          synopsis <- "NGER/Rapporteket: Månedsrapport"
           rnwFil <- "NGERmndRapp.Rnw" #Navn på fila
-          #print(rnwFil)
         }
-        # if (input$subscriptionRep == "Samlerapport") {
-        #   synopsis <- "Intensiv/Rapporteket: Samlerapport"
-        #   rnwFil <- "NIRSamleRapp.Rnw" #Navn på fila
-        #   #print(rnwFil)
-        # }
+        if (input$subscriptionRep == "Samlerapport") {
+          synopsis <- "NGER/Rapporteket: Samlerapport"
+          rnwFil <- "NGERSamleRapp.Rnw" #Navn på fila
+        }
 
         fun <- "abonnementNGER"  #"henteSamlerapporter"
-        paramNames <- c('rnwFil', 'brukernavn', "reshID") #, "datoFra", 'datoTil')
-        paramValues <- c(rnwFil, brukernavn(), reshID()) #, startDato, Sys.Date()) #input$subscriptionFileFormat)
+        paramNames <- c('rnwFil', 'brukernavn', "reshID", "datoFra", 'datoTil')
+        paramValues <- c(rnwFil, brukernavn(), reshID(), startDato, Sys.Date()) #input$subscriptionFileFormat)
 
         rapbase::createAutoReport(synopsis = synopsis, package = 'nger',
                                   fun = fun, paramNames = paramNames,
