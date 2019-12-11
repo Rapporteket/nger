@@ -127,16 +127,24 @@ henteSamlerapporter <- function(filnavn, rnwFil, reshID=0,
 #' @return gir filsti til pdf-samledokument
 #' @export
 #'
-abonnementNGER <- function(rnwFil, brukernavn='tullebukk', reshID=0) {
+abonnementNGER <- function(rnwFil, brukernavn='tullebukk', reshID=0,
+                           datoFra=Sys.Date()-180, datoTil=Sys.Date()) {
 
     raplog::subLogger(author = brukernavn, reshId = reshID[[1]],
+                      registryName = 'NGER',
                       msg = "Abonnement, månedsrapport")
+  rnwFil  <- rnwFil[[1]]
+  brukernavn <- brukernavn[[1]]
+  reshID <- reshID[[1]]
+  datoFra <- datoFra[[1]]
+  datoTil <- datoTil[[1]]
 
   filbase <- substr(rnwFil, 1, nchar(rnwFil)-4)
   tmpFile <- paste0(filbase, Sys.Date(),'_',digest::digest(brukernavn), '.Rnw')
   src <- normalizePath(system.file(rnwFil, package='nger'))
   # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
-  owd <- setwd(tempdir())
+  setwd(tempdir())
+  owd <- getwd()
   file.copy(src, tmpFile, overwrite = TRUE)
   knitr::knit2pdf(input=tmpFile) #, output = paste0(filbase, digest::digest(brukernavn),'.tex'))
   utfil <- paste0(owd, '/', substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf')

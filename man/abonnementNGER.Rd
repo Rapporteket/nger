@@ -4,7 +4,8 @@
 \alias{abonnementNGER}
 \title{Kjøre samlerapporter for abonnement i NGER}
 \usage{
-abonnementNGER(rnwFil, brukernavn = "tullebukk", reshID = 0)
+abonnementNGER(rnwFil, brukernavn = "tullebukk", reshID = 0,
+  datoFra = Sys.Date() - 180, datoTil = Sys.Date())
 }
 \arguments{
 \item{rnwFil}{NoWeb-fil med filending: eksempel.rnw}

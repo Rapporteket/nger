@@ -1216,6 +1216,7 @@ server <- function(input, output, session) {
         paramNames <- c('rnwFil', 'brukernavn', "reshID", "datoFra", 'datoTil')
         paramValues <- c(rnwFil, brukernavn(), reshID(), startDato, Sys.Date()) #input$subscriptionFileFormat)
 
+        #test <- abonnementNGER(rnwFil="NGERmndRapp.Rnw", brukernavn='tullebukk', reshID=105460, datoFra = '2019-03-01')
         rapbase::createAutoReport(synopsis = synopsis, package = 'nger',
                                   fun = fun, paramNames = paramNames,
                                   paramValues = paramValues, owner = owner,
