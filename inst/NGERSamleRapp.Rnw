@@ -147,7 +147,7 @@ at rapporterte data kan tilbakeføres til enkeltpersoner. Det er registeret sitt
 
 
 
-<<LasteData, echo=FALSE, eval=T>>=
+<<LasteData, echo=FALSE, warning=FALSE >>=
 #datoFra <- startDato 	 #'2018-01-01'
 #datoTil <- Sys.Date()	#'2015-12-31'
 #dev.off()

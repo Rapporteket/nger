@@ -119,7 +119,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                br(),
                helpText('Det tar noen sekunder å generere en samlerapport/månedsrapport.
                         I mellomtida får du ikke sett på andre resultater'),
-               helpText(tags$b('Ønsker du månedsrapporten tilsendt regelmessig på e-post,
+               helpText(tags$b('Ønsker du månedsrapporten eller samlerapporten tilsendt regelmessig på e-post,
                         kan du bestille dette under fanen "Abonnement."'))
                ),
                mainPanel(width = 8,
