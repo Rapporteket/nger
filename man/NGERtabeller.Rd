@@ -9,8 +9,8 @@
 \alias{lagTabavFigGjsnGrVar}
 \alias{tabNGERpasientegenskaper}
 \alias{instrumentbruk}
-\alias{KomplLapTab}
-\alias{konvertertLap}
+\alias{tabKomplLap}
+\alias{tabKonvertertLap}
 \alias{visVanligsteProcDiag}
 \title{Funksjoner for å lage tabeller Group of functions page title}
 \usage{
@@ -32,10 +32,10 @@ tabNGERpasientegenskaper(RegData, datoFra = "2019-01-01",
 
 instrumentbruk(RegData, datoFra = "2019-01-01", datoTil = Sys.Date())
 
-KomplLapTab(RegData, reshID = 0, datoFra = "2019-01-01",
+tabKomplLap(RegData, reshID = 0, datoFra = "2019-01-01",
   datoTil = Sys.Date())
 
-konvertertLap(RegData, reshID = 0, datoFra = "2016-01-01",
+tabKonvertertLap(RegData, reshID = 0, datoFra = "2016-01-01",
   datoTil = Sys.Date())
 
 visVanligsteProcDiag(RegData, ant = 20, prosdiag = "pros")

@@ -17,6 +17,7 @@ Remotes:
       Rapporteket/rapbase@rel,
       Rapporteket/raplog
 Imports:
+    DT,
     kableExtra,
     knitr,
     lubridate,

@@ -5,7 +5,6 @@
 \addtolength{\voffset}{-1cm}
 \addtolength{\textheight}{2cm}
 
-
 %for nice looking tabs
 \usepackage{booktabs}
 
@@ -17,6 +16,10 @@
 \usepackage{amsmath}
 \usepackage{rotating} %add rotating for plain tables
 \usepackage{pdflscape} %add rotating/landcape for pdf
+% \usepackage{amssymb}
+% %\usepackage{subfig}
+% %\usepackage{pdfpages}
+% %\usepackage{caption}
 
 %add rotating for plain tables
 \usepackage{rotating}
@@ -36,9 +39,9 @@
 \definecolor{OffBlaa3}{rgb}{0.26, 0.57, 0.78}	%66/255, 146/255, 198/255}
 \definecolor{OffBlaa4}{rgb}{ 0.13 0.44 0.71}	%33/255, 113/255, 181/255}
 \definecolor{OffBlaa5}{rgb}{0.03 0.27 0.58}		%8/255,  69/255, 148/255}
-%\definecolor{SKDE}{rgb}{0,0.32,0.61}
-%\definecolor{moerkgraa}{rgb}{0.25,0.25,0.25}
-%\color{moerkgraa}
+\definecolor{SKDE}{rgb}{0,0.32,0.61}
+\definecolor{moerkgraa}{rgb}{0.25,0.25,0.25}
+\color{moerkgraa}
 
 \usepackage[pdftex, colorlinks, linkcolor=OffBlaa3, urlcolor=OffBlaa3]{hyperref}
 
@@ -46,6 +49,8 @@
 \usepackage[compact]{titlesec}
 \titleformat{\section} {\vspace*{10pt}\color{OffBlaa5}\normalfont\Large\bfseries} {\thesection}{}{}
 \titleformat{\subsection} {\color{OffBlaa3}\normalfont\large\bfseries} {\thesection}{}{}
+% \titleformat{\section} {\vspace*{10pt}\normalfont\Large\bfseries} {\thesection}{}{} %\color{OffBlaa5}
+% \titleformat{\subsection} {\normalfont\large\bfseries} {\thesection}{}{} %\color{OffBlaa3}
 
 %topptekst og vertikal sidenummer
 \fancyhead{}\fancyfoot{}  % clear all fields
@@ -58,73 +63,11 @@
 \fancyfoot[RE]{\colorbox{OffBlaa5}{\textcolor{white}{\scshape\small\thepage}}}
 \renewcommand{\headrulewidth}{0pt} %\iffloatpage{0pt}{0.4pt}
  \renewcommand{\footrulewidth}{0pt}
-%evt. horisontal sidenummer
+%evt. horisontalt sidenummer
 \fancyfoot[LO]{\colorbox{OffBlaa5}{\textcolor{white}{\hspace*{2cm} \small \thepage}}} \fancyfootoffset[LO]{4.4cm}
 \fancyfoot[RE]{\hspace*{2cm}\colorbox{OffBlaa5}{\textcolor{white}{\small \thepage \hspace*{3cm}}}}  \fancyfootoffset[RE]{5.3cm}
 \setcounter{secnumdepth}{-1}
 
-% %Kan evt. samle alle pakkene i ei felles fil (mal) og bruke \include{filmeddiv.tex}
-% \usepackage[norsk]{babel}
-% \usepackage[utf8x]{inputenc}
-% \usepackage{textcomp}
-% \usepackage{fancyhdr}
-% \pagestyle{fancy}
-% \usepackage{amssymb}
-% \usepackage{amsmath}
-% \usepackage{rotating} %add rotating for plain tables
-% \usepackage{pdflscape} %add rotating/landcape for pdf
-% \usepackage{booktabs} %for nice looking tabs
-% %\usepackage{subfig}
-% %\usepackage{pdfpages}
-% %\usepackage{booktabs}
-% %\usepackage{caption}
-%
-% \addtolength{\hoffset}{-1.5cm}
-% \addtolength{\textwidth}{1cm}
-% \addtolength{\voffset}{-2cm}
-% \addtolength{\textheight}{4cm}
-%
-%
-% %bytte font
-% \renewcommand{\familydefault}{\sfdefault}
-%
-% %setter grå skrift fremfort sort
-% \usepackage{xcolor}
-% \usepackage{graphicx}
-%
-% %Offentliggjøringsfargene 1-6, lys-mørk, benytter 2-5
-% % \definecolor{OffBlaa2}{rgb}{0.42, 0.68, 0.84}	%107/255, 174/255, 214/255}
-% % \definecolor{OffBlaa3}{rgb}{0.26, 0.57, 0.78}	%66/255, 146/255, 198/255}
-% % \definecolor{OffBlaa4}{rgb}{ 0.13 0.44 0.71}	%33/255, 113/255, 181/255}
-% % \definecolor{OffBlaa5}{rgb}{0.03 0.27 0.58}		%8/255,  69/255, 148/255}
-% %\definecolor{SKDE}{rgb}{0,0.32,0.61}
-% %\definecolor{moerkgraa}{rgb}{0.25,0.25,0.25}
-% %\color{moerkgraa}
-%
-% %\usepackage[pdftex, colorlinks, linkcolor=OffBlaa3, urlcolor=OffBlaa3]{hyperref}
-%
-% %bytte overskrifter
-% \usepackage[compact]{titlesec}
-% \titleformat{\section} {\vspace*{10pt}\normalfont\Large\bfseries} {\thesection}{}{} %\color{OffBlaa5}
-% \titleformat{\subsection} {\normalfont\large\bfseries} {\thesection}{}{} %\color{OffBlaa3}
-%
-% %topptekst og vertikal sidenummer
-% \fancyhead{}\fancyfoot{}  % clear all fields
-% \fancyheadoffset[LO, RE]{3cm}
-% \fancyfootoffset[LO]{1.5cm}
-% \fancyfootoffset[RE]{1.5cm}
-% %Stripe øverst på sida med registerets navn
-% \fancyhead[LO]{{\textcolor{white}{\hspace*{2cm}\scshape\small Norsk Gynekologisk Endoskopiregister}}} %Lengde på stripa \colorbox{OffBlaa5}
-% \fancyfoot[LO]{{\textcolor{white}{\scshape\small\thepage}}} %\colorbox{OffBlaa5}
-% \fancyfoot[RE]{{\textcolor{white}{\scshape\small\thepage}}} %\colorbox{OffBlaa5}
-% \renewcommand{\headrulewidth}{0pt} %\iffloatpage{0pt}{0.4pt}
-% \renewcommand{\footrulewidth}{0pt}
-% %evt. horisontal sidenummer
-% \fancyfoot[LO]{{\textcolor{white}{\hspace*{2cm} \small \thepage}}} \fancyfootoffset[LO]{4.4cm} %\colorbox{OffBlaa5}
-% \fancyfoot[RE]{\hspace*{2cm}{\textcolor{white}{\small \thepage \hspace*{3cm}}}}  \fancyfootoffset[RE]{5.3cm} %\colorbox{OffBlaa5}
-% \setcounter{secnumdepth}{-1}
-%
-%
 % %Hva skjer her??
 % \renewcommand\thempfootnote{\fnsymbol{mpfootnote}}
 % \def\labelitemi{$\bullet$}
@@ -152,7 +95,7 @@
 %\huge{NGER og SKDE}\\[3cm] % Your name
 
 %	DATE SECTION
-%{\Large \today}\\[2cm] % Date, change the \today to a set date if you want to be precise
+{\Large \today}\\[2cm] % Date, change the \today to a set date if you want to be precise
 
 %\vspace{7cm}
 
@@ -173,11 +116,13 @@
 
 
 <<setup, include=FALSE, cache=FALSE>>=
+##options(replace.assign=TRUE, width=90)
+knitr::opts_chunk$set(warnings=FALSE,echo=FALSE)
 knitr::opts_chunk$set()	#Settes også i rapbase
 #knitr::opts_knit$set(root.dir = './')	#Settes også i rapbase
-knitr::opts_chunk$set(warnings=FALSE,echo=FALSE)
-#knitr::opts_chunk$set(fig.align='center', fig.show='hold', out.width='.8\\textwidth',cache=FALSE)
-#options(replace.assign=TRUE, width=90)
+knitr::opts_chunk$set(fig.align='center', fig.show='hold', out.width='.8\\textwidth', cache=FALSE)
+options(replace.assign=TRUE, width=90) #, warnings=FALSE, echo=FALSE, fig.align='center', fig.show='hold', out.width='.8\\textwidth', cache=FALSE)
+
 @
 
 \section{Informasjonsgrunnlag og ansvarsforhold}
@@ -207,6 +152,7 @@ at rapporterte data kan tilbakeføres til enkeltpersoner. Det er registeret sitt
 #datoTil <- Sys.Date()	#'2015-12-31'
 #dev.off()
 startAar <- '2016-01-01' #Til bruk i årstabell
+datoFra <- '2018-01-01'
 if (!exists('RegData')){
   RegData <- NGERRegDataSQL(datoFra = startAar)
   RegData <- NGERPreprosess(RegData)
@@ -418,7 +364,7 @@ for (met in 1:2) {
                        align=c('l', rep('r', max(c(1,ncol(ASALapHys)), na.rm=T))),
                        caption=paste('ASA-grad ', Metode[met], 'ved ', egetSh),
                        label=paste0('tab:ASA', met),
-        include.rownames=TRUE, include.colnames=TRUE)
+        include.rownames=TRUE, include.colnames=TRUE))
 }
 
 @
@@ -465,7 +411,7 @@ RegDataUtvalg <- RegData[which(RegData$OpMetode==1), c('ShNavn', Instr)]
 #InstrTab <- plyr::daply(.data=RegDataUtvalg[ ,Instr], .(RegDataUtvalg$ShNavn), .fun=colwise(sum), na.rm=T)  #Liste m/6dim
 #Får trøbbel med at InstrTab blir liste
 
-InstrTabDum <- plyr::ddply(RegDataUtvalg[ ,Instr], .(RegDataUtvalg$ShNavn), .drop=F, colwise(sum), na.rm=T)  #Dataramme m/7dim
+InstrTabDum <- plyr::ddply(.data =  RegDataUtvalg[ ,Instr], .variables = .(RegDataUtvalg$ShNavn), .drop=F, .fun= colwise(sum), na.rm=T)  #Dataramme m/7dim
 Tot <- colSums(InstrTabDum[,2:(length(Instr)+1)])
 ShNavn <- InstrTabDum[,1]
 
@@ -494,49 +440,7 @@ print(xtable(InstrTab, digits=0, align=c('l', rep('r', max(c(1,ncol(InstrTab)), 
 
 <<'LapKompl', results='asis', echo=FALSE, eval=T>>=
 #??? Ett forløp har reoperasjon til både laparoskopi og laparatomi. Er det mulig? [Fdato: 08.06.1975	ForlopsID=9252]
-#Må legge til egetSh
-
-# #Blødning:
-# BlodTxt <- c('Blødning', '...I abdominal vegg', '...Intraabdominal', '...Vaginal')
-# Blod <- c('Opf0KomplBlodning', 'Opf0BlodningAbdom', 'Opf0BlodningIntraabdominal', 'Opf0BlodningVaginal')
-#
-# #Utstyr
-# UtstyrTxt <- c('Problemer m/utstyr','...Instrumenter', '...Nett', '...Laparaskopisk sutur')
-# Utstyr <- c('Opf0KomplUtstyr', 'Opf0UtstyrInstrumenter', 'Opf0UtstyrNett', 'Opf0UtstyrSutur')
-#
-# #Infeksjon:
-# # Opf0InfEndometritt = Salpingitt JA, ok.
-# InfTxt <- c('Infeksjon', '...Urinveisinf.', '...I operasjonssår', '...Intraabdominal ', '...Salpingitt', '...Andre inf.')
-# Infeksjon <- c('Opf0KomplInfeksjon', 'Opf0InfUVI', 'Opf0InfOpSaar'  , 'Opf0InfIntraabdominal',
-#                'Opf0InfEndometritt', 'Opf0InfAnnen')
-#
-# #Organskade
-# OrganTxt <- c('Organskade', '...Blære', '...Tarm', '...Ureter', '...Kar', '...Andre')
-# Organ <- c('Opf0KomplOrgan', 'Opf0OrganBlare', 'Opf0OrganTarm', 'Opf0OrganUreter', 'Opf0OrganKar', 'Opf0OrganAnnen')
-#
-# #Reoperasjon
-# ReopTxt <- c('Reoperasjon', '...til laparoskopi', '...laparotomi')
-# Reop <- c("Opf0Reoperasjon", "Opf0ReopLaparoskopi", "Opf0ReopLaparotomi")
-#
-#
-# indMed <- (which(RegData$Opf0Komplikasjoner %in% 0:1) %i% which(RegData$OpType %in% c(1,3)))
-#
-# LapKomplVar <- c(Blod, Utstyr, Infeksjon, Organ, Reop)
-# LapKomplTxt <- c(BlodTxt, UtstyrTxt, InfTxt, OrganTxt, ReopTxt)
-# RegDataLapKompl <- RegData[indMed, c(LapKomplVar, "Opf0Komplikasjoner")]
-#
-# indEgenLap <- which(RegData$ReshId == reshID)
-# AntLap <- dim(RegDataLapKompl)[1]
-# AndelLapKompl <- colSums(RegDataLapKompl, na.rm=T)/AntLap*100
-# AndelLapKomplEget <- colSums(RegDataLapKompl[indEgenLap,], na.rm=T)/length(indEgenLap)*100
-#
-# AndelLapKomplTab <- cbind(
-#   'Eget' = AndelLapKomplEget,
-#   'Hele landet' = AndelLapKompl)
-# #names(AndelLapKompl)<- LapKomplTxt
-# row.names(AndelLapKomplTab) <- c(LapKomplTxt, 'Hele landet')
-
-LapKomplData <- komplLap(RegData, reshID=reshID, datoFra='2019-01-01', datoTil=Sys.Date())
+LapKomplData <- tabKomplLap(RegData, reshID=reshID, datoFra='2019-01-01', datoTil=Sys.Date())
 print(xtable::xtable(LapKomplData$AndelLapKomplTab, digits=c(0,1,1),
                      align=c('l', 'l', rep('r', max(c(1,ncol(LapKomplData$AndelLapKomplTab)-1), na.rm=T))),
              caption=paste0('Hyppighet av laparoskopiske komplikasjoner. ', tidsperiodeTxt,
@@ -546,16 +450,7 @@ print(xtable::xtable(LapKomplData$AndelLapKomplTab, digits=c(0,1,1),
 @
 
 <<'LapDiv', results='asis', echo=FALSE, eval=T>>=
-# RegDataLap <- RegDataHele[which(RegDataHele$OpMetode %in% c(1,3)), c('LapKonvertert','Aar','ReshId')]
-# RegDataLap$Aar <- as.factor(RegDataLap$Aar)
-# indKonv <- which(RegDataLap$LapKonvertert == 1)
-# indEgenLap <- which(RegDataLap$ReshId == reshID)
-# Konv <- table(RegDataLap[indKonv,'Aar'])/table(RegDataLap$Aar)*100
-# KonvEget <- table(RegDataLap[(indEgenLap %i% indKonv) , 'Aar'])/table(RegDataLap$Aar[indEgenLap])*100
-# KonvTab <- rbind(
-#   'Konvertert' = Konv,
-#   'Konvertert, Eget' = KonvEget)
-KonvTab <- konvertertLap(RegData=RegData, reshID=reshID, datoFra='2017-01-01', datoTil=Sys.Date())
+KonvTab <- tabKonvertertLap(RegData=RegData, reshID=reshID, datoFra='2017-01-01', datoTil=Sys.Date())
 AntKol <- ncol(KonvTab)
 print(xtable::xtable(KonvTab, digits=c(0,rep(1, AntKol)), align=c('l', rep('r', AntKol, na.rm=T)),
              caption='Andel laparoskopiske inngrep som konverteres til laparotomi.',

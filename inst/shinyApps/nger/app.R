@@ -863,7 +863,7 @@ server <- function(input, output, session) {
 # print(input$datovalgTab[1])
 # print(reshID())
          #komplLap(RegData=RegData)
-         LapKomplData <- KomplLapTab(RegData=RegData, reshID=reshID(),
+         LapKomplData <- tabKomplLap(RegData=RegData, reshID=reshID(),
                                   datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2])
          output$tittelLapKompl <- renderUI(tagList(
            h4('Hyppighet (%) av laparoskopiske komplikasjoner. '),

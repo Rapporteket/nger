@@ -16,15 +16,18 @@ library(lubridate)
 
 dev.off()
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
-reshID <- 8
+#reshID <- 8
 datoFra <- '2019-01-01'
 datoTil <- Sys.Date()
 sluttDato <- datoTil
 setwd('C:/ResultattjenesteGIT/nger/inst/')
+setwd('../inst/')
 data('NGERtulledata', package = 'nger')
 load('A:/NGER/NGER2019-09-03.Rdata')
 RegData <- NGERPreprosess(RegData=RegData) #I App'en preprosesseres data
 
+src <- normalizePath(system.file('NGERSamleRapp.Rnw', package='nger'))
+knitr::knit(src <- normalizePath(system.file('NGERSamleRapp.Rnw', package='nger')), encoding = 'UTF-8')
 knitr::knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
 tools::texi2pdf('NGERSamleRapp.tex')
 

@@ -255,7 +255,7 @@ return(invisible(InstrTab))
 #' @section komplikasjoner, Laparaskopi
 #' @rdname NGERtabeller
 #' @export
-KomplLapTab <- function(RegData, reshID=0, datoFra='2019-01-01', datoTil=Sys.Date()){
+tabKomplLap <- function(RegData, reshID=0, datoFra='2019-01-01', datoTil=Sys.Date()){
 
   #Blødning:
   BlodTxt <- c('Blødning', '...I abdominal vegg', '...Intraabdominal', '...Vaginal')
@@ -312,7 +312,7 @@ return(UtData)
 #' @section Konvertert laparoskopi til laparatomi
 #' @rdname NGERtabeller
 #' @export
-konvertertLap <- function(RegData, reshID=0, datoFra='2016-01-01', datoTil=Sys.Date()){
+tabKonvertertLap <- function(RegData, reshID=0, datoFra='2016-01-01', datoTil=Sys.Date()){
   RegData <- NGERUtvalgEnh(RegData = RegData, datoFra = datoFra, datoTil = datoTil)$RegData
   RegDataLap <- RegData[which(RegData$OpMetode %in% c(1,3)), c('LapKonvertert','Aar','ReshId')]
   RegDataLap$Aar <- as.factor(RegDataLap$Aar)
