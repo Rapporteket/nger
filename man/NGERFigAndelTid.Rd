@@ -4,11 +4,25 @@
 \alias{NGERFigAndelTid}
 \title{Tidstrend (år) av andel for en gitt variabel.}
 \usage{
-NGERFigAndelTid(RegData = 0, valgtVar, datoFra = "2015-01-01",
-  datoTil = Sys.Date(), minald = 0, maxald = 130, OpMetode = 99,
-  Hastegrad = "", AlvorlighetKompl = "", reshID = 0, outfile = "",
-  enhetsUtvalg = 0, velgDiag = 0, preprosess = 1, hentData = 0,
-  tidsenhet = "Aar", ...)
+NGERFigAndelTid(
+  RegData = 0,
+  valgtVar,
+  datoFra = "2015-01-01",
+  datoTil = Sys.Date(),
+  minald = 0,
+  maxald = 130,
+  OpMetode = 99,
+  Hastegrad = "",
+  AlvorlighetKompl = "",
+  reshID = 0,
+  outfile = "",
+  enhetsUtvalg = 0,
+  velgDiag = 0,
+  preprosess = 1,
+  hentData = 0,
+  tidsenhet = "Aar",
+  ...
+)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}

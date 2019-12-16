@@ -4,8 +4,13 @@
 \alias{abonnementNGER}
 \title{Kjøre samlerapporter for abonnement i NGER}
 \usage{
-abonnementNGER(rnwFil, brukernavn = "tullebukk", reshID = 0,
-  datoFra = Sys.Date() - 180, datoTil = Sys.Date())
+abonnementNGER(
+  rnwFil,
+  brukernavn = "tullebukk",
+  reshID = 0,
+  datoFra = Sys.Date() - 180,
+  datoTil = Sys.Date()
+)
 }
 \arguments{
 \item{rnwFil}{NoWeb-fil med filending: eksempel.rnw}
@@ -13,6 +18,10 @@ abonnementNGER(rnwFil, brukernavn = "tullebukk", reshID = 0,
 \item{brukernavn}{innlogget bruker}
 
 \item{reshID}{brukerens reshID}
+
+\item{datoFra}{startdato}
+
+\item{datoTil}{sluttdato}
 }
 \value{
 gir filsti til pdf-samledokument

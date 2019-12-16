@@ -1,27 +1,13 @@
-#' Funksjoner for å lage tabeller Group of functions page title
-#'
-#' Fil som beregner div tabeller.Group of functions Description section
-#'
-#' Detaljer. kommer senereGroup of functions Details paragraph.
-#'
 #' Fil som inneholder funksjoner for å lage tabeller, i første rekke tellinger av personer
 #' RegData må inneholde InnDato og Aar.
-#' Aktuelle tabeller:
 #' -tabAntOpphSh12mnd: Antall opphold per måned og enhet siste 12 måneder fram til datoTil.
 #' -tabAntOpphSh5Aar:Antall opphold per år og enhet siste 5 år (inkl. inneværende år) fram til datoTil.
-#'
+#' Antall opphold siste X (antMnd) mnd
 #' @param RegData data
 #' @param personIDvar Variabelen som angir pasientidentifikasjon
 #' @param datoTil sluttdato. Brukes i tabellene AntOpph per 12 mnd og Belegg
 # @inheritParams NGERFigAndeler
 #' @return Div tabeller
-#' @name NGERtabeller
-NULL
-#' @rdname NGERtabeller
-#' @export
-
-#' @section Antall opphold siste X (antMnd) mnd
-#' @rdname NGERtabeller
 #' @export
 tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0,
                             OpMetode=99, velgDiag=0){
@@ -48,8 +34,7 @@ tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0,
 #tabAntOpphShMnd(RegData, datoTil=Sys.Date(), antMnd=3)
 
 
-#' @section Antall opphold siste 5 år
-#' @rdname NGERtabeller
+#' Antall opphold siste 5 år
 #' @export
 tabAntOpphSh5Aar <- function(RegData, datoTil=Sys.Date(),
                              OpMetode=99, velgDiag=0){
@@ -66,8 +51,7 @@ tabAntOpphSh5Aar <- function(RegData, datoTil=Sys.Date(),
 }
 
 
-#' @section Hvor mange skjema av hver type
-#' @rdname NGERtabeller
+#'  Hvor mange skjema av hver type
 #' @export
 tabAntSkjema <- function(SkjemaOversikt, datoFra = '2019-01-01', datoTil=Sys.Date(), skjemastatus=1){
   #tabAntSkjema(SkjemaOversikt, datoFra = '2019-01-01', datoTil=Sys.Date(), skjemastatus=1)
@@ -89,8 +73,7 @@ return(tab)
 }
 
 
-#' @section Vise figurdata som tabell
-#' @rdname NGERtabeller
+#'  Vise figurdata som tabell
 #' @export
 # lagTabavFig <- function(UtDataFraFig){
 #       tab <-cbind(UtDataFraFig$Ngr$Hoved,
@@ -145,8 +128,7 @@ lagTabavFig <- function(UtDataFraFig, figurtype='andeler'){ #lagTabavFigAndeler
 }
 
 
-#' @section Vise figurdata som tabell, sentralmål per sykshus
-#' @rdname NGERtabeller
+#'  Vise figurdata som tabell, sentralmål per sykshus
 #' @export
 lagTabavFigGjsnGrVar <- function(UtDataFraFig){
   tab <-cbind(UtDataFraFig$Ngr,
@@ -157,8 +139,7 @@ lagTabavFigGjsnGrVar <- function(UtDataFraFig){
 }
 
 
-#' @section Generere tabell med nøkkeltall
-#' @rdname NGERtabeller
+#'  Generere tabell med nøkkeltall
 #' @export
 
 tabNGERpasientegenskaper <- function(RegData, datoFra='2019-01-01', datoTil=Sys.Date(), tidsenhet='Kvartal') {
@@ -217,8 +198,7 @@ colnames(myTab) <- tidtxt
 
 
 
-#' @section instrumentbruk, Laparaskopi
-#' @rdname NGERtabeller
+#'  instrumentbruk, Laparaskopi
 #' @export
 instrumentbruk <- function(RegData, datoFra='2019-01-01', datoTil=Sys.Date()){
   #Fra mars 2016 er morcellator med og uten pose.Velger å ikke ta høyde for dette siden det nå er gamle tall
@@ -252,8 +232,7 @@ return(invisible(InstrTab))
 
 
 
-#' @section komplikasjoner, Laparaskopi
-#' @rdname NGERtabeller
+#'  komplikasjoner, Laparaskopi
 #' @export
 tabKomplLap <- function(RegData, reshID=0, datoFra='2019-01-01', datoTil=Sys.Date()){
 
@@ -309,8 +288,13 @@ return(UtData)
 
 
 
-#' @section Konvertert laparoskopi til laparatomi
-#' @rdname NGERtabeller
+#'  Konvertert laparoskopi til laparatomi
+#'
+#' @param RegData dataramme
+#' @param reshID reshID
+#' @param datoFra startdato
+#' @param datoTil sluttdato
+#'
 #' @export
 tabKonvertertLap <- function(RegData, reshID=0, datoFra='2016-01-01', datoTil=Sys.Date()){
   RegData <- NGERUtvalgEnh(RegData = RegData, datoFra = datoFra, datoTil = datoTil)$RegData
@@ -333,8 +317,12 @@ if (reshID != 0){
 }
 
 
-#' @section Vise vanligste prosedyrer eller diagnoser
-#' @rdname NGERtabeller
+#'  Vise vanligste prosedyrer eller diagnoser
+#'
+#' @param RegData dataramme
+#' @param ant antall prosedyrer/diagnoser
+#' @param prosdiag 'pros'-prosedyrer, 'diag'-diagnoser
+#'
 #' @export
 visVanligsteProcDiag <- function(RegData, ant=20, prosdiag='pros'){
 

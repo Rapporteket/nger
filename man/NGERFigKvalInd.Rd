@@ -4,11 +4,26 @@
 \alias{NGERFigKvalInd}
 \title{Søylediagram som viser flere kvalitetsindikatorer}
 \usage{
-NGERFigKvalInd(RegData, reshID = 0, velgAvd = 0,
-  datoFra = "2013-01-01", datoTil = "3000-12-31",
-  valgtVar = "kvalInd", enhetsUtvalg = 0, minald = 0, maxald = 130,
-  OpMetode = 99, Hastegrad = 99, dagkir = 9, hentData = 0,
-  preprosess = 1, velgDiag = 0, Ngrense = 10, outfile = "", ...)
+NGERFigKvalInd(
+  RegData,
+  reshID = 0,
+  velgAvd = 0,
+  datoFra = "2013-01-01",
+  datoTil = "3000-12-31",
+  valgtVar = "kvalInd",
+  enhetsUtvalg = 0,
+  minald = 0,
+  maxald = 130,
+  OpMetode = 99,
+  Hastegrad = 99,
+  dagkir = 9,
+  hentData = 0,
+  preprosess = 1,
+  velgDiag = 0,
+  Ngrense = 10,
+  outfile = "",
+  ...
+)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}

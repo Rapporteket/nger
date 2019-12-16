@@ -4,10 +4,22 @@
 \alias{NGERUtvalgEnh}
 \title{Funksjon som gjør utvalg av dataene, returnerer det filtrerte datasettet og utvalgsteksten.}
 \usage{
-NGERUtvalgEnh(RegData, datoFra = "2016-01-01", datoTil = "3000-12-31",
-  fargepalett = "BlaaOff", minald = 0, maxald = 110, OpMetode = 0,
-  AlvorlighetKompl = 0, Hastegrad = 0, dagkir = 9,
-  enhetsUtvalg = 0, velgAvd = 0, velgDiag = 0, reshID = 0)
+NGERUtvalgEnh(
+  RegData,
+  datoFra = "2016-01-01",
+  datoTil = "3000-12-31",
+  fargepalett = "BlaaOff",
+  minald = 0,
+  maxald = 110,
+  OpMetode = 0,
+  AlvorlighetKompl = 0,
+  Hastegrad = 0,
+  dagkir = 9,
+  enhetsUtvalg = 0,
+  velgAvd = 0,
+  velgDiag = 0,
+  reshID = 0
+)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}

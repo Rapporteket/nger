@@ -1,33 +1,15 @@
 # Hjelpefunksjoner for NGER
 #---------------------------------------------
 
-#' Hjelpefunksjoner. Group of functions page title
-#'
-#' Fil med div hjelpefunksjoner.Group of functions Description section
-#'
-#' Detaljer. kommer senereGroup of functions Details paragraph.
-#'
-#' @section Finne reinnleggelser After function section:
-#' Despite its location, this actually comes after the function section.
-#' Fil som inneholder hjelpefunksjoner.
-#' Lage tulledata for åpen publisering
-#' SorterOgNavngiTidsEnhet Legger til tidsenhetene Aar, Halvaar, Mnd og Kvartal
-#'
-#'
-#' @param RegData data
-#' @param PasientID Variabelen som angir pasientidentifikasjon
-# @inheritParams NGERFigAndeler
-#' @return Div hjelpefunksjoner
-#' @name hjelpeFunksjoner
-NULL
-#' @rdname hjelpeFunksjoner
-#' @export
 
-
-#' @section Tilrettelegge tidsenhetvariabel:
+#' Tilrettelegge tidsenhetvariabel:
 #' Probably better if all sections come first, uless have one section per function. Makes it easier to
 #' see the information flow.
-#' @rdname hjelpeFunksjoner
+#'
+#' @param RegData dataramme
+#' @param tidsenhet tidsenhet: 'Aar', 'Mnd', 'Kvartal', 'Halvaar'
+#' @param tab Hmmm
+#'
 #' @export
 SorterOgNavngiTidsEnhet <- function(RegData, tidsenhet='Aar', tab=0) {
       #Lager sorteringsvariabel for tidsenhet:
@@ -73,9 +55,13 @@ SorterOgNavngiTidsEnhet <- function(RegData, tidsenhet='Aar', tab=0) {
 }
 
 
-#' @section Lage tulledata (simulerte data)
-# Probably better if all sections come first, uless have one section per function(?)
-#' @rdname hjelpeFunksjoner
+#' Lage tulledata (simulerte data)
+#'
+#' @param RegData dataramme
+#' @param varBort variable som skal fjernes. Variabelnavn angis som vektor av tekststrenger
+#' @param antSh antall sykehus
+#' @param antObs antall observasjoner (rader)
+#'
 #' @export
 lageTulleData <- function(RegData, varBort=NA, antSh=26, antObs=20000) {
   #Må også legge på resh som svarer til sykehusnavn.
@@ -98,9 +84,14 @@ lageTulleData <- function(RegData, varBort=NA, antSh=26, antObs=20000) {
 	  return(RegData)
 }
 
-#' @section Generere samlerapporter i app
-# Probably better if all sections come first, uless have one section per function(?)
-#' @rdname hjelpeFunksjoner
+#' Generere samlerapporter i app
+#'
+#' @param filnavn benyttes i downloadhandler
+#' @param rnwFil Fila som skal kompileres. Eks. 'Eksempel.rnw'
+#' @param reshID reshID
+#' @param datoFra startdato
+#' @param datoTil sluttdato
+#'
 #' @export
 henteSamlerapporter <- function(filnavn, rnwFil, reshID=0,
                                 datoFra=Sys.Date()-180, datoTil=Sys.Date()) {
@@ -123,6 +114,8 @@ henteSamlerapporter <- function(filnavn, rnwFil, reshID=0,
 #' @param rnwFil NoWeb-fil med filending: eksempel.rnw
 #' @param brukernavn innlogget bruker
 #' @param reshID brukerens reshID
+#' @param datoFra startdato
+#' @param datoTil sluttdato
 #'
 #' @return gir filsti til pdf-samledokument
 #' @export
@@ -133,6 +126,7 @@ abonnementNGER <- function(rnwFil, brukernavn='tullebukk', reshID=0,
     raplog::subLogger(author = brukernavn, reshId = reshID[[1]],
                       registryName = 'NGER',
                       msg = "Abonnement, månedsrapport")
+
   rnwFil  <- rnwFil[[1]]
   brukernavn <- brukernavn[[1]]
   reshID <- reshID[[1]]
@@ -144,10 +138,11 @@ abonnementNGER <- function(rnwFil, brukernavn='tullebukk', reshID=0,
   src <- normalizePath(system.file(rnwFil, package='nger'))
   # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
   setwd(tempdir())
-  owd <- getwd()
+  #owd <- getwd()
   file.copy(src, tmpFile, overwrite = TRUE)
   knitr::knit2pdf(input=tmpFile) #, output = paste0(filbase, digest::digest(brukernavn),'.tex'))
-  utfil <- paste0(owd, '/', substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf')
+  utfil <-  file.copy(paste0(substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf'))
+  #  paste0(owd, '/', substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf')
   return(utfil)
 }
 

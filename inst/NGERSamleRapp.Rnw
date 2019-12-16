@@ -11,7 +11,7 @@
 \usepackage[norsk]{babel}
 \usepackage[utf8x]{inputenc}
 \usepackage{textcomp}
-\usepackage{fancyhdr}
+\usepackage{fancyhdr} %Får feilmelding om at ikke tilgjengelig..?
 \pagestyle{fancy}
 \usepackage{amsmath}
 \usepackage{rotating} %add rotating for plain tables

@@ -648,7 +648,7 @@ tabPanel(p("Abonnement",
 #----- Define server logic required to draw a histogram-------
 server <- function(input, output, session) {
 
-  raplog::appLogger(session)
+  raplog::appLogger(session, msg = 'Starter Rapporteket-NGER')
   #system.file('NGERmndRapp.Rnw', package='nger')
 
     #hospitalName <-getHospitalName(rapbase::getUserReshId(session))
@@ -1216,7 +1216,8 @@ server <- function(input, output, session) {
         paramNames <- c('rnwFil', 'brukernavn', "reshID", "datoFra", 'datoTil')
         paramValues <- c(rnwFil, brukernavn(), reshID(), startDato, Sys.Date()) #input$subscriptionFileFormat)
 
-        #test <- abonnementNGER(rnwFil="NGERmndRapp.Rnw", brukernavn='tullebukk', reshID=105460, datoFra = '2019-03-01')
+        #test <- abonnementNGER(rnwFil=rnwFil, brukernavn='tullebukk', reshID=105460, datoFra = '2019-03-01')
+
         rapbase::createAutoReport(synopsis = synopsis, package = 'nger',
                                   fun = fun, paramNames = paramNames,
                                   paramValues = paramValues, owner = owner,
