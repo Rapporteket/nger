@@ -120,7 +120,7 @@ henteSamlerapporter <- function(filnavn, rnwFil, reshID=0,
 #' @return gir filsti til pdf-samledokument
 #' @export
 #'
-abonnementNGER <- function(rnwFil, brukernavn='tullebukk', reshID=0,
+abonnementNGER <- function(rnwFil, brukernavn='ngerBrukernavn', reshID=0,
                            datoFra=Sys.Date()-180, datoTil=Sys.Date()) {
 
     raplog::subLogger(author = brukernavn, reshId = reshID[[1]],
@@ -143,6 +143,10 @@ abonnementNGER <- function(rnwFil, brukernavn='tullebukk', reshID=0,
   knitr::knit2pdf(input=tmpFile) #, output = paste0(filbase, digest::digest(brukernavn),'.tex'))
   utfil <-  file.copy(paste0(substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf'))
   #  paste0(owd, '/', substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf')
+
+  raplog::subLogger(author = brukernavn, reshId = reshID[[1]],
+                    registryName = 'NGER',
+                    msg = paste("Sender: ", utfil))
   return(utfil)
 }
 

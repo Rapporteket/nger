@@ -1214,7 +1214,7 @@ server <- function(input, output, session) {
 
         fun <- "abonnementNGER"  #"henteSamlerapporter"
         paramNames <- c('rnwFil', 'brukernavn', "reshID", "datoFra", 'datoTil')
-        paramValues <- c(rnwFil, brukernavn(), reshID(), startDato, Sys.Date()) #input$subscriptionFileFormat)
+        paramValues <- c(rnwFil, brukernavn(), reshID(), startDato, as.character(idag)) #input$subscriptionFileFormat)
 
         #test <- abonnementNGER(rnwFil=rnwFil, brukernavn='tullebukk', reshID=105460, datoFra = '2019-03-01')
 
