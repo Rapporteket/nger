@@ -127,8 +127,8 @@ abonnementNGER <- function(rnwFil, brukernavn='ngerBrukernavn', reshID=0,
                       registryName = 'NGER',
                       msg = "Abonnement, månedsrapport")
 
-  rnwFil  <- rnwFil[[1]]
-  brukernavn <- brukernavn[[1]]
+  #rnwFil  <- rnwFil[[1]]
+  #brukernavn <- brukernavn[[1]]
   reshID <- reshID[[1]]
   datoFra <- datoFra[[1]]
   datoTil <- datoTil[[1]]
@@ -138,11 +138,11 @@ abonnementNGER <- function(rnwFil, brukernavn='ngerBrukernavn', reshID=0,
   src <- normalizePath(system.file(rnwFil, package='nger'))
   # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
   setwd(tempdir())
-  #owd <- getwd()
+  dir <- getwd()
   file.copy(src, tmpFile, overwrite = TRUE)
   knitr::knit2pdf(input=tmpFile) #, output = paste0(filbase, digest::digest(brukernavn),'.tex'))
-  utfil <-  file.copy(paste0(substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf'))
-  #  paste0(owd, '/', substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf')
+  #utfil <-  file.copy(paste0(substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf'))
+  utfil <- paste0(dir, '/', substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf')
 
   raplog::subLogger(author = brukernavn, reshId = reshID[[1]],
                     registryName = 'NGER',
