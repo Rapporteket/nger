@@ -1,14 +1,14 @@
 #Resultattjeneste for NGER
 library(nger)
-library(shiny)
+library(kableExtra)
 library(knitr)
 library(lubridate)
 library(plyr)
 #ibrary(shinyBS) # Additional Bootstrap Controls
-library(kableExtra)
-library(rapFigurer)
-library(shinyjs)
 library(rapbase)
+library(rapFigurer)
+library(shiny)
+library(shinyjs)
 #library(zoo)
 
 idag <- Sys.Date()
@@ -1216,7 +1216,8 @@ server <- function(input, output, session) {
         paramNames <- c('rnwFil', 'brukernavn', "reshID", "datoFra", 'datoTil')
         paramValues <- c(rnwFil, brukernavn(), reshID(), startDato, as.character(idag)) #input$subscriptionFileFormat)
 
-        #test <- abonnementNGER(rnwFil=rnwFil, brukernavn='tullebukk', reshID=105460, datoFra = '2019-03-01')
+        test <- abonnementNGER(rnwFil="NGERSamleRapp.Rnw", brukernavn='tullebukk',
+                               reshID=105460, datoFra = '2019-03-01')
 
         rapbase::createAutoReport(synopsis = synopsis, package = 'nger',
                                   fun = fun, paramNames = paramNames,

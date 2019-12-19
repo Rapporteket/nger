@@ -89,7 +89,7 @@
 \title{Oversiktstall fra Norsk Gynekologisk Endoskopiregister (NGER)}
 
 %	AUTHOR SECTION
-%\author{NIR og SKDE}
+\author{NGER og SKDE}
 %\Large \emph{Author:}\\
 %\Large Utarbeidet av: \\
 %\huge{NGER og SKDE}\\[3cm] % Your name
@@ -116,6 +116,8 @@
 
 
 <<setup, include=FALSE, cache=FALSE>>=
+library(xtable, warn.conflicts = FALSE, quietly = TRUE)
+#library(dplyr, warn.conflicts = FALSE, quietly = TRUE)
 ##options(replace.assign=TRUE, width=90)
 knitr::opts_chunk$set(warnings=FALSE, echo = FALSE)
 knitr::opts_chunk$set()	#Settes også i rapbase
@@ -161,8 +163,7 @@ if (!exists('RegData')){
 
 <<FellesParamOgPreprosess, echo=FALSE, warnings=FALSE>>=
 
-library(xtable)
-library(dplyr)
+
 outfile <- ''
 enhetsUtvalg <- 1
 OpMetode<-99
