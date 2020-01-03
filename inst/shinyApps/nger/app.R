@@ -197,13 +197,15 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                             br(),
                             br(),
                             br(),
-                            helpText('Last ned egne data for å kontrollere registrering'),
+                            h3('Last ned egne data '),
                             dateRangeInput(inputId = 'datovalgRegKtr', start = startDato, end = idag,
                                            label = "Tidsperiode", separator="t.o.m.", language="nb"),
                             selectInput(inputId = 'velgReshReg', label='Velg sykehus',
                                         selected = 0,
                                         choices = sykehusValg),
-                            downloadButton(outputId = 'lastNed_dataTilRegKtr', label='Last ned data')
+                            downloadButton(outputId = 'lastNed_dataTilRegKtr', label='Last ned fødselsnummer og operasjonsdato'),
+                            br(),
+                            downloadButton(outputId = 'lastNed_dataDump', label='Last ned datadump')
                ),
 
                mainPanel(
@@ -811,7 +813,7 @@ server <- function(input, output, session) {
           valgtResh <- as.numeric(input$velgReshReg)
           ind <- if (valgtResh == 0) {1:dim(RegOversikt)[1]
           } else {which(as.numeric(RegOversikt$ReshId) %in% as.numeric(valgtResh))}
-          RegOversikt <- RegOversikt[ind,]
+          RegOversikt[ind,]
         } else {RegOversikt[which(RegOversikt$ReshId == reshID), ]}
 
         output$lastNed_dataTilRegKtr <- downloadHandler(
@@ -819,6 +821,27 @@ server <- function(input, output, session) {
           content = function(file, filename){write.csv2(tabDataRegKtr, file, row.names = F, na = '')})
       })
 
+      # Egen datadump
+      variablePRM <- c("R0Metode", "R0ScoreEmo", "R0ScoreEnergy", "R0ScoreGeneral", "R0ScorePain",
+                       "R0ScorePhys", "R0ScoreRoleLmtEmo", "R0ScoreRoleLmtPhy", "R0ScoreSosial",
+                       "R0Spm2", "R0Status", "Tss2Behandlere", "Tss2Behandling", "Tss2Enighet",
+                       "Tss2Generelt", "Tss2Lytte", "Tss2Mott", "Tss2Status", "Tss2Type")
+      observe({
+        DataDump <- dplyr::filter(RegData,
+                                     as.Date(OpDato) >= input$datovalgRegKtr[1],
+                                     as.Date(OpDato) <= input$datovalgRegKtr[2])
+      tabDataDump <- if (rolle == 'SC') {
+        valgtResh <- as.numeric(input$velgReshReg)
+        ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
+        } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
+        DataDump[ind,]
+      } else {
+        DataDump[which(DataDump$ReshId == reshID), -variablePRM]} #Tar bort PROM/PREM til egen avdeling
+
+      output$lastNed_dataDump <- downloadHandler(
+        filename = function(){'dataDumpNGER.csv'},
+        content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, na = '')})
+      })
       #---------Kvalitetsindikatorer------------
       observe({   #KvalInd
         #print(reshID)
