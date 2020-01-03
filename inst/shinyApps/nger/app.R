@@ -205,6 +205,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                         choices = sykehusValg),
                             downloadButton(outputId = 'lastNed_dataTilRegKtr', label='Last ned fødselsnummer og operasjonsdato'),
                             br(),
+                            br(),
                             downloadButton(outputId = 'lastNed_dataDump', label='Last ned datadump')
                ),
 
