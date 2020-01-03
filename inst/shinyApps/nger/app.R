@@ -192,8 +192,18 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                                       "Kladd"=0,
                                                       "Åpen"=-1)
                               )
+                            ),
 
-                            )
+                            br(),
+                            br(),
+                            br(),
+                            helpText('Last ned egne data for å kontrollere registrering'),
+                            dateRangeInput(inputId = 'datovalgRegKtr', start = startDato, end = idag,
+                                           label = "Tidsperiode", separator="t.o.m.", language="nb"),
+                            selectInput(inputId = 'velgReshReg', label='Velg sykehus',
+                                        selected = 0,
+                                        choices = sykehusValg),
+                            downloadButton(outputId = 'lastNed_dataTilRegKtr', label='Last ned data')
                ),
 
                mainPanel(
@@ -652,18 +662,19 @@ server <- function(input, output, session) {
   #system.file('NGERmndRapp.Rnw', package='nger')
 
     #hospitalName <-getHospitalName(rapbase::getUserReshId(session))
-    reshID <- reactive({ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)),
-                               ifelse(tulledata==1, 8, 105460))})
-    #reshID <- ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)
-    rolle <- reactive({ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')})
-    #rolle <- ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'LU')
+    #reshID <- reactive({ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)),
+                         #      ifelse(tulledata==1, 8, 105460))})
+    reshID <- ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)
+    #rolle <- reactive({ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')})
+    rolle <- ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')
     brukernavn <- reactive({ifelse(paaServer, rapbase::getUserName(session), 'inkognito')})
 
 
     #output$reshID <- renderText({ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)}) #evt renderUI
 
-    observe({if (rolle() != 'SC') { #
+    observe({if (rolle != 'SC') { #
       shinyjs::hide(id = 'velgResh')
+      shinyjs::hide(id = 'velgReshReg')
       shinyjs::hide(id = 'velgReshKval')
      #hideTab(inputId = "tabs_andeler", target = "Figur, sykehusvisning")
     }
@@ -672,7 +683,7 @@ server <- function(input, output, session) {
     # widget
     if (paaServer) {
       output$appUserName <- renderText(rapbase::getUserFullName(session))
-      output$appOrgName <- renderText(paste0('rolle: ', rolle(), '<br> ReshID: ', reshID()) )}
+      output$appOrgName <- renderText(paste0('rolle: ', rolle, '<br> ReshID: ', reshID) )}
 
     # User info in widget
     userInfo <- rapbase::howWeDealWithPersonalData(session)
@@ -712,14 +723,14 @@ server <- function(input, output, session) {
             filename = function(){ downloadFilename('NGERmaanedsrapport')},
             content = function(file){
               henteSamlerapporter(file, rnwFil="NGERmndRapp.Rnw",
-                                  reshID = reshID())
+                                  reshID = reshID)
             })
 
       output$samleDok.pdf <- downloadHandler(
         filename = function(){ downloadFilename('Samledokument')},
         content = function(file){
           henteSamlerapporter(file, rnwFil="NGERSamleRapp.Rnw",
-                      reshID = reshID(),
+                      reshID = reshID,
                       datoFra = input$datovalgSamleDok[1],
                       datoTil = input$datovalgSamleDok[2])
         }
@@ -729,7 +740,7 @@ server <- function(input, output, session) {
 
      output$tabEgneReg <- renderTable({
        xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg,
-                                      antMnd=12, reshID = reshID()))},
+                                      antMnd=12, reshID = reshID))},
             rownames=T,
             digits = 0
       )
@@ -790,14 +801,32 @@ server <- function(input, output, session) {
       })
 
 
+      # Hente oversikt over hvilke registrereinger som er gjort (opdato og fødselsdato)
+      RegOversikt <- RegData[ , c('Fodselsdato', 'OpDato', 'ReshId', 'ShNavn', 'BasisRegStatus')]
+      observe({
+        RegOversikt <- dplyr::filter(RegOversikt,
+                                     as.Date(OpDato) >= input$datovalgRegKtr[1],
+                                     as.Date(OpDato) <= input$datovalgRegKtr[2])
+        tabDataRegKtr <- if (rolle == 'SC') {
+          valgtResh <- as.numeric(input$velgReshReg)
+          ind <- if (valgtResh == 0) {1:dim(RegOversikt)[1]
+          } else {which(as.numeric(RegOversikt$ReshId) %in% as.numeric(valgtResh))}
+          RegOversikt <- RegOversikt[ind,]
+        } else {RegOversikt[which(RegOversikt$ReshId == reshID), ]}
+
+        output$lastNed_dataTilRegKtr <- downloadHandler(
+          filename = function(){'dataTilKtr.csv'},
+          content = function(file, filename){write.csv2(tabDataRegKtr, file, row.names = F, na = '')})
+      })
+
       #---------Kvalitetsindikatorer------------
       observe({   #KvalInd
-        #print(reshID())
+        #print(reshID)
         #print(input$velgReshKval)
         output$kvalInd <- renderPlot({
           NGERFigKvalInd(RegData=RegData, valgtVar=input$valgtVarKval, preprosess = 0,
                          datoFra=input$datovalgKval[1], datoTil=input$datovalgKval[2],
-                         reshID = reshID(),
+                         reshID = reshID,
                          minald=as.numeric(input$alderKval[1]), maxald=as.numeric(input$alderKval[2]),
                          OpMetode = as.numeric(input$opMetodeKval),
                          Hastegrad = as.numeric(input$hastegradKval),
@@ -812,7 +841,7 @@ server <- function(input, output, session) {
         #RegData må hentes ut fra valgtVar
         UtDataKvalInd <- NGERFigKvalInd(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarKval,
                                      datoFra=input$datovalgKval[1], datoTil=input$datovalgKval[2],
-                                     reshID = reshID(),
+                                     reshID = reshID,
                                      minald=as.numeric(input$alderKval[1]), maxald=as.numeric(input$alderKval[2]),
                                      OpMetode = as.numeric(input$opMetodeKval),
                                      Hastegrad = as.numeric(input$hastegradKval),
@@ -862,11 +891,7 @@ server <- function(input, output, session) {
          output$lastNed_tabInstrBruk <- downloadHandler(
            filename = function(){paste0('tabInstrumentbruk.csv')},
            content = function(file, filename){write.csv2(tabInstrumentbruk, file, row.names = T, na = '')})
-# print(dim(RegData))
-# print(input$datovalgTab[1])
-# print(reshID())
-         #komplLap(RegData=RegData)
-         LapKomplData <- tabKomplLap(RegData=RegData, reshID=reshID(),
+         LapKomplData <- tabKomplLap(RegData=RegData, reshID=reshID,
                                   datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2])
          output$tittelLapKompl <- renderUI(tagList(
            h4('Hyppighet (%) av laparoskopiske komplikasjoner. '),
@@ -888,7 +913,7 @@ server <- function(input, output, session) {
             output$fordelinger <- renderPlot({
                   NGERFigAndeler(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
                                datoFra=input$datovalg[1], datoTil=input$datovalg[2],
-                               reshID = reshID(),
+                               reshID = reshID,
                                minald=as.numeric(input$alder[1]),
                                maxald=as.numeric(input$alder[2]),
                                OpMetode = as.numeric(input$opMetode),
@@ -903,7 +928,7 @@ server <- function(input, output, session) {
             #RegData må hentes ut fra valgtVar
             UtDataFord <- NGERFigAndeler(RegData=RegData, preprosess = 0, valgtVar=input$valgtVar,
                                        datoFra=input$datovalg[1], datoTil=input$datovalg[2],
-                                       reshID = reshID(),
+                                       reshID = reshID,
                                        minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
                                        OpMetode = as.numeric(input$opMetode),
                                        Hastegrad = as.numeric(input$hastegrad),
@@ -955,7 +980,7 @@ server <- function(input, output, session) {
       output$andelTid <- renderPlot({
 
         NGERFigAndelTid(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
-                       reshID= reshID(),
+                       reshID= reshID,
                        datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
                        minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
                        OpMetode = as.numeric(input$opMetodeAndel),
@@ -971,7 +996,7 @@ server <- function(input, output, session) {
       observe({
         #AndelTid
         AndelerTid <- NGERFigAndelTid(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
-                                     reshID= reshID(),
+                                     reshID= reshID,
                                      datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
                                      minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
                                      OpMetode = as.numeric(input$opMetodeAndel),
@@ -1107,7 +1132,7 @@ server <- function(input, output, session) {
             #------gjsnTid
 
             output$gjsnTid <- renderPlot(
-              NGERFigGjsnTid(RegData=RegData, reshID= reshID(), preprosess = 0, valgtVar=input$valgtVarGjsn,
+              NGERFigGjsnTid(RegData=RegData, reshID= reshID, preprosess = 0, valgtVar=input$valgtVarGjsn,
                                datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
                                minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
                                valgtMaal = input$sentralmaal, enhetsUtvalg =  as.numeric(input$enhetsUtvalgGjsn),
@@ -1119,7 +1144,7 @@ server <- function(input, output, session) {
                             session = session
               ),
               width = 1000, height = 300)
-            UtDataGjsnTid <- NGERFigGjsnTid(RegData=RegData, reshID= reshID(), preprosess = 0,
+            UtDataGjsnTid <- NGERFigGjsnTid(RegData=RegData, reshID= reshID, preprosess = 0,
                                             valgtVar=input$valgtVarGjsn,
                                                 datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
                                                 minald=as.numeric(input$alderGjsn[1]),
@@ -1171,7 +1196,6 @@ server <- function(input, output, session) {
       ## applikasjonen kjører
       rv <- reactiveValues(
         subscriptionTab = rapbase::makeUserSubscriptionTab(session))
-
       ## lag tabell over gjeldende status for abonnement
       output$activeSubscriptions <- DT::renderDataTable(
         rv$subscriptionTab, server = FALSE, escape = FALSE, selection = 'none',
@@ -1192,7 +1216,7 @@ server <- function(input, output, session) {
         }
       })
 
-      ## nye abonnement
+            ## nye abonnement
       observeEvent (input$subscribe, { #MÅ HA
         #package <- "intensiv"
         owner <- rapbase::getUserName(session)
@@ -1214,7 +1238,7 @@ server <- function(input, output, session) {
 
         fun <- "abonnementNGER"  #"henteSamlerapporter"
         paramNames <- c('rnwFil', 'brukernavn', "reshID", "datoFra", 'datoTil')
-        paramValues <- c(rnwFil, brukernavn(), reshID(), startDato, as.character(idag)) #input$subscriptionFileFormat)
+        paramValues <- c(rnwFil, brukernavn(), reshID, startDato, as.character(idag)) #input$subscriptionFileFormat)
 
         test <- abonnementNGER(rnwFil="NGERSamleRapp.Rnw", brukernavn='tullebukk',
                                reshID=105460, datoFra = '2019-03-01')
