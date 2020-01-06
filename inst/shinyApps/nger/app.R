@@ -828,6 +828,11 @@ server <- function(input, output, session) {
                        "R0Spm2", "R0Status", "Tss2Behandlere", "Tss2Behandling", "Tss2Enighet",
                        "Tss2Generelt", "Tss2Lytte", "Tss2Mott", "Tss2Status", "Tss2Type")
       observe({
+        # DataDump <- dplyr::filter(RegData,
+        #                           as.Date(OpDato) >= '2018-01-04',
+        #                           as.Date(OpDato) <= '2019-09-02')
+        # testDump <- DataDump[which(DataDump$ReshId == reshID), ]
+        # testDump2 <- testDump[,-which(names(testDump) %in% variablePRM)]
         DataDump <- dplyr::filter(RegData,
                                      as.Date(OpDato) >= input$datovalgRegKtr[1],
                                      as.Date(OpDato) <= input$datovalgRegKtr[2])
@@ -837,7 +842,7 @@ server <- function(input, output, session) {
         } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
         DataDump[ind,]
       } else {
-        DataDump[which(DataDump$ReshId == reshID), -variablePRM]} #Tar bort PROM/PREM til egen avdeling
+        DataDump[which(DataDump$ReshId == reshID), -which(names(testDump) %in% variablePRM)]} #Tar bort PROM/PREM til egen avdeling
 
       output$lastNed_dataDump <- downloadHandler(
         filename = function(){'dataDumpNGER.csv'},
