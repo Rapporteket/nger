@@ -84,7 +84,9 @@ enhetsUtvalg <- c("Egen mot resten av landet"=1,
 ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
             # lag logo og tittel som en del av navbar
-            title = div(img(src="rap/logo.svg", alt="Rapporteket", height="26px"), regTitle),
+            #title = div(img(src="rap/logo.svg", alt="Rapporteket", height="26px"), regTitle),
+            title = div(a(includeHTML(system.file('www/logo.svg', package='rapbase'))),
+                        regTitle),
             # sett inn tittel også i browser-vindu
             windowTitle = regTitle,
             theme = "rap/bootstrap.css",
@@ -123,6 +125,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                         kan du bestille dette under fanen "Abonnement."'))
                ),
                mainPanel(width = 8,
+                         shinyalert::useShinyalert(),
                          tags$head(tags$link(rel="shortcut icon", href="rap/favicon.ico")),
                          rapbase::appNavbarUserWidget(user = uiOutput("appUserName"),
                                              organization = uiOutput("appOrgName")
@@ -197,7 +200,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                             br(),
                             br(),
                             br(),
+                            br(),
                             h3('Last ned egne data '),
+                            #uiOutput("test"),
                             dateRangeInput(inputId = 'datovalgRegKtr', start = startDato, end = idag,
                                            label = "Tidsperiode", separator="t.o.m.", language="nb"),
                             selectInput(inputId = 'velgReshReg', label='Velg sykehus',
@@ -675,15 +680,19 @@ server <- function(input, output, session) {
 
     #output$reshID <- renderText({ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)}) #evt renderUI
 
-    observe({if (rolle != 'SC') { #
-      shinyjs::hide(id = 'velgResh')
-      shinyjs::hide(id = 'velgReshReg')
-      shinyjs::hide(id = 'velgReshKval')
+     observe({
+       #vise <- rolle =='SC'
+       #shinyjs::toggle(id = 'velgResh', condition = vise)
+       #shinyjs::toggle(id = 'velgReshReg', condition = vise)
+       #shinyjs::toggle(id = 'velgReshKval', condition = vise)
+        if (rolle != 'SC') { #
+       shinyjs::hide(id = 'velgResh')
+       shinyjs::hide(id = 'velgReshReg')
+       shinyjs::hide(id = 'velgReshKval')
      #hideTab(inputId = "tabs_andeler", target = "Figur, sykehusvisning")
-    }
+       }
     })
  # widget
-    # widget
     if (paaServer) {
       output$appUserName <- renderText(rapbase::getUserFullName(session))
       output$appOrgName <- renderText(paste0('rolle: ', rolle, '<br> ReshID: ', reshID) )}
@@ -764,15 +773,11 @@ server <- function(input, output, session) {
                     if(as.numeric(input$velgDiagReg)!=0){
                       paste0('Diagnose: ', names(diag[diag==as.numeric(input$velgDiagReg)]))}) #, '<br />'
                   )
-                  #print(names(diag[diag==as.numeric(input$velgDiagReg)]))
                   #names(diag[diag==as.numeric(2)])
                   # h4(HTML(paste0(names(opMetode[opMetode==as.numeric(input$opMetodeReg)]), '<br />'),
                    #       names(velgDiag[velgDiag==as.numeric(input$velgDiag)]), '<br />'))
                   })
       observe({
-        # RegData <- NGERRegDataSQL()
-        # RegData <- NGERPreprosess(RegData)
-        # tabAntOpphShMnd(RegData = RegData)
         tabAntOpphShMndAar <- switch(input$tidsenhetReg,
                                      Mnd=tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12,
                                                          OpMetode=as.numeric(input$opMetodeReg),
@@ -803,24 +808,24 @@ server <- function(input, output, session) {
           })
       })
 
-
       # Hente oversikt over hvilke registrereinger som er gjort (opdato og fødselsdato)
       RegOversikt <- RegData[ , c('Fodselsdato', 'OpDato', 'ReshId', 'ShNavn', 'BasisRegStatus')]
       observe({
         RegOversikt <- dplyr::filter(RegOversikt,
                                      as.Date(OpDato) >= input$datovalgRegKtr[1],
                                      as.Date(OpDato) <= input$datovalgRegKtr[2])
-        tabDataRegKtr <- if (rolle == 'SC') {
+        if (rolle == 'SC') {
           valgtResh <- as.numeric(input$velgReshReg)
           ind <- if (valgtResh == 0) {1:dim(RegOversikt)[1]
           } else {which(as.numeric(RegOversikt$ReshId) %in% as.numeric(valgtResh))}
-          RegOversikt[ind,]
-        } else {RegOversikt[which(RegOversikt$ReshId == reshID), ]}
-
-        output$lastNed_dataTilRegKtr <- downloadHandler(
-          filename = function(){'dataTilKtr.csv'},
-          content = function(file, filename){write.csv2(tabDataRegKtr, file, row.names = F, na = '')})
-      })
+          tabDataRegKtr <- RegOversikt[ind,]
+         }  else {
+           tabDataRegKtr <- RegOversikt[which(RegOversikt$ReshId == reshID), ]}
+        #tabDataRegKtr <-RegOversikt[which(RegOversikt$ReshId == reshID), ]
+         output$lastNed_dataTilRegKtr <- downloadHandler(
+           filename = function(){'dataTilKtr.csv'},
+           content = function(file, filename){write.csv2(tabDataRegKtr, file, row.names = F, na = '')})
+       })
 
       # Egen datadump
       variablePRM <- c("R0Metode", "R0ScoreEmo", "R0ScoreEnergy", "R0ScoreGeneral", "R0ScorePain",
@@ -828,30 +833,30 @@ server <- function(input, output, session) {
                        "R0Spm2", "R0Status", "Tss2Behandlere", "Tss2Behandling", "Tss2Enighet",
                        "Tss2Generelt", "Tss2Lytte", "Tss2Mott", "Tss2Status", "Tss2Type")
       observe({
-        # DataDump <- dplyr::filter(RegData,
-        #                           as.Date(OpDato) >= '2018-01-04',
-        #                           as.Date(OpDato) <= '2019-09-02')
-        # testDump <- DataDump[which(DataDump$ReshId == reshID), ]
-        # testDump2 <- testDump[,-which(names(testDump) %in% variablePRM)]
         DataDump <- dplyr::filter(RegData,
                                      as.Date(OpDato) >= input$datovalgRegKtr[1],
                                      as.Date(OpDato) <= input$datovalgRegKtr[2])
-      tabDataDump <- if (rolle == 'SC') {
+
+
+        if (rolle =='SC') {
         valgtResh <- as.numeric(input$velgReshReg)
         ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
-        } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
-        DataDump[ind,]
-      } else {
-        DataDump[which(DataDump$ReshId == reshID), -which(names(testDump) %in% variablePRM)]} #Tar bort PROM/PREM til egen avdeling
+         } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
+        tabDataDump <- DataDump[ind,]
+        #output$test <- renderText(valgtResh)
+        } else {
+          tabDataDump <-
+            DataDump[which(DataDump$ReshId == reshID), -which(names(DataDump) %in% variablePRM)]
+          #output$test <- renderText(dim(tabDataDump)[1])
+          } #Tar bort PROM/PREM til egen avdeling
+        #tabDataDump <- DataDump[which(DataDump$ReshId == reshID), -which(names(DataDump) %in% variablePRM)]
 
-      output$lastNed_dataDump <- downloadHandler(
+output$lastNed_dataDump <- downloadHandler(
         filename = function(){'dataDumpNGER.csv'},
         content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, na = '')})
       })
       #---------Kvalitetsindikatorer------------
       observe({   #KvalInd
-        #print(reshID)
-        #print(input$velgReshKval)
         output$kvalInd <- renderPlot({
           NGERFigKvalInd(RegData=RegData, valgtVar=input$valgtVarKval, preprosess = 0,
                          datoFra=input$datovalgKval[1], datoTil=input$datovalgKval[2],
@@ -937,7 +942,6 @@ server <- function(input, output, session) {
 
       #---------Fordelinger------------
             observe({   #Fordelingsfigurer og tabeller
-             # print(input$datovalgSamleDok[1])
 
             output$fordelinger <- renderPlot({
                   NGERFigAndeler(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
