@@ -125,7 +125,7 @@ abonnementNGER <- function(rnwFil, brukernavn='ngerBrukernavn', reshID=0,
 
     raplog::subLogger(author = brukernavn, reshId = reshID[[1]],
                       registryName = 'NGER',
-                      msg = "Abonnement, månedsrapport")
+                      msg = paste("Abonnement, ", rnwFil))
 
   #rnwFil  <- rnwFil[[1]]
   #brukernavn <- brukernavn[[1]]
