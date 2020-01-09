@@ -49,7 +49,7 @@ SkjemaOversikt <- NGERPreprosess(RegData = SkjemaOversikt)
 sykehusNavn <- sort(unique(RegData$ShNavn), index.return=T)
 sykehusValg <- unique(RegData$ReshId)[sykehusNavn$ix]
 sykehusValg <- c(0,sykehusValg)
-names(sykehusValg) <- c(' ',sykehusNavn$x)
+names(sykehusValg) <- c('Alle',sykehusNavn$x)
 
 enhetsUtvalg <- c("Egen mot resten av landet"=1,
                         "Hele landet"=0,
