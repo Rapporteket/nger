@@ -1249,6 +1249,7 @@ output$lastNed_dataDump <- downloadHandler(
         }
       })
 
+
             ## nye abonnement
       observeEvent (input$subscribe, { #MÅ HA
         #package <- "intensiv"
@@ -1273,8 +1274,8 @@ output$lastNed_dataDump <- downloadHandler(
         paramNames <- c('rnwFil', 'brukernavn', "reshID", "datoFra", 'datoTil')
         paramValues <- c(rnwFil, brukernavn(), reshID, startDato, as.character(idag)) #input$subscriptionFileFormat)
 
-        test <- abonnementNGER(rnwFil="NGERSamleRapp.Rnw", brukernavn='tullebukk',
-                               reshID=105460, datoFra = '2019-03-01')
+        #test <- abonnementNGER(rnwFil="NGERSamleRapp.Rnw", brukernavn='tullebukk',
+        #                       reshID=105460, datoFra = '2019-03-01')
 
         rapbase::createAutoReport(synopsis = synopsis, package = 'nger',
                                   fun = fun, paramNames = paramNames,
