@@ -4,10 +4,25 @@
 \alias{NGERFigAndeler}
 \title{Søylediagram som viser andeler av ulike variabler}
 \usage{
-NGERFigAndeler(RegData = 0, valgtVar, datoFra = "2013-01-01",
-  datoTil = "2050-12-31", minald = 0, maxald = 130, outfile = "",
-  reshID = 0, enhetsUtvalg = 0, MCEType = 99, Hastegrad = "",
-  AlvorlighetKompl = "", velgDiag = 0, hentData = 0, preprosess = 0)
+NGERFigAndeler(
+  RegData = 0,
+  valgtVar,
+  datoFra = "2013-01-01",
+  datoTil = "2050-12-31",
+  minald = 0,
+  maxald = 130,
+  outfile = "",
+  reshID = 0,
+  enhetsUtvalg = 0,
+  OpMetode = 99,
+  Hastegrad = "",
+  AlvorlighetKompl = "",
+  velgAvd = 0,
+  velgDiag = 0,
+  hentData = 0,
+  preprosess = 1,
+  ...
+)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -33,7 +48,7 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 1: Egen enhet mot resten av landet (Standard)
 2: Egen enhet}
 
-\item{MCEType}{1: Laparoskopi
+\item{OpMetode}{1: Laparoskopi
 2: Hysteroskopi
 3: Begge
 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
@@ -51,6 +66,9 @@ Angis som en vektor av tall som tekst, f.eks. c('1','2')
 2: Middels alvorlig
 3: Alvorlig
 4: Dødelig}
+
+\item{velgAvd}{Velge hvilke avdelinger som skal vises i figurer med avdelingsvise resultater.
+IKKE tatt høyde for sammenlikning mot "resten".}
 
 \item{velgDiag}{0: Alle
 1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
@@ -80,7 +98,7 @@ Argumentet \emph{valgtVar} har følgende valgmuligheter:
     \item HysGjforingsGrad: Gjennomføringsgrad av hysteroskopi
    		Koder:	1-Fullstendig, 2-Ufullstendig, 3-Mislykket
     \item HysKomplikasjoner: Hysteroskopi intrapoerative komplikasjoner
-    \item KomplPost: Postoperative komplikasjoner
+    \item KomplPostop: Postoperative komplikasjoner
     \item KomplPostUtd: Postoperative komplikasjoner for ulike utdanningsgrupper
     \item KomplReopUtd: Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper
     \item LapKomplikasjoner: Laparoskopiske intrapoerative komplikasjoner

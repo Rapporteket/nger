@@ -5,7 +5,7 @@
 #' Argumentet \emph{valgtVar} har følgende valgmuligheter:
 #'    \itemize{
 #'     \item RAND0: Alle dimensjonene i RAND36 ved oppfølging etter 4-6uker. Gjennomsnitt
-#'     \item TSS20: Alle sp?rsm?lene i TSS2 ved oppf?lging etter 4-6uker. Andel av beste svaralternativ
+#'     \item TSS0: Alle sp?rsm?lene i TSS2 ved oppf?lging etter 4-6uker. Andel av beste svaralternativ
 #'     \item kvalInd: Samling av kvalitetsindikatorer
 #'    }
 #'
@@ -19,10 +19,14 @@
 #' @export
 
 
-NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='3000-12-31',
-                             valgtVar, enhetsUtvalg=0, minald=0, maxald=130, MCEType=99, Hastegrad=99,
-                             hentData=0, preprosess=1, velgDiag=0, Ngrense=10,outfile='') {
+NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', datoTil='3000-12-31',
+                           valgtVar='kvalInd', enhetsUtvalg=0, minald=0, maxald=130, OpMetode=99,
+                           Hastegrad=99, dagkir=9, hentData=0, preprosess=1, velgDiag=0, Ngrense=10,
+                           outfile='', ...) {
 
+  if ("session" %in% names(list(...))) {
+    raplog::repLogger(session = list(...)[["session"]], msg = paste0('FigKvalInd: ',valgtVar))
+  }
   if (hentData == 1) {
     RegData <- NGERRegDataSQL(datoFra, datoTil)
   }
@@ -39,14 +43,15 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
   #------- Gjøre utvalg
 #Utvalg fra variable:
   RegData <- switch(valgtVar,
-                    RAND0 = RegData[which(RegData$R0Status==1) %i% which(RegData$R0Metode %in% 1:2) %i% which(RegData$InnDato >= '2016-01-01'), ],
+                    RAND0 = RegData[which(RegData$R0Status==1) %i% which(RegData$R0Metode %in% 1:2)
+                                    %i% which(RegData$InnDato >= '2016-01-01'), ],
                     TSS0 = RegData[which(RegData$Tss2Status==1) %i% which(RegData$Tss2Type %in% 1:2)
                                    %i% which(RegData$InnDato >= '2016-01-01'), ],
                     kvalInd = RegData)
 
   NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, reshID=reshID,  minald = minald, maxald = maxald, datoFra = datoFra,
-                              datoTil = datoTil, MCEType = MCEType, Hastegrad=Hastegrad, velgDiag=velgDiag,
-                              enhetsUtvalg=enhetsUtvalg)
+                              datoTil = datoTil, OpMetode = OpMetode, Hastegrad=Hastegrad, velgDiag=velgDiag,
+                              dagkir = dagkir, enhetsUtvalg=enhetsUtvalg, velgAvd=velgAvd)
   smltxt <- NGERUtvalg$smltxt
   medSml <- NGERUtvalg$medSml
   utvalgTxt <- NGERUtvalg$utvalgTxt
@@ -56,7 +61,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
 
     KImaal <- switch(valgtVar, #dummym?l!!
                    RAND0 = 80,
-                   TSS20 = 80,
+                   TSS0 = 80,
                    kvalInd = 1:4)
 
   ind <- NGERUtvalg$ind
@@ -121,11 +126,11 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
                'Intraop. komplikasjon ved \n laparoskopi',
                'Intraop. komplikasjon ved \n hysteroskopi',
                'Konvertert laparoskopi til \n laparotomi', #"LapKonvertert":
-               'Konvertert hysteroskopi til \n laparaskopi/laparotomi', #"HysKonvertert":
-               'Ikke utført oppfølging \n etter 4 uker')
-               # Ikke ferdistilt registrering \n innen 6 uker')
+               'Konvertert hysteroskopi til \n laparaskopi/laparotomi') #"HysKonvertert":
+               # 'Ikke utført oppfølging \n etter 4 uker')
+               # 'Ikke ferdistilt registrering \n innen 6 uker')
     variable <- c('PostOpKomplReop', 'LapKomplikasjoner', 'HysKomplikasjoner',
-                  'LapKonvertert', 'HysKonvertert', 'Opf0') #, 'Innen6uker')
+                  'LapKonvertert', 'HysKonvertert') #, 'Opf0') #, 'Innen6uker')
 
     # RegData$Diff <- as.numeric(as.Date(RegData$Leveringsdato) - as.Date(RegData$InnDato)) #difftime(RegData$InnDato, RegData$Leveringsdato) #
     # RegData$Innen6uker <- NA
@@ -139,10 +144,10 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
                             %i% which(RegData$Opf0Status == 1)] <- 0
     RegData$PostOpKomplReop[which(RegData$Opf0Reoperasjon == 1)] <- 1
 
-    RegData$Opf0 <- 1
-    datoTil <- min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 8*7))
-    RegData$Opf0[RegData$InnDato>datoTil] <- NA
-    RegData$Opf0[RegData$Opf0metode %in% 1:2] <- 0
+    # RegData$Opf0 <- 1
+    # datoTil <- min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 8*7))
+    # RegData$Opf0[RegData$InnDato>datoTil] <- NA
+    # RegData$Opf0[RegData$Opf0metode %in% 1:2] <- 0
 
 
     Ngr$Hoved <- apply(RegData[ind$Hoved,variable], MARGIN=2,
@@ -182,11 +187,28 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
 
   cexgr <- 1-ifelse(length(soyletxt)>20, 0.25*length(soyletxt)/60, 0)
   grtxt2 <- paste0(sprintf('%.1f',AggVerdier$Hoved), '%') #paste0('(', sprintf('%.1f',AggVerdier$Hoved), '%)')
+  names(AggVerdier$Hoved) <- grtxt
 
+  FigDataParam <- list(AggVerdier=AggVerdier,
+                       N=Nfig,
+                       Ngr=Ngr,
+                       #KImaal <- NIRVarSpes$KImaal,
+                       grtxt2=grtxt2,
+                       grtxt=grtxt,
+                       #grTypeTxt=grTypeTxt,
+                       tittel=tittel,
+                       retn='H',
+                       #subtxt=subtxt,
+                       #yAkseTxt=yAkseTxt,
+                       utvalgTxt=utvalgTxt,
+                       fargepalett=NGERUtvalg$fargepalett,
+                       medSml=medSml,
+                       hovedgrTxt=hovedgrTxt,
+                       smltxt=smltxt)
 
   ###-----------Figur---------------------------------------
   if ( max(N$Hoved) < Ngrense | 	(NGERUtvalg$medSml ==1 & max(N$Rest)< Ngrense)) {
-    FigTypUt <- figtype(outfile)
+    FigTypUt <- rapFigurer::figtype(outfile)
     farger <- FigTypUt$farger
     plot.new()
     title(main=tittel)	#
@@ -199,7 +221,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
 
 
     ###Innparametre til evt. funksjon: subtxt, grtxt, grtxt2, tittel, AggVerdier, utvalgTxt, retn, cexgr
-    FigTypUt <- figtype(outfile, fargepalett=NGERUtvalg$fargepalett)
+    FigTypUt <- rapFigurer::figtype(outfile, fargepalett=NGERUtvalg$fargepalett)
     #Tilpasse marger for ? kunne skrive utvalgsteksten
     NutvTxt <- length(utvalgTxt)
     vmarg <- max(0, strwidth(grtxt, units='figure', cex=cexgr)*0.65)
@@ -221,12 +243,12 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
 
       if (NGERUtvalg$medSml == 1) {
         points(as.numeric(AggVerdier$Rest), pos, col=fargeRest,  cex=2, pch=18) #c("p","b","o"),
-        legend('top', c(paste0(NGERUtvalg$hovedgrTxt, ' (N=', Nfig$Hoved,')'),
-                        paste0(NGERUtvalg$smltxt, ' (N=', Nfig$Rest,')')),
+        legend('top', c(paste0(hovedgrTxt, ' (N=', Nfig$Hoved,')'),
+                        paste0(smltxt, ' (N=', Nfig$Rest,')')),
                border=c(fargeHoved,NA), col=c(fargeHoved,fargeRest), bty='n', pch=c(15,18), pt.cex=2,
                lwd=lwdRest,	lty=NA, ncol=1, cex=cexleg)
       } else {
-        legend('top', paste0(NGERUtvalg$hovedgrTxt, ' (N=', Nfig$Hoved,')'),
+        legend('top', paste0(hovedgrTxt, ' (N=', Nfig$Hoved,')'),
                border=NA, fill=fargeHoved, bty='n', ncol=1, cex=cexleg)
       }
 
@@ -238,8 +260,8 @@ NGERFigKvalInd <- function(RegData, reshID=0, datoFra='2013-01-01', datoTil='300
     if ( outfile != '') {dev.off()}
   }
 
-  UtData <- list(paste0(toString(tittel),'.'), AggVerdier, N, grtxt )
-  names(UtData) <- c('tittel', 'AggVerdier', 'Antall', 'GruppeTekst')
+  UtData <- FigDataParam #list(paste0(toString(tittel),'.'), AggVerdier, N, grtxt )
+  #names(UtData) <- c('tittel', 'AggVerdier', 'Antall', 'GruppeTekst')
   return(invisible(UtData))
 }
 

@@ -4,11 +4,26 @@
 \alias{NGERFigAndelerGrVar}
 \title{Søylediagram med andeler for hver grupperingsenhet (sykehus, RHF, ...)}
 \usage{
-NGERFigAndelerGrVar(RegData = 0, valgtVar, datoFra = "2013-01-01",
-  datoTil = "3000-12-31", velgAvd = "", minald = 0, maxald = 130,
-  MCEType = 99, Hastegrad = "", AlvorlighetKompl = "", Ngrense = 10,
-  reshID, outfile = "", enhetsUtvalg = 0, velgDiag = 0, preprosess = 0,
-  hentData = 0)
+NGERFigAndelerGrVar(
+  RegData = 0,
+  valgtVar = "Alder",
+  datoFra = "2013-01-01",
+  datoTil = "3000-12-31",
+  velgAvd = 0,
+  minald = 0,
+  maxald = 130,
+  OpMetode = 99,
+  Hastegrad = "",
+  AlvorlighetKompl = "",
+  Ngrense = 10,
+  reshID = 0,
+  outfile = "",
+  enhetsUtvalg = 0,
+  velgDiag = 0,
+  preprosess = 1,
+  hentData = 0,
+  ...
+)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -26,7 +41,7 @@ IKKE tatt høyde for sammenlikning mot "resten".}
 
 \item{maxald}{Alder, til og med (Standardverdi: 130)}
 
-\item{MCEType}{1: Laparoskopi
+\item{OpMetode}{1: Laparoskopi
 2: Hysteroskopi
 3: Begge
 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)

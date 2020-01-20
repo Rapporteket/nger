@@ -28,11 +28,14 @@
 #'
 #' @export
 
+NGERFigAndelTid <- function(RegData=0, valgtVar, datoFra='2015-01-01', datoTil=Sys.Date(),
+                            minald=0, maxald=130, OpMetode=99, Hastegrad='', AlvorlighetKompl='', reshID=0, outfile='',
+                            enhetsUtvalg=0, velgDiag=0, preprosess=1, hentData=0, tidsenhet='Aar',
+                            ...) {
 
-NGERFigAndelTid <- function(RegData=0, valgtVar, datoFra='2014-01-01', datoTil='3000-12-31',
-                            minald=0, maxald=130, MCEType=99, Hastegrad='', AlvorlighetKompl='', reshID, outfile='',
-                            enhetsUtvalg=0, velgDiag=0, preprosess=0, hentData=0, tidsenhet='Aar') {
-
+  if ("session" %in% names(list(...))) {
+    raplog::repLogger(session = list(...)[["session"]], msg = paste0('FigAndelTid: ',valgtVar))
+  }
 
   ## Hvis spørring skjer fra R på server. ######################
   if(hentData == 1){
@@ -56,9 +59,10 @@ NGERFigAndelTid <- function(RegData=0, valgtVar, datoFra='2014-01-01', datoTil='
   #if (tidsenhet == 'Mnd') {datoFra <- paste0(as.numeric(strftime(datoTil, format="%Y"))-1,'-',
   #                                           strftime(datoTil, format="%m"),'-','01')}
 
-  NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, enhetsUtvalg=enhetsUtvalg, datoFra=datoFra, datoTil=datoTil,
-                              minald=minald, maxald=maxald, velgDiag=velgDiag, reshID = reshID,
-                              MCEType=MCEType, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
+  NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, enhetsUtvalg=enhetsUtvalg, reshID = reshID,
+                              datoFra=datoFra, datoTil=datoTil,
+                               minald=minald, maxald=maxald, velgDiag=velgDiag,
+                              OpMetode=OpMetode, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
   RegData <- NGERUtvalg$RegData
   utvalgTxt <- NGERUtvalg$utvalgTxt
 
@@ -66,54 +70,81 @@ NGERFigAndelTid <- function(RegData=0, valgtVar, datoFra='2014-01-01', datoTil='
   #------------------------Klargjøre tidsenhet--------------
 
   #Brukes til sortering
-  RegData$TidsEnhet <- switch(tidsenhet,
-                              Aar = RegData$Aar-min(RegData$Aar)+1,
-                              Mnd = RegData$Mnd-min(RegData$Mnd[RegData$Aar==min(RegData$Aar)])+1
-                              +(RegData$Aar-min(RegData$Aar))*12,
-                              Kvartal = RegData$Kvartal-min(RegData$Kvartal[RegData$Aar==min(RegData$Aar)])+1+
-                                (RegData$Aar-min(RegData$Aar))*4,
-                              Halvaar = RegData$Halvaar-min(RegData$Halvaar[RegData$Aar==min(RegData$Aar)])+1+
-                                (RegData$Aar-min(RegData$Aar))*2
-  )
-
-  tidtxt <- switch(tidsenhet,
-                   Mnd = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)], 3,4),
-                               sprintf('%02.0f', RegData$Mnd[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)]), sep='.'),
-                   Kvartal = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)], 3,4),
-                                   sprintf('%01.0f', RegData$Kvartal[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)]), sep='-'),
-                   Halvaar = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)], 3,4),
-                                   sprintf('%01.0f', RegData$Halvaar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)]), sep='-'),
-                   Aar = as.character(RegData$Aar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)]))
-
-  RegData$TidsEnhet <- factor(RegData$TidsEnhet, levels=1:max(RegData$TidsEnhet)) #evt. levels=tidtxt
-  xaksetxt <- switch(tidsenhet,
+  # RegData$TidsEnhet <- switch(tidsenhet,
+  #                             Aar = RegData$Aar-min(RegData$Aar)+1,
+  #                             Mnd = RegData$Mnd-min(RegData$Mnd[RegData$Aar==min(RegData$Aar)])+1
+  #                             +(RegData$Aar-min(RegData$Aar))*12,
+  #                             Kvartal = RegData$Kvartal-min(RegData$Kvartal[RegData$Aar==min(RegData$Aar)])+1+
+  #                               (RegData$Aar-min(RegData$Aar))*4,
+  #                             Halvaar = RegData$Halvaar-min(RegData$Halvaar[RegData$Aar==min(RegData$Aar)])+1+
+  #                               (RegData$Aar-min(RegData$Aar))*2
+  # )
+  #
+  # tidtxt <- switch(tidsenhet,
+  #                  Mnd = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)], 3,4),
+  #                              sprintf('%02.0f', RegData$Mnd[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)]), sep='.'),
+  #                  Kvartal = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)], 3,4),
+  #                                  sprintf('%01.0f', RegData$Kvartal[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)]), sep='-'),
+  #                  Halvaar = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)], 3,4),
+  #                                  sprintf('%01.0f', RegData$Halvaar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)]), sep='-'),
+  #                  Aar = as.character(RegData$Aar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)]))
+  #
+  # RegData$TidsEnhet <- factor(RegData$TidsEnhet, levels=1:max(RegData$TidsEnhet)) #evt. levels=tidtxt
+  #------------------------Klargjøre tidsenhet--------------
+  #if (dim(RegData)[1]>9) {
+    RegDataFunk <- SorterOgNavngiTidsEnhet(RegData=RegData, tidsenhet = tidsenhet)
+    RegData <- RegDataFunk$RegData
+    tidtxt <- RegDataFunk$tidtxt
+xAkseTxt <- switch(tidsenhet,
                      Aar='Operasjonsår',
                      Halvaar = 'Operasjonsår og -halvår',
                      Kvartal = 'Operasjonsår og -kvartal',
                      Mnd='Operasjonsår og -måned')
 
-
-
   #-------------------------Beregning av andel-----------------------------------------
-  ind <- NGERUtvalg$ind
-  NHovedRes <- length(ind$Hoved)
-  NSmlRes <- length(ind$Rest)
+
+    AggVerdier <- list(Hoved = 0, Rest =0)
+    Ngr <- list(Hoved = 0, Rest =0)
+	ind <- NGERUtvalg$ind
+    N <- list(Hoved = length(ind$Hoved), Rest =length(ind$Rest))
 
   #RegData$TidsEnhet <- factor(RegData$TidsEnhet, levels=as.character(tidtxt))
-  NTidRest <- tapply(RegData$Variabel[ind$Rest], RegData$TidsEnhet[ind$Rest], length)
+  Ngr$Rest <- tapply(RegData$Variabel[ind$Rest], RegData$TidsEnhet[ind$Rest], length)
   NTidHendRest <- tapply(RegData$Variabel[ind$Rest], RegData$TidsEnhet[ind$Rest],sum, na.rm=T)
-  AndelRest <- NTidHendRest/NTidRest*100
-  NTidHoved <- tapply(RegData[ind$Hoved, 'Variabel'], RegData[ind$Hoved ,'TidsEnhet'], length)
+  AggVerdier$Rest <- NTidHendRest/Ngr$Rest*100
+  Ngr$Hoved <- tapply(RegData[ind$Hoved, 'Variabel'], RegData[ind$Hoved ,'TidsEnhet'], length)
   NTidHendHoved <- tapply(RegData[ind$Hoved, 'Variabel'], RegData[ind$Hoved ,'TidsEnhet'],sum, na.rm=T)
-  AndelHoved <- NTidHendHoved/NTidHoved*100
-  Andeler <- rbind(AndelRest, AndelHoved)
+  AggVerdier$Hoved <- NTidHendHoved/Ngr$Hoved*100
+  #Andeler <- rbind(AggVerdier$Rest, AggVerdier$Hoved)
 
+  medSml <- NGERUtvalg$medSml
+  hovedgrTxt <- NGERUtvalg$hovedgrTxt
+
+  FigDataParam <- list(AggVerdier=AggVerdier,
+                       N=N,
+                       Ngr=Ngr,
+                      # KImaal <- KImaal,
+                      # KImaaltxt <- KImaaltxt,
+                       #soyletxt=soyletxt,
+                       grtxt=levels(RegData$TidsEnhet),
+                       #grtxt2=grtxt2,
+                       varTxt=NGERVarSpes$varTxt,
+                       #tidtxt=tidtxt, #NGERVarSpes$grtxt,
+                       tittel=NGERVarSpes$tittel,
+                       retn='V',
+                       xAkseTxt=xAkseTxt,
+                      # yAkseTxt=yAkseTxt,
+                       utvalgTxt=NGERUtvalg$utvalgTxt,
+                       fargepalett=NGERUtvalg$fargepalett,
+                       medSml=medSml,
+                       hovedgrTxt=hovedgrTxt,
+                       smltxt=NGERUtvalg$smltxt)
 
   #----------FIGUR------------------------------
   #Hvis for få observasjoner..
-  if (length(ind$Hoved) < 10 | (NGERUtvalg$medSml ==1 & length(ind$Rest)<10)) {
+  if (length(ind$Hoved) < 10 | (medSml ==1 & length(ind$Rest)<10)) {
     #-----------Figur---------------------------------------
-    FigTypUt <- figtype(outfile)
+    FigTypUt <- rapFigurer::figtype(outfile)
     farger <- FigTypUt$farger
     plot.new()
     title(main=paste0('variabel: ', valgtVar))	#, line=-6)
@@ -129,7 +160,7 @@ NGERFigAndelTid <- function(RegData=0, valgtVar, datoFra='2014-01-01', datoTil='
     #-----------Figur---------------------------------------
 
     #Plottspesifikke parametre:
-    FigTypUt <- figtype(outfile, fargepalett=NGERUtvalg$fargepalett)
+    FigTypUt <- rapFigurer::figtype(outfile, fargepalett=NGERUtvalg$fargepalett)
     farger <- FigTypUt$farger
     fargeHoved <- farger[3]
     fargeRest <- farger[1]
@@ -139,30 +170,30 @@ NGERFigAndelTid <- function(RegData=0, valgtVar, datoFra='2014-01-01', datoTil='
     cexleg <- 1	#Størrelse på legendtekst
     cexskala <- switch(tidsenhet, Aar=1, Mnd=0.9)
     xskala <- 1:length(tidtxt)
-    ymax <- min(119, 1.25*max(Andeler,na.rm=T))
+    ymax <- min(119, 1.25*max(c(AggVerdier$Hoved, AggVerdier$Rest), na.rm=T))
 
-    plot(AndelHoved,  font.main=1,  type='o', pch="'", col=fargeHoved, xaxt='n',
+    plot(AggVerdier$Hoved,  font.main=1,  type='o', pch="'", col=fargeHoved, xaxt='n',
          frame.plot = FALSE,  xlim = c(1,length(tidtxt)),
-         cex=2, lwd=3, xlab=xaksetxt, ylab="Andel (%)", ylim=c(0,ymax), yaxs = 'i')
+         cex=2, lwd=3, xlab=xAkseTxt, ylab="Andel (%)", ylim=c(0,ymax), yaxs = 'i')
 
-    axis(side=1, at = xskala, labels = tidtxt, cex.axis=0.9)
+    axis(side=1, at = xskala, labels = tidtxt, cex.axis=cexskala) #cex.axis=0.9)
     title(NGERVarSpes$tittel, line=1, font.main=1)
-    text(xskala, AndelHoved, pos=3, NTidHendHoved, cex=0.9, col=fargeHoved)#pos=1,
+    text(xskala, AggVerdier$Hoved, pos=3, NTidHendHoved, cex=0.9, col=fargeHoved)#pos=1,
 
     #Legge på linjer i plottet.
     grid(nx = NA, ny = NULL, col = farger[4], lty = "solid")
 
 
     Ttxt <- paste0('(Tall ved punktene angir antall ', NGERVarSpes$varTxt, ')')
-    if (NGERUtvalg$medSml == 1) {
-      lines(xskala, AndelRest, col=fargeRest, lwd=3)
-      points(xskala, AndelRest, pch="'", cex=2, col=fargeRest)	#}
-      text(xskala, AndelRest, pos=3, NTidHendRest, cex=0.9, col=fargeRest)
-      legend('topleft', border=NA, c(paste0(NGERUtvalg$hovedgrTxt, ' (N=', NHovedRes, ')'),
-                                     paste0(NGERUtvalg$smltxt, ' (N=', NSmlRes, ')'), Ttxt), bty='n', ncol=1, cex=cexleg,
+    if (medSml == 1) {
+      lines(xskala, AggVerdier$Rest, col=fargeRest, lwd=3)
+      points(xskala, AggVerdier$Rest, pch="'", cex=2, col=fargeRest)	#}
+      text(xskala, AggVerdier$Rest, pos=3, NTidHendRest, cex=0.9, col=fargeRest)
+      legend('topleft', border=NA, c(paste0(hovedgrTxt, ' (N=', N$Hoved, ')'),
+                                     paste0(NGERUtvalg$smltxt, ' (N=', N$Rest, ')'), Ttxt), bty='n', ncol=1, cex=cexleg,
              col=c(fargeHoved, fargeRest, NA), lwd=3)
     } else {
-      legend('top', c(paste0(NGERUtvalg$hovedgrTxt, ' (N=', NHovedRes, ')'), Ttxt),
+      legend('top', c(paste0(hovedgrTxt, ' (N=', N$Hoved, ')'), Ttxt),
              col=c(fargeHoved, NA), lwd=3, bty='n')
     }
 
@@ -175,6 +206,7 @@ NGERFigAndelTid <- function(RegData=0, valgtVar, datoFra='2014-01-01', datoTil='
     #------------------------------------------------------------------------------
 
   }	#end else statement
+  return(invisible(FigDataParam))
 }	#end function
 
 

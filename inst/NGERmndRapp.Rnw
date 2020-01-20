@@ -1,0 +1,233 @@
+\documentclass[presentation,xcolor=pdftex,dvipsnames,table]{beamer}
+\usetheme{Hannover}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english, norsk]{babel}
+\usepackage{xspace}
+\usepackage{booktabs}
+\usepackage{rotating}
+\usepackage{graphicx}
+
+
+<<'initOpts',include=FALSE>>=
+knitr::opts_chunk$set(warnings=FALSE,echo=FALSE)
+knitr::opts_knit$set(root.dir = './')
+@
+
+<<'hentData', include=FALSE>>=
+datoTil <- Sys.Date()
+dato <- as.POSIXlt(datoTil)
+datoFra <- as.Date(paste0(1900+dato$year-1,'-', dato$mon+1, '-', '01'))
+#I månedsfigurene er datoFra automatisk satt til 13 mnd før dagens dato.
+
+if (!exists('RegData')){
+      RegData <- NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil)
+      RegData <- NGERPreprosess(RegData=RegData)
+}
+
+#RegData <- NGERRegDataSQL(datoFra=datoFra, datoTil=datoTil)
+@
+
+
+<<'SetteParametreOgLageFig', include=FALSE>>=
+#minald <- 0
+#maxald <- 110
+OpMetode <- 99
+Hastegrad <- ""
+AlvorlighetKompl <- ""
+enhetsUtvalg <- 1
+tidsenhet <- 'Mnd'
+preprosess <- 0
+hentData <- 0
+
+
+shtxt <- switch(as.character(enhetsUtvalg),
+                     '0' = 'Hele landet',
+                     '1' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]),
+                     '2' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]))
+
+RegDataEget <- RegData[which(RegData$ReshId==reshID), ]
+maxDatoEget <- format.Date(max(RegDataEget$InnDato), format='%d.%m.%Y', tz='UTC')
+
+NGERFigKvalInd(RegData=RegData, reshID=reshID, datoFra=datoFra, datoTil=datoTil,
+                             valgtVar='kvalInd', enhetsUtvalg=1, OpMetode=99,
+                             hentData=0, preprosess=preprosess, outfile='KvalIndPros.pdf')
+
+
+variable <- c('KomplIntra', 'KomplPostop', 'Opf0Status')
+for (valgtVar in variable) {
+	outfile <- paste0(valgtVar, '_Alle', tidsenhet, '.pdf')
+	NGERFigAndelerGrVar(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra,OpMetode = OpMetode,
+                datoTil=datoTil, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg,
+                hentData=0, preprosess=preprosess)
+}
+
+variable <- c('Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan', 'Opf0Reoperasjon',
+              'Opf0AlvorlighetsGrad', 'KomplIntra', 'KomplPostop', 'OpAntibProfylakse',
+              'OpASA', 'OpBMI', 'Opf0Status')
+for (valgtVar in variable) {
+	outfile <- paste0(valgtVar, '_', tidsenhet, '.pdf')
+	NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
+              reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile, OpMetode = OpMetode,
+              tidsenhet=tidsenhet, preprosess=preprosess)
+}
+# 	NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar='KomplIntra', datoTil=datoTil,
+#               reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='', OpMetode = OpMetode,
+#               tidsenhet=tidsenhet, preprosess=preprosess)
+# 	NGERFigAndelerGrVar(RegData=RegData, valgtVar='KomplIntra', outfile='', reshID=reshID,
+# 	                    hentData=0, preprosess=1)
+
+@
+
+\title[NGER\\\Sexpr{shtxt}]{\textit{Norsk gynekologisk endoskopiregister} \\
+MÅNEDSRAPPORT \\
+\Sexpr{shtxt}}
+\date{}
+
+
+
+\begin{document}
+\begin{tiny}
+
+\maketitle
+
+% Tatt bort, mars -19:
+% \includegraphics[scale=0.35]{OpBMI_Mnd.pdf}
+% \caption{Pasienter med fedme (BMI>30)}
+% \includegraphics[scale=0.35]{Opf0KomplBlodning_Mnd.pdf}
+% \caption{Postoperativ komplikasjon: Blødning}
+%
+% \includegraphics[scale=0.35]{Opf0KomplUtstyr_Mnd.pdf}
+% \caption{Postoperativ komplikasjon: Problemer med ustyr}
+%
+% \includegraphics[scale=0.35]{Opf0KomplInfeksjon_Mnd.pdf}
+% \caption{Postoperativ komplikasjon: Infeksjon}
+%
+% \includegraphics[scale=0.35]{Opf0KomplOrgan_Mnd.pdf}
+% \caption{Postoperativ komplikasjon: Organskade}
+
+\section{Info}
+\begin{frame}[fragile] {Datagrunnlag}
+
+Denne rapporten er utarbeidet på oppdrag fra Norsk gynekologisk endoskopiregister (NGER) og blir generert automatisk
+fra Rapporteket. Alle resultat er baserte på data fra registeret som per rapportdato  er ferdigstilte i QReg.
+
+
+Fagrådet i NGER er ansvarleg for alle vurderinger og tolkninger av data, samt feil i resultat som skyldes
+feil i datagrunnlaget. En feilkilde i rapporten vil trolig vere ufullstendig registrering og evt. manglende ferdigstilleslse av registreringer ved flere av sykehusene.
+Dette etterslepet vil variere både i tid og volum, og medfører at det varierer hvor representative data er for de ulike sykehusene. Rapporten har følgelig usikkert datagrunnlag og er kun ment til internt bruk. \par
+
+Rapporten inneholder aggregerte data. I tilfeller der utvalget inneholder få registreringer og disse
+kombineres med eksempelvis demografiske data, kan det ikke utelukkes at rapporterte data kan tilbakeføres
+til enkeltpersoner. \par
+
+\textit{\textbf{Av grunnene nevnt over, ber NGER om at denne rapporten ikke blir brukt offentlig i noen
+samanheng eller på noe vis blir offentliggjort.}} \par
+
+
+For \Sexpr{shtxt} er siste ferdigstilte innleggingsdato i denne rapporten
+\Sexpr{maxDatoEget}.
+\par
+
+Denne rapporten kan også hentes ved å logge seg inn på Rapporteket-NGER og klikke på "Last ned Månedsrapport". Det
+betyr at alle kan hente seg representative månadsrapporter når de måtte ønske.
+I Rapporteket kan ein også finne mange flere figurer og tabeller, samt gjøre endringar i tidsintervall og
+sammenlikningsgrunnlag.
+
+
+\end{frame}
+
+
+\section{Aktivitet og kvalitet}
+
+\begin{frame}[fragile]
+%Antall registreringer siste måneder
+
+<<'AntMnd', results='asis'>>=
+antMnd <- 6
+xtable::xtable(tabAntOpphShMnd(RegData=RegData, antMnd=antMnd, reshID=reshID),
+               digits=0,
+               caption=paste0('Antall registreringer ved ditt sykehus siste ', antMnd, ' måneder.'))
+
+@
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{KvalIndPros.pdf}
+\caption{Kvalitetsindikatorer}
+\end{figure}
+\end{frame}
+
+
+
+\section{Komplikasjoner under operasjon}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{KomplIntra_Mnd.pdf}
+\caption{Komplikasjoner under operasjon (intraoperativt)}
+\end{figure}
+\end{frame}
+
+
+\section{Postoperative komplikasjoner}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{KomplPostop_Mnd.pdf}
+\caption{Postoperative komplikasjoner}
+\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{Opf0AlvorlighetsGrad_Mnd.pdf}
+\caption{Moderate og alvorlige komplikasjoner (grad 2-4)}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{Opf0Reoperasjon_Mnd.pdf}
+\caption{Postoperativ komplikasjon: Reoperasjon}
+\end{figure}
+\end{frame}
+
+
+
+\section{Alle sykehus}
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{KomplIntra_AlleMnd.pdf}
+\caption{Intraoperative komplikasjoner}
+\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{KomplPostop_AlleMnd.pdf}
+\caption{Postoperative komplikasjoner}
+\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{Opf0Status_AlleMnd.pdf}
+\caption{Oppfølging besvart}
+\end{figure}
+\end{frame}
+
+
+\end{tiny}
+\end{document}

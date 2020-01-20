@@ -4,16 +4,35 @@
 \alias{NGERFigKvalInd}
 \title{Søylediagram som viser flere kvalitetsindikatorer}
 \usage{
-NGERFigKvalInd(RegData, reshID = 0, datoFra = "2013-01-01",
-  datoTil = "3000-12-31", valgtVar, enhetsUtvalg = 0, minald = 0,
-  maxald = 130, MCEType = 99, Hastegrad = 99, hentData = 0,
-  preprosess = 1, velgDiag = 0, Ngrense = 10, outfile = "")
+NGERFigKvalInd(
+  RegData,
+  reshID = 0,
+  velgAvd = 0,
+  datoFra = "2013-01-01",
+  datoTil = "3000-12-31",
+  valgtVar = "kvalInd",
+  enhetsUtvalg = 0,
+  minald = 0,
+  maxald = 130,
+  OpMetode = 99,
+  Hastegrad = 99,
+  dagkir = 9,
+  hentData = 0,
+  preprosess = 1,
+  velgDiag = 0,
+  Ngrense = 10,
+  outfile = "",
+  ...
+)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
 
 \item{reshID}{Parameter følger fra innlogging helseregister.no og angir
 hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
+
+\item{velgAvd}{Velge hvilke avdelinger som skal vises i figurer med avdelingsvise resultater.
+IKKE tatt høyde for sammenlikning mot "resten".}
 
 \item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}
 
@@ -30,7 +49,7 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 
 \item{maxald}{Alder, til og med (Standardverdi: 130)}
 
-\item{MCEType}{1: Laparoskopi
+\item{OpMetode}{1: Laparoskopi
 2: Hysteroskopi
 3: Begge
 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
@@ -41,6 +60,8 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 1: Elektiv
 2: Akutt
 3: Ø-hjelp}
+
+\item{dagkir}{Dagkirurgi? 0-nei, 1-ja}
 
 \item{hentData}{Gjør spørring mot database
 0: Nei, RegData gis som input til funksjonen (Standard)
@@ -68,7 +89,7 @@ Funksjon som genererer en figurer med ei gruppe kvalitetsindikatorer
 Argumentet \emph{valgtVar} har følgende valgmuligheter:
    \itemize{
     \item RAND0: Alle dimensjonene i RAND36 ved oppfølging etter 4-6uker. Gjennomsnitt
-    \item TSS20: Alle sp?rsm?lene i TSS2 ved oppf?lging etter 4-6uker. Andel av beste svaralternativ
+    \item TSS0: Alle sp?rsm?lene i TSS2 ved oppf?lging etter 4-6uker. Andel av beste svaralternativ
     \item kvalInd: Samling av kvalitetsindikatorer
    }
 }

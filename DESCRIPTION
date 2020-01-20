@@ -1,25 +1,37 @@
 Package: nger
 Type: Package
 Title: Resultatrapporter for NGER
-Version: 2.1.0
-Date: 2016-09-09
-Authors@R: c(person("Thon", "Kevin", email = "kevin.thon@skde.no", role
-    = "aut"), person("Edvardsen", "Are", email = "are.edvardsen@helse-nord.no",
+Version: 3.0.0
+Date: 2020-01-07
+Authors@R: c(person("Edvardsen", "Are", email = "are.edvardsen@helse-nord.no",
     role = "aut"), person("Olsen", "Lena", email = "Lena.Ringstad.Olsen@unn.no",
     role = c("cre", "aut")))
 Maintainer: Lena Ringstad Olsen <lena.olsen@skde.no>
 Description: Pakke for generering av resultatrapporter for NGER.
 Encoding: UTF-8
-License: GPL-2
-LazyData: TRUE
+LazyData: false
 Depends:
-    R (>= 3.0.2),
-    rapbase
+    R (>= 3.5.0)
+Remotes: 
+      Rapporteket/rapFigurer,
+      Rapporteket/rapbase,
+      Rapporteket/raplog
 Imports:
-    plyr,
-    xtable
-RoxygenNote: 6.0.1
-Suggests:
+    DT,
+    kableExtra,
     knitr,
-    rmarkdown
+    lubridate,
+    plyr,
+    prodlim,
+    rapbase,
+    rapFigurer,
+    raplog,
+    rmarkdown,
+    shiny,
+    shinyjs,
+    testthat, 
+    tidyverse,
+    xtable,
+    zoo
 VignetteBuilder: knitr
+RoxygenNote: 7.0.2

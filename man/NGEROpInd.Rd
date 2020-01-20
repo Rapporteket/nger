@@ -4,9 +4,19 @@
 \alias{NGEROpInd}
 \title{Genererer figur over de 20 vanligste operasjonsindikatorene.}
 \usage{
-NGEROpInd(RegData = 0, datoFra = "2000-04-01", datoTil = "2050-12-31",
-  minald = 0, maxald = 130, outfile = "", reshID, enhetsUtvalg = 1,
-  OpMetode = 99, preprosess = 0, hentData = 0)
+NGEROpInd(
+  RegData = 0,
+  datoFra = "2000-04-01",
+  datoTil = "2050-12-31",
+  minald = 0,
+  maxald = 130,
+  outfile = "",
+  reshID,
+  enhetsUtvalg = 1,
+  OpMetode = 99,
+  preprosess = 0,
+  hentData = 0
+)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -29,6 +39,13 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 0: Hele landet
 1: Egen enhet mot resten av landet (Standard)
 2: Egen enhet}
+
+\item{OpMetode}{1: Laparoskopi
+2: Hysteroskopi
+3: Begge
+4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
+5: LCC11 (laparoskopisk subtotal hysterektomi)
+6: LCD11 (laparoskopisk assistert vaginal hysterektomi)}
 
 \item{preprosess}{Preprosesser data
 0: Nei (Standard)

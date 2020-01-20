@@ -4,10 +4,22 @@
 \alias{NGERUtvalgEnh}
 \title{Funksjon som gjør utvalg av dataene, returnerer det filtrerte datasettet og utvalgsteksten.}
 \usage{
-NGERUtvalgEnh(RegData, datoFra = "2016-01-01", datoTil = "3000-12-31",
-  fargepalett = "BlaaOff", minald = 0, maxald = 130, MCEType = "",
-  AlvorlighetKompl = "", Hastegrad = "", enhetsUtvalg = 0, velgAvd = "",
-  velgDiag = 0, reshID = 0)
+NGERUtvalgEnh(
+  RegData,
+  datoFra = "2016-01-01",
+  datoTil = "3000-12-31",
+  fargepalett = "BlaaOff",
+  minald = 0,
+  maxald = 110,
+  OpMetode = 0,
+  AlvorlighetKompl = 0,
+  Hastegrad = 0,
+  dagkir = 9,
+  enhetsUtvalg = 0,
+  velgAvd = 0,
+  velgDiag = 0,
+  reshID = 0
+)
 }
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
@@ -22,7 +34,7 @@ NGERUtvalgEnh(RegData, datoFra = "2016-01-01", datoTil = "3000-12-31",
 
 \item{maxald}{Alder, til og med (Standardverdi: 130)}
 
-\item{MCEType}{1: Laparoskopi
+\item{OpMetode}{1: Laparoskopi
 2: Hysteroskopi
 3: Begge
 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
@@ -40,6 +52,8 @@ Angis som en vektor av tall som tekst, f.eks. c('1','2')
 1: Elektiv
 2: Akutt
 3: Ø-hjelp}
+
+\item{dagkir}{Dagkirurgi? 0-nei, 1-ja}
 
 \item{enhetsUtvalg}{Lag figur for
 0: Hele landet

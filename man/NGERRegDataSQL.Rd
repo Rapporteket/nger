@@ -4,8 +4,7 @@
 \alias{NGERRegDataSQL}
 \title{Henter global dataramme for NGER}
 \usage{
-NGERRegDataSQL(datoFra = "2014-01-01", datoTil = "2099-01-01",
-  varUtvalg = 0)
+NGERRegDataSQL(datoFra = "2014-01-01", datoTil = "2099-01-01", ...)
 }
 \arguments{
 \item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}

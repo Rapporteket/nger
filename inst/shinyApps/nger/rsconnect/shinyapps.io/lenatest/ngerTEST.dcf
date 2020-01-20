@@ -1,0 +1,12 @@
+name: ngerTEST
+title: ngerTEST
+username:
+account: lenatest
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 820449
+bundleId: 2387213
+url: https://lenatest.shinyapps.io/ngerTEST/
+when: 1567669998.18106
+asMultiple: FALSE
+asStatic: FALSE
