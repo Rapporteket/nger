@@ -151,3 +151,50 @@ abonnementNGER <- function(rnwFil, brukernavn='ngerBrukernavn', reshID=0,
 }
 
 
+
+#' Generere data til Resultatportalen
+#'
+#' @param filUt tilnavn for utdatatabell (fjern?)
+#' @param valgtKI - KomplIntra, KomplPostop, Opf0AlvorlighetsGrad,
+#' HysKonvertert, LapKonvertert, Tss2Generelt, Tss2Sumskaar
+#' @inheritParams NGERUtvalgEnh
+#' @return Datafil til Resultatportalen
+#' @export
+
+dataTilResPort <- function(RegData = RegData, valgtKI, datoFra = '2016-01-01',
+                           aar=2016:2019, OpMetode=0, filUt='dummy'){
+
+    #  For hver kvalitetsindikator
+    #  Fil, KIdata: År	EnhetsID	Teller	Nevner	Kvalitetsindikator
+
+    #Ngrense <- 10
+    RegData <- NGERPreprosess(RegData)
+    RegData <- NGERUtvalgEnh(RegData, OpMetode = OpMetode,
+                             datoFra = paste0(aar[1],'-01-01'), datoTil = paste0(rev(aar)[1], '-12-31'))$RegData
+    RegData$Variabel <- 0
+    RegData$ShNavn <- as.factor(RegData$ShNavn)
+    RegData$ReshId <- as.factor(RegData$ReshId)
+    figurtype <- 'andelGrVar' #MÅ ENDRES FOR SUMSKÅR!!
+    RegData <- NGERVarTilrettelegg(RegData = RegData, valgtVar = valgtKI, figurtype=figurtype)$RegData
+
+    dataDum <- aggregate(data=RegData[ ,c("ReshId", 'Aar', 'Variabel' )], Variabel~ReshId+Aar,
+                         #x=RegData$Variabel, by=RegData[]
+                         FUN=function(x) {c(sum(x, na.rm=T), length(x))})
+
+    opMetTxt <- c('','Lap','Hys')[OpMetode+1]
+    dataKI <- data.frame(dataDum[,1:2], Teller=dataDum$Variabel[,1], Nevner=dataDum$Variabel[,2],
+                         KvalInd=paste0(valgtKI, opMetTxt))
+    #write.table(dataKI, file = paste0('NGERkvalInd_', valgtKI, opMetTxt,'.csv'), row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
+
+
+
+  #   filUt <- paste0('RyggTilOff', ifelse(filUt=='dummy',  valgtVar, filUt), '.csv')
+  # RyggVarSpes <- RyggVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'andelGrVar')
+  # RyggUtvalg <- RyggUtvalgEnh(RegData=RyggVarSpes$RegData, aar=aar, hastegrad = hastegrad, tidlOp=tidlOp) #datoFra = datoFra) #, hovedkat=hovedkat) # #, datoTil=datoTil)
+  # RegData <- RyggUtvalg$RegData
+  # RyggTilOffvalgtVar <- RegData[,c('Aar', "ShNavn", "ReshId", "Variabel")]
+  # info <- c(RyggVarSpes$tittel, RyggUtvalg$utvalgTxt)
+  # RyggTilOffvalgtVar$info <- c(info, rep(NA, dim(RyggTilOffvalgtVar)[1]-length(info)))
+  # #write.table(RyggTilOffvalgtVar, file = paste0('A:/Resultatportalen/', filUt), sep = ';', row.names = F) #, fileEncoding = 'UTF-8')
+  return(invisible(dataKI))
+}

@@ -632,6 +632,48 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
                 )
 ), #GjsnGrVar/Tid
 
+#-------Registeradministrasjon----------
+tabPanel(p("Registeradministrasjon", title='Registeradministrasjonens side for registreringer og resultater'),
+         value = "Registeradministrasjon",
+         h3('Bare synlig for SC-bruker'),
+         #uiOutput('rolle'),
+         h4('Alternativt kan vi ha elementer på andre sider som bare er synlig for SC'),
+         br(),
+         br(),
+         sidebarPanel(
+           h4('Nedlasting av data til Resultatportalen:'),
+
+           selectInput(inputId = "valgtVarRes", label="Velg variabel",
+                       choices = c('Komplikasjoner under operasjon' = 'KomplIntra',
+                                   'Komplikasjoner, postoperativt' = 'KomplPostop',
+                                   'Alvorlighetsgrad, postop.kompl.' = 'Opf0AlvorlighetsGrad',
+                                   'Konvertert, hys-lap' = 'HysKonvertert',
+                                   'Konvertert, lap-lap' = 'LapKonvertert',
+                                   'TSS2-generelt, positiv oppfatning avd.' = 'Tss2Generelt',
+                                   'TSS2-sumskår' = 'Tss2Sumskaar'
+                                   )
+           ),
+           selectInput(inputId = 'opMetodeRes', label='Operasjonstype',
+                       choices = opMetode
+           ),
+
+           # dateRangeInput(inputId = 'aarRes', start = startDato, end = Sys.Date(),
+           #                label = "Operasjonaår", separator="t.o.m.", language="nb", format = 'yyyy'
+           #                ),
+           sliderInput(inputId="aarRes", label = "Operasjonsår", min = as.numeric(2016),
+                       max = as.numeric(year(idag)), value = c(2016, year(idag), step=1, sep="")
+           ),
+           br(),
+           downloadButton(outputId = 'lastNed_dataTilResPort', label='Last ned data')),
+
+         fluidRow(h3('Skal vi ha med noe annet?'),
+                  tags$div(
+                    tags$li("Andel ikke besvart 3 mnd. - mangler variabel"),
+                    tags$li("Andel ikke besvart 12 mnd. - mangler variabel"),
+                    tags$li("Andel purringer 3 mnd. - mangler variabel"),
+                    tags$li("Andel purringer 12 mnd. - mangler variabel")
+                  ))
+), #tab SC
 #----------Abonnement-----------------
 tabPanel(p("Abonnement",
            title='Bestill automatisk utsending av rapporter på e-post'),
@@ -1223,7 +1265,20 @@ output$lastNed_dataDump <- downloadHandler(
 
                 }) #observe gjsnGrVar
 
+      #-----------Registeradministrasjon-----------
 
+      if (rolle=='SC') {
+        observe({
+          tabdataTilResPort <- dataTilResPort(RegData=RegData, valgtVar = input$valgtVarRes,
+                                              aar=as.numeric(input$aarRes[1]):as.numeric(input$aarRes[2]),
+                                              OpMetode = as.numeric(input$opMetodeRes))
+
+          output$lastNed_dataTilResPort <- downloadHandler(
+            filename = function(){paste0('dataTilResPort_', input$valgtVarRes, '_',
+                                         as.numeric(input$opMetodeRes), '.csv')},
+            content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = T, na = '')})
+        })
+      }
       #------------------ Abonnement ----------------------------------------------
       ## reaktive verdier for å holde rede på endringer som skjer mens
       ## applikasjonen kjører

@@ -94,6 +94,9 @@ RegData <- lageTulleData(RegData=RegData, varBort=varBort, antSh=26, antObs=2000
 save(SkjemaOversikt, RegData, file = 'A:/NGER/NGERtulledata.Rdata')
 
 #----------------------------------- PARAMETRE ------------------------------
+RegData <- NGERRegDataSQL()
+RegData <- NGERPreprosess(NGERRegDataSQL())
+
 setwd("C:/ResultattjenesteGIT/nger/")
 # Inndata til funksjon:
 reshID <- 8 #110734 # 110734 (Tønsberg)  	700399
@@ -121,6 +124,14 @@ valgtMaal <- 'med'
 velgAvd <- 0
 outfile <- ''
 
+RegDatatest <- NGERPreprosess(RegDataAlle)
+RegData <-NGERUtvalgEnh(RegDatatest, datoFra = '2019-08-01')$RegData
+setdiff(sort(names(RegDataAlle)), sort(names(RegData)))
+
+tapply(RegDatatest$R0Spm2, RegDatatest$Aar, FUN = 'mean', na.rm=T)
+tapply(RegDatatest$R0Spm2, RegDatatest$Aar, FUN = 'length')
+tapply(RegDatatest$R0Spm9d, RegDatatest$Aar, FUN = function(x){sum(!is.na(x))})
+tapply(RegDatatest$RY1Spm4c, RegDatatest$Aar, FUN = function(x){sum(!is.na(x))})
 
 #------------------------------ Andeler flere var (tilsvarer Fordelinger)--------------------------
 
@@ -268,26 +279,41 @@ table(RegData$Opf0metode[ind], useNA = 'a')
 rm(list=ls())
 library(nger)
 setwd('P:/Registerinfo og historie/NGER/Resultatportalen')
-aar <- 2016:2018
-load(paste0('A:/NGER/Aarsrapp2018_2019-08-05.Rdata'))
-RegData <- NGERData
+aar <- 2016:2019
+#load(paste0('A:/NGER/Aarsrapp2018_2019-08-05.Rdata'))
+#RegData <- NGERData
+
+NGERData <- NGERRegDataSQL(datoFra = 2016)
 
 # For registeret Fil, enhetsID: EnhetsID	Enhetsnavn	HF navn	RHF navn (Toril komplettere med HF-navn)
 Enheter <- unique(NGERPreprosess(RegData=NGERData)[ ,c('ReshId','ShNavn')])
 write.table(Enheter, file = 'NGERenheter.csv', row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
 
-
 # Intraop kompl. ved laparoskopi
-dataTilResultatPort(RegData=NGERData, valgtKI='KomplIntra', OpMetode = 1, aar = aar)
+tab <- dataTilResPort(RegData=NGERData, valgtKI='KomplIntra', OpMetode = 1, aar = aar)
 
 # Intraop kompl. ved hysteroskopi
-dataTilResultatPort(RegData=NGERData, valgtKI='KomplIntra', OpMetode = 2, aar=aar)
+dataTilResPort(RegData=NGERData, valgtKI='KomplIntra', OpMetode = 2, aar=aar)
+#PostopKompl. ved laparoskopi/hysteroskopi
+dataTilResPort(RegData=NGERData, valgtKI='KomplPostop', OpMetode = 1, aar=aar)
+dataTilResPort(RegData=NGERData, valgtKI='KomplPostop', OpMetode = 2, aar=aar)
+
+# Opf0AlvorlighetsGrad (>2) Lap/Hys,
+dataTilResPort(RegData=NGERData, valgtKI='Opf0AlvorlighetsGrad', OpMetode = 1, aar=aar)
+dataTilResPort(RegData=NGERData, valgtKI='Opf0AlvorlighetsGrad', OpMetode = 2, aar=aar)
+
+# Konvertering hysteroskopi-> lapraskopi/lapratomi,
+dataTilResPort(RegData=NGERData, valgtKI='HysKonvertert', aar=aar)
+
+# lapraskopi -> lapratomi,
+dataTilResPort(RegData=NGERData, valgtKI='LapKonvertert', aar=aar)
 
 # TSS2 - sumskår, gj.sn.
-dataTilResultatPort(RegData=NGERData, valgtKI='Tss2Sumskaar', aar=aar)
+dataTilResPort(RegData=NGERData, valgtKI='Tss2Sumskaar', aar=aar)
 
-# TSS2 - positiv + svært positiv. NB: Må endre utvalget i Tilrettelegg-fila.
-dataTilResultatPort(RegData=NGERData, valgtKI='Tss2Generelt', aar=aar)
+# TSS2 - positiv + svært positiv.
+dataTilResPort(RegData=NGERData, valgtKI='Tss2Generelt', aar=aar)
+
 
 # # Laparoskopi: Komplikasjoner etter operasjon Middels, alvorlig, død
 # #(KomplPostop)
@@ -306,7 +332,7 @@ dataTilResultatPort(RegData=NGERData, valgtKI='KomplPostop',  OpMetode = 2, aar=
 # test(RegData$Aar)
 
 
-dataTilResultatPort <- function(RegData, valgtKI='KomplIntraLap', figurtype='andelGrVar', aar=2016:2018, OpMetode=0){
+dataTilResultatPort <- function(RegData, valgtKI='KomplIntraLap', figurtype='andelGrVar', aar=2016:2019, OpMetode=0){
   #  For hver kvalitetsindikator
   #  Fil, KIdata: År	EnhetsID	Teller	Nevner	Kvalitetsindikator
 
@@ -319,19 +345,6 @@ dataTilResultatPort <- function(RegData, valgtKI='KomplIntraLap', figurtype='and
   RegData$ReshId <- as.factor(RegData$ReshId)
   opMetTxt <- c('','Lap','Hys')[OpMetode+1]
   RegData <- NGERVarTilrettelegg(RegData = RegData, valgtVar = valgtKI, figurtype=figurtype)$RegData
-
-  # if (valgtKI == 'KomplIntraLap') {
-  #   RegData <- NGERUtvalgEnh(RegData, OpMetode = 1)$RegData
-  # }
-  # if (valgtKI == 'KomplIntraHys') {
-  #   RegData <- NGERUtvalgEnh(RegData, OpMetode = 2)$RegData
-  # }
-  #
-
-  # if (valgtKI %in% c('KomplIntraLap', 'KomplIntraHys')){
-  #   indVar <- which((RegData$LapKomplikasjoner==1) | (RegData$HysKomplikasjoner==1))
-  #   RegData$Variabel[indVar] <- 1}
-
 
   dataDum <- aggregate(data=RegData[ ,c("ReshId", 'Aar', 'Variabel' )], Variabel~ReshId+Aar,
                        #x=RegData$Variabel, by=RegData[]

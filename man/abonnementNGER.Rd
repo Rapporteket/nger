@@ -6,7 +6,7 @@
 \usage{
 abonnementNGER(
   rnwFil,
-  brukernavn = "tullebukk",
+  brukernavn = "ngerBrukernavn",
   reshID = 0,
   datoFra = Sys.Date() - 180,
   datoTil = Sys.Date()
