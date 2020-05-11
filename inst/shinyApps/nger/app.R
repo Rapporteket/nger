@@ -82,6 +82,7 @@ enhetsUtvalg <- c("Egen mot resten av landet"=1,
                       'Kvartal'='Kvartal', 'Måned'='Mnd'))
 
 ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
+  id = 'hovedark',
 
             # lag logo og tittel som en del av navbar
             #title = div(img(src="rap/logo.svg", alt="Rapporteket", height="26px"), regTitle),
@@ -483,7 +484,7 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
                          'TSS2: Behandlerne lyttet- og forsto i svært stor grad' = 'Tss2Lytte',
                          'TSS2: Pasienten hadde svært stor tillit til sine behandlere' = 'Tss2Behandlere',
                          'TSS2: Pasient og behandlere svært enige om målsetn. for behandlinga' = 'Tss2Enighet',
-                         'TSS2: Svært positiv oppfatning om gyn. avd.' = 'Tss2Generelt'
+                         'TSS2: Positiv oppfatning om gyn. avd.' = 'Tss2Generelt'
                          )
            ),
            dateRangeInput(inputId = 'datovalgAndel', start = startDato, end = idag,
@@ -632,6 +633,43 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
                 )
 ), #GjsnGrVar/Tid
 
+#-------Registeradministrasjon----------
+tabPanel(p("Registeradministrasjon", title='Registeradministrasjonens side for registreringer og resultater'),
+         value = "Registeradministrasjon",
+         h3('Bare synlig for SC-bruker'),
+         #uiOutput('rolle'),
+         h4('Alternativt kan vi ha elementer på andre sider som bare er synlig for SC'),
+         br(),
+         br(),
+         sidebarPanel(
+           h4('Nedlasting av data til Resultatportalen:'),
+
+           selectInput(inputId = "valgtVarRes", label="Velg variabel",
+                       choices = c('Komplikasjoner under operasjon' = 'KomplIntra',
+                                   'Komplikasjoner, postoperativt' = 'KomplPostop',
+                                   'Alvorlighetsgrad, postop.kompl.' = 'Opf0AlvorlighetsGrad',
+                                   'Konvertert, hys-lap' = 'HysKonvertert',
+                                   'Konvertert, lap-lap' = 'LapKonvertert',
+                                   'TSS2-generelt, positiv oppfatning avd.' = 'Tss2Generelt',
+                                   'TSS2-sumskår' = 'Tss2Sumskaar'
+                                   )
+           ),
+           selectInput(inputId = 'opMetodeRes', label='Operasjonstype',
+                       choices = opMetode
+           ),
+
+           # dateRangeInput(inputId = 'aarRes', start = startDato, end = Sys.Date(),
+           #                label = "Operasjonaår", separator="t.o.m.", language="nb", format = 'yyyy'
+           #                ),
+           sliderInput(inputId="aarRes", label = "Operasjonsår", min = as.numeric(2016),
+                       max = as.numeric(year(idag)), value = c(2016, year(idag), step=1, sep="")
+           ),
+           br(),
+           downloadButton(outputId = 'lastNed_dataTilResPort', label='Last ned data')),
+
+         fluidRow(h3('Mer som skal med her?')
+                  )
+), #tab SC
 #----------Abonnement-----------------
 tabPanel(p("Abonnement",
            title='Bestill automatisk utsending av rapporter på e-post'),
@@ -689,7 +727,7 @@ server <- function(input, output, session) {
        shinyjs::hide(id = 'velgResh')
        shinyjs::hide(id = 'velgReshReg')
        shinyjs::hide(id = 'velgReshKval')
-     #hideTab(inputId = "tabs_andeler", target = "Figur, sykehusvisning")
+      hideTab(inputId = "hovedark", target = "Registeradministrasjon")
        }
     })
  # widget
@@ -819,6 +857,7 @@ server <- function(input, output, session) {
           ind <- if (valgtResh == 0) {1:dim(RegOversikt)[1]
           } else {which(as.numeric(RegOversikt$ReshId) %in% as.numeric(valgtResh))}
           tabDataRegKtr <- RegOversikt[ind,]
+
          }  else {
            tabDataRegKtr <- RegOversikt[which(RegOversikt$ReshId == reshID), ]}
         #tabDataRegKtr <-RegOversikt[which(RegOversikt$ReshId == reshID), ]
@@ -839,8 +878,17 @@ server <- function(input, output, session) {
 
 
         if (rolle =='SC') {
-        valgtResh <- as.numeric(input$velgReshReg)
-        ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
+          qAlle <- 'SELECT * FROM AlleVarNum
+               INNER JOIN ForlopsOversikt
+               ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID'
+          RegDataAlle <- rapbase::LoadRegData(registryName = "nger", query=qAlle, dbType = "mysql")
+          RegDataAlle <- NGERPreprosess(RegDataAlle)
+          DataDump <- dplyr::filter(RegDataAlle,
+                                    as.Date(OpDato) >= input$datovalgRegKtr[1],
+                                    as.Date(OpDato) <= input$datovalgRegKtr[2])
+
+          valgtResh <- as.numeric(input$velgReshReg)
+          ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
          } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
         tabDataDump <- DataDump[ind,]
         #output$test <- renderText(valgtResh)
@@ -1223,7 +1271,20 @@ output$lastNed_dataDump <- downloadHandler(
 
                 }) #observe gjsnGrVar
 
+      #-----------Registeradministrasjon-----------
 
+      if (rolle=='SC') {
+        observe({
+          tabdataTilResPort <- dataTilResPort(RegData=RegData, valgtKI = input$valgtVarRes,
+                                              aar=as.numeric(input$aarRes[1]):as.numeric(input$aarRes[2]),
+                                              OpMetode = as.numeric(input$opMetodeRes))
+
+          output$lastNed_dataTilResPort <- downloadHandler(
+            filename = function(){paste0('dataTilResPort_', input$valgtVarRes, '_',
+                                         as.numeric(input$opMetodeRes), '.csv')},
+            content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = F, na = '')})
+        })
+      }
       #------------------ Abonnement ----------------------------------------------
       ## reaktive verdier for å holde rede på endringer som skjer mens
       ## applikasjonen kjører

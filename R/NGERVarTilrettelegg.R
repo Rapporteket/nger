@@ -620,8 +620,8 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     tittel <- switch(figurtype,
                      andeler = 'Hvilken oppfatning har du om gynekologisk avdeling generelt?',
                      gjsnGrVar = 'skår, oppfatning om gynekologisk avdeling generelt',
-                     andelGrVar = 'Svært positiv oppfatning om gyn. avd.',
-                     andelTid = 'Svært positiv oppfatning om gyn. avd.')
+                     andelGrVar = 'Positiv el svært positiv oppfatning om gyn. avd.',
+                     andelTid = 'Positiv el svært positiv oppfatning om gyn. avd.')
     grtxt <- c("Svært negativ","Negativ","Nøytral","Positiv","Svært positiv")
     varTxt <- grtxt[5]
     koder <- 0:4
@@ -629,7 +629,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData <- RegData[which(RegData[ ,valgtVar] %in% koder) %i% which(RegData$Tss2Status == 1), ]
     RegData$VariabelGr <- factor(RegData$Tss2Generelt, levels=koder, labels = grtxt) #levels=c(nivaa,9)
     if (figurtype %in% c('andelGrVar', 'andelTid')) {
-      RegData$Variabel[which(RegData$Tss2Generelt == 4)] <- 1 }
+      RegData$Variabel[which(RegData$Tss2Generelt %in% 3:4)] <- 1 }
     if (figurtype == 'gjsnGrVar') {
       RegData$Variabel <- RegData$Tss2Generelt-1}
   }
@@ -639,10 +639,10 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     #Alle variable må besvares for å kunne ferdigstille skjema.
     RegData <- RegData[which(RegData$Tss2Status == 1) %i% which(RegData$Tss2Type %in% 1:2), ]
     #TSSsumskaar
+    #if (figurtype=='gjsnGrVar'){
     #RegData$Test <- (RegData$Tss2Score-1)/6 OK
     RegData$Variabel <- (rowSums(RegData[ ,c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
-                                          'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')])-1)/6
-#   head(RegData[, c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte', 'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt', 'Variabel')])
+                                          'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')])-1)/6 #}
     gr <- c(-1:3)
     RegData$VariabelGr <- cut(RegData$Variabel, breaks=gr, include.lowest=F, right=T)
     grtxt <- c('0', levels(RegData$VariabelGr)[2:(length(gr)-1)])

@@ -30,6 +30,7 @@ query <- paste0('SELECT
     HysProsedyre1,
     HysProsedyre2,
     HysProsedyre3,
+    HysStatus,
     HysTeknisk,
     HysTilgang,
     LapAdherProfylakse,
@@ -171,6 +172,9 @@ query <- paste0('SELECT
 
   #FROM alleVarNum INNER JOIN ForlopsOversikt ON alleVarNum.MCEID = ForlopsOversikt.ForlopsID
 
+# query <- 'select * FROM AlleVarNum
+#     INNER JOIN ForlopsOversikt
+#     ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID'
 
   RegData <- rapbase::LoadRegData(registryName = "nger", query, dbType = "mysql")
 
