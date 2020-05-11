@@ -82,6 +82,7 @@ enhetsUtvalg <- c("Egen mot resten av landet"=1,
                       'Kvartal'='Kvartal', 'Måned'='Mnd'))
 
 ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
+  id = 'hovedark',
 
             # lag logo og tittel som en del av navbar
             #title = div(img(src="rap/logo.svg", alt="Rapporteket", height="26px"), regTitle),
@@ -483,7 +484,7 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
                          'TSS2: Behandlerne lyttet- og forsto i svært stor grad' = 'Tss2Lytte',
                          'TSS2: Pasienten hadde svært stor tillit til sine behandlere' = 'Tss2Behandlere',
                          'TSS2: Pasient og behandlere svært enige om målsetn. for behandlinga' = 'Tss2Enighet',
-                         'TSS2: Svært positiv oppfatning om gyn. avd.' = 'Tss2Generelt'
+                         'TSS2: Positiv oppfatning om gyn. avd.' = 'Tss2Generelt'
                          )
            ),
            dateRangeInput(inputId = 'datovalgAndel', start = startDato, end = idag,
@@ -666,13 +667,8 @@ tabPanel(p("Registeradministrasjon", title='Registeradministrasjonens side for r
            br(),
            downloadButton(outputId = 'lastNed_dataTilResPort', label='Last ned data')),
 
-         fluidRow(h3('Skal vi ha med noe annet?'),
-                  tags$div(
-                    tags$li("Andel ikke besvart 3 mnd. - mangler variabel"),
-                    tags$li("Andel ikke besvart 12 mnd. - mangler variabel"),
-                    tags$li("Andel purringer 3 mnd. - mangler variabel"),
-                    tags$li("Andel purringer 12 mnd. - mangler variabel")
-                  ))
+         fluidRow(h3('Mer som skal med her?')
+                  )
 ), #tab SC
 #----------Abonnement-----------------
 tabPanel(p("Abonnement",
@@ -731,7 +727,7 @@ server <- function(input, output, session) {
        shinyjs::hide(id = 'velgResh')
        shinyjs::hide(id = 'velgReshReg')
        shinyjs::hide(id = 'velgReshKval')
-     #hideTab(inputId = "tabs_andeler", target = "Figur, sykehusvisning")
+      hideTab(inputId = "hovedark", target = "Registeradministrasjon")
        }
     })
  # widget
@@ -861,6 +857,7 @@ server <- function(input, output, session) {
           ind <- if (valgtResh == 0) {1:dim(RegOversikt)[1]
           } else {which(as.numeric(RegOversikt$ReshId) %in% as.numeric(valgtResh))}
           tabDataRegKtr <- RegOversikt[ind,]
+
          }  else {
            tabDataRegKtr <- RegOversikt[which(RegOversikt$ReshId == reshID), ]}
         #tabDataRegKtr <-RegOversikt[which(RegOversikt$ReshId == reshID), ]
@@ -881,8 +878,17 @@ server <- function(input, output, session) {
 
 
         if (rolle =='SC') {
-        valgtResh <- as.numeric(input$velgReshReg)
-        ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
+          qAlle <- 'SELECT * FROM AlleVarNum
+               INNER JOIN ForlopsOversikt
+               ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID'
+          RegDataAlle <- rapbase::LoadRegData(registryName = "nger", query=qAlle, dbType = "mysql")
+          RegDataAlle <- NGERPreprosess(RegDataAlle)
+          DataDump <- dplyr::filter(RegDataAlle,
+                                    as.Date(OpDato) >= input$datovalgRegKtr[1],
+                                    as.Date(OpDato) <= input$datovalgRegKtr[2])
+
+          valgtResh <- as.numeric(input$velgReshReg)
+          ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
          } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
         tabDataDump <- DataDump[ind,]
         #output$test <- renderText(valgtResh)
@@ -1269,14 +1275,14 @@ output$lastNed_dataDump <- downloadHandler(
 
       if (rolle=='SC') {
         observe({
-          tabdataTilResPort <- dataTilResPort(RegData=RegData, valgtVar = input$valgtVarRes,
+          tabdataTilResPort <- dataTilResPort(RegData=RegData, valgtKI = input$valgtVarRes,
                                               aar=as.numeric(input$aarRes[1]):as.numeric(input$aarRes[2]),
                                               OpMetode = as.numeric(input$opMetodeRes))
 
           output$lastNed_dataTilResPort <- downloadHandler(
             filename = function(){paste0('dataTilResPort_', input$valgtVarRes, '_',
                                          as.numeric(input$opMetodeRes), '.csv')},
-            content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = T, na = '')})
+            content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = F, na = '')})
         })
       }
       #------------------ Abonnement ----------------------------------------------

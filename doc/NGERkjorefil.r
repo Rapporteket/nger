@@ -281,9 +281,12 @@ library(nger)
 setwd('P:/Registerinfo og historie/NGER/Resultatportalen')
 aar <- 2016:2019
 #load(paste0('A:/NGER/Aarsrapp2018_2019-08-05.Rdata'))
-#RegData <- NGERData
 
-NGERData <- NGERRegDataSQL(datoFra = 2016)
+NGERData <- NGERPreprosess(NGERRegDataSQL(datoFra = 2019))
+RegData <- NGERData
+#KomplIntra, KomplPostop, Opf0AlvorlighetsGrad,
+#' HysKonvertert, LapKonvertert, Tss2Generelt, Tss2Sumskaar
+test <- dataTilResPort(RegData = RegData, valgtKI = 'Tss2Sumskaar', aar=2019)
 
 # For registeret Fil, enhetsID: EnhetsID	Enhetsnavn	HF navn	RHF navn (Toril komplettere med HF-navn)
 Enheter <- unique(NGERPreprosess(RegData=NGERData)[ ,c('ReshId','ShNavn')])

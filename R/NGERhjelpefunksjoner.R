@@ -168,18 +168,18 @@ dataTilResPort <- function(RegData = RegData, valgtKI, datoFra = '2016-01-01',
     #  Fil, KIdata: År	EnhetsID	Teller	Nevner	Kvalitetsindikator
 
     #Ngrense <- 10
-    RegData <- NGERPreprosess(RegData)
+    #RegData <- NGERPreprosess(RegData)
     RegData <- NGERUtvalgEnh(RegData, OpMetode = OpMetode,
                              datoFra = paste0(aar[1],'-01-01'), datoTil = paste0(rev(aar)[1], '-12-31'))$RegData
     RegData$Variabel <- 0
     RegData$ShNavn <- as.factor(RegData$ShNavn)
     RegData$ReshId <- as.factor(RegData$ReshId)
-    figurtype <- 'andelGrVar' #MÅ ENDRES FOR SUMSKÅR!!
+    figurtype <- ifelse(valgtKI=='Tss2Sumskaar', 'gjsnGrVar', 'andelGrVar') #MÅ ENDRES FOR SUMSKÅR!!
     RegData <- NGERVarTilrettelegg(RegData = RegData, valgtVar = valgtKI, figurtype=figurtype)$RegData
 
     dataDum <- aggregate(data=RegData[ ,c("ReshId", 'Aar', 'Variabel' )], Variabel~ReshId+Aar,
                          #x=RegData$Variabel, by=RegData[]
-                         FUN=function(x) {c(sum(x, na.rm=T), length(x))})
+                         FUN=function(x) {c(sum(x, na.rm=T), sum(!is.na(x)))})
 
     opMetTxt <- c('','Lap','Hys')[OpMetode+1]
     dataKI <- data.frame(dataDum[,1:2], Teller=dataDum$Variabel[,1], Nevner=dataDum$Variabel[,2],

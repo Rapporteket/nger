@@ -30,6 +30,7 @@ query <- paste0('SELECT
     HysProsedyre1,
     HysProsedyre2,
     HysProsedyre3,
+    HysStatus,
     HysTeknisk,
     HysTilgang,
     LapAdherProfylakse,
