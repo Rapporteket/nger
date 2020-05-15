@@ -142,39 +142,16 @@ NGERFigKvalInd(RegData=NGERData, datoFra=datoFra1aar, valgtVar='TSS0', datoTil=d
 #------------------------------ Andeler per år --------------------------
 #------------------------------ (AndelTid) --------------------------
 
-
-'Fedme (BMI>30)' = 'OpBMI',
-'Operasjonstid (minutter)' = 'OpTid',
-'Pasienter med høyere utdanning' = 'Utdanning',
-'Postop. komplikasjon: Blødning' = 'Opf0KomplBlodning',
-'Postop. komplikasjon: Problemer med ustyr' = 'Opf0KomplUtstyr',
-'Postop. komplikasjon: Infeksjon' = 'Opf0KomplInfeksjon',
-'Postop. komplikasjon: Organskade' = 'Opf0KomplOrgan',
-'Postop. komplikasjon: Reoperasjon' = 'Opf0Reoperasjon',
-'Postop. komplikasjon: andel moderate/alvorlige (grad 2-4)' = 'Opf0AlvorlighetsGrad',
-'Postop. komplikasjon: Alle' = 'KomplPostop',
-'Komplikasjoner under operasjon' = 'KomplIntra',
-
-'Postoperativ oppfølging' = 'Opf0Status',
-'Registreringsforsinkelse' = 'RegForsinkelse',
-'TSS2: Møtet med gyn. avd. var svært godt' = 'Tss2Mott',
-'TSS2: Behandlingsopplegg/-innhold passet svært bra' = 'Tss2Behandling',
-'TSS2: Behandlerne lyttet- og forsto i svært stor grad' = 'Tss2Lytte',
-'TSS2: Pasienten hadde svært stor tillit til sine behandlere' = 'Tss2Behandlere',
-'TSS2: Pasient og behandlere svært enige om målsetn. for behandlinga' = 'Tss2Enighet',
-'TSS2: Positiv oppfatning om gyn. avd.' = 'Tss2Generelt'
-
 # 'Dagkirurgiske inngrep' = 'OpDagkirurgi', (lapraroskopi, elektiv)
-# Lokalbedøvelse (hysteroskopi, elektiv)
+# Lokalbedøvelse = OpAnestesi (hysteroskopi, elektiv)
 # 'ASA-grad > II' = 'OpASA', (Alle / tot.lap hysrektomi)
 # 'Konvertert til laparoromi?' = 'LapKonvertert', (laparoskopi)
-# Kompl. intraoperativt
-# Kompl. postoperativt
-# Postop. kompl: Reoperasjon (Alle/laparoskopi/tot.lap.hysrektomi)
-#
+# 'Komplikasjoner under operasjon' = 'KomplIntra',
+# 'Postop. komplikasjon: Alle' = 'KomplPostop',
+# 'Postop. komplikasjon: Reoperasjon' = 'Opf0Reoperasjon', (Alle/laparoskopi/tot.lap.hysrektomi)
 
-variable <- c('KomplIntra','KomplPostop',
-              'Opf0AlvorlighetsGrad','Opf0Reoperasjon', 'OpTid')
+variable <- c('KomplIntra','KomplPostop','LapKonvertert', 'OpDagkirurgi', OpAnestesi, 'OpASA',
+              'Opf0Reoperasjon')
 
 for (valgtVar in variable) {
   outfile <- paste0(valgtVar, '_', tidsenhet, '.pdf')
