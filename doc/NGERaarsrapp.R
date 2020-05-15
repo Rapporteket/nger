@@ -64,140 +64,117 @@ NGERFigGjsnGrVar(RegData=NGERData, valgtVar='Tss2Generelt', datoFra=datoFra1aar,
 
 
 #-------------------------------Årsrapport 2020-------------------------------
-Figurer med RAND?
+#Figurer med RAND?
 
 #--Tabeller:
-  Antall registreringer per år 2016-19
-Endres? Opphold per sykehus og operasjonstype (Lap Hys Begge) per år
-
-#--Fordeling:
-  Hyppigst forekommende diagnose hys/lap/tot
-Hyppigst forekommende prosedyre hys/lap/tot
-BMI
-Laparoskopisk tilgang (Laparoskopi)
-Operasjonstid (lap/tot. lap. hysrektomi/hysteriskopi
-Gjennomføringsgrad av hysteroskopi
-Lap. ekstrautstyr (Laparoskopi)
-Intraop kompl v/lap (Laparoskopi)
-Intraabdominelle kompl. v/laparoskopi (Alle / Tot. lap. hysrektomi)
-Intraoperative kompl. v/hysteroskopi (Hysteroskopi)
-Alvorlighetsgrad kompl. (Alle / laparoskopi/hysteroskopi/ tot.lap hysrektomi)
-Postoperative komplikasjoner (Alle/laparoskopi/tot.lap hysrektomi/hysteroskopi)
-Oppfatn. av gyn avd. generelt
-TSS2, alle spørsmål (Alle/tot.lap hysterektomi/hysteroskopi)
-Registreringsforsinkelse
+#   Antall registreringer per år 2016-19
+# Endres? Opphold per sykehus og operasjonstype (Lap Hys Begge) per år
 
 
+#------------------------------ Fordelingsfigurer --------------------------
+# 'BMI-kategori' = 'OpBMI',
+# 'Diagnoser, hyppigste' = 'Diagnoser', hys/lap/tot
+# 'Gjennomføringsgrad av hysteroskopi' = 'HysGjforingsGrad',
+# 'Prosedyrer, hyppigste' = 'Prosedyrer', hys/lap/tot
+# 'Laparaskopisk tilgang, teknikk og metode' = 'LapTeknikk',
+# 'Operasjonstid (minutter)' = 'OpTid', (lap/tot. lap. hysrektomi/hysteroskopi)
+# 'Laparaskopisk ekstrautstyr' = 'LapEkstrautstyr',
+# 'Laparoskopiske intrapoerative komplikasjoner' = 'LapKomplikasjoner',
+# 'Laparoskopiske intraabdominale komplikasjoner' = 'LapIntraabdominell', (Alle / Tot. lap. hysrektomi)
+# 'Hysteroskopi intrapoerative komplikasjoner' = 'HysKomplikasjoner'
+# 'Alvorlighetsgrad, postop. kompl.' = 'Opf0AlvorlighetsGrad',   (Alle / laparoskopi/hysteroskopi/ tot.lap hysrektomi)
+# 'Komplikasjoner, postoperativt' = 'KomplPostopType',(Alle/laparoskopi/tot.lap hysrektomi/hysteroskopi)
+# 'Registreringsforsinkelse' =  'RegForsinkelse',
+# 'TSS2, sp.6 Generell oppfatning av avdelinga' = 'Tss2Generelt',
 
-
-#--Andel per sykehus
-Fedme (BMI>30)
-Dagkirurgiske inngrep
-Kompl. intraoperativt (Laparoskopi, valgte sykehus..)
-Kompl. postoperativt (Alle, valgte sykehus)
-Hvordan ble du møtt på gyn.avd (valgte sykehus)
-Hvordan passet beh. opplegg (valgte sykehus)
-Lyttet og forsto behandlerne (valgte shus)
-Tillit til behandlerne (valgte shus)
-Enighet om målsetning (valgte shus)
-Oppfatning av gyn.avd. generelt
-Mer enn 4 uker fra op. til reg.
-
-
-#--Gj.sn. per sykehus
-TSS2 gj.sn. sumskår (Alle, valgte sykehus)
-
-
-#--Andel per år
-Dagkirurgiske inngrep (lapraroskopi, elektiv)
-Lokalbedøvelse (hysteroskopi, elektiv)
-ASA>2 (Alle / tot.lap hysrektomi)
-Kov til laparotomi (laparoskopi)
-Kompl. intraoperativt
-Kompl. postoperativt
-Postop. kompl: Reoperasjon (Alle/laparoskopi/tot.lap.hysrektomi)
-
-
-
-
-
-
-#------------------------------ Andeler flere var --------------------------
-'Anestesitype' = 'OpAnestesi',
-'ASA-grad' = 'OpASA',
-'Dagkirurgiske inngrep' = 'OpDagkirurgi',
-'Hastegrad av operasjon' = 'OpKategori',
-'Hjelpeinnstikk, antall' = 'LapNumHjelpeinnstikk',
-'Hysteroskopi intrapoerative komplikasjoner' = 'HysKomplikasjoner',
-'Infeksjoner, type' = 'Opf0KomplInfeksjon',
-'Komplikasjoner, postoperativt' = 'KomplPostopType',
-'Laparaskopisk tilgang, teknikk og metode' = 'LapTeknikk',
-'Laparoskopiske intraabdominale komplikasjoner' = 'LapIntraabdominell',
-'Laparoskopiske intrapoerative komplikasjoner' = 'LapKomplikasjoner',
-'Norskkunnskaper' = 'Norsktalende',
-'Opfølgingsmetode' = 'Opf0metode',
-'Operasjon i legens vakttid' = 'OpIVaktTid',
-'Operasjonsmetode' = 'OpMetode',
-'Primæroperasjon eller reoperasjon' = 'OpType',
-'Postoperative komplikasjoner vs. utdanning' = 'KomplPostUtd',
-'Reoperasjoner som følge av komplikasjon vs. utdanning' = 'KomplReopUtd',
-'Sivilstatus' = 'SivilStatus',
-'Tidligere vaginale inngrep' = 'OpTidlVagInngrep',
-'Tidligere laparoskopi' = 'OpTidlLapsko',
-'Tidligere laparatomi' = 'OpTidlLaparotomi',
-
-
-
-'BMI-kategori' = 'OpBMI',
-'Diagnoser, hyppigste' = 'Diagnoser', hys/lap/tot
-'Gjennomføringsgrad av hysteroskopi' = 'HysGjforingsGrad',
-'Prosedyrer, hyppigste' = 'Prosedyrer', hys/lap/tot
-'Laparaskopisk tilgang, teknikk og metode' = 'LapTeknikk', (Laparoskopi)
-'Operasjonstid (minutter)' = 'OpTid', (lap/tot. lap. hysrektomi/hysteriskopi)
-'Laparaskopisk ekstrautstyr' = 'LapEkstrautstyr', (Laparoskopi)
-               Intraop kompl v/lap (Laparoskopi)
-               Intraabdominelle kompl. v/laparoskopi (Alle / Tot. lap. hysrektomi)
-               Intraoperative kompl. v/hysteroskopi (Hysteroskopi)
-?'Alvorlighetsgrad, postop. kompl.' = 'Opf0AlvorlighetsGrad',   Alvorlighetsgrad kompl. (Alle / laparoskopi/hysteroskopi/ tot.lap hysrektomi)
-               Postoperative komplikasjoner (Alle/laparoskopi/tot.lap hysrektomi/hysteroskopi)
-'TSS2, sp.6 Generell oppfatning av avdelinga' = 'Tss2Generelt',
-               TSS2, alle spørsmål (Alle/tot.lap hysterektomi/hysteroskopi)
-'Registreringsforsinkelse' =  'RegForsinkelse',
-
-variable <- c('KomplPostopType','KomplPostUtd','LapIntraabdominell', 'Norsktalende', 'OpBMI',
-              'Opf0AlvorlighetsGrad','SivilStatus', 'Utdanning')
-variable <- 'RegForsinkelse'
+#For alle
+variable <- c('OpBMI', 'Diagnoser','HysGjforingsGrad','HysKomplikasjoner', 'KomplPostopType', 'LapEkstrautstyr',
+              'LapIntraabdominell', 'LapKomplikasjoner', 'LapTeknikk', 'Opf0AlvorlighetsGrad',
+              'Prosedyrer', 'RegForsinkelse', 'Tss2Generelt')
 for (valgtVar in variable) {
 	outfile <- paste0(valgtVar, '_ford.pdf')
 	NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil, outfile=outfile)
 }
 
-valgtVar <- 'Diagnoser'
-outfile <- paste0(valgtVar, '_ford.pdf')
-NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil, outfile=outfile)
-OpMetode <- 1
-outfile <- paste0(valgtVar, '_fordLap.pdf')
-NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil, OpMetode = OpMetode,
-               outfile=outfile)
-OpMetode <- 2
-outfile <- paste0(valgtVar, '_fordHys.pdf')
-NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil,OpMetode = OpMetode,
-               outfile=outfile)
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='Diagnoser', datoTil=datoTil, OpMetode = 1,
+               outfile='Diagnoser_fordLap.pdf')
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='Diagnoser', datoTil=datoTil, OpMetode = 2,
+               outfile='Diagnoser_fordHys.pdf')
 
-for (valgtVar in c('Diagnoser', 'Prosedyrer')) {
-  for (OpMetode in c(1:2,99)) {
-  outfile <- paste0(valgtVar, '_fordOpMetode',OpMetode, '.pdf')
-  NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil,
-					OpMetode = OpMetode, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
-  }
-}
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='Prosedyrer', datoTil=datoTil, OpMetode = 1,
+               outfile='Prosedyrer_fordLap.pdf')
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='Prosedyrer', datoTil=datoTil, OpMetode = 2,
+               outfile='Prosedyrer_fordHys.pdf')
+
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='OpTid', datoTil=datoTil, OpMetode = 1,
+               outfile='OpTid_fordLap.pdf')
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='OpTid', datoTil=datoTil, OpMetode = 2,
+               outfile='OpTid_fordHys.pdf')
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='OpTid', datoTil=datoTil, OpMetode = 4,
+               outfile='OpTid_fordTotLapHys.pdf')
+
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='LapIntraabdominell', datoTil=datoTil, OpMetode = 4,
+               outfile='LapIntraabdominell_fordTotLapHys.pdf')
+
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='Opf0AlvorlighetsGrad', datoTil=datoTil, OpMetode = 1,
+               outfile='Opf0AlvorlighetsGrad_fordLap.pdf')
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='Opf0AlvorlighetsGrad', datoTil=datoTil, OpMetode = 2,
+               outfile='Opf0AlvorlighetsGrad_fordHys.pdf')
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='Opf0AlvorlighetsGrad', datoTil=datoTil, OpMetode = 4,
+               outfile='Opf0AlvorlighetsGrad_fordTotLapHys.pdf')
+
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='KomplPostopType', datoTil=datoTil, OpMetode = 1,
+               outfile='KomplPostopType_fordLap.pdf')
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='KomplPostopType', datoTil=datoTil, OpMetode = 2,
+               outfile='KomplPostopType_fordHys.pdf')
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='KomplPostopType', datoTil=datoTil, OpMetode = 4,
+               outfile='KomplPostopType_fordTotLapHys.pdf')
+
+#----------------Kvalitetsindikatorsamlinger----------------
+# 'TSS2, oppfølging' = 'TSS0', TSS2, alle spørsmål (Alle/tot.lap hysterektomi/hysteroskopi)
+NGERFigKvalInd(RegData=NGERData, datoFra=datoFra1aar, valgtVar='TSS0', datoTil=datoTil,
+                           outfile='TSS0_ford.pdf')
+NGERFigKvalInd(RegData=NGERData, datoFra=datoFra1aar, valgtVar='TSS0', datoTil=datoTil, OpMetode = 2,
+                             outfile='TSS0_fordHys.pdf')
+NGERFigKvalInd(RegData=NGERData, datoFra=datoFra1aar, valgtVar='TSS0', datoTil=datoTil, OpMetode = 4,
+                               outfile='TSS0_fordTotLapHys.pdf')
 
 #------------------------------ Andeler per år --------------------------
 #------------------------------ (AndelTid) --------------------------
 
+
+'Fedme (BMI>30)' = 'OpBMI',
+'Operasjonstid (minutter)' = 'OpTid',
+'Pasienter med høyere utdanning' = 'Utdanning',
+'Postop. komplikasjon: Blødning' = 'Opf0KomplBlodning',
+'Postop. komplikasjon: Problemer med ustyr' = 'Opf0KomplUtstyr',
+'Postop. komplikasjon: Infeksjon' = 'Opf0KomplInfeksjon',
+'Postop. komplikasjon: Organskade' = 'Opf0KomplOrgan',
+'Postop. komplikasjon: Reoperasjon' = 'Opf0Reoperasjon',
+'Postop. komplikasjon: andel moderate/alvorlige (grad 2-4)' = 'Opf0AlvorlighetsGrad',
+'Postop. komplikasjon: Alle' = 'KomplPostop',
+'Komplikasjoner under operasjon' = 'KomplIntra',
+
+'Postoperativ oppfølging' = 'Opf0Status',
+'Registreringsforsinkelse' = 'RegForsinkelse',
+'TSS2: Møtet med gyn. avd. var svært godt' = 'Tss2Mott',
+'TSS2: Behandlingsopplegg/-innhold passet svært bra' = 'Tss2Behandling',
+'TSS2: Behandlerne lyttet- og forsto i svært stor grad' = 'Tss2Lytte',
+'TSS2: Pasienten hadde svært stor tillit til sine behandlere' = 'Tss2Behandlere',
+'TSS2: Pasient og behandlere svært enige om målsetn. for behandlinga' = 'Tss2Enighet',
+'TSS2: Positiv oppfatning om gyn. avd.' = 'Tss2Generelt'
+
+# 'Dagkirurgiske inngrep' = 'OpDagkirurgi', (lapraroskopi, elektiv)
+# Lokalbedøvelse (hysteroskopi, elektiv)
+# 'ASA-grad > II' = 'OpASA', (Alle / tot.lap hysrektomi)
+# 'Konvertert til laparoromi?' = 'LapKonvertert', (laparoskopi)
+# Kompl. intraoperativt
+# Kompl. postoperativt
+# Postop. kompl: Reoperasjon (Alle/laparoskopi/tot.lap.hysrektomi)
+#
+
 variable <- c('KomplIntra','KomplPostop',
-					'Opf0AlvorlighetsGrad','Opf0Reoperasjon', 'OpTid')
-variable <- 'RegForsinkelse'
+              'Opf0AlvorlighetsGrad','Opf0Reoperasjon', 'OpTid')
 
 for (valgtVar in variable) {
   outfile <- paste0(valgtVar, '_', tidsenhet, '.pdf')
@@ -213,8 +190,21 @@ NGERFigAndelTid(RegData=NGERData, valgtVar='OpAnestesi',   datoFra='2013-01-01',
 
 #------------------------------ Andeler per sykehus --------------------------
 #------------------------------ (AndelGrVar) --------------------------
+# 'Fedme (BMI>30)' = 'OpBMI',
+# 'Dagkirurgiske inngrep' = 'OpDagkirurgi',
+# 'Komplikasjoner under operasjon' = 'KomplIntra', (Laparoskopi, valgte sykehus..)
+# 'Postop. komplikasjon: Alle' = 'KomplPostop', (Alle, valgte sykehus)
+# 'TSS2: Møtet med gyn. avd. var svært godt' = 'Tss2Mott',
+# 'TSS2: Behandlingsopplegg/-innhold passet svært bra' = 'Tss2Behandling',
+# 'TSS2: Behandlerne lyttet- og forsto i svært stor grad' = 'Tss2Lytte',
+# 'TSS2: Pasienten hadde svært stor tillit til sine behandlere' = 'Tss2Behandlere',
+# 'TSS2: Pasient og behandlere svært enige om målsetn. for behandlinga' = 'Tss2Enighet',
+# 'TSS2: Positiv oppfatning om gyn. avd.' = 'Tss2Generelt'
+# 'Registreringsforsinkelse' = 'RegForsinkelse',Mer enn 4 uker fra op. til reg.
 
-variable <- c('Alder', 'OpAnestesi', 'OpDagkirurgi', 'Opf0Status', 'OpBMI', 'OpTid', 'RegForsinkelse' )
+
+variable <- c( 'OpBMI', 'KomplIntra', 'KomplPostop', 'OpDagkirurgi', 'RegForsinkelse',
+               'Tss2Mott', 'Tss2Behandling', 'Tss2Lytte', 'Tss2Behandlere', 'Tss2Enighet', 'Tss2Generelt')
 
 for (valgtVar in variable) {
   outfile <- paste0(valgtVar, '_Shus.pdf')
@@ -222,18 +212,19 @@ for (valgtVar in variable) {
 }
 
 #------------------------------ Sentralmål per sykehus --------------------------
-variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
-              'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')
-variable <- c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
-              'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')
-variable <- 'OpTid'
-variable <- 'RegForsinkelse'
+# variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
+#               'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')
+# variable <- c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
+#               'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')
+# variable <- 'OpTid'
+# variable <- 'RegForsinkelse'
 
-valgtMaal <- 'med'
+#'TSS2, sumskår' = 'Tss2Sumskaar'
+variable <- 'Tss2Sumskaar'
 for (valgtVar in variable) {
-  outfile <- paste0(valgtVar, '_' ,valgtMaal,'ShGjsn.pdf')
+  outfile <- paste0(valgtVar, '_' ,'ShGjsn.pdf')
   NGERFigGjsnGrVar(RegData=NGERData, valgtVar=valgtVar, datoFra=datoFra1aar, datoTil=datoTil,
-                      valgtMaal=valgtMaal,outfile=outfile)
+                      outfile=outfile)
 }
 
 
