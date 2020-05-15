@@ -62,9 +62,109 @@ NGERFigKvalInd(RegData=NGERData, valgtVar='TSS0', datoFra=datoFra1aar, datoTil=d
 NGERFigGjsnGrVar(RegData=NGERData, valgtVar='Tss2Generelt', datoFra=datoFra1aar, datoTil=datoTil,
                  Hastegrad = 1, outfile='Fig8 Gjsn sumskår, oppfatning om gyn avd generelt.png')
 
-#------------------------------ Andeler flere var --------------------------
 
-variable <- c('Alder', 'KomplPostopType','KomplPostUtd','LapIntraabdominell', 'Norsktalende', 'OpBMI',
+#-------------------------------Årsrapport 2020-------------------------------
+Figurer med RAND?
+
+#--Tabeller:
+  Antall registreringer per år 2016-19
+Endres? Opphold per sykehus og operasjonstype (Lap Hys Begge) per år
+
+#--Fordeling:
+  Hyppigst forekommende diagnose hys/lap/tot
+Hyppigst forekommende prosedyre hys/lap/tot
+BMI
+Laparoskopisk tilgang (Laparoskopi)
+Operasjonstid (lap/tot. lap. hysrektomi/hysteriskopi
+Gjennomføringsgrad av hysteroskopi
+Lap. ekstrautstyr (Laparoskopi)
+Intraop kompl v/lap (Laparoskopi)
+Intraabdominelle kompl. v/laparoskopi (Alle / Tot. lap. hysrektomi)
+Intraoperative kompl. v/hysteroskopi (Hysteroskopi)
+Alvorlighetsgrad kompl. (Alle / laparoskopi/hysteroskopi/ tot.lap hysrektomi)
+Postoperative komplikasjoner (Alle/laparoskopi/tot.lap hysrektomi/hysteroskopi)
+Oppfatn. av gyn avd. generelt
+TSS2, alle spørsmål (Alle/tot.lap hysterektomi/hysteroskopi)
+Registreringsforsinkelse
+
+
+
+
+#--Andel per sykehus
+Fedme (BMI>30)
+Dagkirurgiske inngrep
+Kompl. intraoperativt (Laparoskopi, valgte sykehus..)
+Kompl. postoperativt (Alle, valgte sykehus)
+Hvordan ble du møtt på gyn.avd (valgte sykehus)
+Hvordan passet beh. opplegg (valgte sykehus)
+Lyttet og forsto behandlerne (valgte shus)
+Tillit til behandlerne (valgte shus)
+Enighet om målsetning (valgte shus)
+Oppfatning av gyn.avd. generelt
+Mer enn 4 uker fra op. til reg.
+
+
+#--Gj.sn. per sykehus
+TSS2 gj.sn. sumskår (Alle, valgte sykehus)
+
+
+#--Andel per år
+Dagkirurgiske inngrep (lapraroskopi, elektiv)
+Lokalbedøvelse (hysteroskopi, elektiv)
+ASA>2 (Alle / tot.lap hysrektomi)
+Kov til laparotomi (laparoskopi)
+Kompl. intraoperativt
+Kompl. postoperativt
+Postop. kompl: Reoperasjon (Alle/laparoskopi/tot.lap.hysrektomi)
+
+
+
+
+
+
+#------------------------------ Andeler flere var --------------------------
+'Anestesitype' = 'OpAnestesi',
+'ASA-grad' = 'OpASA',
+'Dagkirurgiske inngrep' = 'OpDagkirurgi',
+'Hastegrad av operasjon' = 'OpKategori',
+'Hjelpeinnstikk, antall' = 'LapNumHjelpeinnstikk',
+'Hysteroskopi intrapoerative komplikasjoner' = 'HysKomplikasjoner',
+'Infeksjoner, type' = 'Opf0KomplInfeksjon',
+'Komplikasjoner, postoperativt' = 'KomplPostopType',
+'Laparaskopisk tilgang, teknikk og metode' = 'LapTeknikk',
+'Laparoskopiske intraabdominale komplikasjoner' = 'LapIntraabdominell',
+'Laparoskopiske intrapoerative komplikasjoner' = 'LapKomplikasjoner',
+'Norskkunnskaper' = 'Norsktalende',
+'Opfølgingsmetode' = 'Opf0metode',
+'Operasjon i legens vakttid' = 'OpIVaktTid',
+'Operasjonsmetode' = 'OpMetode',
+'Primæroperasjon eller reoperasjon' = 'OpType',
+'Postoperative komplikasjoner vs. utdanning' = 'KomplPostUtd',
+'Reoperasjoner som følge av komplikasjon vs. utdanning' = 'KomplReopUtd',
+'Sivilstatus' = 'SivilStatus',
+'Tidligere vaginale inngrep' = 'OpTidlVagInngrep',
+'Tidligere laparoskopi' = 'OpTidlLapsko',
+'Tidligere laparatomi' = 'OpTidlLaparotomi',
+
+
+
+'BMI-kategori' = 'OpBMI',
+'Diagnoser, hyppigste' = 'Diagnoser', hys/lap/tot
+'Gjennomføringsgrad av hysteroskopi' = 'HysGjforingsGrad',
+'Prosedyrer, hyppigste' = 'Prosedyrer', hys/lap/tot
+'Laparaskopisk tilgang, teknikk og metode' = 'LapTeknikk', (Laparoskopi)
+'Operasjonstid (minutter)' = 'OpTid', (lap/tot. lap. hysrektomi/hysteriskopi)
+'Laparaskopisk ekstrautstyr' = 'LapEkstrautstyr', (Laparoskopi)
+               Intraop kompl v/lap (Laparoskopi)
+               Intraabdominelle kompl. v/laparoskopi (Alle / Tot. lap. hysrektomi)
+               Intraoperative kompl. v/hysteroskopi (Hysteroskopi)
+?'Alvorlighetsgrad, postop. kompl.' = 'Opf0AlvorlighetsGrad',   Alvorlighetsgrad kompl. (Alle / laparoskopi/hysteroskopi/ tot.lap hysrektomi)
+               Postoperative komplikasjoner (Alle/laparoskopi/tot.lap hysrektomi/hysteroskopi)
+'TSS2, sp.6 Generell oppfatning av avdelinga' = 'Tss2Generelt',
+               TSS2, alle spørsmål (Alle/tot.lap hysterektomi/hysteroskopi)
+'Registreringsforsinkelse' =  'RegForsinkelse',
+
+variable <- c('KomplPostopType','KomplPostUtd','LapIntraabdominell', 'Norsktalende', 'OpBMI',
               'Opf0AlvorlighetsGrad','SivilStatus', 'Utdanning')
 variable <- 'RegForsinkelse'
 for (valgtVar in variable) {
