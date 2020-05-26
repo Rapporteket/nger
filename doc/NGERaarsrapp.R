@@ -2,13 +2,13 @@
 #--------------------------------Data og parametrekobling--------------------------
 
 rm(list=ls())
-dato <- '2019-08-05Aarsrapp18'
+dato <- 'Aarsrapp2019_2020-04-28'
 NGERBasis <- read.table(paste0('A:/NGER/AlleVarNum', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #,
 NGERForlop <- read.table(paste0('A:/NGER/ForlopsOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
 NGERSkjema <- read.table(paste0('A:/NGER/SkjemaOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
 NGERData <- merge(NGERForlop, NGERBasis, by = "ForlopsID", suffixes = c('forl',''), all = FALSE)
 NGERData <- NGERData[(as.Date(NGERData$OpDato) >= as.Date('2016-01-01')) &
-                       (as.Date(NGERData$OpDato) <= as.Date('2018-12-31')), ]
+                       (as.Date(NGERData$OpDato) <= as.Date('2019-12-31')), ]
 
 #--Til registerleder
 library(nger)
@@ -22,13 +22,13 @@ load(paste0('A:/NGER/Aarsrapp2018_2019-08-05.Rdata'))
 
 # Inndata til funksjon:
 datoFra<- '2016-01-01'
-datoFra1aar <- '2018-01-01'
-datoTil <- '2018-12-31'
-OpMetode <- 99
-tidsenhet <- 'Aar'
-Hastegrad <- ''
-AlvorlighetKompl <- ''
-enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
+datoFra1aar <- '2019-01-01'
+datoTil <- '2019-12-31'
+#OpMetode <- 99
+#tidsenhet <- 'Aar'
+#Hastegrad <- ''
+#AlvorlighetKompl <- ''
+#enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
 setwd("P:/Registerinfo og historie/NGER/aarsrapp/")
 library(nger)
 
@@ -145,16 +145,16 @@ NGERFigKvalInd(RegData=NGERData, datoFra=datoFra1aar, valgtVar='TSS0', datoTil=d
 # 'Dagkirurgiske inngrep' = 'OpDagkirurgi', (lapraroskopi, elektiv)
 # Lokalbedøvelse = OpAnestesi (hysteroskopi, elektiv)
 # 'ASA-grad > II' = 'OpASA', (Alle / tot.lap hysrektomi)
-# 'Konvertert til laparoromi?' = 'LapKonvertert', (laparoskopi)
+# 'Konvertert til laparoromi?' = 'LapKonvertert',
 # 'Komplikasjoner under operasjon' = 'KomplIntra',
 # 'Postop. komplikasjon: Alle' = 'KomplPostop',
 # 'Postop. komplikasjon: Reoperasjon' = 'Opf0Reoperasjon', (Alle/laparoskopi/tot.lap.hysrektomi)
 
-variable <- c('KomplIntra','KomplPostop','LapKonvertert', 'OpDagkirurgi', OpAnestesi, 'OpASA',
+variable <- c('KomplIntra','KomplPostop','LapKonvertert', 'OpASA',
               'Opf0Reoperasjon')
 
 for (valgtVar in variable) {
-  outfile <- paste0(valgtVar, '_', tidsenhet, '.pdf')
+  outfile <- paste0(valgtVar, '_', 'Aar.pdf')
   NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
               outfile=outfile, tidsenhet='Aar')
 }
@@ -162,8 +162,11 @@ for (valgtVar in variable) {
 NGERFigAndelTid(RegData=NGERData, valgtVar='OpDagkirurgi', datoFra=datoFra, datoTil=datoTil,
                 OpMetode=1, Hastegrad=1, tidsenhet='Aar', outfile='OpDagkirLapEl_aar.pdf')
 
-NGERFigAndelTid(RegData=NGERData, valgtVar='OpAnestesi',   datoFra='2013-01-01', datoTil=datoTil, #datoFra
+NGERFigAndelTid(RegData=NGERData, valgtVar='OpAnestesi',   datoFra=datoFra, datoTil=datoTil, #datoFra
                 OpMetode=2, Hastegrad=1, tidsenhet='Aar', outfile='OpAnestesiHysEl_aar.pdf')
+
+NGERFigAndelTid(RegData=NGERData, valgtVar='OpASA',   datoFra=datoFra, datoTil=datoTil, #datoFra
+                OpMetode=4, tidsenhet='Aar', outfile='OpASATotLapHys_aar.pdf')
 
 #------------------------------ Andeler per sykehus --------------------------
 #------------------------------ (AndelGrVar) --------------------------
@@ -180,7 +183,7 @@ NGERFigAndelTid(RegData=NGERData, valgtVar='OpAnestesi',   datoFra='2013-01-01',
 # 'Registreringsforsinkelse' = 'RegForsinkelse',Mer enn 4 uker fra op. til reg.
 
 
-variable <- c( 'OpBMI', 'KomplIntra', 'KomplPostop', 'OpDagkirurgi', 'RegForsinkelse',
+variable <- c( 'OpBMI', 'KomplPostop', 'OpDagkirurgi', 'RegForsinkelse',
                'Tss2Mott', 'Tss2Behandling', 'Tss2Lytte', 'Tss2Behandlere', 'Tss2Enighet', 'Tss2Generelt')
 
 for (valgtVar in variable) {
@@ -188,6 +191,8 @@ for (valgtVar in variable) {
   NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil, outfile=outfile)
 }
 
+NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra1aar, valgtVar='KomplIntra', datoTil=datoTil,
+                    OpMetode=1, outfile='KomplIntraLap_Shus.pdf' )
 #------------------------------ Sentralmål per sykehus --------------------------
 # variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
 #               'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')
@@ -232,7 +237,9 @@ tabell <- cbind(tab[,,'2016'],
                 ' ',
                 tab[,,'2017'],
                 ' ',
-                tab[,,'2018'])
+                tab[,,'2018'],
+                ' ',
+                tab[,,'2019'])
 
 xtable::xtable(tabell, align=c('l', rep('r',ncol(tabell))),)
 
