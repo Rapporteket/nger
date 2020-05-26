@@ -83,7 +83,8 @@ NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', f
 
 if (velgDiag !=0) {
   indDiag <- NULL
-  diagTxt <- c('Godartede ovarialcyster', 'Endometriose, livmorvegg', 'Endometriose utenom livmorvegg')
+  diagTxt <- c('Godartede ovarialcyster', 'Endometriose, livmorvegg', 'Endometriose utenom livmorvegg',
+               'Onkologi', 'Generell gynekologi', 'Gravide', 'Komplikasjoner', 'Infertilitet')
   DiagVar <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3', 'HysDiagnose1','HysDiagnose2', 'HysDiagnose3')
   if (velgDiag ==1) {
     koder <- c('N830', 'N831', 'N832', 'D27')
@@ -97,6 +98,26 @@ if (velgDiag !=0) {
 	  koder <- paste0('N80', 1:9)
     for (var in DiagVar) {indDiag <- union(indDiag, grep(paste(koder, collapse = "|"), RegData[ ,var]))}  #(Se også på pmatch, carmatch
 	}
+  if (velgDiag == 4){#Onkologi C52	C53	C54	C55	C56	C57	C58	C76	C77	C79.6
+    koder <- c(paste0('C5', 2:8), 'C76',	'C77',	'C79.6')
+    for (var in DiagVar) {indDiag <- union(indDiag, grep(paste(koder, collapse = "|"), RegData[ ,var]))}  #(Se også på pmatch, carmatch
+  }
+  if (velgDiag == 5){#Generell gynekologi	D25	D26	D27	D28	D39	N70	N71	N72	N73	N74	N80	N81	N82	N83	N84	N85	N86	N87	N88	N91	N92	N93	N94	N95	N96	N97	N98	N99	R10
+    koder <- c(paste0('D', c(25:28, 39)), paste0('N7',0:4), paste0('N8', 0:8), paste0('N9', 1:9), 'R10')
+    for (var in DiagVar) {indDiag <- union(indDiag, grep(paste(koder, collapse = "|"), RegData[ ,var]))}
+  }
+  if (velgDiag == 6){#Gravide	O00	O01	O02	O03	O04	O05	O07	Q50	Q51	Q52
+    koder <- c(paste0('O0', c(0:5, 7)), 'Q50',	'Q51',	'Q52')
+    for (var in DiagVar) {indDiag <- union(indDiag, grep(paste(koder, collapse = "|"), RegData[ ,var]))}
+  }
+  if (velgDiag == 7){ # Komplikasjoner	T81	T83
+    koder <- c('T81',	'T83')
+    for (var in DiagVar) {indDiag <- union(indDiag, grep(paste(koder, collapse = "|"), RegData[ ,var]))}
+  }
+  if (velgDiag == 8){ # Infertilitet	N96	N97	N98
+    koder <- c('N96',	'N97',	'N98')
+    for (var in DiagVar) {indDiag <- union(indDiag, grep(paste(koder, collapse = "|"), RegData[ ,var]))}
+  }
 } else {  indDiag <- 1:Ninn}
 
   #Alvorlighetsgrad, flervalgsutvalg

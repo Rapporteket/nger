@@ -54,8 +54,9 @@ names(sykehusValg) <- c('Alle',sykehusNavn$x)
 enhetsUtvalg <- c("Egen mot resten av landet"=1,
                         "Hele landet"=0,
                         "Egen enhet"=2)
- diag <- 0:3
- names(diag) <- c('Alle', 'Godartede ovarialcyster', 'Endometriose, livmorvegg', 'Endo u livmorvegg')
+ diag <- 0:8
+ names(diag) <- c('Alle', 'Godartede ovarialcyster', 'Endometriose, livmorvegg', 'Endo u livmorvegg',
+                  'Onkologi', 'Generell gynekologi', 'Gravide', 'Komplikasjoner', 'Infertilitet')
 
  opMetode <- c('Alle'=0,
                'Laparoskopi'=1,
