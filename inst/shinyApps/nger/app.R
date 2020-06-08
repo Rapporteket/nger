@@ -54,8 +54,9 @@ names(sykehusValg) <- c('Alle',sykehusNavn$x)
 enhetsUtvalg <- c("Egen mot resten av landet"=1,
                         "Hele landet"=0,
                         "Egen enhet"=2)
- diag <- 0:3
- names(diag) <- c('Alle', 'Godartede ovarialcyster', 'Endometriose, livmorvegg', 'Endo u livmorvegg')
+ diag <- 0:8
+ names(diag) <- c('Alle', 'Godartede ovarialcyster', 'Endometriose, livmorvegg', 'Endo u livmorvegg',
+                  'Onkologi', 'Generell gynekologi', 'Gravide', 'Komplikasjoner', 'Infertilitet')
 
  opMetode <- c('Alle'=0,
                'Laparoskopi'=1,
@@ -466,6 +467,9 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
                          'ASA-grad > II' = 'OpASA',
                          'Dagkirurgiske inngrep' = 'OpDagkirurgi',
                          'Fedme (BMI>30)' = 'OpBMI',
+                         'Komplikasjoner under operasjon' = 'KomplIntra',
+                         'Konvertert til laparoromi?' = 'LapKonvertert',
+                         'Lokalbedøvelse' = 'OpAnestesi',
                          'Operasjonstid (minutter)' = 'OpTid',
                          'Pasienter med høyere utdanning' = 'Utdanning',
                          'Postop. komplikasjon: Blødning' = 'Opf0KomplBlodning',
@@ -475,8 +479,6 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
                          'Postop. komplikasjon: Reoperasjon' = 'Opf0Reoperasjon',
                          'Postop. komplikasjon: andel moderate/alvorlige (grad 2-4)' = 'Opf0AlvorlighetsGrad',
                          'Postop. komplikasjon: Alle' = 'KomplPostop',
-                         'Komplikasjoner under operasjon' = 'KomplIntra',
-                         'Konvertert til laparoromi?' = 'LapKonvertert',
                          'Postoperativ oppfølging' = 'Opf0Status',
                          'Registreringsforsinkelse' = 'RegForsinkelse',
                          'TSS2: Møtet med gyn. avd. var svært godt' = 'Tss2Mott',
