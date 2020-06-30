@@ -68,12 +68,6 @@
 #' @param hentData Gjør spørring mot database
 #'                 0: Nei, RegData gis som input til funksjonen (Standard)
 #'                 1: Ja
-#' @param AlvorlighetKompl  Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
-#'                          Angis som en vektor av tall som tekst, f.eks. c('1','2')
-#'                          1: Lite alvorlig
-#'                          2: Middels alvorlig
-#'                          3: Alvorlig
-#'                          4: Dødelig
 #'
 #' @return En figur med søylediagram (fordeling) av ønsket variabel
 #'

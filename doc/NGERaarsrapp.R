@@ -168,6 +168,22 @@ NGERFigAndelTid(RegData=NGERData, valgtVar='OpAnestesi',   datoFra=datoFra, dato
 NGERFigAndelTid(RegData=NGERData, valgtVar='OpASA',   datoFra=datoFra, datoTil=datoTil, #datoFra
                 OpMetode=4, tidsenhet='Aar', outfile='OpASATotLapHys_aar.pdf')
 
+#Laparoskopi
+for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad', 'Opf0Reoperasjon','LapKonvertert')) {
+  outfile <- paste0(valgtVar, '_', 'LapAar.pdf')
+  NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
+                  OpMetode=1, outfile=outfile, tidsenhet='Aar')
+}
+
+#Hysteroskopi
+for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad', 'Opf0Reoperasjon')) {
+  outfile <- paste0(valgtVar, '_', 'HystAar.pdf')
+  NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
+                  OpMetode=2, outfile=outfile, tidsenhet='Aar')
+}
+NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar='KomplPostop', datoTil=datoTil,
+                OpMetode=4, outfile='KomplPostop_TLHaar.pdf', tidsenhet='Aar')
+
 #------------------------------ Andeler per sykehus --------------------------
 #------------------------------ (AndelGrVar) --------------------------
 # 'Fedme (BMI>30)' = 'OpBMI',
@@ -191,8 +207,20 @@ for (valgtVar in variable) {
   NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil, outfile=outfile)
 }
 
-NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra1aar, valgtVar='KomplIntra', datoTil=datoTil,
-                    OpMetode=1, outfile='KomplIntraLap_Shus.pdf' )
+#Laparoskopi
+for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad', 'Opf0Reoperasjon','LapKonvertert')) {
+  outfile <- paste0(valgtVar, '_LapShus.pdf')
+  NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil,
+                      OpMetode=1, outfile=outfile)
+}
+#Hysteroskopi
+for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad', 'Opf0Reoperasjon')) {
+  outfile <- paste0(valgtVar, '_HystShus.pdf')
+  NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil,
+                      OpMetode=2, outfile=outfile)
+}
+
+
 #------------------------------ Sentralmål per sykehus --------------------------
 # variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
 #               'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')
@@ -202,12 +230,26 @@ NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra1aar, valgtVar='KomplIntra'
 # variable <- 'RegForsinkelse'
 
 #'TSS2, sumskår' = 'Tss2Sumskaar'
-variable <- 'Tss2Sumskaar'
-for (valgtVar in variable) {
+for (valgtVar in c('Tss2Sumskaar')) {
   outfile <- paste0(valgtVar, '_' ,'ShGjsn.pdf')
   NGERFigGjsnGrVar(RegData=NGERData, valgtVar=valgtVar, datoFra=datoFra1aar, datoTil=datoTil,
                       outfile=outfile)
 }
+
+for (OpMetode in c(1,2,4)) {
+  outfile <- paste0('OpTid_', c('Lap','Hyst','', 'TLH')[OpMetode] ,'ShGjsn.pdf')
+  NGERFigGjsnGrVar(RegData=NGERData, valgtVar='OpTid', datoFra=datoFra1aar, datoTil=datoTil,
+                   outfile=outfile)
+}
+
+#Skal bare ha med Haugesund 701437, Bodø 706220, Trondheim 107644, Ullevål 700399 og Tønsberg 110734. Gjerne angi RESH.
+NGERFigGjsnGrVar(RegData=NGERData, valgtVar='R0ScorePhys', datoFra=datoFra1aar, datoTil=datoTil,
+                 velgAvd = c(701437, 706220, 107644, 700399, 110734.), outfile='R0ScorePhys_UtvalgteShGjsn.pdf')
+•	?? Pasientens helsegevinst – PROM. Har bare 0 måling iår....
+
+
+
+
 
 
 

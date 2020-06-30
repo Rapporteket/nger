@@ -705,8 +705,8 @@ tabPanel(p("Abonnement",
 
 #----- Define server logic required to draw a histogram-------
 server <- function(input, output, session) {
-
-  raplog::appLogger(session, msg = 'Starter Rapporteket-NGER')
+  if (paaServer) {
+  raplog::appLogger(session, msg = 'Starter Rapporteket-NGER')}
   #system.file('NGERmndRapp.Rnw', package='nger')
 
     #hospitalName <-getHospitalName(rapbase::getUserReshId(session))
