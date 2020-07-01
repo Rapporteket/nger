@@ -210,7 +210,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                             selectInput(inputId = 'velgReshReg', label='Velg sykehus',
                                         selected = 0,
                                         choices = sykehusValg),
-                            downloadButton(outputId = 'lastNed_dataTilRegKtr', label='Last ned fødselsnummer og operasjonsdato'),
+                            downloadButton(outputId = 'lastNed_dataTilRegKtr', label='Last ned fødselsdato og operasjonsdato'),
                             br(),
                             br(),
                             downloadButton(outputId = 'lastNed_dataDump', label='Last ned datadump')
