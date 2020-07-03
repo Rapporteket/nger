@@ -20,6 +20,12 @@
 #'                2: Akutt
 #'                3: Ø-hjelp
 #' @param dagkir Dagkirurgi? 0-nei, 1-ja
+#' @param AlvorlighetKompl  Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
+#'                          Angis som en vektor av tall som tekst, f.eks. c('1','2')
+#'                          1: Lite alvorlig
+#'                          2: Middels alvorlig
+#'                          3: Alvorlig
+#'                          4: Dødelig
 #' @param enhetsUtvalg Lag figur for
 #'                 0: Hele landet
 #'                 1: Egen enhet mot resten av landet (Standard)

@@ -102,7 +102,7 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', datoFra='2013-01-01
 
   FigDataParam <- list(AggVerdier=AggVerdier,
                        N=N, #Nfig,
-                       Ngr=Ngr,
+                       Ngr=Ngr[sortInd],
                        #KImaal <- NGERVarSpes$KImaal,
                        #grtxt2=grtxt2,
                        grtxt=grtxt,

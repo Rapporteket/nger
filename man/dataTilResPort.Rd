@@ -8,7 +8,6 @@ dataTilResPort(
   RegData = RegData,
   valgtKI,
   datoFra = "2016-01-01",
-  figurtype = "andelGrVar",
   aar = 2016:2019,
   OpMetode = 0,
   filUt = "dummy"
