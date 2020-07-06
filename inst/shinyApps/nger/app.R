@@ -210,7 +210,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                             selectInput(inputId = 'velgReshReg', label='Velg sykehus',
                                         selected = 0,
                                         choices = sykehusValg),
-                            downloadButton(outputId = 'lastNed_dataTilRegKtr', label='Last ned fødselsnummer og operasjonsdato'),
+                            downloadButton(outputId = 'lastNed_dataTilRegKtr', label='Last ned fødselsdato og operasjonsdato'),
                             br(),
                             br(),
                             downloadButton(outputId = 'lastNed_dataDump', label='Last ned datadump')
@@ -869,34 +869,37 @@ server <- function(input, output, session) {
        })
 
       # Egen datadump
-      variablePRM <- c("R0Metode", "R0ScoreEmo", "R0ScoreEnergy", "R0ScoreGeneral", "R0ScorePain",
-                       "R0ScorePhys", "R0ScoreRoleLmtEmo", "R0ScoreRoleLmtPhy", "R0ScoreSosial",
-                       "R0Spm2", "R0Status", "Tss2Behandlere", "Tss2Behandling", "Tss2Enighet",
-                       "Tss2Generelt", "Tss2Lytte", "Tss2Mott", "Tss2Status", "Tss2Type")
-      observe({
-        DataDump <- dplyr::filter(RegData,
-                                     as.Date(OpDato) >= input$datovalgRegKtr[1],
-                                     as.Date(OpDato) <= input$datovalgRegKtr[2])
-
-
-        if (rolle =='SC') {
-          qAlle <- 'SELECT * FROM AlleVarNum
+      # variablePRM <- c("R0Metode", "R0ScoreEmo", "R0ScoreEnergy", "R0ScoreGeneral", "R0ScorePain",
+      #                  "R0ScorePhys", "R0ScoreRoleLmtEmo", "R0ScoreRoleLmtPhy", "R0ScoreSosial",
+      #                  "R0Spm2", "R0Status", "Tss2Behandlere", "Tss2Behandling", "Tss2Enighet",
+      #                  "Tss2Generelt", "Tss2Lytte", "Tss2Mott", "Tss2Status", "Tss2Type")
+      qAlle <- 'SELECT * FROM AlleVarNum
                INNER JOIN ForlopsOversikt
                ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID'
-          RegDataAlle <- rapbase::LoadRegData(registryName = "nger", query=qAlle, dbType = "mysql")
-          RegDataAlle <- NGERPreprosess(RegDataAlle)
-          DataDump <- dplyr::filter(RegDataAlle,
-                                    as.Date(OpDato) >= input$datovalgRegKtr[1],
-                                    as.Date(OpDato) <= input$datovalgRegKtr[2])
+      RegDataAlle <- rapbase::LoadRegData(registryName = "nger", query=qAlle, dbType = "mysql")
+      RegDataAlle <- NGERPreprosess(RegDataAlle)
+      observe({
+        # DataDump <- dplyr::filter(RegData,
+        #                              as.Date(OpDato) >= input$datovalgRegKtr[1],
+        #                              as.Date(OpDato) <= input$datovalgRegKtr[2])
+        DataDump <- dplyr::filter(RegDataAlle,
+                                  as.Date(OpDato) >= input$datovalgRegKtr[1],
+                                  as.Date(OpDato) <= input$datovalgRegKtr[2])
 
+        if (rolle =='SC') {
           valgtResh <- as.numeric(input$velgReshReg)
           ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
-         } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
-        tabDataDump <- DataDump[ind,]
+          } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
+          tabDataDump <- DataDump[ind,]
         #output$test <- renderText(valgtResh)
         } else {
+          navn <- names(DataDump)
+          fjernVarInd <- c(grep('Opf0', navn), grep('Opf1', navn),grep('R0', navn), grep('R1', navn), grep('RY1', navn), grep('Tss', navn))
           tabDataDump <-
-            DataDump[which(DataDump$ReshId == reshID), -which(names(DataDump) %in% variablePRM)]
+            DataDump[which(DataDump$ReshId == reshID), -fjernVarInd] #which(names(DataDump) %in% variablePRM)]
+          #DataDump[which(DataDump$ReshId == reshID), -fjernVariabler]
+          #navn[fjernVariInd]
+
           #output$test <- renderText(dim(tabDataDump)[1])
           } #Tar bort PROM/PREM til egen avdeling
         #tabDataDump <- DataDump[which(DataDump$ReshId == reshID), -which(names(DataDump) %in% variablePRM)]
