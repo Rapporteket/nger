@@ -242,14 +242,18 @@ for (OpMetode in c(1,2,4)) {
                    outfile=outfile)
 }
 
-#Skal bare ha med Haugesund 701437, Bodø 706220, Trondheim 107644, Ullevål 700399 og Tønsberg 110734. Gjerne angi RESH.
-NGERFigGjsnGrVar(RegData=NGERData, valgtVar='R0ScorePhys', datoFra=datoFra1aar, datoTil=datoTil,
-                 velgAvd = c(701437, 706220, 107644, 700399, 110734.), outfile='R0ScorePhys_UtvalgteShGjsn.pdf')
-•	?? Pasientens helsegevinst – PROM. Har bare 0 måling iår....
+#Skal bare ha med Haugesund 701437, Bodø 706220, Trondheim 107644, Ullevål 700399 og Tønsberg 110734.
+NGERDataUtvSh <- NGERData[which(NGERData$AvdRESH %in% c(701437, 706220, 107644, 700399, 110734)),]
+NGERFigGjsnGrVar(RegData=NGERDataUtvSh, valgtVar='R0ScorePhys', datoFra=datoFra1aar, datoTil=datoTil,
+                  outfile='R0ScorePhys_UtvalgteShGjsn.pdf')
 
 
-
-
+#KvalInd
+for (valgtVar in c('kvalInd', 'RAND0', 'TSS0')) {
+outfile <- paste0(valgtVar, '_' ,'KI.pdf')
+NGERFigKvalInd <- function(RegData, datoFra=datoFra1aar, datoTil=datoTil,
+                           valgtVar='kvalInd', outfile='')
+}
 
 
 
