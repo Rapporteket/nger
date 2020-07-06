@@ -239,7 +239,7 @@ for (valgtVar in c('Tss2Sumskaar')) {
 for (OpMetode in c(1,2,4)) {
   outfile <- paste0('OpTid_', c('Lap','Hyst','', 'TLH')[OpMetode] ,'ShGjsn.pdf')
   NGERFigGjsnGrVar(RegData=NGERData, valgtVar='OpTid', datoFra=datoFra1aar, datoTil=datoTil,
-                   outfile=outfile)
+                   OpMetode = OpMetode, outfile=outfile)
 }
 
 #Skal bare ha med Haugesund 701437, Bodø 706220, Trondheim 107644, Ullevål 700399 og Tønsberg 110734.
@@ -251,8 +251,8 @@ NGERFigGjsnGrVar(RegData=NGERDataUtvSh, valgtVar='R0ScorePhys', datoFra=datoFra1
 #KvalInd
 for (valgtVar in c('kvalInd', 'RAND0', 'TSS0')) {
 outfile <- paste0(valgtVar, '_' ,'KI.pdf')
-NGERFigKvalInd <- function(RegData, datoFra=datoFra1aar, datoTil=datoTil,
-                           valgtVar='kvalInd', outfile='')
+NGERFigKvalInd(RegData=NGERData, datoFra=datoFra1aar, datoTil=datoTil,
+                           valgtVar=valgtVar, outfile=outfile)
 }
 
 
@@ -260,7 +260,7 @@ NGERFigKvalInd <- function(RegData, datoFra=datoFra1aar, datoTil=datoTil,
 #------------------------------Tabeller-----------------------------------
 library(xtable)
 library(nger)
-load(paste0('A:/NGER/Aarsrapp2018_2019-08-05.Rdata'))
+#load(paste0('A:/NGER/Aarsrapp2018_2019-08-05.Rdata'))
 RegData <- NGERData
 RegData <- NGERPreprosess(RegData)
 
