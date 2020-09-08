@@ -208,11 +208,16 @@ for (valgtVar in variable) {
 }
 
 #Laparoskopi
-for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad', 'Opf0Reoperasjon','LapKonvertert')) {
+#for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad', 'Opf0Reoperasjon','LapKonvertert')) {
+for (valgtVar in 'OpDagkirurgi') {
   outfile <- paste0(valgtVar, '_LapShus.pdf')
   NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil,
                       OpMetode=1, outfile=outfile)
 }
+
+NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil,
+                            OpMetode=1)
+
 #Hysteroskopi
 for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad', 'Opf0Reoperasjon')) {
   outfile <- paste0(valgtVar, '_HystShus.pdf')
