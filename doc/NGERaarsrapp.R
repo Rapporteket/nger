@@ -214,10 +214,8 @@ for (valgtVar in 'OpDagkirurgi') {
   NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil,
                       OpMetode=1, outfile=outfile)
 }
-
-NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil,
-                            OpMetode=1)
-
+NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra1aar, valgtVar='OpDagkirurgi', datoTil=datoTil,
+                    OpMetode=1)
 #Hysteroskopi
 for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad', 'Opf0Reoperasjon')) {
   outfile <- paste0(valgtVar, '_HystShus.pdf')
