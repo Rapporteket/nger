@@ -343,3 +343,9 @@ tab <- xtable::xtable(TabPasKar, align=c("l", "l", rep("r", ncol(TabPasKar)-1)),
 print(tab, include.rownames=FALSE, sanitize.text.function = function(x){x})
 write.table(tab, file="TabPasienkarakteristika.csv", row.names=F, sep=';')
 
+#-----------Resultater for enkeltsykehus--------------------------
+#Sandnessjøen, resh 103162. Postop blødning. Hysterektomi, 2015-2019
+
+NGERFigAndelTid(RegData=NGERData, datoFra='2015-01-01', valgtVar='Opf0KomplBlodning', datoTil='2019-12-31',
+                reshID = 103162, enhetsUtvalg = 2, OpMetode=4, outfile='PostOpBlod_Sandnessj.pdf', tidsenhet='Aar')
+
