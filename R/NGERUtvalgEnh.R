@@ -127,7 +127,8 @@ if (velgDiag !=0) {
 } else {  indDiag <- 1:Ninn}
 
   #Alvorlighetsgrad, flervalgsutvalg
-  indAlvor <- if (AlvorlighetKompl[1] %in% 1:3) {which(RegData$Opf0AlvorlighetsGrad %in% as.numeric(AlvorlighetKompl)) %i%
+  indAlvor <- if (AlvorlighetKompl[1] %in% 1:3) {
+    which(RegData$Opf0AlvorlighetsGrad %in% as.numeric(AlvorlighetKompl)) %i%
       which(RegData$Opf0Status == 1)} else {indAlvor <- 1:Ninn}
   #Hastegrad  1:3 'Elektiv', 'Akutt', 'Ø-hjelp'
   indHastegrad <- if (Hastegrad[1] %in% 1:3) {which(RegData$OpKategori %in% as.numeric(Hastegrad))

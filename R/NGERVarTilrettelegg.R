@@ -230,6 +230,29 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
       tittel <- 'Postop. komplikasjon, moderat/alvorlig'
     }
   }
+  if (valgtVar=='Opf0AlvorlighetsGrad1') {   # andelGrVar/Tid
+    #Postoperative komplikasjoner, lav alvorlighetsgrad
+    #Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
+    RegData <- RegData[(which(RegData$Opf0Status == 1) %i% which(RegData$Opf0Komplikasjoner %in% 0:1)), ]
+    if (figurtype %in% c('andelGrVar', 'andelTid')) {
+      #Andel av postoperative komplikasjoner som var moderate 2 eller alvorlige (3 og 4)
+      RegData$Variabel[which(RegData$Opf0AlvorlighetsGrad == 1)] <- 1
+      varTxt <- 'komplikasjoner grad 1'
+      tittel <- 'Postop. komplikasjon, lite alvorlig'
+    }
+  }
+  if (valgtVar=='Opf0AlvorlighetsGrad234') {   #Andeler, andelGrVar
+    #Postoperative komplikasjoner
+    #Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
+    RegData <- RegData[(which(RegData$Opf0Status == 1) %i% which(RegData$Opf0Komplikasjoner %in% 0:1)), ]
+    if (figurtype %in% c('andelGrVar', 'andelTid')) {
+      #Andel av postoperative komplikasjoner som var moderate 2 eller alvorlige (3 og 4)
+      RegData$Variabel[which(RegData$Opf0AlvorlighetsGrad %in% 2:4)] <- 1
+      varTxt <- 'komplikasjoner grad 2-4'
+      tittel <- 'Postop. komplikasjon, moderat/alvorlig'
+    }
+  }
+
 
   if (valgtVar=='Opf0KomplBlodning') { #andelGrVar, andelTid
     #Kode 0: Nei, 1:Ja
