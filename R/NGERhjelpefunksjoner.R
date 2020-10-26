@@ -180,24 +180,73 @@ dataTilResPort <- function(RegData = RegData, valgtKI, datoFra = '2016-01-01',
     dataDum <- aggregate(data=RegData[ ,c("ReshId", 'Aar', 'Variabel' )], Variabel~ReshId+Aar,
                          #x=RegData$Variabel, by=RegData[]
                          FUN=function(x) {c(sum(x, na.rm=T), sum(!is.na(x)))})
+    # dataDum <- aggregate(data=RegData[ ,c("ReshId", 'Aar', 'Variabel' )], Variabel~ReshId+Aar,
+    #                      #x=RegData$Variabel, by=RegData[]
+    #                      FUN=function(x) {c(sum(x, na.rm=T), length(x))})
 
     opMetTxt <- c('','Lap','Hys')[OpMetode+1]
     dataKI <- data.frame(dataDum[,1:2], Teller=dataDum$Variabel[,1], Nevner=dataDum$Variabel[,2],
                          KvalInd=paste0(valgtKI, opMetTxt))
     #write.table(dataKI, file = paste0('NGERkvalInd_', valgtKI, opMetTxt,'.csv'), row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
 
-
-
-  #   filUt <- paste0('RyggTilOff', ifelse(filUt=='dummy',  valgtVar, filUt), '.csv')
-  # RyggVarSpes <- RyggVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'andelGrVar')
-  # RyggUtvalg <- RyggUtvalgEnh(RegData=RyggVarSpes$RegData, aar=aar, hastegrad = hastegrad, tidlOp=tidlOp) #datoFra = datoFra) #, hovedkat=hovedkat) # #, datoTil=datoTil)
-  # RegData <- RyggUtvalg$RegData
-  # RyggTilOffvalgtVar <- RegData[,c('Aar', "ShNavn", "ReshId", "Variabel")]
-  # info <- c(RyggVarSpes$tittel, RyggUtvalg$utvalgTxt)
-  # RyggTilOffvalgtVar$info <- c(info, rep(NA, dim(RyggTilOffvalgtVar)[1]-length(info)))
-  # #write.table(RyggTilOffvalgtVar, file = paste0('A:/Resultatportalen/', filUt), sep = ';', row.names = F) #, fileEncoding = 'UTF-8')
   return(invisible(dataKI))
+
+
 }
+#' Generere data til Resultatportalen/SKDE-viser
+#'
+#' @param filUt tilnavn for utdatatabell (fjern?)
+#' @param valgtVar - beinsmLavPre, peropKompDura, sympVarighUtstr, p.t. 10 kvalitetsind.
+#' @param indID indikator-id, eks. 'ind1', 'ind2', osv.
+#' @param ResPort 1-hvis data til resultatportalen (standard), 0-data til SKDE-viser
+#' @inheritParams RyggUtvalgEnh
+#' @return Datafil til Resultatportalen
+#' @export
+
+dataTilOffVisning <- function(RegData = RegData, valgtVar, datoFra = '2011-01-01', aar=0, ktr=0,
+                              indID = 'indDummy', ResPort=1,
+                              hovedkat=99, hastegrad=99, tidlOp='', filUt='dummy'){
+
+
+  filUt <- paste0('Rygg', ifelse(filUt=='dummy',  valgtVar, filUt), c('_SKDE', '_ResPort')[ResPort+1],'.csv')
+  RyggVarSpes <- RyggVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, ktr=ktr, figurtype = 'andelGrVar')
+  RegData <- RyggUtvalgEnh(RegData=RyggVarSpes$RegData, aar=aar, hastegrad = hastegrad,
+                           tidlOp=tidlOp, hovedkat=hovedkat)$RegData      #datoFra = datoFra) #) # #, datoTil=datoTil)
+
+  if (ResPort == 1){
+    #Variabler: Aar	ReshId	Teller Ind1	Nevner Ind1	  AarID	   Indikator
+    #          2014	103469	  0	          1	       2014103469	  ind1
+    RegDataUt <- RegData[,c('Aar', "ReshId", "ShNavn", "Variabel")]
+    RegDataUt<- dplyr::rename(RegDataUt, Teller = Variabel)
+    RegDataUt$AarID <- paste0(RegDataUt$Aar, RegDataUt$ReshId)
+    RegDataUt$Indikator <- indID
+    RegDataUt$Nevner <- 1
+  }
+
+  if (ResPort == 0){
+    #Variabler: year, orgnr, var, denominator, ind_id
+    RegDataUt <- RegData #[,c('Aar', "ReshId", "Variabel")]
+    RegDataUt$ind_id <- indID
+    RegDataUt$denominator <- 1
+    # nytt navn = gammelt navn
+    RegDataUt <- dplyr::rename(RegDataUt,
+                               year = Aar,
+                               var = Variabel)
+
+    #Legge på orgID ("Sykehusviser")
+    #ReshId	orgnr	RapporteketNavn	SKDEnavn
+    nyID <- c('999976' = '974706490',	#Ahus	Ahus
+              '107508' = '974518821',	#Aleris Bergen	Aleris Bergen
+
+    )
+    RegDataUt$orgnr <- as.character(nyID[as.character(RegDataUt$ReshId)])
+    RegDataUt <- RegDataUt[ ,c('year', 'orgnr', 'var', 'denominator', 'ind_id')]
+  }
+
+  write.table(RegDataUt, file = filUt, sep = ';', row.names = F) #, fileEncoding = 'UTF-8')
+  return(invisible(RegDataUt))
+}
+
 
 
 
