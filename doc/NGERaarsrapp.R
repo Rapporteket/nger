@@ -36,7 +36,7 @@ library(nger)
 #KomplIntra, KomplPostop, Opf0AlvorlighetsGrad
 #OpMetode  1: Laparoskopi #2: Hysteroskopi
 
-
+RegData <- NGERPreprosess(RegData = NGERRegDataSQL())
 #Forekomsten av komplikasjoner ved  inngrep.
 #Lap Hys
 dataTilSKDE <- dataTilSKDE(RegData=RegData, valgtVar = 'KomplIntra',
@@ -54,7 +54,7 @@ dataTilSKDE <- dataTilSKDE(RegData=RegData, valgtVar = 'KomplPostopAlvor',
                            aar=2016:2019, OpMetode = 1,
                            indID = 'nger_kompl_postop_lap', filUt='KomplPostopLap')
 
-dataTilSKDE <- dataTilSKDE(RegData=RegData, valgtVar = 'KomplPostopAlvor',
+dataTilSKDE <- dataTilSKDE(RegData=RegData, valgtVar = 'KomplPostopAlvor', #'Opf0AlvorlighetsGrad', #
                            aar=2016:2019, OpMetode = 2,
                            indID = 'nger_kompl_postop_hys', filUt='KomplPostopHys')
 
@@ -63,7 +63,7 @@ dataTilSKDE <- dataTilSKDE(RegData=RegData, valgtVar = 'Tss2Generelt',
                            aar=2016:2019,
                            indID = 'nger_pasient_tilfredshet', filUt='Tss2Generelt')
 
-tapply(dataTilSKDE$var, dataTilSKDE$year, FUN='mean')
+tapply(dataTilSKDE$var, dataTilSKDE$year, FUN='mean')*100
 #--------------------Offentliggjøring--------------------------
 
 NGERFigAndelTid(RegData=NGERData, valgtVar='KomplIntra', datoFra=datoFra, datoTil=datoTil,
