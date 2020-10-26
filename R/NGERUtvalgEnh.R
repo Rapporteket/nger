@@ -127,7 +127,7 @@ if (velgDiag !=0) {
 } else {  indDiag <- 1:Ninn}
 
   #Alvorlighetsgrad, flervalgsutvalg
-  indAlvor <- if (AlvorlighetKompl[1] %in% 1:3) {
+  indAlvor <- if (AlvorlighetKompl[1] %in% 1:4) {
     which(RegData$Opf0AlvorlighetsGrad %in% as.numeric(AlvorlighetKompl)) %i%
       which(RegData$Opf0Status == 1)} else {indAlvor <- 1:Ninn}
   #Hastegrad  1:3 'Elektiv', 'Akutt', 'Ø-hjelp'
@@ -160,7 +160,7 @@ if (velgDiag !=0) {
                    paste0('Hastegrad: ',
                           paste0(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','))},
                  if (dagkir %in% 0:1){c('Ikke dagkirurgi', 'Dagkirurgi')[as.numeric(dagkir)+1]},
-                 if (AlvorlighetKompl[1] %in% 1:3){
+                 if (AlvorlighetKompl[1] %in% 1:4){
                    paste0('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
                                                          [as.numeric(AlvorlighetKompl)], collapse=','))},
                  if (velgDiag != 0) {paste0('Diagnose: ', diagTxt[velgDiag])},

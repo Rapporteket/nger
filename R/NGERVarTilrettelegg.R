@@ -140,6 +140,14 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
 	varTxt <- 'komplikasjoner'
     tittel <- 'Komplikasjoner, postoperativt'
   }
+  if (valgtVar=='KomplPostopAlvor') { #andelGrVar, andelTid
+    # Andel postoperative komplikasjoner
+    #Kode 0: Nei, 1:Ja, tomme
+    RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
+    RegData$Variabel[RegData$Opf0AlvorlighetsGrad %in%  2:4] <- 1 #RegData$Opf0Komplikasjoner
+    varTxt <- 'komplikasjoner'
+    tittel <- 'Komplikasjoner, postoperativt'
+  }
   if (valgtVar=='LapKonvertert') { #andelTid
     RegData <- RegData[intersect(which(RegData$LapKonvertert %in% 0:1), which(RegData$LapStatus == 1)), ]
     RegData$Variabel <- RegData$LapKonvertert

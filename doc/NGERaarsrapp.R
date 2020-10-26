@@ -32,8 +32,38 @@ datoTil <- '2019-12-31'
 setwd("P:/Registerinfo og historie/NGER/aarsrapp/")
 library(nger)
 
+#--------------------Data til SKDE/Resultaportalen------------------
+#KomplIntra, KomplPostop, Opf0AlvorlighetsGrad
+#OpMetode  1: Laparoskopi #2: Hysteroskopi
 
 
+#Forekomsten av komplikasjoner ved  inngrep.
+#Lap Hys
+dataTilSKDE <- dataTilSKDE(RegData=RegData, valgtVar = 'KomplIntra',
+                                 aar=2016:2019, OpMetode = 1,
+                                 indID = 'nger_kompl_intra_lap', filUt='KomplIntraLap')
+
+dataTilSKDE <- dataTilSKDE(RegData=RegData, valgtVar = 'KomplIntra',
+                           aar=2016:2019, OpMetode = 2,
+                           indID = 'nger_kompl_intra_hys', filUt='KomplIntraHys')
+
+
+#Forekomsten av middels og alvorlige komplikasjoner etter  inngrep.
+#Lap Hys
+dataTilSKDE <- dataTilSKDE(RegData=RegData, valgtVar = 'KomplPostopAlvor',
+                           aar=2016:2019, OpMetode = 1,
+                           indID = 'nger_kompl_postop_lap', filUt='KomplPostopLap')
+
+dataTilSKDE <- dataTilSKDE(RegData=RegData, valgtVar = 'KomplPostopAlvor',
+                           aar=2016:2019, OpMetode = 2,
+                           indID = 'nger_kompl_postop_hys', filUt='KomplPostopHys')
+
+#Andel pasienter som har positiv eller svært positiv oppfatning av gynekologisk avdeling.
+dataTilSKDE <- dataTilSKDE(RegData=RegData, valgtVar = 'Tss2Generelt',
+                           aar=2016:2019,
+                           indID = 'nger_pasient_tilfredshet', filUt='Tss2Generelt')
+
+tapply(dataTilSKDE$var, dataTilSKDE$year, FUN='mean')
 #--------------------Offentliggjøring--------------------------
 
 NGERFigAndelTid(RegData=NGERData, valgtVar='KomplIntra', datoFra=datoFra, datoTil=datoTil,

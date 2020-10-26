@@ -180,15 +180,10 @@ dataTilResPort <- function(RegData = RegData, valgtKI, datoFra = '2016-01-01',
     dataDum <- aggregate(data=RegData[ ,c("ReshId", 'Aar', 'Variabel' )], Variabel~ReshId+Aar,
                          #x=RegData$Variabel, by=RegData[]
                          FUN=function(x) {c(sum(x, na.rm=T), sum(!is.na(x)))})
-    # dataDum <- aggregate(data=RegData[ ,c("ReshId", 'Aar', 'Variabel' )], Variabel~ReshId+Aar,
-    #                      #x=RegData$Variabel, by=RegData[]
-    #                      FUN=function(x) {c(sum(x, na.rm=T), length(x))})
 
     opMetTxt <- c('','Lap','Hys')[OpMetode+1]
     dataKI <- data.frame(dataDum[,1:2], Teller=dataDum$Variabel[,1], Nevner=dataDum$Variabel[,2],
                          KvalInd=paste0(valgtKI, opMetTxt))
-    #write.table(dataKI, file = paste0('NGERkvalInd_', valgtKI, opMetTxt,'.csv'), row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
-
   return(invisible(dataKI))
 
 
@@ -196,24 +191,24 @@ dataTilResPort <- function(RegData = RegData, valgtKI, datoFra = '2016-01-01',
 #' Generere data til Resultatportalen/SKDE-viser
 #'
 #' @param filUt tilnavn for utdatatabell (fjern?)
-#' @param valgtVar - beinsmLavPre, peropKompDura, sympVarighUtstr, p.t. 10 kvalitetsind.
+#' @param valgtVar - KomplIntra, KomplPostop, Opf0AlvorlighetsGrad
 #' @param indID indikator-id, eks. 'ind1', 'ind2', osv.
 #' @param ResPort 1-hvis data til resultatportalen (standard), 0-data til SKDE-viser
-#' @inheritParams RyggUtvalgEnh
+#' @inheritParams NGERUtvalgEnh
 #' @return Datafil til Resultatportalen
 #' @export
 
-dataTilOffVisning <- function(RegData = RegData, valgtVar, datoFra = '2011-01-01', aar=0, ktr=0,
-                              indID = 'indDummy', ResPort=1,
-                              hovedkat=99, hastegrad=99, tidlOp='', filUt='dummy'){
+dataTilSKDE <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01', aar=0,
+                        OpMetode=0,
+                        indID = 'indDummy', ResPort=0, filUt='dummy'){
 
 
-  filUt <- paste0('Rygg', ifelse(filUt=='dummy',  valgtVar, filUt), c('_SKDE', '_ResPort')[ResPort+1],'.csv')
-  RyggVarSpes <- RyggVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, ktr=ktr, figurtype = 'andelGrVar')
-  RegData <- RyggUtvalgEnh(RegData=RyggVarSpes$RegData, aar=aar, hastegrad = hastegrad,
-                           tidlOp=tidlOp, hovedkat=hovedkat)$RegData      #datoFra = datoFra) #) # #, datoTil=datoTil)
+  filUt <- paste0('NGER', ifelse(filUt=='dummy',  valgtVar, filUt), c('_SKDE', '_ResPort')[ResPort+1],'.csv')
+  NGERVarSpes <- NGERVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'andelGrVar')
+  RegData <- NGERUtvalgEnh(RegData=NGERVarSpes$RegData, OpMetode = OpMetode,
+                           datoFra = paste0(aar[1],'-01-01'), datoTil = paste0(rev(aar)[1], '-12-31'))$RegData      #datoFra = datoFra) #) # #, datoTil=datoTil)
 
-  if (ResPort == 1){
+  if (ResPort == 1){ #IKKE TILRETTELAGT
     #Variabler: Aar	ReshId	Teller Ind1	Nevner Ind1	  AarID	   Indikator
     #          2014	103469	  0	          1	       2014103469	  ind1
     RegDataUt <- RegData[,c('Aar', "ReshId", "ShNavn", "Variabel")]
@@ -225,7 +220,7 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, datoFra = '2011-01-01
 
   if (ResPort == 0){
     #Variabler: year, orgnr, var, denominator, ind_id
-    RegDataUt <- RegData #[,c('Aar', "ReshId", "Variabel")]
+    RegDataUt <- RegData[,c('Aar', "ReshId", "Variabel")]
     RegDataUt$ind_id <- indID
     RegDataUt$denominator <- 1
     # nytt navn = gammelt navn
@@ -235,9 +230,48 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, datoFra = '2011-01-01
 
     #Legge på orgID ("Sykehusviser")
     #ReshId	orgnr	RapporteketNavn	SKDEnavn
-    nyID <- c('999976' = '974706490',	#Ahus	Ahus
-              '107508' = '974518821',	#Aleris Bergen	Aleris Bergen
-
+    nyID <- c('108172' = '974706490',		#Ahus	AHUS NORDBYHAGEN SOMATIKK	Ahus
+              '107511' = '974588951',		#Aleris	OSLO UNIVERSITETSSYKEHUS HF AKER - SOMATIKK	Aker
+              '103719' = '974631091',		#Arendal	SØRLANDET SYKEHUS HF SOMATIKK ARENDAL	Arendal
+              '106843' = '922748144',		#Betanien	BETANIEN SYKEHUS AS	Betanien
+              '706220' = '974795361',		#Bodø	NORDLANDSSYKEHUSET HF SOMATIKK - BODØ	Bodø
+              '104736' = '974705788',		#Bærum	VESTRE VIKEN HF BÆRUM SYKEHUS - SOMATIKK	Bærum
+              '700404' = '974707152',		#DNR	OSLO UNIVERSITETSSYKEHUS HF RADIUMHOSPITALET - SOMATIKK	Radiumhospitalet
+              '103298' = 	'974631326',		#Drammen	VESTRE VIKEN HF DRAMMEN SYKEHUS - SOMATIKK	Drammen
+              '108768' = 	'974631768',		#Elverum	SYKEHUSET INNLANDET HF ELVERUM - SOMATIKK	Elverum
+              '108383' = 	'974595214',		#Flekkefjord	SØRLANDET SYKEHUS HF SOMATIKK FLEKKEFJORD	Flekkefjord
+              '105226' = 	'974744570',		#Førde	HELSE FØRDE HF FØRDE SENTRALSJUKEHUS	Førde
+              '108833' = 	'974632535',		#Gjøvik	SYKEHUSET INNLANDET HF GJØVIK - SOMATIKK	Gjøvik
+              '706221' = 	'993573159',		#Gravdal	NORDLANDSSYKEHUSET HF HABILITERING/REHAB - GRAVDAL	Lofoten
+              '101854' = 	'974795833',		#Hammerfest	FINNMARKSSYKEHUSET HF HAMMERFEST SYKEHUS	Hammerfest
+              '706129' = 	'974795639',		#Harstad	UNIVERSITETSSYKEHUSET NORD-NORGE HF HARSTAD - SOMATIKK	Harstad
+              '701437' = 	'974724774',		#Haugesund	HELSE FONNA HF HAUGESUND SJUKEHUS	Haugesund
+              '102954' = 	'974557746',		#Haukeland	HELSE BERGEN HF HAUKELAND UNIVERSITETSSJUKEHUS	Haukeland
+              '101828' = 	'974795930',		#Kirkenes	FINNMARKSSYKEHUSET HF KIRKENES SYKEHUS	Kirkenes
+              '104174' = 	'974631385',		#Kongsberg	VESTRE VIKEN HF KONGSBERG SYKEHUS - SOMATIKK	Kongsberg
+              '4215373' = 	'974631776',		#Kongsvinger	AHUS KONGSVINGER SOMATIKK	Kongsvinger
+              '100412' = 	'974733013',		#Kristiansand	SØRLANDET SYKEHUS HF SOMATIKK KRISTIANSAND	Kristiansand
+              '103189' = 	'974746948',		#Kristiansund	HELSE MØRE OG ROMSDAL HF KRISTIANSUND SJUKEHUS - SOMATIKK	Kristiansund
+              '105863' = 	'974754118',		#Levanger	HELSE NORD-TRØNDELAG HF SOMATIKK - LEVANGER	Levanger
+              '111180' = 	'994958682',		#Lillehammer	HELSE NORD-TRØNDELAG HF SYKEHUSET LEVANGER - REHABILITERING	Levanger
+              '700789' = 	'974795515',		#Mo i Rana	HELGELANDSSYKEHUSET HF MO I RANA - SOMATIKK	Mo i Rana
+              '103188' = 	'974745569',		#Molde	HELSE MØRE OG ROMSDAL HF MOLDE SJUKEHUS - SOMATIKK	Molde
+              '105874' = 	'974753898',		#Namsos	HELSE NORD-TRØNDELAG HF SOMATIKK - NAMSOS	Namsos
+              '706130' = 	'974795396',		#Narvik	UNIVERSITETSSYKEHUSET NORD-NORGE HF NARVIK - SOMATIKK	Narvik
+              '103575' = 	'974631407',		#Ringerike	VESTRE VIKEN HF RINGERIKE SYKESHUS - SOMATIKK	Ringerike
+              '103162' = 	'974795477',		#Sandessjøen	HELGELANDSSYKEHUSET HF SANDNESSJØEN - SOMATIKK	Sandnessjøen
+              '4205296' = 	'974633191',		#Skien	SYKEHUSET TELEMARK HF SKIEN - SOMATIKK	Skien
+              '105460' = 	'974703300',		#Stavanger	STAVANGER UNIVERSITETSSJUKEHUS SOMATIKK VÅLAND	Stavanger
+              '100460' = 	'974795574',		#Stokmarknes	NORDLANDSSYKEHUSET HF SOMATIKK - STOKMARKNES	Vesterålen
+              '701482' = 	'974742985',		#Stord	HELSE FONNA HF STORD SJUKEHUS	Stord
+              '601227' = 	'974795787',		#Tromsø	UNIVERSITETSSYKEHUSET NORD-NORGE HF TROMSØ - SOMATIKK	Tromsø
+              '107644' = 	'974749025',		#Trondheim	ST OLAVS HOSPITAL HF UNIVERSITETSSYKEHUSET I TRONDHEIM	St. Olavs
+              '110734' = 	'974633574',		#Tønsberg	SYKEHUSET I VESTFOLD HF, SOMATIKK, TØNSBERG	Tønsberg
+              '700399' = 	'974589095',		#Ullevål	OSLO UNIVERSITETSSYKEHUS HF ULLEVÅL - SOMATIKK	Ullevål
+              '102583' = 	'974747545',		#Volda	HELSE MØRE OG ROMSDAL HF VOLDA SJUKEHUS - SOMATIKK	Volda
+              '106026' = 	'974743272',		#Voss	HELSE BERGEN HF VOSS SJUKEHUS	Voss
+              '108048' = 	'974633698',		#Østfold	SYKEHUSET ØSTFOLD HF MOSS - SOMATIKK	Moss
+              '102582' = 	'974747138'		#Ålesund	HELSE MØRE OG ROMSDAL HF ÅLESUND SJUKEHUS - SOMATIKK	Ålesund
     )
     RegDataUt$orgnr <- as.character(nyID[as.character(RegDataUt$ReshId)])
     RegDataUt <- RegDataUt[ ,c('year', 'orgnr', 'var', 'denominator', 'ind_id')]
