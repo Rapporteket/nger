@@ -12,7 +12,8 @@
 tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0,
                             OpMetode=99, velgDiag=0){
       #RegData må inneholde ..
-  if (reshID!=0){RegData <- RegData[which(RegData$ReshId==reshID), ]}
+  gyldigResh <- reshID!=0 & !is.na(match(reshID, RegData$ReshId))
+  if (gyldigResh) {RegData <- RegData[which(RegData$ReshId==reshID), ]}
       #datoFra <- lubridate::floor_date(as.Date(datoTil)%m-% months(antMnd, abbreviate = T), unit='month')
       datoFra <- lubridate::floor_date(as.Date(datoTil)- months(antMnd, abbreviate = T), unit='month')
       aggVar <-  c('ShNavn', 'InnDato')
@@ -241,8 +242,8 @@ tabKomplLap <- function(RegData, reshID=0, datoFra='2019-01-01', datoTil=Sys.Dat
 Blod <- c('Opf0KomplBlodning', 'Opf0BlodningAbdom', 'Opf0BlodningIntraabdominal', 'Opf0BlodningVaginal')
 
 #Utstyr
-UtstyrTxt <- c('Problemer m/utstyr','...Instrumenter', '...Nett', '...Laparaskopisk sutur')
-Utstyr <- c('Opf0KomplUtstyr', 'Opf0UtstyrInstrumenter', 'Opf0UtstyrNett', 'Opf0UtstyrSutur')
+UtstyrTxt <- c('Problemer m/Instrumenter', '...Nett', '...Laparaskopisk sutur') #m/utstyr','...
+Utstyr <- c('Opf0UtstyrInstrumenter', 'Opf0UtstyrNett', 'Opf0UtstyrSutur') #'Opf0KomplUtstyr',
 
 #Infeksjon:
 # Opf0InfEndometritt = Salpingitt JA, ok.

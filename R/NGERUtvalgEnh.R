@@ -54,18 +54,19 @@ NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', f
   if (velgAvd[1] != 0 & reshID==0) {
     #if (enhetsUtvalg !=0) {stop("enhetsUtvalg må være 0 (alle)")}
     #Utvalg på avdelinger:
-    #RegData <- RegData[which(as.character(RegData$ShNavn) %in% velgAvd),]
     RegData <- RegData[which(as.numeric(RegData$ReshId) %in% as.numeric(velgAvd)),]
     RegData$ShNavn <- as.factor(RegData$ShNavn)
   }
 
- hovedgrTxt <- switch(as.character(enhetsUtvalg),
-                  '0' = 'Hele landet',
-                  '1' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]),
-                  '2' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]))
+  indEgen1 <- match(reshID, RegData$ReshId)
+  enhetsUtvalg <- ifelse(reshID==0 | is.na(indEgen1), 0, enhetsUtvalg )
 
   if (enhetsUtvalg == 2) {RegData <- RegData[which(RegData$ReshId == reshID), ]}
 
+  hovedgrTxt <- switch(as.character(enhetsUtvalg),
+                       '0' = 'Hele landet',
+                       '1' = as.character(RegData$ShNavn[indEgen1]),
+                       '2' = as.character(RegData$ShNavn[indEgen1]))
 
   Ninn <- dim(RegData)[1]
 

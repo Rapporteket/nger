@@ -465,15 +465,16 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
              choices = c('Alder over 70 år' = 'Alder',
                          'Antibiotika' = 'OpAntibProfylakse',
                          'ASA-grad > II' = 'OpASA',
+                         'Blodfortynnende' = 'Blodfortynnende',
                          'Dagkirurgiske inngrep' = 'OpDagkirurgi',
                          'Fedme (BMI>30)' = 'OpBMI',
                          'Komplikasjoner under operasjon' = 'KomplIntra',
-                         'Konvertert til laparoromi?' = 'LapKonvertert',
+                         'Konvertert til laparoromi, ikke forventet' = 'LapKonvertert',
                          'Lokalbedøvelse' = 'OpAnestesi',
                          'Operasjonstid (minutter)' = 'OpTid',
                          'Pasienter med høyere utdanning' = 'Utdanning',
                          'Postop. komplikasjon: Blødning' = 'Opf0KomplBlodning',
-                         'Postop. komplikasjon: Problemer med ustyr' = 'Opf0KomplUtstyr',
+                         #'Postop. komplikasjon: Problemer med ustyr' = 'Opf0KomplUtstyr',
                          'Postop. komplikasjon: Infeksjon' = 'Opf0KomplInfeksjon',
                          'Postop. komplikasjon: Organskade' = 'Opf0KomplOrgan',
                          'Postop. komplikasjon: Reoperasjon' = 'Opf0Reoperasjon',
@@ -652,7 +653,7 @@ tabPanel(p("Registeradministrasjon", title='Registeradministrasjonens side for r
                                    'Komplikasjoner, postoperativt' = 'KomplPostop',
                                    'Alvorlighetsgrad, postop.kompl.' = 'Opf0AlvorlighetsGrad',
                                    'Konvertert, hys-lap' = 'HysKonvertert',
-                                   'Konvertert, lap-lap' = 'LapKonvertert',
+                                   'Konvertert, lap-lap, ikke forventet' = 'LapKonvertert',
                                    'TSS2-generelt, positiv oppfatning avd.' = 'Tss2Generelt',
                                    'TSS2-sumskår' = 'Tss2Sumskaar'
                                    )
@@ -1281,7 +1282,7 @@ output$lastNed_dataDump <- downloadHandler(
 
       if (rolle=='SC') {
         observe({
-          tabdataTilResPort <- dataTilResPort(RegData=RegData, valgtKI = input$valgtVarRes,
+          tabdataTilResPort <- dataTilOffVisning(RegData=RegData, valgtVar = input$valgtVarRes,
                                               aar=as.numeric(input$aarRes[1]):as.numeric(input$aarRes[2]),
                                               OpMetode = as.numeric(input$opMetodeRes))
 

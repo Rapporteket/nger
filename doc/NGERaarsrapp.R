@@ -34,7 +34,7 @@ library(nger)
 
 #--------------------Data til SKDE/Resultaportalen------------------
 #KomplIntra, KomplPostop, Opf0AlvorlighetsGrad
-#OpMetode  1: Laparoskopi #2: Hysteroskopi
+#OpMetode  1: Laparoskopi #2: Hysteroskopi, 2019: 5954 3146
 
 RegData <- NGERPreprosess(RegData = NGERRegDataSQL())
 #Forekomsten av komplikasjoner ved  inngrep.
@@ -42,10 +42,15 @@ RegData <- NGERPreprosess(RegData = NGERRegDataSQL())
 dataTilSKDE <- dataTilSKDE(RegData=RegData, valgtVar = 'KomplIntra',
                                  aar=2016:2019, OpMetode = 1,
                                  indID = 'nger_kompl_intra_lap', filUt='KomplIntraLap')
+dataTiloffVis <- dataTilOffVisning(RegData=RegData, valgtVar = 'KomplIntra',
+                           aar=2016:2019, OpMetode = 1, ResPort = 1,
+                           indID = 'nger_kompl_intra_lap', filUt='KomplIntraLap')
 
-dataTilSKDE <- dataTilSKDE(RegData=RegData, valgtVar = 'KomplIntra',
-                           aar=2016:2019, OpMetode = 2,
-                           indID = 'nger_kompl_intra_hys', filUt='KomplIntraHys')
+dataTilResPort <- dataTilResPort(RegData = RegData, valgtKI = 'KomplIntra',
+                                 aar=2016:2019, OpMetode=1, filUt='dummy')
+
+
+
 
 
 #Forekomsten av middels og alvorlige komplikasjoner etter  inngrep.

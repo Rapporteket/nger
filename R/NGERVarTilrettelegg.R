@@ -88,6 +88,14 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     cexgr <- 0.8
   }
 
+
+  if (valgtVar=='Blodfortynnende') { #andelGrVar, andelTid
+    RegData <- RegData[which(RegData$Blodfortynnende %in% 0:1), ]
+    RegData$Variabel <- RegData$Blodfortynnende
+    varTxt <- 'blodfortynnende'
+    tittel <- 'Blodfortynnende medisin før operasjon'
+  }
+
   if (valgtVar=='HysGjforingsGrad') {   #Andeler
     #Gjennomføringsgrad av hysteroskopi
     #Kode •	1-Fullstendig, 2-Ufullstendig, 3-Mislykket
@@ -149,10 +157,10 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     tittel <- 'Komplikasjoner, postoperativt'
   }
   if (valgtVar=='LapKonvertert') { #andelTid
-    RegData <- RegData[intersect(which(RegData$LapKonvertert %in% 0:1), which(RegData$LapStatus == 1)), ]
-    RegData$Variabel <- RegData$LapKonvertert
-    varTxt <- 'konverterte'
-    tittel <- 'Konvertert lapraskopi til laparotomi'
+    RegData <- RegData[intersect(which(RegData$LapKonvertert %in% 0:1), which(RegData$LapStatus == 1)), ] #RegData$LapKonvertert %in% 0:1
+    RegData$Variabel[RegData$Konverteringsstatus ==2] <- 1
+    varTxt <- 'ikke forventede'
+    tittel <- 'Ikke forventede konverteringer, lapraskopi til laparotomi'
   }
   if (valgtVar == 'LapNumHjelpeinnstikk') {   #Andeler
     # Velge antall fra 0 til 6
@@ -802,12 +810,12 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     #NVar <- length(indMed)
     #N <- NVar
   }
-  if (valgtVar=='KomplPostopType') {
+  if (valgtVar=='KomplPostopType') { #fordeling, andelTid, andelGrVar
     #Postoperative komplikasjoner. Bare registreringer hvor Opf0Komplikasjoner er 0 el. 1
     tittel <- 'Postoperative komplikasjoner'
     RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
-    grtxt <- c('Blødning', 'Med utstyr', 'Infeksjon', 'Organskade')
-    variable <- c('Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan')
+    grtxt <- c('Blødning', 'Infeksjon', 'Organskade') #'Med utstyr',
+    variable <- c('Opf0KomplBlodning', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan') #'Opf0KomplUtstyr',
     xAkseTxt <- 'Andel operasjoner (%)'
     ind1 <- which(RegData[ ,variable] == 1, arr.ind=T) #Ja i alle variable
     RegData[ ,variable] <- 0
