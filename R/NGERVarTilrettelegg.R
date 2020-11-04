@@ -950,32 +950,33 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     #		LapTilgangsMetode: LAPAROSCOPY_ACCESS_METHOD_TEXT: 1,2,NA
     #		LapTilgang: LAPAROSCOPY_ACCESS_TEXT
     #LapTilgangsMetode 0: Åpent, 1: Veress-nål, 2: Annet
+    #LapTilgangsMetode, fra 1/1? 2020: 0: Åpent, 1: Veress-nål, 2: Visiport, 9: Annet
     #LapTilgang, fra 1/3-16: 1-Venstre Palmers point
     #Bare laparoskopi og begge
     #Ny kategori, dvs. ny variabel: Palmers point, neste prod.setting, etterreg. fra 1.3.2016. Mangler noen og disse filtreres bort.
-    RegData <- RegData[which(RegData$OpMetode %in% c(1,3)), ]
+    RegData <- RegData[which(RegData$OpMetode %in% c(1,3)), ] #Laparoskopi
     tittel <- 'Laparoskopisk tilgang, teknikk og metode' #  'Teknikk for laparaskopisk tilgang'
-    grtxt <- c('Åpent', 'Veress-nål', 'Annet','Palmers point [1/3-16]', 'Navlen [1/3-16]') #LapTilgangsMetode
-    indMar16 <- which(as.Date(RegData$HovedDato)>='2016-03-01')
-    indMet <- which(RegData$LapTilgangsMetode %in% 0:2)
+    grtxt <- c(paste0('Metode: \n', c('Åpent', 'Veress-nål', 'Visiport [1/1-20]','Annet')),
+               paste0('Tilgang: \n', c('Palmers point', 'Navlen'), ' [1/3-16]')) #LapTilgangsMetode
+    indMar16tilg <- which(as.Date(RegData$HovedDato)>='2016-03-01')
+    #indJan20met <- which(as.Date(RegData$HovedDato)>='2020-01-01')
+    indMet <- which(RegData$LapTilgangsMetode %in% c(0:2,9))
     indTilg <- which(RegData$LapTilgang %in% 1:2)
 
-    variable <- c(paste0('met',0:2), paste0('tilg', 1:2))
-    ind1met <- cbind(indMet, RegData$LapTilgangsMetode[indMet]+1) #which(RegData[ ,variable] != -1, arr.ind = T) #Alle ja/nei
-    ind01tilg <- intersect(indMar16,indTilg)
+    variable <- c(paste0('met',0:3), paste0('tilg', 1:2))
+    ind1met <- cbind(indMet, RegData$LapTilgangsMetode[indMet]+1) #Verdi 1,2,3,10...#Alle ja/nei
+    ind1met[ind1met[,2]==10,2] <- 4
+    ind01tilg <- intersect(indMar16tilg,indTilg)
     ind1tilg <- cbind(ind01tilg, RegData$LapTilgang[ind01tilg]) #which(RegData[ ,variable] != -1, arr.ind = T) #Alle ja/nei
 
     RegData[ ,variable] <- NA
-    RegData[ ,variable[1:3]] <- 0
-    RegData[ ,variable[1:3]][ind1met] <- 1
-    RegData[ind01tilg ,variable[4:5]] <- 0
-    RegData[ ,variable[4:5]][ind1tilg] <- 1
-
-    #AntVar <- c(table(RegData$LapTilgangsMetode), table(RegData$LapTilgang[indMar16]))
-    #N <- dim(RegData)[1]
-    #NVar <- c(rep(N,3), rep(length(indMar16),2))
+    RegData[ ,variable[1:4]] <- 0
+    RegData[ ,variable[1:4]][ind1met] <- 1
+    RegData[ind01tilg ,variable[5:6]] <- 0
+    RegData[ ,variable[5:6]][ind1tilg] <- 1
   }
-  if (valgtVar == 'Opf0KomplInfeksjon') {   #Andeler, andelGrVar, andelTid
+
+    if (valgtVar == 'Opf0KomplInfeksjon') {   #Andeler, andelGrVar, andelTid
     retn <- 'H'
     flerevar <- 1
     #Opf0metode in 1:2 #9 angir "ikke mulig"

@@ -20,7 +20,7 @@ datoTil <- Sys.Date()
 dato <- as.POSIXlt(datoTil)
 datoFra <- as.Date(paste0(1900+dato$year-1,'-', dato$mon+1, '-', '01'))
 #I månedsfigurene er datoFra automatisk satt til 13 mnd før dagens dato.
-
+RegData2aar <- NGERPreprosess(NGERRegDataSQL(datoFra = (datoFra-365), datoTil = datoTil))
 if (!exists('RegData')){
       RegData <- NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil)
       RegData <- NGERPreprosess(RegData=RegData)
@@ -146,9 +146,13 @@ sammenlikningsgrunnlag.
 
 <<'AntMnd', results='asis'>>=
 antMnd <- 6
-xtable::xtable(tabAntOpphShMnd(RegData=RegData, antMnd=antMnd, reshID=reshID),
+xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil = Sys.Date(), antMnd=antMnd, reshID=reshID),
                digits=0,
                caption=paste0('Antall registreringer ved ditt sykehus siste ', antMnd, ' måneder.'))
+
+xtable::xtable(tabAntOpphShMnd(RegData=RegData2aar, datoTil = Sys.Date()-365, antMnd=antMnd, reshID=reshID),
+               digits=0,
+               caption=paste0('Antall registreringer ved ditt sykehus forrige år.'))
 
 @
 \end{frame}

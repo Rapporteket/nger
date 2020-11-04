@@ -1,4 +1,5 @@
 #' Fil som inneholder funksjoner for å lage tabeller, i første rekke tellinger av personer
+
 #' RegData må inneholde InnDato og Aar.
 #' -tabAntOpphSh12mnd: Antall opphold per måned og enhet siste 12 måneder fram til datoTil.
 #' -tabAntOpphSh5Aar:Antall opphold per år og enhet siste 5 år (inkl. inneværende år) fram til datoTil.
@@ -207,15 +208,14 @@ instrumentbruk <- function(RegData, datoFra='2019-01-01', datoTil=Sys.Date()){
   #LapIntKombo = Thunderbeat
 RegData <- NGERUtvalgEnh(RegData, datoFra = datoFra, datoTil = datoTil)$RegData
   Instr <- c('LapMorcellatorUtenPose', 'LapMorcellatorMedPose', 'LapHarmonicS',
-             'LapSingelPort', 'LapIntKombo', 'LapRobotKirurgi')
-NavnInstr <- c('Morc.u/pose', 'Morc. m/pose', 'Harm. Scalp.', 'Portioad.', 'IntKombo', 'Robotkir.') #}
+             'LapSingelPort', 'LapIntKombo', 'LapRobotKirurgi', 'LapUterusmanipulator')
+NavnInstr <- c('Morc.u/pose', 'Morc. m/pose', 'Harm. Scalp.', 'Portioad.', 'IntKombo', 'Robotkir.', 'Uterusmanip.') #}
 
 RegDataUtvalg <- RegData[which(RegData$OpMetode==1), c('ShNavn', Instr)]
 
-#InstrTab <- plyr::daply(.data=RegDataUtvalg[ ,Instr], .(RegDataUtvalg$ShNavn), .fun=colwise(sum), na.rm=T)  #Liste m/6dim
-#Får trøbbel med at InstrTab blir liste
 
-InstrTabDum <- plyr::ddply(RegDataUtvalg[ ,Instr], .(RegDataUtvalg$ShNavn), .drop=F, colwise(sum), na.rm=T)  #Dataramme m/7dim
+#InstrTabDum <- plyr::ddply(RegDataUtvalg[ ,Instr], .(RegDataUtvalg$ShNavn), .drop=F, colwise(sum), na.rm=T)  #Dataramme m/7dim
+InstrTabDum <- plyr::ddply(RegDataUtvalg, .variables='ShNavn', .drop=F, colwise(sum), na.rm=T)  #Dataramme m/7dim
 Tot <- colSums(InstrTabDum[,2:(length(Instr)+1)])
 ShNavn <- InstrTabDum[,1]
 
