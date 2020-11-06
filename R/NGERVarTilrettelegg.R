@@ -158,10 +158,17 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
   }
   if (valgtVar=='LapKonvertert') { #andelTid
     RegData <- RegData[intersect(which(RegData$LapKonvertert %in% 0:1), which(RegData$LapStatus == 1)), ] #RegData$LapKonvertert %in% 0:1
+    RegData$Variabel <- RegData$LapKonvertert
+    varTxt <- 'konverterte'
+    tittel <- 'Konvertering, lapraskopi til laparotomi'
+  }
+  if (valgtVar=='LapKonvertertUventet') { #andelTid
+    RegData <- RegData[intersect(which(RegData$LapKonvertert == 1), which(RegData$LapStatus == 1)), ] #RegData$LapKonvertert %in% 0:1
     RegData$Variabel[RegData$Konverteringsstatus ==2] <- 1
     varTxt <- 'ikke forventede'
-    tittel <- 'Ikke forventede konverteringer, lapraskopi til laparotomi'
+    tittel <- 'Konv. lapraskopi til laparotomi, andel uventede'
   }
+
   if (valgtVar == 'LapNumHjelpeinnstikk') {   #Andeler
     # Velge antall fra 0 til 6
     #IKKE gjort noen utvalg. (StatusLap==1?, LapHjelpeinnstikk==1?)

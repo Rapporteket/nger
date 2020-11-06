@@ -209,7 +209,7 @@ instrumentbruk <- function(RegData, datoFra='2019-01-01', datoTil=Sys.Date()){
 RegData <- NGERUtvalgEnh(RegData, datoFra = datoFra, datoTil = datoTil)$RegData
   Instr <- c('LapMorcellatorUtenPose', 'LapMorcellatorMedPose', 'LapHarmonicS',
              'LapSingelPort', 'LapIntKombo', 'LapRobotKirurgi', 'LapUterusmanipulator')
-NavnInstr <- c('Morc.u/pose', 'Morc. m/pose', 'Harm. Scalp.', 'Portioad.', 'IntKombo', 'Robotkir.', 'Uterusmanip.') #}
+NavnInstr <- c('Morc.u/pose', 'Morc. m/pose', 'Ultralyd Scalp.', 'Portioad.', 'IntKombo', 'Robotkir.', 'Uterusmanip.') #}
 
 RegDataUtvalg <- RegData[which(RegData$OpMetode==1), c('ShNavn', Instr)]
 
