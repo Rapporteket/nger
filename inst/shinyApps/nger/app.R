@@ -796,7 +796,7 @@ server <- function(input, output, session) {
       #output$lenkeNorScir <- renderUI({tagList("www.norscir.no", www.norscir.no)})
 
      output$tabEgneReg <- renderTable({
-       print(input$sluttDatoReg-365)
+       #print(input$sluttDatoReg-365)
        xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg,
                                       antMnd=12, reshID = reshID))},
             rownames=T,
