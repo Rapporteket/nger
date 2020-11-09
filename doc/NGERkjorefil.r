@@ -335,31 +335,6 @@ dataTilResultatPort(RegData=NGERData, valgtKI='KomplPostop',  OpMetode = 2, aar=
 # test(RegData$Aar)
 
 
-dataTilResultatPort <- function(RegData, valgtKI='KomplIntraLap', figurtype='andelGrVar', aar=2016:2019, OpMetode=0){
-  #  For hver kvalitetsindikator
-  #  Fil, KIdata: År	EnhetsID	Teller	Nevner	Kvalitetsindikator
-
-  #Ngrense <- 10
-  RegData <- NGERPreprosess(RegData)
-  RegData <- NGERUtvalgEnh(RegData, OpMetode = OpMetode,
-                           datoFra = paste0(aar[1],'-01-01'), datoTil = paste0(rev(aar)[1], '-12-31'))$RegData
-  RegData$Variabel <- 0
-  RegData$ShNavn <- as.factor(RegData$ShNavn)
-  RegData$ReshId <- as.factor(RegData$ReshId)
-  opMetTxt <- c('','Lap','Hys')[OpMetode+1]
-  RegData <- NGERVarTilrettelegg(RegData = RegData, valgtVar = valgtKI, figurtype=figurtype)$RegData
-
-  dataDum <- aggregate(data=RegData[ ,c("ReshId", 'Aar', 'Variabel' )], Variabel~ReshId+Aar,
-                       #x=RegData$Variabel, by=RegData[]
-                       FUN=function(x) {c(sum(x, na.rm=T), length(x))})
-
-  dataKI <- data.frame(dataDum[,1:2], Teller=dataDum$Variabel[,1], Nevner=dataDum$Variabel[,2],
-                       KvalInd=paste0(valgtKI, opMetTxt))
-  write.table(dataKI, file = paste0('NGERkvalInd_', valgtKI, opMetTxt,'.csv'), row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
-
-  } #slutt funksjon
-
-
 
 ######################### LITT LEKING ##############################
 setwd("C:/ResultattjenesteGIT/nger/")

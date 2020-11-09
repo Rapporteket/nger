@@ -54,18 +54,19 @@ NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', f
   if (velgAvd[1] != 0 & reshID==0) {
     #if (enhetsUtvalg !=0) {stop("enhetsUtvalg må være 0 (alle)")}
     #Utvalg på avdelinger:
-    #RegData <- RegData[which(as.character(RegData$ShNavn) %in% velgAvd),]
     RegData <- RegData[which(as.numeric(RegData$ReshId) %in% as.numeric(velgAvd)),]
     RegData$ShNavn <- as.factor(RegData$ShNavn)
   }
 
- hovedgrTxt <- switch(as.character(enhetsUtvalg),
-                  '0' = 'Hele landet',
-                  '1' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]),
-                  '2' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]))
+  indEgen1 <- match(reshID, RegData$ReshId)
+  enhetsUtvalg <- ifelse(reshID==0 | is.na(indEgen1), 0, enhetsUtvalg )
 
   if (enhetsUtvalg == 2) {RegData <- RegData[which(RegData$ReshId == reshID), ]}
 
+  hovedgrTxt <- switch(as.character(enhetsUtvalg),
+                       '0' = 'Hele landet',
+                       '1' = as.character(RegData$ShNavn[indEgen1]),
+                       '2' = as.character(RegData$ShNavn[indEgen1]))
 
   Ninn <- dim(RegData)[1]
 
@@ -127,7 +128,8 @@ if (velgDiag !=0) {
 } else {  indDiag <- 1:Ninn}
 
   #Alvorlighetsgrad, flervalgsutvalg
-  indAlvor <- if (AlvorlighetKompl[1] %in% 1:3) {which(RegData$Opf0AlvorlighetsGrad %in% as.numeric(AlvorlighetKompl)) %i%
+  indAlvor <- if (AlvorlighetKompl[1] %in% 1:4) {
+    which(RegData$Opf0AlvorlighetsGrad %in% as.numeric(AlvorlighetKompl)) %i%
       which(RegData$Opf0Status == 1)} else {indAlvor <- 1:Ninn}
   #Hastegrad  1:3 'Elektiv', 'Akutt', 'Ø-hjelp'
   indHastegrad <- if (Hastegrad[1] %in% 1:3) {which(RegData$OpKategori %in% as.numeric(Hastegrad))
@@ -159,7 +161,7 @@ if (velgDiag !=0) {
                    paste0('Hastegrad: ',
                           paste0(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','))},
                  if (dagkir %in% 0:1){c('Ikke dagkirurgi', 'Dagkirurgi')[as.numeric(dagkir)+1]},
-                 if (AlvorlighetKompl[1] %in% 1:3){
+                 if (AlvorlighetKompl[1] %in% 1:4){
                    paste0('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
                                                          [as.numeric(AlvorlighetKompl)], collapse=','))},
                  if (velgDiag != 0) {paste0('Diagnose: ', diagTxt[velgDiag])},

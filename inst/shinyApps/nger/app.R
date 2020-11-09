@@ -160,6 +160,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                          h4('Antall registreringer ved eget sykehus siste år:'),
                          uiOutput("tabEgneReg"),
                          br(),
+                         h4('Antall registreringer ved eget sykehus forrige år:'),
+                         uiOutput("tabEgneRegForrige"),
                          br(),
                          h4('Oversikt over registerets kvalitetsindikatorer og resultater med offentlig tilgjengelige tall
                             finner du på www.kvalitetsregistre.no:', #helpText
@@ -465,19 +467,22 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
              choices = c('Alder over 70 år' = 'Alder',
                          'Antibiotika' = 'OpAntibProfylakse',
                          'ASA-grad > II' = 'OpASA',
+                         'Blodfortynnende' = 'Blodfortynnende',
                          'Dagkirurgiske inngrep' = 'OpDagkirurgi',
                          'Fedme (BMI>30)' = 'OpBMI',
                          'Komplikasjoner under operasjon' = 'KomplIntra',
-                         'Konvertert til laparoromi?' = 'LapKonvertert',
+                         'Konvertert til laparoromi' = 'LapKonvertert',
+                         'Konvertert til laparoromi, ikke forventet' = 'LapKonvertertUventet',
                          'Lokalbedøvelse' = 'OpAnestesi',
                          'Operasjonstid (minutter)' = 'OpTid',
                          'Pasienter med høyere utdanning' = 'Utdanning',
                          'Postop. komplikasjon: Blødning' = 'Opf0KomplBlodning',
-                         'Postop. komplikasjon: Problemer med ustyr' = 'Opf0KomplUtstyr',
+                         #'Postop. komplikasjon: Problemer med ustyr' = 'Opf0KomplUtstyr',
                          'Postop. komplikasjon: Infeksjon' = 'Opf0KomplInfeksjon',
                          'Postop. komplikasjon: Organskade' = 'Opf0KomplOrgan',
                          'Postop. komplikasjon: Reoperasjon' = 'Opf0Reoperasjon',
-                         'Postop. komplikasjon: andel moderate/alvorlige (grad 2-4)' = 'Opf0AlvorlighetsGrad',
+                         'Postop. komplikasjon: lav alvorlighet (grad 1)' = 'Opf0AlvorlighetsGrad1',
+                         'Postop. komplikasjon: moderate/alvorlige (grad 2-4)' = 'Opf0AlvorlighetsGrad234',
                          'Postop. komplikasjon: Alle' = 'KomplPostop',
                          'Postoperativ oppfølging' = 'Opf0Status',
                          'Registreringsforsinkelse' = 'RegForsinkelse',
@@ -651,7 +656,7 @@ tabPanel(p("Registeradministrasjon", title='Registeradministrasjonens side for r
                                    'Komplikasjoner, postoperativt' = 'KomplPostop',
                                    'Alvorlighetsgrad, postop.kompl.' = 'Opf0AlvorlighetsGrad',
                                    'Konvertert, hys-lap' = 'HysKonvertert',
-                                   'Konvertert, lap-lap' = 'LapKonvertert',
+                                   'Konvertert, lap-lap, ikke forventet' = 'LapKonvertert',
                                    'TSS2-generelt, positiv oppfatning avd.' = 'Tss2Generelt',
                                    'TSS2-sumskår' = 'Tss2Sumskaar'
                                    )
@@ -791,11 +796,18 @@ server <- function(input, output, session) {
       #output$lenkeNorScir <- renderUI({tagList("www.norscir.no", www.norscir.no)})
 
      output$tabEgneReg <- renderTable({
+       #print(input$sluttDatoReg-365)
        xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg,
                                       antMnd=12, reshID = reshID))},
             rownames=T,
             digits = 0
       )
+     output$tabEgneRegForrige <- renderTable({
+       xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg-365,
+                                      antMnd=12, reshID = reshID))},
+       rownames=T,
+       digits = 0
+     )
       #tabAntOpphShMnd(RegData=RegData, reshID = 8)
  #----------Registreringsoversikter ----------------------
 
@@ -1280,7 +1292,7 @@ output$lastNed_dataDump <- downloadHandler(
 
       if (rolle=='SC') {
         observe({
-          tabdataTilResPort <- dataTilResPort(RegData=RegData, valgtKI = input$valgtVarRes,
+          tabdataTilResPort <- dataTilOffVisning(RegData=RegData, valgtVar = input$valgtVarRes,
                                               aar=as.numeric(input$aarRes[1]):as.numeric(input$aarRes[2]),
                                               OpMetode = as.numeric(input$opMetodeRes))
 

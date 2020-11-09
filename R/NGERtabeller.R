@@ -1,4 +1,5 @@
 #' Fil som inneholder funksjoner for å lage tabeller, i første rekke tellinger av personer
+
 #' RegData må inneholde InnDato og Aar.
 #' -tabAntOpphSh12mnd: Antall opphold per måned og enhet siste 12 måneder fram til datoTil.
 #' -tabAntOpphSh5Aar:Antall opphold per år og enhet siste 5 år (inkl. inneværende år) fram til datoTil.
@@ -12,7 +13,8 @@
 tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0,
                             OpMetode=99, velgDiag=0){
       #RegData må inneholde ..
-  if (reshID!=0){RegData <- RegData[which(RegData$ReshId==reshID), ]}
+  gyldigResh <- reshID!=0 & !is.na(match(reshID, RegData$ReshId))
+  if (gyldigResh) {RegData <- RegData[which(RegData$ReshId==reshID), ]}
       #datoFra <- lubridate::floor_date(as.Date(datoTil)%m-% months(antMnd, abbreviate = T), unit='month')
       datoFra <- lubridate::floor_date(as.Date(datoTil)- months(antMnd, abbreviate = T), unit='month')
       aggVar <-  c('ShNavn', 'InnDato')
@@ -206,15 +208,14 @@ instrumentbruk <- function(RegData, datoFra='2019-01-01', datoTil=Sys.Date()){
   #LapIntKombo = Thunderbeat
 RegData <- NGERUtvalgEnh(RegData, datoFra = datoFra, datoTil = datoTil)$RegData
   Instr <- c('LapMorcellatorUtenPose', 'LapMorcellatorMedPose', 'LapHarmonicS',
-             'LapSingelPort', 'LapIntKombo', 'LapRobotKirurgi')
-NavnInstr <- c('Morc.u/pose', 'Morc. m/pose', 'Harm. Scalp.', 'Portioad.', 'IntKombo', 'Robotkir.') #}
+             'LapSingelPort', 'LapIntKombo', 'LapRobotKirurgi', 'LapUterusmanipulator')
+NavnInstr <- c('Morc.u/pose', 'Morc. m/pose', 'Ultralyd Scalp.', 'Portioad.', 'IntKombo', 'Robotkir.', 'Uterusmanip.') #}
 
 RegDataUtvalg <- RegData[which(RegData$OpMetode==1), c('ShNavn', Instr)]
 
-#InstrTab <- plyr::daply(.data=RegDataUtvalg[ ,Instr], .(RegDataUtvalg$ShNavn), .fun=colwise(sum), na.rm=T)  #Liste m/6dim
-#Får trøbbel med at InstrTab blir liste
 
-InstrTabDum <- plyr::ddply(RegDataUtvalg[ ,Instr], .(RegDataUtvalg$ShNavn), .drop=F, colwise(sum), na.rm=T)  #Dataramme m/7dim
+#InstrTabDum <- plyr::ddply(RegDataUtvalg[ ,Instr], .(RegDataUtvalg$ShNavn), .drop=F, colwise(sum), na.rm=T)  #Dataramme m/7dim
+InstrTabDum <- plyr::ddply(RegDataUtvalg, .variables='ShNavn', .drop=F, colwise(sum), na.rm=T)  #Dataramme m/7dim
 Tot <- colSums(InstrTabDum[,2:(length(Instr)+1)])
 ShNavn <- InstrTabDum[,1]
 
@@ -241,8 +242,8 @@ tabKomplLap <- function(RegData, reshID=0, datoFra='2019-01-01', datoTil=Sys.Dat
 Blod <- c('Opf0KomplBlodning', 'Opf0BlodningAbdom', 'Opf0BlodningIntraabdominal', 'Opf0BlodningVaginal')
 
 #Utstyr
-UtstyrTxt <- c('Problemer m/utstyr','...Instrumenter', '...Nett', '...Laparaskopisk sutur')
-Utstyr <- c('Opf0KomplUtstyr', 'Opf0UtstyrInstrumenter', 'Opf0UtstyrNett', 'Opf0UtstyrSutur')
+UtstyrTxt <- c('Problemer m/Instrumenter', '...Nett', '...Laparaskopisk sutur') #m/utstyr','...
+Utstyr <- c('Opf0UtstyrInstrumenter', 'Opf0UtstyrNett', 'Opf0UtstyrSutur') #'Opf0KomplUtstyr',
 
 #Infeksjon:
 # Opf0InfEndometritt = Salpingitt JA, ok.

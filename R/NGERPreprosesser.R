@@ -50,6 +50,13 @@ NGERPreprosess <- function(RegData=RegData)
   RegData$SykehusNavn <- trimws(as.character(RegData$SykehusNavn)) #Fjerner mellomrom (før) og etter navn
   names(RegData)[which(names(RegData)=='SykehusNavn')] <- 'ShNavn' #Change var name
 
+  #108698 (Kongsvinger Innland) endres til Kongsvinger 4215373
+  ind <- which(RegData$ReshId == 108698)
+  RegData$ShNavn[ind] <- RegData$ShNavn[match(4215373, RegData$ReshId)] #which(RegData$ReshId==4215373)][1]
+  RegData$ReshId[ind] <- 4215373
+
+
+
   #Endrer til bare store bokstaver
   if ('LapDiagnose1' %in% (names(RegData))) {
   DiagVar <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3', 'HysDiagnose1','HysDiagnose2', 'HysDiagnose3')
