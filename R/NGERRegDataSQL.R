@@ -176,7 +176,7 @@ query <- paste0('SELECT
 #     INNER JOIN ForlopsOversikt
 #     ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID'
 
-  RegData <- rapbase::LoadRegData(registryName = "nger", query, dbType = "mysql")
+  RegData <- rapbase::loadRegData(registryName = "nger", query, dbType = "mysql")
 
 
 return(RegData)

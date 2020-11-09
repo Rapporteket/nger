@@ -27,7 +27,7 @@ regTitle = ifelse(paaServer,'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER',
 if (paaServer) {
   RegData <- NGERRegDataSQL() #datoFra = datoFra, datoTil = datoTil)
   qSkjemaOversikt <- 'SELECT * FROM SkjemaOversikt'
-  SkjemaOversikt <- rapbase::LoadRegData(registryName='nger',
+  SkjemaOversikt <- rapbase::loadRegData(registryName='nger',
                                          query=qSkjemaOversikt, dbType='mysql')
 }
 
@@ -876,7 +876,7 @@ server <- function(input, output, session) {
       qAlle <- 'SELECT * FROM AlleVarNum
                INNER JOIN ForlopsOversikt
                ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID'
-      RegDataAlle <- rapbase::LoadRegData(registryName = "nger", query=qAlle, dbType = "mysql")
+      RegDataAlle <- rapbase::loadRegData(registryName = "nger", query=qAlle, dbType = "mysql")
       RegDataAlle <- NGERPreprosess(RegDataAlle)
       observe({
         # DataDump <- dplyr::filter(RegData,
