@@ -9,7 +9,7 @@ NGERFigKvalInd(
   reshID = 0,
   velgAvd = 0,
   datoFra = "2013-01-01",
-  datoTil = "3000-12-31",
+  datoTil = Sys.Date(),
   valgtVar = "kvalInd",
   enhetsUtvalg = 0,
   minald = 0,
@@ -54,7 +54,9 @@ IKKE tatt høyde for sammenlikning mot "resten".}
 3: Begge
 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
 5: LCC11 (laparoskopisk subtotal hysterektomi)
-6: LCD11 (laparoskopisk assistert vaginal hysterektomi)}
+6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
+7: Robotassisert inngrep
+8: Kolpopeksiene}
 
 \item{Hastegrad}{Hastegrad av operasjon.
 1: Elektiv

@@ -18,7 +18,7 @@
 #' @export
 #'
 
-NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='andeler'){
+NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0, figurtype='andeler'){
 
 
   "%i%" <- intersect
@@ -139,7 +139,9 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     #RegData <- RegData[indMed, ]
     varTxt <- 'komplikasjoner'
     tittel <- 'Komplikasjoner, intraoperativt'
+    if (OpMetode %in% 1:2) {KImaal <- c(0,2)}
   }
+
   if (valgtVar=='KomplPostop') { #andelGrVar, andelTid
     # Andel postoperative komplikasjoner
     #Kode 0: Nei, 1:Ja, tomme
@@ -151,10 +153,13 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
   if (valgtVar=='KomplPostopAlvor') { #andelGrVar, andelTid
     # Andel postoperative komplikasjoner
     #Kode 0: Nei, 1:Ja, tomme
+    #Opf0AlvorlighetsGrad: 1-lite alvorlig, 2-middels alvorlig, 3-alvorlig, 4-dødelig
     RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
     RegData$Variabel[RegData$Opf0AlvorlighetsGrad %in%  2:4] <- 1 #RegData$Opf0Komplikasjoner
     varTxt <- 'komplikasjoner'
-    tittel <- 'Komplikasjoner, postoperativt'
+    tittel <- 'Komplikasjoner (middels/alvorlig), postop.'
+    if (OpMetode==1) {KImaal <- c(0, 2.5)} #Laparoskopi
+    if (OpMetode==2) {KImaal <- c(0, 0.3)} #Hysteroskopi
   }
   if (valgtVar=='LapKonvertert') { #andelTid
     RegData <- RegData[intersect(which(RegData$LapKonvertert %in% 0:1), which(RegData$LapStatus == 1)), ] #RegData$LapKonvertert %in% 0:1
@@ -234,6 +239,26 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
     varTxt <- 'dagkirurgiske inngrep'
     RegData$Variabel <- RegData$OpDagkirurgi
   }
+  # if (valgtVar=='KomplPostopAlvor') { #andelGrVar, andelTid
+  #   # Andel postoperative komplikasjoner
+  #   #Kode 0: Nei, 1:Ja, tomme
+  #   #Opf0AlvorlighetsGrad: 1-lite alvorlig, 2-middels alvorlig, 3-alvorlig, 4-dødelig
+  #   RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
+  #   RegData$Variabel[RegData$Opf0AlvorlighetsGrad %in%  2:4] <- 1 #RegData$Opf0Komplikasjoner
+  #   varTxt <- 'komplikasjoner'
+  #   tittel <- 'Komplikasjoner (middels/alvorlig), postop.'
+  # }
+  # if (valgtVar=='Opf0AlvorlighetsGrad234') {   #Andeler, andelGrVar
+  #   #Postoperative komplikasjoner
+  #   #Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
+  #   RegData <- RegData[(which(RegData$Opf0Status == 1) %i% which(RegData$Opf0Komplikasjoner %in% 0:1)), ]
+  #   if (figurtype %in% c('andelGrVar', 'andelTid')) {
+  #     #Andel av postoperative komplikasjoner som var moderate 2 eller alvorlige (3 og 4)
+  #     RegData$Variabel[which(RegData$Opf0AlvorlighetsGrad %in% 2:4)] <- 1
+  #     varTxt <- 'komplikasjoner grad 2-4'
+  #     tittel <- 'Postop. komplikasjon, moderat/alvorlig'
+  #   }
+  # }
   if (valgtVar=='Opf0AlvorlighetsGrad') {   #Andeler, andelGrVar
     #Postoperative komplikasjoner
     #Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
@@ -252,6 +277,9 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
       RegData$Variabel[which(RegData$Opf0AlvorlighetsGrad %in% 2:4)] <- 1
 	  varTxt <- 'komplikasjoner grad 2-4'
       tittel <- 'Postop. komplikasjon, moderat/alvorlig'
+      if (OpMetode==1) {KImaal <- c(0, 2.5)} #Laparoskopi
+      if (OpMetode==2) {KImaal <- c(0, 0.3)} #Hysteroskopi
+
     }
   }
   if (valgtVar=='Opf0AlvorlighetsGrad1') {   # andelGrVar/Tid
@@ -265,18 +293,6 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', ind=0, figurtype='
       tittel <- 'Postop. komplikasjon, lite alvorlig'
     }
   }
-  if (valgtVar=='Opf0AlvorlighetsGrad234') {   #Andeler, andelGrVar
-    #Postoperative komplikasjoner
-    #Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
-    RegData <- RegData[(which(RegData$Opf0Status == 1) %i% which(RegData$Opf0Komplikasjoner %in% 0:1)), ]
-    if (figurtype %in% c('andelGrVar', 'andelTid')) {
-      #Andel av postoperative komplikasjoner som var moderate 2 eller alvorlige (3 og 4)
-      RegData$Variabel[which(RegData$Opf0AlvorlighetsGrad %in% 2:4)] <- 1
-      varTxt <- 'komplikasjoner grad 2-4'
-      tittel <- 'Postop. komplikasjon, moderat/alvorlig'
-    }
-  }
-
 
   if (valgtVar=='Opf0KomplBlodning') { #andelGrVar, andelTid
     #Kode 0: Nei, 1:Ja
