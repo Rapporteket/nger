@@ -11,6 +11,8 @@
 #'                 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
 #'                 5: LCC11 (laparoskopisk subtotal hysterektomi)
 #'                 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
+#'                 7: Robotassisert inngrep
+#'                 8: Kolpopeksiene
 #' @param velgDiag 0: Alle
 #'                 1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
 #'                 2: Endometriose, livmorvegg (N80.0)
@@ -77,16 +79,19 @@ NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', f
   #Operasjonstype:
   indMCE <- if (OpMetode %in% c(1:3)){which(RegData$OpMetode %in% c(OpMetode,3))
     } else {indMCE <- 1:Ninn}
-  if (OpMetode %in% 4:6) {
+  if (OpMetode %in% c(4:6,8)) {
       ProsLap <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3')
       indMCE <- switch(as.character(OpMetode),
               '4' = unique(c(which(RegData[,ProsLap] == 'LCD01', arr.ind = TRUE)[,1],
                                          which(RegData[,ProsLap] == 'LCD04', arr.ind = TRUE)[,1])), #LCD01 + LCD04: total laparoskopisk hysterektomi
               '5' = which(RegData[,ProsLap] == 'LCC11', arr.ind = TRUE)[,1], #LCC11: laparoskopisk subtotal hysterektomi)
 
-              '6' = which(RegData[,ProsLap] == 'LCD11', arr.ind = TRUE)[,1] #LCD11: laparoskopisk assistert vaginal hysterektomi).
+              '6' = which(RegData[,ProsLap] == 'LCD11', arr.ind = TRUE)[,1], #LCD11: laparoskopisk assistert vaginal hysterektomi).
+              '8' = which(RegData[,ProsLap] == 'LEF51', arr.ind = TRUE)[,1], #LCC11: Kolpopeksiene)
       )
   }
+  if (OpMetode == 7) {indMCE <- which(RegData$LapRobotKirurgi == 1)} #ROBOT_KIRURGI==TRUE
+
 
 if (velgDiag !=0) {
   indDiag <- NULL
@@ -110,11 +115,11 @@ if (velgDiag !=0) {
     for (var in DiagVar) {indDiag <- union(indDiag, grep(paste(koder, collapse = "|"), RegData[ ,var]))}  #(Se også på pmatch, carmatch
   }
   if (velgDiag == 5){#Generell gynekologi	D25	D26	D27	D28	D39	N70	N71	N72	N73	N74	N80	N81	N82	N83	N84	N85	N86	N87	N88	N91	N92	N93	N94	N95	N96	N97	N98	N99	R10
-    koder <- c(paste0('D', c(25:28, 39)), paste0('N7',0:4), paste0('N8', 0:8), paste0('N9', 1:9), 'R10')
+    koder <- c(paste0('D', c(25:28, 39)), paste0('N7',0:4), paste0('N8', 0:8), paste0('N9', 1:9), 'R10', 'Q50',	'Q51',	'Q52')
     for (var in DiagVar) {indDiag <- union(indDiag, grep(paste(koder, collapse = "|"), RegData[ ,var]))}
   }
   if (velgDiag == 6){#Gravide	O00	O01	O02	O03	O04	O05	O07	Q50	Q51	Q52
-    koder <- c(paste0('O0', c(0:5, 7)), 'Q50',	'Q51',	'Q52')
+    koder <- paste0('O0', c(0:5, 7)) #, 'Q50',	'Q51',	'Q52')
     for (var in DiagVar) {indDiag <- union(indDiag, grep(paste(koder, collapse = "|"), RegData[ ,var]))}
   }
   if (velgDiag == 7){ # Komplikasjoner	T81	T83
@@ -152,11 +157,13 @@ if (velgDiag !=0) {
                  if ((minald>0) | (maxald<110))
                     {paste0('Pasienter fra ', if (N>0) {min(RegData$Alder, na.rm=T)} else {minald},
                         ' til ', if (N>0) {max(RegData$Alder, na.rm=T)} else {maxald}, ' år')},
-                 if (OpMetode %in% c(1:6)){paste0('Operasjonsmetode: ',
+                 if (OpMetode %in% c(1:8)){paste0('Operasjonsmetode: ',
                                                 c('Laparoskopi', 'Hysteroskopi', 'Begge',
                                                   'Tot. lap. hysterektomi (LCD01/LCD04)',
                                                   'Lap. subtotal hysterektomi (LCC11)',
-                                                  'Lap. ass. vag. hysterektomi (LCD11)')[OpMetode])},
+                                                  'Lap. ass. vag. hysterektomi (LCD11)',
+                                                  'Robotassisert inngrep',
+                                                  'Kolpopeksiene')[OpMetode])},
                  if (Hastegrad[1] %in% 1:3){
                    paste0('Hastegrad: ',
                           paste0(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','))},

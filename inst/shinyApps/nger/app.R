@@ -64,7 +64,9 @@ enhetsUtvalg <- c("Egen mot resten av landet"=1,
                'Begge'=3,
                'Tot. lap. hysterektomi (LCD01/LCD04)'=4,
                'Lap. subtotal hysterektomi (LCC11)'=5,
-               'Lap. ass. vag. hysterektomi (LCD11)'=6)
+               'Lap. ass. vag. hysterektomi (LCD11)'=6,
+               'Robotassisert inngrep' = 7,
+               'Kolpopeksiene' = 8)
 
  alvorKompl <- c(#"Alle"=0,
                   "Lite alvorlig"=1,
@@ -242,7 +244,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                       br(),
                                       fluidRow(
                                         tableOutput("tabAntSkjema")
-                                        #,downloadButton(outputId = 'lastNed_tabAntSkjema', label='Last ned')
+                                        ,downloadButton(outputId = 'lastNed_tabAntSkjema', label='Last ned')
                                       )
                              )
 
@@ -471,8 +473,8 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
                          'Dagkirurgiske inngrep' = 'OpDagkirurgi',
                          'Fedme (BMI>30)' = 'OpBMI',
                          'Komplikasjoner under operasjon' = 'KomplIntra',
-                         'Konvertert til laparoromi' = 'LapKonvertert',
-                         'Konvertert til laparoromi, ikke forventet' = 'LapKonvertertUventet',
+                         'Konvertert til laparotomi' = 'LapKonvertert',
+                         'Konvertert til laparotomi, ikke forventet' = 'LapKonvertertUventet',
                          'Lokalbedøvelse' = 'OpAnestesi',
                          'Operasjonstid (minutter)' = 'OpTid',
                          'Pasienter med høyere utdanning' = 'Utdanning',
@@ -938,6 +940,9 @@ output$lastNed_dataDump <- downloadHandler(
         }, height=800, width=800 #height = function() {session$clientData$output_fordelinger_width}
         )
         #RegData må hentes ut fra valgtVar
+        # print(as.numeric(input$alderKval[1]))
+        # print(as.numeric(input$hastegradKval))
+        # print(as.numeric(input$opMetodeKval))
         UtDataKvalInd <- NGERFigKvalInd(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarKval,
                                      datoFra=input$datovalgKval[1], datoTil=input$datovalgKval[2],
                                      reshID = reshID,
