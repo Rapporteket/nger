@@ -226,7 +226,7 @@ NGERFigAndelTid(RegData=NGERData, valgtVar='OpASA',   datoFra=datoFra, datoTil=d
 
 
 #--Laparoskopi
-for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad1', 'Opf0AlvorlighetsGrad234',
+for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad1', 'Opf0AlvorlighetsGrad',
                    'Opf0Reoperasjon','LapKonvertert')) {
   outfile <- paste0(valgtVar, '_', 'LapAar.pdf')
   NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
@@ -237,7 +237,7 @@ NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar='Opf0AlvorlighetsGra
                 OpMetode=1, outfile='Opf0AlvorlighetsGrad1_LapAar.pdf', tidsenhet='Aar')
 
 #--Hysteroskopi
-for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad1', 'Opf0AlvorlighetsGrad234',
+for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad1', 'Opf0AlvorlighetsGrad',
                    'Opf0Reoperasjon')) {
   outfile <- paste0(valgtVar, '_', 'HystAar.pdf')
   NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
@@ -247,7 +247,7 @@ NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar='Opf0AlvorlighetsGra
                 OpMetode=4, outfile='KomplPostop_TLHaar.pdf', tidsenhet='Aar')
 
 #Postoperative komplikasjoner Hysteroskopi, lite alvorlige, utvikling siste 4 år
-NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar='Opf0AlvorlighetsGrad234', datoTil=datoTil,
+NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar='Opf0AlvorlighetsGrad', datoTil=datoTil,
                 OpMetode=2, outfile='Opf0AlvorlighetsGrad234_HystAar.pdf', tidsenhet='Aar')
 
 
@@ -276,7 +276,7 @@ for (valgtVar in variable) {
 }
 
 #Laparoskopi
-for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad1', 'Opf0AlvorlighetsGrad234',
+for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad1', 'Opf0AlvorlighetsGrad',
                    'Opf0Reoperasjon','LapKonvertert', 'OpDagkirurgi')) {
   outfile <- paste0(valgtVar, '_LapShus.pdf')
   NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil,
@@ -285,7 +285,7 @@ for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad1', 'Opf0Alv
 
 
 #--Hysteroskopi
-for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad1', 'Opf0AlvorlighetsGrad234',
+for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad1', 'Opf0AlvorlighetsGrad',
                    'Opf0Reoperasjon')) {
   outfile <- paste0(valgtVar, '_HystShus.pdf')
   NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil,
