@@ -10,6 +10,7 @@ NGERData <- merge(NGERForlop, NGERBasis, by = "ForlopsID", suffixes = c('forl','
 NGERData <- NGERData[(as.Date(NGERData$OpDato) >= as.Date('2016-01-01')) &
                        (as.Date(NGERData$OpDato) <= as.Date('2019-12-31')), ]
 
+NGERData <- NGERRegDataSQL(datoFra = '2016-01-01', datoTil = '2020-12-31')
 #--Til registerleder
 library(nger)
 #RegData <- NGERPreprosess(NGERData)
@@ -22,14 +23,9 @@ library(nger)
 
 # Inndata til funksjon:
 datoFra<- '2016-01-01'
-datoFra1aar <- '2019-01-01'
-datoTil <- '2019-12-31'
-#OpMetode <- 99
-#tidsenhet <- 'Aar'
-#Hastegrad <- ''
-#AlvorlighetKompl <- ''
-#enhetsUtvalg <- 0 #		enhetsUtvalg - 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
-setwd("P:/Registerinfo og historie/NGER/aarsrapp/")
+datoFra1aar <- '2020-01-01'
+datoTil <- '2020-12-31'
+setwd('/home/rstudio/nger/aarsrapp' ) #"P:/Registerinfo og historie/NGER/aarsrapp/")
 library(nger)
 
 #--------------------Data til SKDE/Resultaportalen------------------
@@ -100,11 +96,11 @@ NGERFigGjsnGrVar(RegData=NGERData, valgtVar='Tss2Generelt', datoFra=datoFra1aar,
                  Hastegrad = 1, outfile='Fig8 Gjsn sumskår, oppfatning om gyn avd generelt.png')
 
 
-#-------------------------------Årsrapport 2020-------------------------------
+#-------------------------------Årsrapport 2020 og 21-------------------------------
 #Figurer med RAND?
 
 #--Tabeller:
-#   Antall registreringer per år 2016-19
+#   Antall registreringer per år 2016-20
 # Endres? Opphold per sykehus og operasjonstype (Lap Hys Begge) per år
 
 
@@ -176,10 +172,17 @@ NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='KomplPostopType'
 NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='KomplPostopType', datoTil=datoTil,
                OpMetode = 2, AlvorlighetKompl = 2:4, outfile='KomplPostopType_fordHysAlv234.pdf')
 
-
 NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='KomplPostopType', datoTil=datoTil, OpMetode = 4,
                outfile='KomplPostopType_fordTotLapHys.pdf')
 
+#Fordelingsfigurer: alder  og BMI på Laparoskopi, og på Hysteroskopi og på TLH (total laparaskopisk hysrektomi).
+
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='Alder', datoTil=datoTil, OpMetode = 1,
+               outfile='Alder_fordLap.pdf')
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='Alder', datoTil=datoTil, OpMetode = 2,
+               outfile='Alder_fordHys.pdf')
+NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='Alder', datoTil=datoTil, OpMetode = 4,
+               outfile='Alder_fordTLH.pdf')
 
 
 #----------------Kvalitetsindikatorsamlinger----------------

@@ -200,7 +200,7 @@ for (valgtVar in variable) {
 load('A:/NGER/Aarsrapp2018_2019-08-05.Rdata')
 RegData <- NGERData
 
-valgtVar <- 'KomplIntra' #Må velge... OpAnestesi, OpDagkirurgi,OpTid
+valgtVar <- 'KomplIntra'  #Opf0AlvorlighetsGrad #Må velge... OpAnestesi, OpDagkirurgi,OpTid
       #Alder, Opf0Reoperasjon, Education, Opf0AlvorlighetsGrad,
       #KomplIntra, KomplPostop, OpAntibProfylakse, OpASA, OpBMI, Opf0Status, RegForsinkelse
       #Tss2Mott, Tss2Behandling,	Tss2Lytte, Tss2Behandlere, Tss2Enighet,	Tss2Generelt

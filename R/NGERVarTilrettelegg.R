@@ -139,7 +139,8 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
     #RegData <- RegData[indMed, ]
     varTxt <- 'komplikasjoner'
     tittel <- 'Komplikasjoner, intraoperativt'
-    if (OpMetode %in% 1:2) {KImaal <- c(0,2)}
+    sortAvtagende <- F
+    if (OpMetode %in% 1:2) {KImaal <- c(0,2,4,100)}
   }
 
   if (valgtVar=='KomplPostop') { #andelGrVar, andelTid
@@ -277,8 +278,9 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
       RegData$Variabel[which(RegData$Opf0AlvorlighetsGrad %in% 2:4)] <- 1
 	  varTxt <- 'komplikasjoner grad 2-4'
       tittel <- 'Postop. komplikasjon, moderat/alvorlig'
-      if (OpMetode==1) {KImaal <- c(0, 2.5)} #Laparoskopi
-      if (OpMetode==2) {KImaal <- c(0, 0.3)} #Hysteroskopi
+      sortAvtagende <- F
+      if (OpMetode==1) {KImaal <- c(0, 2.5, 5, 100)} #Laparoskopi
+      if (OpMetode==2) {KImaal <- c(0, 0.3, 0.6, 100)} #Hysteroskopi
 
     }
   }
