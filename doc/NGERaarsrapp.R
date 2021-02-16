@@ -305,7 +305,10 @@ for (valgtVar in c('Alder', 'OpBMI')) {
 #               'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')
 # variable <- 'OpTid'
 # variable <- 'RegForsinkelse'
+datoFra1Yoppf <- '2019-01-01'
+datoTil1Yoppf <- '2019-12-31'
 
+NGERData <- NGERRegDataSQL(datoFra = datoFra1Yoppf, datoTil = datoTil)
 #'TSS2, sumskår' = 'Tss2Sumskaar'
 for (valgtVar in c('Tss2Sumskaar')) {
   outfile <- paste0(valgtVar, '_' ,'ShGjsn.pdf')
@@ -321,9 +324,14 @@ for (OpMetode in c(1,2,4)) {
 
 #Skal bare ha med Haugesund 701437, Bodø 706220, Trondheim 107644, Ullevål 700399 og Tønsberg 110734.
 NGERDataUtvSh <- NGERData[which(NGERData$AvdRESH %in% c(701437, 706220, 107644, 700399, 110734)),]
-NGERFigGjsnGrVar(RegData=NGERDataUtvSh, valgtVar='R0ScorePhys', datoFra=datoFra1aar, datoTil=datoTil,
-                  outfile='R0ScorePhys_UtvalgteShGjsn.pdf')
 
+NGERFigGjsnGrVar(RegData=NGERDataUtvSh, valgtVar='R0ScoreGeneral', datoFra=datoFra1aar, datoTil=datoTil,
+                 outfile=paste0('R0ScoreGeneral_UtvalgteShGjsn.pdf'))
+NGERFigGjsnGrVar(RegData=NGERDataUtvSh, valgtVar='R1ScoreGeneral', datoFra=datoFra1Yoppf, datoTil=datoTil1Yoppf,
+                  outfile=paste0('R1ScoreGeneral_UtvalgteShGjsn.pdf'))
+
+ RegData <- NGERPreprosess(RegData = NGERDataUtvSh)
+ table(RegData$R1ScoreGeneral, RegData$Aar)
 
 #KvalInd
 for (valgtVar in c('kvalInd', 'RAND0', 'TSS0')) {
@@ -332,6 +340,9 @@ NGERFigKvalInd(RegData=NGERData, datoFra=datoFra1aar, datoTil=datoTil,
                            valgtVar=valgtVar, outfile=outfile)
 }
 
+#Ønsker også Rand etter 1 år
+ NGERFigKvalInd(RegData=NGERData, datoFra=datoFra1Yoppf, datoTil=datoTil1Yoppf,
+                valgtVar='RAND1', outfile='RAND1_KI.pdf')
 
 
 #------------------------------Tabeller-----------------------------------
@@ -351,20 +362,23 @@ xtable::xtable(tabAvdAarN, digits=0, align=c('l', rep('r',ncol(tabAvdAarN))),
 
 
 #Tabell med antall registreringer for hvert sykehus, splittet på lap, hys og begge
-tab <- table(RegData[ ,c('ShNavn', "OpMetode", 'Aar')])
+RegData <- NGERPreprosess(RegData = NGERRegDataSQL(datoFra = '2020-01-01', datoTil = '2020-12-31'))
+tab <- table(RegData[ ,c('ShNavn', "OpMetode")]) #, 'Aar'
 dimnames(tab)$OpMetode <- c('Lap', 'Hys', 'Begge')
 tab <- addmargins(tab, margin = 1)
 #colSums(tab)
 
-tabell <- cbind(tab[,,'2016'],
-                ' ',
-                tab[,,'2017'],
-                ' ',
-                tab[,,'2018'],
-                ' ',
-                tab[,,'2019'])
+# tabell <- cbind(tab[,,'2016'],
+#                 ' ',
+#                 tab[,,'2017'],
+#                 ' ',
+#                 tab[,,'2018'],
+#                 ' ',
+#                 tab[,,'2019'],
+#                 ' ',
+#                 tab[,,'2020'])
 
-xtable::xtable(tabell, align=c('l', rep('r',ncol(tabell))),)
+xtable::xtable(tab, align=c('l', rep('r',ncol(tab))), digits=0)
 
 ggplot(RegData, aes(OpMetode)) +
   geom_histogram(bins = 3) +

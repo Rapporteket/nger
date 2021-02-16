@@ -353,6 +353,8 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
          #-----
          sidebarPanel(width = 3,
                       h3('Utvalg'),
+                      br(),
+                      br(),
                       selectInput(
                         inputId = "valgtVar", label="Velg variabel",
                         choices = c('Alder' = 'Alder',
@@ -468,6 +470,7 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
              inputId = "valgtVarAndel", label="Velg variabel",
              choices = c('Kval.ind: Komplikasjoner under operasjon' = 'KomplIntra',
                          'Kval.ind: Postop. komplikasjon: moderate/alvorlige (grad 2-4)' = 'Opf0AlvorlighetsGrad',
+                         'Kval.ind: TSS2: Positiv oppfatning om gyn. avd.' = 'Tss2Generelt',
                          'Alder over 70 år' = 'Alder',
                          'Antibiotika' = 'OpAntibProfylakse',
                          'ASA-grad > II' = 'OpASA',
@@ -492,8 +495,7 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
                          'TSS2: Behandlingsopplegg/-innhold passet svært bra' = 'Tss2Behandling',
                          'TSS2: Behandlerne lyttet- og forsto i svært stor grad' = 'Tss2Lytte',
                          'TSS2: Pasienten hadde svært stor tillit til sine behandlere' = 'Tss2Behandlere',
-                         'TSS2: Pasient og behandlere svært enige om målsetn. for behandlinga' = 'Tss2Enighet',
-                         'TSS2: Positiv oppfatning om gyn. avd.' = 'Tss2Generelt'
+                         'TSS2: Pasient og behandlere svært enige om målsetn. for behandlinga' = 'Tss2Enighet'
                          )
            ),
            dateRangeInput(inputId = 'datovalgAndel', start = startDato, end = idag,

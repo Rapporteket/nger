@@ -565,14 +565,15 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
     grtxt <- levels(RegData$VariabelGr)
   }
-  if (valgtVar == 'R0ScoreGeneral') { #Andeler, #GjsnGrVar
+  if (valgtVar %in% c('R0ScoreGeneral','R1ScoreGeneral')) { #Andeler, #GjsnGrVar
     #Verdier: 0:5:100
-    RegData <- RegData[which(RegData$R0Status==1) %i% which(RegData[,valgtVar] > -1), ]
+    spm12 <- ifelse(valgtVar=='R0ScoreGeneral', 1, 2)
     RegData$Variabel <- RegData[ ,valgtVar]
-    tittel <- 'Generell helsetilstand'
-    #gr <- c(seq(0, 90, 10), 100) #c(seq(0, 180, 30), 1000) #
-    #RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
-    #grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-1)])
+    indFerdig <- switch(valgtVar,
+                        R0ScoreGeneral = which(RegData$R0Status==1),
+                        R1ScoreGeneral = which(RegData$RY1Status==1))
+    RegData <- RegData[indFerdig %i% which(RegData[,valgtVar] > -1), ]
+    tittel <- paste0('Generell helsetilstand ', c('før operasjon', ', ett år etter')[spm12])
     subtxt <- 'sumskår (høyest er best)'
     gr <- seq(0, 100, 20)
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
@@ -694,7 +695,10 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData <- RegData[which(RegData[ ,valgtVar] %in% koder) %i% which(RegData$Tss2Status == 1), ]
     RegData$VariabelGr <- factor(RegData$Tss2Generelt, levels=koder, labels = grtxt) #levels=c(nivaa,9)
     if (figurtype %in% c('andelGrVar', 'andelTid')) {
-      RegData$Variabel[which(RegData$Tss2Generelt %in% 3:4)] <- 1 }
+      RegData$Variabel[which(RegData$Tss2Generelt %in% 3:4)] <- 1
+      KImaal <- c(0, 80, 90, 100)
+      sortAvtagende <- TRUE
+      }
     if (figurtype == 'gjsnGrVar') {
       RegData$Variabel <- RegData$Tss2Generelt-1}
   }

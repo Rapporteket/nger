@@ -45,6 +45,8 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
   RegData <- switch(valgtVar,
                     RAND0 = RegData[which(RegData$R0Status==1) %i% which(RegData$R0Metode %in% 1:2)
                                     %i% which(RegData$InnDato >= '2016-01-01'), ],
+                    RAND1 = RegData[which(RegData$RY1Status==1) %i% which(RegData$RY1metode %in% 1:2)
+                                    %i% which(RegData$InnDato >= '2018-01-01'), ],
                     TSS0 = RegData[which(RegData$Tss2Status==1) %i% which(RegData$Tss2Type %in% 1:2)
                                    %i% which(RegData$InnDato >= '2016-01-01'), ],
                     kvalInd = RegData)
@@ -77,18 +79,39 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
 
 
   ########RAND36
-  if (valgtVar == 'RAND0'){
+  if (valgtVar %in% c('RAND0', 'RAND1')){
 
-    tittel <- 'RAND36, alle dimensjoner'
-    Rand0var <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
-                  'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')
     grtxt <- c('Fysisk funksjon',	'Fysisk \n rollebegrensning',	'Følelsesmessig \n rollebegrensning',
                'Energinivå/vitalitet',	'Mental helse', 'Sosial funksjon',
                'Smerte',	'Generell \n helsetilstand')
-    AggVerdier <- list(Hoved = colMeans(RegData[ind$Hoved, Rand0var], na.rm = T),
-                       Rest = colMeans(RegData[ind$Rest, Rand0var], na.rm=T)) #AggVerdier <- list(Hoved=Midt, Rest=0, KIned=KIned, KIopp=KIopp, KIHele=KIHele)
+    if (valgtVar =='RAND0') {
+      RANDvar <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',
+                  'R0ScoreEnergy',	'R0ScoreEmo', 'R0ScoreSosial',
+                  'R0ScorePain',	'R0ScoreGeneral')
+    tittel <- 'RAND36 ved operasjon, alle dimensjoner'
+    }
+    if (valgtVar =='RAND1')  {
+      mangler <- c(-2, -7)
+      RANDvar <- c('R1ScorePhys',	'R1ScoreRoleLmtPhy',	'R1ScoreRoleLmtEmo',
+                      'R1ScoreEnergy',	'R1ScoreEmo', 'R1ScoreSosial',
+                      'R1ScorePain',	'R1ScoreGeneral')[mangler]
+      grtxt <- grtxt[mangler]
+      tittel <- 'RAND36 ett år etter, alle dimensjoner'
+                  }
+    AggVerdier <- list(Hoved = colMeans(RegData[ind$Hoved, RANDvar], na.rm = T),
+                       Rest = colMeans(RegData[ind$Rest, RANDvar], na.rm=T)) #AggVerdier <- list(Hoved=Midt, Rest=0, KIned=KIned, KIopp=KIopp, KIHele=KIHele)
     xakseTxt <- 'Gjennomsnittlig skår (høyest er best)'
   }
+
+  # R1ScorePhys,
+  # -- R1ScoreRoleLmtPhy,
+  # R1ScoreRoleLmtEmo,
+  # R1ScoreGeneral,
+  # R1ScoreEnergy,
+  # R1ScoreEmo,
+  # R1ScoreSosial,
+  # --  R1ScorePain,
+  # RY1Status,
 
   if (valgtVar == 'TSS0') {
 

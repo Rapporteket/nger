@@ -8,6 +8,7 @@ NGERVarTilrettelegg(
   RegData,
   valgtVar,
   grVar = "",
+  OpMetode = 0,
   ind = 0,
   figurtype = "andeler"
 )
@@ -16,6 +17,15 @@ NGERVarTilrettelegg(
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
 
 \item{valgtVar}{Hvilken variabel som skal visualiseres}
+
+\item{OpMetode}{1: Laparoskopi
+2: Hysteroskopi
+3: Begge
+4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
+5: LCC11 (laparoskopisk subtotal hysterektomi)
+6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
+7: Robotassisert inngrep
+8: Kolpopeksiene}
 
 \item{ind}{indekser fra enhetsUtvalg. Benyttes normalt ikke her, men trengs for
 valgtVar Diagnoser og Prosedyrer}
