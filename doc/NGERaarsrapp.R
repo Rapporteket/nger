@@ -269,15 +269,14 @@ NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar='Opf0AlvorlighetsGra
 
 variable <- c( 'OpBMI', 'KomplPostop', 'OpDagkirurgi', 'RegForsinkelse',
                'Tss2Mott', 'Tss2Behandling', 'Tss2Lytte', 'Tss2Behandlere', 'Tss2Enighet', 'Tss2Generelt')
-
 for (valgtVar in variable) {
   outfile <- paste0(valgtVar, '_Shus.pdf')
   NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil, outfile=outfile)
 }
 
 #Laparoskopi
-for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad1', 'Opf0AlvorlighetsGrad',
-                   'Opf0Reoperasjon','LapKonvertert', 'OpDagkirurgi')) {
+for (valgtVar in c('Alder', 'OpBMI', 'KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad1', 'Opf0AlvorlighetsGrad',
+                   'Opf0Reoperasjon','LapKonvertert', 'LapKonvertertUventet', 'OpDagkirurgi')) {
   outfile <- paste0(valgtVar, '_LapShus.pdf')
   NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil,
                       OpMetode=1, outfile=outfile)
@@ -285,14 +284,19 @@ for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad1', 'Opf0Alv
 
 
 #--Hysteroskopi
-for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad1', 'Opf0AlvorlighetsGrad',
+for (valgtVar in c('Alder', 'OpBMI','KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad1', 'Opf0AlvorlighetsGrad',
                    'Opf0Reoperasjon')) {
   outfile <- paste0(valgtVar, '_HystShus.pdf')
   NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil,
                       OpMetode=2, outfile=outfile)
 }
 
-
+#TLH
+for (valgtVar in c('Alder', 'OpBMI')) {
+  outfile <- paste0(valgtVar, '_TLHShus.pdf')
+  NGERFigAndelerGrVar(RegData=NGERData, datoFra=datoFra1aar, valgtVar=valgtVar, datoTil=datoTil,
+                      OpMetode=4, outfile=outfile)
+}
 
 #------------------------------ Sentralmål per sykehus --------------------------
 # variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
