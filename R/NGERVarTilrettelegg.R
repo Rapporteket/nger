@@ -39,6 +39,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
   #verdiTxt <- '' 	#pstTxt, ...
   #strIfig <- ''		#cex
   sortAvtagende <- TRUE  #Sortering av resultater
+  KvalIndGrenser <- NA
   KImaal <- NA
   tittel <- 'Mangler tittel'
   variable <- 'Ingen'
@@ -140,7 +141,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
     varTxt <- 'komplikasjoner'
     tittel <- 'Komplikasjoner, intraoperativt'
     sortAvtagende <- F
-    if (OpMetode %in% 1:2) {KImaal <- c(0,2,4,100)}
+    if (OpMetode %in% 1:2) {KvalIndGrenser <- c(0,2,4,100)}
   }
 
   if (valgtVar=='KomplPostop') { #andelGrVar, andelTid
@@ -159,8 +160,8 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
     RegData$Variabel[RegData$Opf0AlvorlighetsGrad %in%  2:4] <- 1 #RegData$Opf0Komplikasjoner
     varTxt <- 'komplikasjoner'
     tittel <- 'Komplikasjoner (middels/alvorlig), postop.'
-    if (OpMetode==1) {KImaal <- c(0, 2.5)} #Laparoskopi
-    if (OpMetode==2) {KImaal <- c(0, 0.3)} #Hysteroskopi
+    if (OpMetode==1) {KvalIndGrenser <- c(0, 2.5)} #Laparoskopi
+    if (OpMetode==2) {KvalIndGrenser <- c(0, 0.3)} #Hysteroskopi
   }
   if (valgtVar=='LapKonvertert') { #andelTid
     RegData <- RegData[intersect(which(RegData$LapKonvertert %in% 0:1), which(RegData$LapStatus == 1)), ] #RegData$LapKonvertert %in% 0:1
@@ -279,8 +280,8 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
 	  varTxt <- 'komplikasjoner grad 2-4'
       tittel <- 'Postop. komplikasjon, moderat/alvorlig'
       sortAvtagende <- F
-      if (OpMetode==1) {KImaal <- c(0, 2.5, 5, 100)} #Laparoskopi
-      if (OpMetode==2) {KImaal <- c(0, 0.3, 0.6, 100)} #Hysteroskopi
+      if (OpMetode==1) {KvalIndGrenser <- c(0, 2.5, 5, 100)} #Laparoskopi
+      if (OpMetode==2) {KvalIndGrenser <- c(0, 0.3, 0.6, 100)} #Hysteroskopi
 
     }
   }
@@ -578,7 +579,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
     gr <- seq(0, 100, 20)
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
     grtxt <- levels(RegData$VariabelGr)
-
+    xAkseTxt <- subtxt
   }
 
   #Tss2Type  FOLLOWUP_TYPE	Oppfølgingsmetode	["Oppfølging pr post/brev","Oppfølging pr telefonintervju","Oppfølging ikke mulig"]
@@ -696,7 +697,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData$VariabelGr <- factor(RegData$Tss2Generelt, levels=koder, labels = grtxt) #levels=c(nivaa,9)
     if (figurtype %in% c('andelGrVar', 'andelTid')) {
       RegData$Variabel[which(RegData$Tss2Generelt %in% 3:4)] <- 1
-      KImaal <- c(0, 80, 90, 100)
+      KvalIndGrenser <- c(0, 80, 90, 100)
       sortAvtagende <- TRUE
       }
     if (figurtype == 'gjsnGrVar') {
@@ -707,7 +708,6 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     #Stort sett: 0:Nei, 1:Ja, til en viss grad, 2:Ja, i ganske stor grad, 3:Ja, i svært stor grad
     #Alle variable må besvares for å kunne ferdigstille skjema.
     RegData <- RegData[which(RegData$Tss2Status == 1) %i% which(RegData$Tss2Type %in% 1:2), ]
-    #TSSsumskaar
     #if (figurtype=='gjsnGrVar'){
     #RegData$Test <- (RegData$Tss2Score-1)/6 OK
     RegData$Variabel <- (rowSums(RegData[ ,c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
@@ -715,7 +715,9 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     gr <- c(-1:3)
     RegData$VariabelGr <- cut(RegData$Variabel, breaks=gr, include.lowest=F, right=T)
     grtxt <- c('0', levels(RegData$VariabelGr)[2:(length(gr)-1)])
-    #retn <- 'H'
+    sortAvtagende <- T
+    KvalIndGrenser <- c(0, 2.4, 2.7, 3)
+    xAkseTxt <- 'sumskår'
     tittel <- 'TSS2, gjennomsnittlig sumskår'
   }
 
@@ -1041,7 +1043,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
 
 
   UtData <- list(RegData=RegData, grtxt=grtxt, cexgr=cexgr, varTxt=varTxt, xAkseTxt=xAkseTxt,
-                 subtxt=subtxt, KImaal=KImaal, retn=retn,
+                 subtxt=subtxt, KvalIndGrenser=KvalIndGrenser, KImaal=KImaal, retn=retn,
                  tittel=tittel, flerevar=flerevar, variable=variable, sortAvtagende=sortAvtagende)
   #RegData inneholder nå variablene 'Variabel' og 'VariabelGr'
   return(invisible(UtData))

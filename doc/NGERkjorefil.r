@@ -410,7 +410,7 @@ prop.table(table(RegData$Opf0Komplikasjoner, RegData$Aar), margin = 2)
 prop.test(x=table(RegData$Aar, RegData$Opf0Komplikasjoner), correct=FALSE)
 
 
-
-
+RegData <- NGERPreprosess(RegData = NGERRegDataSQL())
+RegData$tss2
 
 

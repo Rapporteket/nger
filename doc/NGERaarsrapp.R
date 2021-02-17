@@ -25,6 +25,9 @@ library(nger)
 datoFra<- '2016-01-01'
 datoFra1aar <- '2020-01-01'
 datoTil <- '2020-12-31'
+datoFra1Yoppf <- '2019-01-01'
+datoTil1Yoppf <- '2019-12-31'
+
 setwd('/home/rstudio/nger/aarsrapp' ) #"P:/Registerinfo og historie/NGER/aarsrapp/")
 library(nger)
 
@@ -305,8 +308,6 @@ for (valgtVar in c('Alder', 'OpBMI')) {
 #               'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')
 # variable <- 'OpTid'
 # variable <- 'RegForsinkelse'
-datoFra1Yoppf <- '2019-01-01'
-datoTil1Yoppf <- '2019-12-31'
 
 NGERData <- NGERRegDataSQL(datoFra = datoFra1Yoppf, datoTil = datoTil)
 #'TSS2, sumskår' = 'Tss2Sumskaar'

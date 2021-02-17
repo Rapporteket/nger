@@ -64,7 +64,7 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', datoFra='2013-01-01
   #subtxt <- NGERVarSpes$subtxt
   grtxt <- NGERVarSpes$grtxt
   tittel <- NGERVarSpes$tittel
-  KImaal <- NGERVarSpes$KImaal
+  KvalIndGrenser <- NGERVarSpes$KvalIndGrenser
   sortAvtagende <- NGERVarSpes$sortAvtagende
 
   grVar <- 'ShNavn'
@@ -107,7 +107,7 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', datoFra='2013-01-01
   FigDataParam <- list(AggVerdier=AggVerdier,
                        N=N, #Nfig,
                        Ngr=Ngr[sortInd],
-                       KImaal <- NGERVarSpes$KImaal,
+                       KvalIndGrenser <- NGERVarSpes$KvalIndGrenser,
                        #grtxt2=grtxt2,
                        grtxt=grtxt,
                        #grTypeTxt=grTypeTxt,
@@ -149,14 +149,14 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', datoFra='2013-01-01
     pos <- barplot(as.numeric(AggVerdier$Hoved), horiz=T, border=NA, col=farger[3], #main=tittel,
                    xlim=c(0,xmax), ylim=c(0.05, 1.25)*length(Ngr), font.main=1, xlab='Andel (%)', las=1, cex.names=0.7)
     #Legge på målnivå
-    if (!is.na(KImaal[1])) {
-      antMaalNivaa <- length(KImaal)-1
+    if (!is.na(KvalIndGrenser[1])) {
+      antMaalNivaa <- length(KvalIndGrenser)-1
       rekkef <- 1:antMaalNivaa
       if (sortAvtagende == TRUE) {rekkef <- rev(rekkef)}
       fargerMaalNiva <-  c('#4fc63f', '#fbf850', '#c6312a')[rekkef] #c('green','yellow')# #c('#ddffcc', '#ffffcc') #, '#fff0e6') #Grønn, gul, rød
       maalOppTxt <- c('Høy', 'Moderat til lav', 'Lav')[rekkef]
       if (antMaalNivaa==3) {maalOppTxt[2] <- 'Moderat' }
-      rect(xleft=KImaal[1:antMaalNivaa], ybottom=0, xright=KImaal[2:(antMaalNivaa+1)],
+      rect(xleft=KvalIndGrenser[1:antMaalNivaa], ybottom=0, xright=KvalIndGrenser[2:(antMaalNivaa+1)],
            ytop=max(pos)+0.4, col = fargerMaalNiva[1:antMaalNivaa], border = NA) #add = TRUE, #pos[AntGrNgr+1],
       legPos <- ifelse(AntGr < 31, ifelse(AntGr < 15, -1, -2.5), -3.5)
       legend(x=0, y=legPos, pch=c(NA,rep(15, antMaalNivaa)), col=c(NA, fargerMaalNiva[1:antMaalNivaa]),
