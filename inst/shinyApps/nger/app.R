@@ -263,7 +263,8 @@ h3('Registerets kvalitetsindikatorer', align='center'),
                         inputId = "valgtVarKval", label="Velg variabel",
                         choices = c('Prosessindikatorer' = 'kvalInd',
                                     'TSS2, oppfølging' = 'TSS0',
-                                    'RAND36, oppfølging' = 'RAND0'
+                                    'RAND36, v/operasjon' = 'RAND0',
+                                    'RAND36, ett år etter' = 'RAND1'
                         )
                       ),
                       dateRangeInput(inputId = 'datovalgKval', start = startDato, end = Sys.Date(),

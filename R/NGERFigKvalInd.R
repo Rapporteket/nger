@@ -4,7 +4,8 @@
 #'
 #' Argumentet \emph{valgtVar} har følgende valgmuligheter:
 #'    \itemize{
-#'     \item RAND0: Alle dimensjonene i RAND36 ved oppfølging etter 4-6uker. Gjennomsnitt
+#'     \item RAND0: Alle dimensjonene i RAND36 ved operasjonstidspunkt. Gjennomsnitt
+#'     \item RAND1: Alle dimensjonene i RAND36 ett år etter operasjon. Gjennomsnitt
 #'     \item TSS0: Alle sp?rsm?lene i TSS2 ved oppf?lging etter 4-6uker. Andel av beste svaralternativ
 #'     \item kvalInd: Samling av kvalitetsindikatorer
 #'    }
