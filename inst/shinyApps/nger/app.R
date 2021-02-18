@@ -565,7 +565,8 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
                             h3('Utvalg'),
                             #8 hoveddimensjoner av Rand, TSS2spm + sumskår
                             selectInput(
-                                  inputId = "valgtVarGjsn", label="Velg variabel (flere valg kommer)",
+                                  inputId = "valgtVarGjsn", label="Velg variabel",
+                                  selected = c('TSS2, sumskår' = 'Tss2Sumskaar'),
                                   choices = c('Alder' = 'Alder',
                                               'Operasjonstid (minutter)' = 'OpTid',
                                               'Registreringsforsinkelse' = 'RegForsinkelse',
