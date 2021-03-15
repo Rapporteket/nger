@@ -64,7 +64,9 @@ enhetsUtvalg <- c("Egen mot resten av landet"=1,
                'Begge'=3,
                'Tot. lap. hysterektomi (LCD01/LCD04)'=4,
                'Lap. subtotal hysterektomi (LCC11)'=5,
-               'Lap. ass. vag. hysterektomi (LCD11)'=6)
+               'Lap. ass. vag. hysterektomi (LCD11)'=6,
+               'Robotassisert inngrep' = 7,
+               'Kolpopeksiene' = 8)
 
  alvorKompl <- c(#"Alle"=0,
                   "Lite alvorlig"=1,
@@ -242,7 +244,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                       br(),
                                       fluidRow(
                                         tableOutput("tabAntSkjema")
-                                        #,downloadButton(outputId = 'lastNed_tabAntSkjema', label='Last ned')
+                                        ,downloadButton(outputId = 'lastNed_tabAntSkjema', label='Last ned')
                                       )
                              )
 
@@ -261,7 +263,8 @@ h3('Registerets kvalitetsindikatorer', align='center'),
                         inputId = "valgtVarKval", label="Velg variabel",
                         choices = c('Prosessindikatorer' = 'kvalInd',
                                     'TSS2, oppfølging' = 'TSS0',
-                                    'RAND36, oppfølging' = 'RAND0'
+                                    'RAND36, v/operasjon' = 'RAND0',
+                                    'RAND36, ett år etter' = 'RAND1'
                         )
                       ),
                       dateRangeInput(inputId = 'datovalgKval', start = startDato, end = Sys.Date(),
@@ -351,6 +354,8 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
          #-----
          sidebarPanel(width = 3,
                       h3('Utvalg'),
+                      br(),
+                      br(),
                       selectInput(
                         inputId = "valgtVar", label="Velg variabel",
                         choices = c('Alder' = 'Alder',
@@ -464,34 +469,34 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
 
            selectInput(
              inputId = "valgtVarAndel", label="Velg variabel",
-             choices = c('Alder over 70 år' = 'Alder',
+             choices = c('Kval.ind: Komplikasjoner under operasjon' = 'KomplIntra',
+                         'Kval.ind: Postop. komplikasjon: moderate/alvorlige (grad 2-4)' = 'Opf0AlvorlighetsGrad',
+                         'Kval.ind: TSS2: Positiv oppfatning om gyn. avd.' = 'Tss2Generelt',
+                         'Alder over 70 år' = 'Alder',
                          'Antibiotika' = 'OpAntibProfylakse',
                          'ASA-grad > II' = 'OpASA',
                          'Blodfortynnende' = 'Blodfortynnende',
                          'Dagkirurgiske inngrep' = 'OpDagkirurgi',
                          'Fedme (BMI>30)' = 'OpBMI',
-                         'Komplikasjoner under operasjon' = 'KomplIntra',
-                         'Konvertert til laparoromi' = 'LapKonvertert',
-                         'Konvertert til laparoromi, ikke forventet' = 'LapKonvertertUventet',
+                         'Konvertert til laparotomi' = 'LapKonvertert',
+                         'Konvertert til laparotomi, ikke forventet' = 'LapKonvertertUventet',
                          'Lokalbedøvelse' = 'OpAnestesi',
                          'Operasjonstid (minutter)' = 'OpTid',
                          'Pasienter med høyere utdanning' = 'Utdanning',
+                         'Postop. komplikasjon: Alle' = 'KomplPostop',
                          'Postop. komplikasjon: Blødning' = 'Opf0KomplBlodning',
                          #'Postop. komplikasjon: Problemer med ustyr' = 'Opf0KomplUtstyr',
                          'Postop. komplikasjon: Infeksjon' = 'Opf0KomplInfeksjon',
                          'Postop. komplikasjon: Organskade' = 'Opf0KomplOrgan',
                          'Postop. komplikasjon: Reoperasjon' = 'Opf0Reoperasjon',
                          'Postop. komplikasjon: lav alvorlighet (grad 1)' = 'Opf0AlvorlighetsGrad1',
-                         'Postop. komplikasjon: moderate/alvorlige (grad 2-4)' = 'Opf0AlvorlighetsGrad234',
-                         'Postop. komplikasjon: Alle' = 'KomplPostop',
                          'Postoperativ oppfølging' = 'Opf0Status',
                          'Registreringsforsinkelse' = 'RegForsinkelse',
                          'TSS2: Møtet med gyn. avd. var svært godt' = 'Tss2Mott',
                          'TSS2: Behandlingsopplegg/-innhold passet svært bra' = 'Tss2Behandling',
                          'TSS2: Behandlerne lyttet- og forsto i svært stor grad' = 'Tss2Lytte',
                          'TSS2: Pasienten hadde svært stor tillit til sine behandlere' = 'Tss2Behandlere',
-                         'TSS2: Pasient og behandlere svært enige om målsetn. for behandlinga' = 'Tss2Enighet',
-                         'TSS2: Positiv oppfatning om gyn. avd.' = 'Tss2Generelt'
+                         'TSS2: Pasient og behandlere svært enige om målsetn. for behandlinga' = 'Tss2Enighet'
                          )
            ),
            dateRangeInput(inputId = 'datovalgAndel', start = startDato, end = idag,
@@ -560,7 +565,8 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
                             h3('Utvalg'),
                             #8 hoveddimensjoner av Rand, TSS2spm + sumskår
                             selectInput(
-                                  inputId = "valgtVarGjsn", label="Velg variabel (flere valg kommer)",
+                                  inputId = "valgtVarGjsn", label="Velg variabel",
+                                  selected = c('TSS2, sumskår' = 'Tss2Sumskaar'),
                                   choices = c('Alder' = 'Alder',
                                               'Operasjonstid (minutter)' = 'OpTid',
                                               'Registreringsforsinkelse' = 'RegForsinkelse',
@@ -938,6 +944,9 @@ output$lastNed_dataDump <- downloadHandler(
         }, height=800, width=800 #height = function() {session$clientData$output_fordelinger_width}
         )
         #RegData må hentes ut fra valgtVar
+        # print(as.numeric(input$alderKval[1]))
+        # print(as.numeric(input$hastegradKval))
+        # print(as.numeric(input$opMetodeKval))
         UtDataKvalInd <- NGERFigKvalInd(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarKval,
                                      datoFra=input$datovalgKval[1], datoTil=input$datovalgKval[2],
                                      reshID = reshID,

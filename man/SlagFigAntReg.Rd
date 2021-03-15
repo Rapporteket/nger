@@ -21,6 +21,17 @@ SlagFigAntReg(
 )
 }
 \arguments{
+\item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
+
+\item{datoTil}{Seneste dato i utvalget (vises alltid i figuren).}
+
+\item{minald}{Alder, fra og med (Standardverdi: 0)}
+
+\item{maxald}{Alder, til og med (Standardverdi: 130)}
+
+\item{reshID}{Parameter følger fra innlogging helseregister.no og angir
+hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
+
 \item{enhetsUtvalg}{Gjør gruppeutvalg for
  0: Hele landet
  2: Egen enhet
@@ -30,7 +41,7 @@ SlagFigAntReg(
 Søylediagram som viser antall registreringer per måned for valgte 12 måneder
 }
 \description{
-Søylediagram som viser antall registreringer per måned, siste 12 hele måneder fra valgt sluttdato, 
+Søylediagram som viser antall registreringer per måned, siste 12 hele måneder fra valgt sluttdato,
  av hovedskjema, samt oppfølgingsskjema+døde
 }
 \details{

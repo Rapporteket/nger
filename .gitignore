@@ -24,8 +24,7 @@ NGERmonthlyReport.pdf
 NGERmonthlyReport.tex
 config
 nger.Rproj
-aarsrapp
-*.pdf
+#*.pdf
 testRAND36.csv
 testRAND36.xlsx
 figurer/

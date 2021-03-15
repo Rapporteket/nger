@@ -39,7 +39,9 @@ NGERUtvalgEnh(
 3: Begge
 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
 5: LCC11 (laparoskopisk subtotal hysterektomi)
-6: LCD11 (laparoskopisk assistert vaginal hysterektomi)}
+6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
+7: Robotassisert inngrep
+8: Kolpopeksiene}
 
 \item{AlvorlighetKompl}{Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
 Angis som en vektor av tall som tekst, f.eks. c('1','2')

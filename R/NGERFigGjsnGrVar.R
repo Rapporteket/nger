@@ -43,6 +43,8 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
   #------- Tilrettelegge variable
   NGERVarSpes <- NGERVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'gjsnGrVar')
   RegData <- NGERVarSpes$RegData
+  KvalIndGrenser <- NGERVarSpes$KvalIndGrenser
+  sortAvtagende <- NGERVarSpes$sortAvtagende
 
   #------- Gjøre utvalg
   NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra,
@@ -225,12 +227,31 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
       posOK <- pos[indOK]
       minpos <- min(posOK)-0.7
       maxpos <- max(posOK)+0.7
+      AntGr <- length(which(AggVerdier$Hoved>0))
       if (max(AggVerdier$Hoved, na.rm=T) == 0 ){medKI <- 0}
+
+      #Legge på målnivå
+      if (!is.na(KvalIndGrenser[1])) {
+        antMaalNivaa <- length(KvalIndGrenser)-1
+        rekkef <- 1:antMaalNivaa
+        if (sortAvtagende == TRUE) {rekkef <- rev(rekkef)}
+        fargerMaalNiva <-  c('#3baa34', '#fd9c00', '#e30713')[rekkef] #Grønn, gul, rød
+        maalOppTxt <- c('Høy', 'Moderat til lav', 'Lav')[rekkef]
+        if (antMaalNivaa==3) {maalOppTxt[2] <- 'Moderat' }
+        rect(xleft=KvalIndGrenser[1:antMaalNivaa], ybottom=0, xright=KvalIndGrenser[2:(antMaalNivaa+1)],
+             ytop=max(pos)+0.4, col = fargerMaalNiva[1:antMaalNivaa], border = NA) #add = TRUE, #pos[AntGrNgr+1],
+        legPos <- ifelse(AntGr < 31, ifelse(AntGr < 15, -1, -2.5), -3.5)
+        legend(x=0, y=legPos, pch=c(NA,rep(15, antMaalNivaa)), col=c(NA, fargerMaalNiva[1:antMaalNivaa]),
+               ncol=antMaalNivaa+1,
+               xpd=TRUE, border=NA, box.col='white',cex=0.8, pt.cex=1.5,
+               legend=c('Måloppnåelse:', maalOppTxt[1:antMaalNivaa])) #,
+      }
+
+
 
       if (medKI == 1) {	#Legge på konf.int for hele populasjonen
         #options(warn=-1)	#Unngå melding om KI med lengde 0
         KIHele <- AggVerdier$KIHele
-        AntGr <- length(which(AggVerdier$Hoved>0))
         polygon(c(rep(KIHele[1],2), rep(KIHele[2],2)), col=farger[3], border=farger[3],
                 c(minpos, maxpos, maxpos, minpos))
       }

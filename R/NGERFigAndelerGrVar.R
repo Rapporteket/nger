@@ -58,22 +58,26 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', datoFra='2013-01-01
   '%i%' <- intersect
   cexShNavn <- 0.85
 
-  NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, grVar='', figurtype='andelGrVar')
+  NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, grVar='', OpMetode=OpMetode , figurtype='andelGrVar')
   RegData <- NGERVarSpes$RegData
   #flerevar <- NGERVarSpes$flerevar
   #subtxt <- NGERVarSpes$subtxt
   grtxt <- NGERVarSpes$grtxt
   tittel <- NGERVarSpes$tittel
+  KvalIndGrenser <- NGERVarSpes$KvalIndGrenser
+  sortAvtagende <- NGERVarSpes$sortAvtagende
 
   grVar <- 'ShNavn'
   #RegData[ ,grVar] <- factor(RegData[ ,grVar])
 
 
-  NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-                              OpMetode=OpMetode, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
+  NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, OpMetode=OpMetode,
+                              minald=minald, maxald=maxald,
+                              AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
                               velgAvd=velgAvd, velgDiag=velgDiag)
   RegData <- NGERUtvalg$RegData
   utvalgTxt <- NGERUtvalg$utvalgTxt
+
 
 
   dummy0 <- NA #-0.001
@@ -103,7 +107,7 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', datoFra='2013-01-01
   FigDataParam <- list(AggVerdier=AggVerdier,
                        N=N, #Nfig,
                        Ngr=Ngr[sortInd],
-                       #KImaal <- NGERVarSpes$KImaal,
+                       KvalIndGrenser <- NGERVarSpes$KvalIndGrenser,
                        #grtxt2=grtxt2,
                        grtxt=grtxt,
                        #grTypeTxt=grTypeTxt,
@@ -144,6 +148,25 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', datoFra='2013-01-01
     xmax <- min(max(AggVerdier$Hoved, na.rm = T),100)*1.15
     pos <- barplot(as.numeric(AggVerdier$Hoved), horiz=T, border=NA, col=farger[3], #main=tittel,
                    xlim=c(0,xmax), ylim=c(0.05, 1.25)*length(Ngr), font.main=1, xlab='Andel (%)', las=1, cex.names=0.7)
+    #Legge på målnivå
+    if (!is.na(KvalIndGrenser[1])) {
+      antMaalNivaa <- length(KvalIndGrenser)-1
+      rekkef <- 1:antMaalNivaa
+      if (sortAvtagende == TRUE) {rekkef <- rev(rekkef)}
+      fargerMaalNiva <-  c('#3baa34', '#fd9c00', '#e30713')[rekkef] #Grønn, gul, rød
+      maalOppTxt <- c('Høy', 'Moderat til lav', 'Lav')[rekkef]
+      if (antMaalNivaa==3) {maalOppTxt[2] <- 'Moderat' }
+      rect(xleft=KvalIndGrenser[1:antMaalNivaa], ybottom=0, xright=KvalIndGrenser[2:(antMaalNivaa+1)],
+           ytop=max(pos)+0.4, col = fargerMaalNiva[1:antMaalNivaa], border = NA) #add = TRUE, #pos[AntGrNgr+1],
+      legPos <- ifelse(AntGr < 31, ifelse(AntGr < 15, -1, -2.5), -3.5)
+      legend(x=0, y=legPos, pch=c(NA,rep(15, antMaalNivaa)), col=c(NA, fargerMaalNiva[1:antMaalNivaa]),
+             ncol=antMaalNivaa+1,
+             xpd=TRUE, border=NA, box.col='white',cex=0.8, pt.cex=1.5,
+             legend=c('Måloppnåelse:', maalOppTxt[1:antMaalNivaa])) #,
+    }
+
+    barplot(as.numeric(AggVerdier$Hoved), horiz=T, border=NA, col=farger[3], add=T)
+
     ybunn <- 0.1
     ytopp <- pos[AntGr]+1	#-length(indGrUt)]
     lines(x=rep(AggVerdier$Tot, 2), y=c(ybunn, ytopp), col=farger[2], lwd=2)
@@ -152,7 +175,6 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', datoFra='2013-01-01
            bty='o', bg='white', box.col='white')
     mtext(at=max(pos)+0.35*log(max(pos)), paste0('(N)' ), side=2, las=1, cex=cexShNavn, adj=1, line=0.25)
     mtext(at=pos+max(pos)*0.0045, GrNavnSort, side=2, las=1, cex=cexShNavn, adj=1, line=0.25)	#Legge på navn som eget steg
-    #text(x=0.005*xmax, y=pos, Ngrtxt[sortInd], las=1, cex=cexShNavn, adj=0, col=farger[4], lwd=3)	#Legge til N
     title(tittel, line=1, font.main=1, cex.main=1.2)
 
     text(x=AggVerdier$Hoved+xmax*0.01, y=pos+0.1, andeltxt,

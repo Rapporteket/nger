@@ -200,7 +200,7 @@ for (valgtVar in variable) {
 load('A:/NGER/Aarsrapp2018_2019-08-05.Rdata')
 RegData <- NGERData
 
-valgtVar <- 'RegForsinkelse' #Må velge... OpAnestesi, OpDagkirurgi,OpTid
+valgtVar <- 'KomplIntra'  #Opf0AlvorlighetsGrad #Må velge... OpAnestesi, OpDagkirurgi,OpTid
       #Alder, Opf0Reoperasjon, Education, Opf0AlvorlighetsGrad,
       #KomplIntra, KomplPostop, OpAntibProfylakse, OpASA, OpBMI, Opf0Status, RegForsinkelse
       #Tss2Mott, Tss2Behandling,	Tss2Lytte, Tss2Behandlere, Tss2Enighet,	Tss2Generelt
@@ -208,8 +208,8 @@ valgtVar <- 'RegForsinkelse' #Må velge... OpAnestesi, OpDagkirurgi,OpTid
 outfile <- '' #paste0(valgtVar, '_Shus.png')	#Navn angis av Jasper
 #velgAvd <- '' #c(108048, 111180, 700404)
 
-UtDataFraFig <-NGERFigAndelerGrVar(RegData=RegData,  datoFra='2018-01-01', datoTil = '2018-12-31',
-                                   valgtVar=valgtVar,  outfile='', preprosess = 1)
+UtDataFraFig <-NGERFigAndelerGrVar(RegData=NGERRegDataSQL(),  datoFra='2018-01-01', #datoTil = '2018-12-31',
+                                   valgtVar='Opf0AlvorlighetsGrad',  outfile='',OpMetode = 1)
 
 NGERFigAndelerGrVar(RegData=RegData, datoFra='2018-01-01', valgtVar=valgtVar, datoTil=datoTil,
             reshID=reshID, outfile=outfile, OpMetode=OpMetode,
@@ -410,7 +410,7 @@ prop.table(table(RegData$Opf0Komplikasjoner, RegData$Aar), margin = 2)
 prop.test(x=table(RegData$Aar, RegData$Opf0Komplikasjoner), correct=FALSE)
 
 
-
-
+RegData <- NGERPreprosess(RegData = NGERRegDataSQL())
+RegData$tss2
 
 
