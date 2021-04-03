@@ -294,8 +294,11 @@ h3('Registerets kvalitetsindikatorer', align='center'),
                       ),
                       selectInput(inputId = 'velgReshKval', label='Velg eget Sykehus',
                                   #selected = 0,
-                                  choices = sykehusValg)
-         ),
+                                  choices = sykehusValg),
+                      selectInput(inputId = "bildeformatKval",
+                                  label = "Velg format for nedlasting av figur",
+                                  choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg')
+                      )),
          mainPanel(
            tabsetPanel(
              tabPanel(
@@ -304,7 +307,9 @@ h3('Registerets kvalitetsindikatorer', align='center'),
                em('(Høyreklikk på figuren for å laste den ned)'),
                br(),
                br(),
-               plotOutput('kvalInd')),
+               plotOutput('kvalInd', height="auto"),
+               downloadButton('LastNedFigKval', label='Velg format og last ned figur')
+               ),
              tabPanel(
                'Tabell',
                uiOutput("tittelKvalInd"),
@@ -404,7 +409,7 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
                                          'TSS2, sp.5 Enighet om målsetning' = 'Tss2Enighet',
                                          'TSS2, sp.6 Generell oppfatning av avdelinga' = 'Tss2Generelt',
                                          'Utdanning' = 'Utdanning'
-                        )
+                        ), selected = c('Registreringsforsinkelse' =  'RegForsinkelse'),
                       ),
 
 
@@ -432,8 +437,11 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
                       ),
                       selectInput(inputId = 'velgResh', label='Velg eget Sykehus',
                                   selected = 0,
-                                  choices = sykehusValg)
-         ),
+                                  choices = sykehusValg),
+                      selectInput(inputId = "bildeformatFord",
+                                  label = "Velg format for nedlasting av figur",
+                                  choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg')
+                      )),
          #--------
          mainPanel(
            tabsetPanel(
@@ -443,7 +451,9 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
                em('(Høyreklikk på figuren for å laste den ned)'),
                br(),
                br(),
-               plotOutput('fordelinger')),
+               plotOutput('fordelinger', height="auto"),
+               downloadButton('LastNedFigFord', label='Velg format og last ned figur')
+             ),
              tabPanel(
                'Tabell',
                uiOutput("tittelFord"),
@@ -517,7 +527,11 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
                        multiple = T, #selected=0,
                        choices = alvorKompl
            ),
-           br(),
+           selectInput(inputId = "bildeformatAndel",
+                       label = "Velg format for nedlasting av figur",
+                       choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg')
+           ),
+         br(),
            p(em('Følgende utvalg gjelder bare figuren/tabellen som viser utvikling over tid')),
            selectInput(inputId = 'enhetsUtvalgAndel', label='Egen enhet og/eller landet',
                        choices = c("Egen mot resten av landet"=1, "Hele landet"=0, "Egen enhet"=2)),
@@ -532,9 +546,11 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
                h3(em("Utvikling over tid")),
                br(),
                plotOutput("andelTid", height = 'auto'),
+               downloadButton('LastNedFigAndelTid', label='Velg format og last ned figur'),
                br(),
                h3(em("Sykehusvise resultater")),
-               plotOutput("andelerGrVar", height='auto')
+               plotOutput("andelerGrVar", height='auto'),
+               downloadButton('LastNedFigAndelGrVar', label='Velg format og last ned figur')
              ),
              tabPanel("Tabeller",
                       uiOutput("tittelAndel"),
@@ -602,6 +618,10 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
                                         multiple = T, #selected=0,
                                         choices = alvorKompl
                             ),
+                            selectInput(inputId = "bildeformatGjsn",
+                                        label = "Velg format for nedlasting av figur",
+                                        choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg')
+                            ),
                             br(),
                             p(em('Følgende utvalg gjelder bare figuren/tabellen som viser utvikling over tid')),
                             selectInput(inputId = 'enhetsUtvalgGjsn', label='Egen enhet og/eller landet',
@@ -623,10 +643,11 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
                                  br(),
                                  h3(em("Utvikling over tid")),
                                  plotOutput("gjsnTid", height = 'auto'),
+                                 downloadButton('LastNedFigGjsnTid', label='Velg format og last ned figur'),
                                  br(),
                                  h3(em("Sykehusvise resultater")),
-                                 plotOutput("gjsnGrVar", height='auto')
-
+                                 plotOutput("gjsnGrVar", height='auto'),
+                                 downloadButton('LastNedFigGjsnGrVar', label='Velg format og last ned figur')
                              ),
                            tabPanel(
                                  'Tabeller',
@@ -943,11 +964,27 @@ output$lastNed_dataDump <- downloadHandler(
                         session = session)
         }, height=800, width=800 #height = function() {session$clientData$output_fordelinger_width}
         )
-        #RegData må hentes ut fra valgtVar
-        # print(as.numeric(input$alderKval[1]))
-        # print(as.numeric(input$hastegradKval))
-        # print(as.numeric(input$opMetodeKval))
-        UtDataKvalInd <- NGERFigKvalInd(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarKval,
+        output$LastNedFigKval <- downloadHandler(
+          filename = function(){
+            paste0('FigKval_',input$valgtVarKval, Sys.time(), '.', input$bildeformatKval)
+          },
+          content = function(file){
+            NGERFigKvalInd(RegData=RegData, valgtVar=input$valgtVarKval, preprosess = 0,
+                           datoFra=input$datovalgKval[1], datoTil=input$datovalgKval[2],
+                           reshID = reshID,
+                           minald=as.numeric(input$alderKval[1]), maxald=as.numeric(input$alderKval[2]),
+                           OpMetode = as.numeric(input$opMetodeKval),
+                           Hastegrad = as.numeric(input$hastegradKval),
+                           dagkir = as.numeric(input$dagkirKval),
+                           velgDiag = as.numeric(input$velgDiagKval),
+                           enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
+                           velgAvd=input$velgReshKval,
+                           session = session,
+                               outfile = file)
+          })
+
+
+              UtDataKvalInd <- NGERFigKvalInd(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarKval,
                                      datoFra=input$datovalgKval[1], datoTil=input$datovalgKval[2],
                                      reshID = reshID,
                                      minald=as.numeric(input$alderKval[1]), maxald=as.numeric(input$alderKval[2]),
@@ -957,12 +994,8 @@ output$lastNed_dataDump <- downloadHandler(
                                      enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
                                      velgAvd=input$velgReshKval,
                                      session = session)
-        # testData <- NGERFigKvalInd(RegData=RegData, preprosess = 0, valgtVar='kvalInd',
-        #                            datoFra='2019-01-01', datoTil=Sys.Date(),
-        #                            reshID = 110734,
-        #                            enhetsUtvalg=1)
-        # tabKvalInd <- lagTabavFig(UtDataFraFig = testData)
-        tabKvalInd <- lagTabavFig(UtDataFraFig = UtDataKvalInd) #lagTabavFigAndeler
+
+              tabKvalInd <- lagTabavFig(UtDataFraFig = UtDataKvalInd) #lagTabavFigAndeler
 
         output$tittelKvalInd <- renderUI({
           tagList(
@@ -1032,6 +1065,28 @@ output$lastNed_dataDump <- downloadHandler(
                                session = session)
             }, height=800, width=800 #height = function() {session$clientData$output_fordelinger_width}
             )
+
+              output$LastNedFigFord <- downloadHandler(
+              filename = function(){
+                paste0('FigFord_', input$valgtVar, Sys.time(), '.', input$bildeformatFord)
+              },
+              content = function(file){
+                NGERFigAndeler(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
+                               datoFra=input$datovalg[1], datoTil=input$datovalg[2],
+                               reshID = reshID,
+                               minald=as.numeric(input$alder[1]),
+                               maxald=as.numeric(input$alder[2]),
+                               OpMetode = as.numeric(input$opMetode),
+                               Hastegrad = as.numeric(input$hastegrad),
+                               velgDiag = as.numeric(input$velgDiag),
+                               AlvorlighetKompl = as.numeric(input$alvorlighetKompl),
+                               enhetsUtvalg=as.numeric(input$enhetsUtvalg),
+                               velgAvd=input$velgResh,
+                               session = session,
+                               outfile = file)
+              })
+
+
             #RegData må hentes ut fra valgtVar
             UtDataFord <- NGERFigAndeler(RegData=RegData, preprosess = 0, valgtVar=input$valgtVar,
                                        datoFra=input$datovalg[1], datoTil=input$datovalg[2],
@@ -1083,9 +1138,24 @@ output$lastNed_dataDump <- downloadHandler(
                             session=session)
       }, height = 800, width=700 #height = function() {session$clientData$output_andelerGrVarFig_width} #})
       )
+      output$LastNedFigAndelGrVar <- downloadHandler(
+        filename = function(){
+          paste0('FigAndelSh_', input$valgtVarAndel, Sys.time(), '.', input$bildeformatAndel)
+        },
+        content = function(file){
+          NGERFigAndelerGrVar(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
+                              datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
+                              minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
+                              OpMetode = as.numeric(input$opMetodeAndel),
+                              Hastegrad = as.numeric(input$hastegradAndel),
+                              velgDiag = as.numeric(input$velgDiagAndel),
+                              AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
+                              session=session,
+                         outfile = file)
+        })
+
 
       output$andelTid <- renderPlot({
-
         NGERFigAndelTid(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
                        reshID= reshID,
                        datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
@@ -1099,6 +1169,24 @@ output$lastNed_dataDump <- downloadHandler(
                        session=session)
       }, height = 300, width = 1000
       )
+      output$LastNedFigAndelTid <- downloadHandler(
+        filename = function(){
+          paste0('FigAndelTid_', input$valgtVarAndel, Sys.time(), '.', input$bildeformatAndel)
+        },
+        content = function(file){
+          NGERFigAndelTid(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
+                          reshID= reshID,
+                          datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
+                          minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
+                          OpMetode = as.numeric(input$opMetodeAndel),
+                          Hastegrad = as.numeric(input$hastegradAndel),
+                          velgDiag = as.numeric(input$velgDiagAndel),
+                          AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
+                          tidsenhet = input$tidsenhetAndel,
+                          enhetsUtvalg = input$enhetsUtvalgAndel,
+                          session=session,
+                              outfile = file)
+        })
 
       observe({
         #AndelTid
@@ -1190,6 +1278,25 @@ output$lastNed_dataDump <- downloadHandler(
                                  session = session
             ),
                   width = 700, height = 800)
+
+            output$LastNedFigGjsnGrVar <- downloadHandler(
+              filename = function(){
+                paste0('FigGjsnSh_', input$valgtVarGjsn,Sys.time(), '.', input$bildeformatGjsn)
+              },
+              content = function(file){
+                NGERFigGjsnGrVar(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarGjsn,
+                                 datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
+                                 minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
+                                 valgtMaal = input$sentralmaal,
+                                 OpMetode = as.numeric(input$opMetodeGjsn),
+                                 Hastegrad = as.numeric(input$hastegradGjsn),
+                                 velgDiag = as.numeric(input$velgDiagGjsn),
+                                 AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn),
+                                 session = session,
+                                outfile = file)
+              })
+
+
             UtDataGjsnGrVar <- NGERFigGjsnGrVar(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarGjsn,
                                               datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
                                               minald=as.numeric(input$alderGjsn[1]),
@@ -1251,6 +1358,25 @@ output$lastNed_dataDump <- downloadHandler(
                             session = session
               ),
               width = 1000, height = 300)
+
+            output$LastNedFigGjsnTid <- downloadHandler(
+              filename = function(){
+                paste0('FigGjsnTid_', input$valgtVarGjsn, Sys.time(), '.', input$bildeformatGjsn)
+              },
+              content = function(file){
+                NGERFigGjsnTid(RegData=RegData, reshID= reshID, preprosess = 0, valgtVar=input$valgtVarGjsn,
+                               datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
+                               minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
+                               valgtMaal = input$sentralmaal, enhetsUtvalg =  as.numeric(input$enhetsUtvalgGjsn),
+                               OpMetode = as.numeric(input$opMetodeGjsn),
+                               Hastegrad = as.numeric(input$hastegradGjsn),
+                               velgDiag = as.numeric(input$velgDiagGjsn),
+                               AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn),
+                               tidsenhet = input$tidsenhetGjsn,
+                               session = session,
+                                 outfile = file)
+              })
+
             UtDataGjsnTid <- NGERFigGjsnTid(RegData=RegData, reshID= reshID, preprosess = 0,
                                             valgtVar=input$valgtVarGjsn,
                                                 datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
