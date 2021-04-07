@@ -250,12 +250,14 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01
                 '110734' = 	'974633574',		#Tønsberg	SYKEHUSET I VESTFOLD HF, SOMATIKK, TØNSBERG	Tønsberg
                 '700399' = 	'974589095',		#Ullevål	OSLO UNIVERSITETSSYKEHUS HF ULLEVÅL - SOMATIKK	Ullevål
                 '102583' = 	'974747545',		#Volda	HELSE MØRE OG ROMSDAL HF VOLDA SJUKEHUS - SOMATIKK	Volda
+                '4215139' = '973129856',    #Volvat Majorstuen
                 '106026' = 	'974743272',		#Voss	HELSE BERGEN HF VOSS SJUKEHUS	Voss
                 '108048' = 	'974633698',		#Østfold	SYKEHUSET ØSTFOLD HF MOSS - SOMATIKK	Moss
                 '102582' = 	'974747138'		#Ålesund	HELSE MØRE OG ROMSDAL HF ÅLESUND SJUKEHUS - SOMATIKK	Ålesund
       )
 
     RegDataUt$orgnr <- as.character(nyID[as.character(RegDataUt$ReshId)])
+    #unique(RegDataUt[ ,c('ShNavn', "ReshId", "orgnr")])
     RegDataUt <- RegDataUt[ ,c('year', 'orgnr', 'var', 'denominator', 'ind_id')]
   }
 
