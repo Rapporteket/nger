@@ -162,8 +162,8 @@ abonnementNGER <- function(rnwFil, brukernavn='ngerBrukernavn', reshID=0,
 #' @return Datafil til Resultatportalen
 #' @export
 
-dataTilOffVisning <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01', aar=0,
-                              OpMetode=0,
+dataTilOffVisning <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01',
+                              datoTil = Sys.Date(), OpMetode=0,
                               indID = 'indDummy', ResPort=0, lastNedFil=0, filUt='dummy'){
 
 
@@ -171,7 +171,8 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01
   figurtype <- ifelse(valgtVar=='Tss2Sumskaar', 'gjsnGrVar', 'andelGrVar') #MÅ ENDRES FOR SUMSKÅR!!
   NGERVarSpes <- NGERVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = figurtype)
   RegData <- NGERUtvalgEnh(RegData=NGERVarSpes$RegData, OpMetode = OpMetode,
-                           datoFra = paste0(aar[1],'-01-01'), datoTil = paste0(rev(aar)[1], '-12-31'))$RegData      #datoFra = datoFra) #) # #, datoTil=datoTil)
+                           datoFra = datoFra, datoTil = datoTil,
+                           )$RegData
 
   if (ResPort == 1){
       #  For hver kvalitetsindikator
@@ -262,6 +263,7 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01
     write.table(RegDataUt, file = filUt, sep = ';', row.names = F)} #, fileEncoding = 'UTF-8')}
   return(invisible(RegDataUt))
 }
+
 
 
 
