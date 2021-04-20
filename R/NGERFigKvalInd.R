@@ -92,11 +92,11 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
     tittel <- 'RAND36 ved operasjon, alle dimensjoner'
     }
     if (valgtVar =='RAND1')  {
-      mangler <- c(-2, -7)
+      #mangler <- c(-2, -7)
       RANDvar <- c('R1ScorePhys',	'R1ScoreRoleLmtPhy',	'R1ScoreRoleLmtEmo',
                       'R1ScoreEnergy',	'R1ScoreEmo', 'R1ScoreSosial',
-                      'R1ScorePain',	'R1ScoreGeneral')[mangler]
-      grtxt <- grtxt[mangler]
+                      'R1ScorePain',	'R1ScoreGeneral') #[mangler]
+      #grtxt <- grtxt[mangler]
       tittel <- 'RAND36 ett år etter, alle dimensjoner'
                   }
     AggVerdier <- list(Hoved = colMeans(RegData[ind$Hoved, RANDvar], na.rm = T),

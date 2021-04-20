@@ -699,7 +699,8 @@ tabPanel(p("Registeradministrasjon", title='Registeradministrasjonens side for r
                        max = as.numeric(year(idag)), value = c(2016, year(idag)), step=1, sep=""
            ),
            br(),
-           downloadButton(outputId = 'lastNed_dataTilResPort', label='Last ned data')),
+           #downloadButton(outputId = 'lastNed_dataTilResPort', label='Last ned data')
+           ),
 
          fluidRow(h3('Mer som skal med her?')
                   )
@@ -1426,16 +1427,16 @@ output$lastNed_dataDump <- downloadHandler(
       #-----------Registeradministrasjon-----------
 
       if (rolle=='SC') {
-        observe({
-          tabdataTilResPort <- dataTilOffVisning(RegData=RegData, valgtVar = input$valgtVarRes,
-                                              aar=as.numeric(input$aarRes[1]):as.numeric(input$aarRes[2]),
-                                              OpMetode = as.numeric(input$opMetodeRes))
-
-          output$lastNed_dataTilResPort <- downloadHandler(
-            filename = function(){paste0('dataTilResPort_', input$valgtVarRes, '_',
-                                         as.numeric(input$opMetodeRes), '.csv')},
-            content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = F, na = '')})
-        })
+        # observe({
+        #   tabdataTilResPort <- dataTilOffVisning(RegData=RegData, valgtVar = input$valgtVarRes,
+        #                                       aar=as.numeric(input$aarRes[1]):as.numeric(input$aarRes[2]),
+        #                                       OpMetode = as.numeric(input$opMetodeRes))
+        #
+        #   output$lastNed_dataTilResPort <- downloadHandler(
+        #     filename = function(){paste0('dataTilResPort_', input$valgtVarRes, '_',
+        #                                  as.numeric(input$opMetodeRes), '.csv')},
+        #     content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = F, na = '')})
+        # })
       }
       #------------------ Abonnement ----------------------------------------------
       ## reaktive verdier for å holde rede på endringer som skjer mens
