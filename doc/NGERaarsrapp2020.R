@@ -300,6 +300,8 @@ NGERDataUtvSh <- NGERData[which(NGERData$AvdRESH %in% c(701437, 706220, 107644, 
 
 NGERFigGjsnGrVar(RegData=NGERDataUtvSh, valgtVar='R0ScoreGeneral', datoFra=datoFra1aar, datoTil=datoTil,
                  outfile=paste0('R0ScoreGeneral_UtvalgteShGjsn.pdf'))
+NGERFigGjsnGrVar(RegData=NGERDataUtvSh, valgtVar='R0ScoreGeneral', datoFra=datoFra1Yoppf, datoTil=datoTil1Yoppf,
+                 outfile=paste0('R0ScoreGeneralForrige_UtvalgteShGjsn.pdf'))
 NGERFigGjsnGrVar(RegData=NGERDataUtvSh, valgtVar='R1ScoreGeneral', datoFra=datoFra1Yoppf, datoTil=datoTil1Yoppf,
                   outfile=paste0('R1ScoreGeneral_UtvalgteShGjsn.pdf'))
 
