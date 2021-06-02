@@ -16,6 +16,8 @@ NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = '2099-01-01',...) {
   }
 #  query <- paste0('SELECT ',
 #  paste0('AlleVarNum.',varUtvalg,suffix=', \n'),
+  #"Opf0UtstyrInstrumenter", "Opf0UtstyrNett" og "Opf0UtstyrSutur"
+
 query <- paste0('SELECT
   HysBlodning,
     HysFluidOverload,
@@ -136,8 +138,8 @@ query <- paste0('SELECT
     Opf0KomplInfeksjon,
     Opf0KomplOrgan,
     -- Opf0KomplUtstyr,
-    Opf0UtstyrInstrumenter,
-    Opf0UtstyrNett,
+    -- Opf0UtstyrInstrumenter,
+    -- Opf0UtstyrNett,
     Opf0InfUVI,
     Opf0InfOpSaar  ,
     Opf0InfIntraabdominal,
@@ -152,7 +154,7 @@ query <- paste0('SELECT
     Opf0ReopLaparoskopi,
     Opf0ReopLaparotomi,
     Opf0Status,
-    Opf0UtstyrSutur,
+    -- Opf0UtstyrSutur,
     AlleVarNum.AvdRESH,
     AlleVarNum.Norsktalende,
     AlleVarNum.PasientID
