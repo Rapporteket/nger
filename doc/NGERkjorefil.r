@@ -3,7 +3,7 @@ library(tidyverse)
 klokebok = read_delim(mappeplassering_til_klokebok)
 kodebok_kategorier = klokebok %>% filter(type == 'Listevariabel')
 
-
+#"Opf0UtstyrInstrumenter", "Opf0UtstyrNett" og "Opf0UtstyrSutur"
 
 #--------------------------------------SamleRAPPORTER-----------------------------------
 

@@ -242,8 +242,9 @@ tabKomplLap <- function(RegData, reshID=0, datoFra='2019-01-01', datoTil=Sys.Dat
 Blod <- c('Opf0KomplBlodning', 'Opf0BlodningAbdom', 'Opf0BlodningIntraabdominal', 'Opf0BlodningVaginal')
 
 #Utstyr
-UtstyrTxt <- c('Problemer m/Instrumenter', '...Nett', '...Laparaskopisk sutur') #m/utstyr','...
-Utstyr <- c('Opf0UtstyrInstrumenter', 'Opf0UtstyrNett', 'Opf0UtstyrSutur') #'Opf0KomplUtstyr',
+#UtstyrTxt <- c('Problemer m/Instrumenter', '...Nett', '...Laparaskopisk sutur') #m/utstyr','...
+#Utstyr <- c('Opf0UtstyrInstrumenter', 'Opf0UtstyrNett', 'Opf0UtstyrSutur') #'Opf0KomplUtstyr',
+#"Opf0UtstyrInstrumenter", "Opf0UtstyrNett" og "Opf0UtstyrSutur"
 
 #Infeksjon:
 # Opf0InfEndometritt = Salpingitt JA, ok.
@@ -262,8 +263,8 @@ Reop <- c("Opf0Reoperasjon", "Opf0ReopLaparoskopi", "Opf0ReopLaparotomi")
 RegData <- NGERUtvalgEnh(RegData, datoFra = datoFra, datoTil = datoTil)$RegData
 indMed <- intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$OpType %in% c(1,3)))
 
-LapKomplVar <- c(Blod, Utstyr, Infeksjon, Organ, Reop)
-LapKomplTxt <- c(BlodTxt, UtstyrTxt, InfTxt, OrganTxt, ReopTxt)
+LapKomplVar <- c(Blod, Infeksjon, Organ, Reop) #c(Blod, Utstyr, Infeksjon, Organ, Reop)
+LapKomplTxt <- c(BlodTxt, InfTxt, OrganTxt, ReopTxt) #c(BlodTxt, UtstyrTxt, InfTxt, OrganTxt, ReopTxt)
 RegDataLapKompl <- RegData[indMed, c(LapKomplVar, "Opf0Komplikasjoner")]
 
 AntLap <- dim(RegDataLapKompl)[1]

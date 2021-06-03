@@ -8,7 +8,7 @@ dataTilOffVisning(
   RegData = RegData,
   valgtVar,
   datoFra = "2014-01-01",
-  aar = 0,
+  datoTil = Sys.Date(),
   OpMetode = 0,
   indID = "indDummy",
   ResPort = 0,
@@ -22,6 +22,8 @@ dataTilOffVisning(
 \item{valgtVar}{- beinsmLavPre, peropKompDura, sympVarighUtstr, p.t. 10 kvalitetsind.}
 
 \item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}
+
+\item{datoTil}{Seneste dato i utvalget (vises alltid i figuren).}
 
 \item{OpMetode}{1: Laparoskopi
 2: Hysteroskopi
