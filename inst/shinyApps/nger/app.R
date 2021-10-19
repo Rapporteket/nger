@@ -675,47 +675,45 @@ tabPanel(p("Registeradministrasjon", title='Registeradministrasjonens side for r
          h4('Alternativt kan vi ha elementer på andre sider som bare er synlig for SC'),
          br(),
          br(),
-         tabsetPanel(
-           tabPanel(
+         # tabsetPanel(
+         #   tabPanel(
+             # sidebarPanel(
+             #   h4('Nedlasting av data til Resultatportalen:'), MÅ EVT. ENDRES TIL SYKEHUSVISER..
+             #
+             #   selectInput(inputId = "valgtVarRes", label="Velg variabel",
+             #               choices = c('Komplikasjoner under operasjon' = 'KomplIntra',
+             #                           'Komplikasjoner, postoperativt' = 'KomplPostop',
+             #                           'Alvorlighetsgrad, postop.kompl.' = 'Opf0AlvorlighetsGrad',
+             #                           'Konvertert, hys-lap' = 'HysKonvertert',
+             #                           'Konvertert, lap-lap, ikke forventet' = 'LapKonvertert',
+             #                           'TSS2-generelt, positiv oppfatning avd.' = 'Tss2Generelt',
+             #                           'TSS2-sumskår' = 'Tss2Sumskaar'
+             #               )
+             #   ),
+             #   selectInput(inputId = 'opMetodeRes', label='Operasjonstype',
+             #               choices = opMetode
+             #   ),
+             #
+             #   # dateRangeInput(inputId = 'aarRes', start = startDato, end = Sys.Date(),
+             #   #                label = "Operasjonaår", separator="t.o.m.", language="nb", format = 'yyyy'
+             #   #                ),
+             #   sliderInput(inputId="aarRes", label = "Operasjonsår", min = as.numeric(2016),
+             #               max = as.numeric(year(idag)), value = c(2016, year(idag)), step=1, sep=""
+             #   ),
+             #   br(),
+             #   #downloadButton(outputId = 'lastNed_dataTilResPort', label='Last ned data')
+             # ),
+           #),
+           #tabPanel(
+             H3("Eksport av krypterte data"),
              sidebarPanel(
-               h4('Nedlasting av data til Resultatportalen:'),
-
-               selectInput(inputId = "valgtVarRes", label="Velg variabel",
-                           choices = c('Komplikasjoner under operasjon' = 'KomplIntra',
-                                       'Komplikasjoner, postoperativt' = 'KomplPostop',
-                                       'Alvorlighetsgrad, postop.kompl.' = 'Opf0AlvorlighetsGrad',
-                                       'Konvertert, hys-lap' = 'HysKonvertert',
-                                       'Konvertert, lap-lap, ikke forventet' = 'LapKonvertert',
-                                       'TSS2-generelt, positiv oppfatning avd.' = 'Tss2Generelt',
-                                       'TSS2-sumskår' = 'Tss2Sumskaar'
-                           )
-               ),
-               selectInput(inputId = 'opMetodeRes', label='Operasjonstype',
-                           choices = opMetode
-               ),
-
-               # dateRangeInput(inputId = 'aarRes', start = startDato, end = Sys.Date(),
-               #                label = "Operasjonaår", separator="t.o.m.", language="nb", format = 'yyyy'
-               #                ),
-               sliderInput(inputId="aarRes", label = "Operasjonsår", min = as.numeric(2016),
-                           max = as.numeric(year(idag)), value = c(2016, year(idag)), step=1, sep=""
-               ),
-               br(),
-               #downloadButton(outputId = 'lastNed_dataTilResPort', label='Last ned data')
-             ),
-           ),
-           shiny::tabPanel(
-             "Eksport",
-             #shiny::sidebarLayout(
-             shiny::sidebarPanel(
                rapbase::exportUCInput("ngerExport")
              ),
-             shiny::mainPanel(
+             mainPanel(
                rapbase::exportGuideUI("ngerExportGuide")
              )
-             #)
-           ) #Eksport-tab
-         ) #tabsetPanel
+         #  ) #Eksport-tab
+        # ) #tabsetPanel
 ), #tab SC
 #----------Abonnement-----------------
 tabPanel(p("Abonnement",
