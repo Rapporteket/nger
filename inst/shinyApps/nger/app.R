@@ -705,7 +705,7 @@ tabPanel(p("Registeradministrasjon", title='Registeradministrasjonens side for r
              # ),
            #),
            #tabPanel(
-             H3("Eksport av krypterte data"),
+             h3("Eksport av krypterte data"),
              sidebarPanel(
                rapbase::exportUCInput("ngerExport")
              ),
