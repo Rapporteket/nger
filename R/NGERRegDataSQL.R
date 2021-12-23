@@ -86,7 +86,7 @@ query <- paste0('SELECT
     OpDato,
     Opf0metode,
     OpIVaktTid,
-    OpGraviditeter,
+    -- OpGraviditeter,
     OpKategori,
     OpMetode,
     OpPariteter,

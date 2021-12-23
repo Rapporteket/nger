@@ -101,9 +101,9 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
     #Gjennomføringsgrad av hysteroskopi
     #Kode •	1-Fullstendig, 2-Ufullstendig, 3-Mislykket
     RegData <- RegData[which(RegData$OpMetode == 2), ]
-    grtxt <- c('Fullstendig', 'Ufullstendig', 'Mislykket')
+    grtxt <- c('Fullstendig', 'Ufullstendig') #, 'Mislykket') #Slår sm 2 og 3 i 2022
     tittel <- 'Gjennomføringsgrad av hysteroskopi'
-    koder <- 1:3
+    koder <- 1:2 #1:3
     RegData <- RegData[which(RegData$HysGjforingsGrad %in% koder), ]
     RegData$VariabelGr <- factor(RegData$HysGjforingsGrad, levels=koder, labels = grtxt) #levels=c(nivaa,9)
   }
@@ -419,10 +419,10 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
   if (valgtVar == 'Opf0metode') {   #Andeler, andelGrVar
     # Oppfølging Post, telefon, ikke mulig
     tittel <- switch(figurtype,
-                     andeler= 'Oppfølgingsmetode',
+                     andeler= 'Oppfølgingsmetode NB: Må filtrere på undervariabel av ePROM svart: JA/NEI',
                      andelGrVar = 'Oppfølging: Ikke mulig')
-    gr <- c(1,2,9)
-    grtxt <- c('post', 'telefon', 'ikke mulig')
+    gr <- c(1,2,3,9)
+    grtxt <- c('post', 'telefon', 'ePROM', 'ikke mulig')
     RegData <- RegData[which(RegData$Opf0Status==1) %i% which(RegData$Opf0metode %in% gr), ]
     RegData$Variabel[RegData$Opf0metode==9] <- 1
     RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = gr)
@@ -435,7 +435,8 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
     datoTil <- as.Date(Sys.Date() - 8*7)  #min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 8*7))
     RegData <- RegData[which(as.Date(RegData$InnDato) <= datoTil),]
 
-    RegData$Variabel[RegData$Opf0metode %in% 1:2] <- 1 #Opf0Status==1
+    RegData$Variabel[((RegData$Opf0metode %in% 1:2) | RegData$Opf0metode==3 & RegData$Opf0BesvarteProm==1) &
+                       RegData$Opf0Status==1] <- 1 #Opf0Status==1
     varTxt <- 'svar på postoperativ oppfølging'
     tittel <- 'Pasienter som har svart på oppfølging'
   }
@@ -707,7 +708,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
   if (valgtVar == 'Tss2Sumskaar') {   #Andeler, #gjsn
     #Stort sett: 0:Nei, 1:Ja, til en viss grad, 2:Ja, i ganske stor grad, 3:Ja, i svært stor grad
     #Alle variable må besvares for å kunne ferdigstille skjema.
-    RegData <- RegData[which(RegData$Tss2Status == 1) %i% which(RegData$Tss2Type %in% 1:2), ]
+    RegData <- RegData[which(RegData$Tss2Status == 1) %i% which(RegData$Tss2Type %in% 1:3), ] #3:eprom fra 2021
     #if (figurtype=='gjsnGrVar'){
     #RegData$Test <- (RegData$Tss2Score-1)/6 OK
     RegData$Variabel <- (rowSums(RegData[ ,c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
@@ -922,10 +923,10 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
                   'LapIntKombo',
                   'LapIntKoagOgKlipp',
                   'LapUnipolarDiatermi')
-    grtxt <- c('Adheranseprofylakse', 'Bipolar Diatermi', 'Clips', 'Ultralyd skalpell',
-               'Morc. u/pose [1/3-16]', 'Morc. m/pose [1/3-16]',
-               'Nett', 'Preparatpose', 'Uterusmanipulator', 'Robotkirurgi', 'Singel port',
-               'Stapler/endoGIA', 'Sutur', 'Bipolar og ultralyd', 'Bipolar koag. og klipping',
+    grtxt <- c('Hemostasemiddel', 'Bipolar Diatermi', 'Clips', 'Ultralyd skalpell',
+               'Morc. u/pose [1/3-16]', 'Morc. m/pose [1/3-16]', #Slås sammen
+               'Nett', 'Preparatpose', 'Uterusmanipulator', 'Robot', 'Singel port',
+               'Stapler', 'Sutur', 'Bipolar og ultralyd', 'Bipolar koag. og klipping',
                'Unipolar Diatermi')
     cexgr <- 0.8
     tittel <- 'Laparaskopisk ekstrautstyr'
@@ -989,11 +990,11 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData <- RegData[which(RegData$OpMetode %in% c(1,3)), ] #Laparoskopi
     tittel <- 'Laparoskopisk tilgang, teknikk og metode' #  'Teknikk for laparaskopisk tilgang'
     grtxt <- c(paste0('Metode: \n', c('Åpent', 'Veress-nål', 'Visiport [1/1-20]','Annet')),
-               paste0('Tilgang: \n', c('Palmers point', 'Navlen'), ' [1/3-16]')) #LapTilgangsMetode
+               paste0('Tilgang: \n', c('Palmers point[1/3-16]', 'Navlen[1/3-16]', 'Annet[1/2-22]'), ' [1/3-16]')) #LapTilgangsMetode
     indMar16tilg <- which(as.Date(RegData$HovedDato)>='2016-03-01')
     #indJan20met <- which(as.Date(RegData$HovedDato)>='2020-01-01')
     indMet <- which(RegData$LapTilgangsMetode %in% c(0:2,9))
-    indTilg <- which(RegData$LapTilgang %in% 1:2)
+    indTilg <- which(RegData$LapTilgang %in% 1:2,9)
 
     variable <- c(paste0('met',0:3), paste0('tilg', 1:2))
     ind1met <- cbind(indMet, RegData$LapTilgangsMetode[indMet]+1) #Verdi 1,2,3,10...#Alle ja/nei

@@ -381,7 +381,7 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
                                          'Laparoskopiske intraabdominale komplikasjoner' = 'LapIntraabdominell',
                                          'Laparoskopiske intrapoerative komplikasjoner' = 'LapKomplikasjoner',
                                          'Norskkunnskaper' = 'Norsktalende',
-                                         'Opfølgingsmetode' = 'Opf0metode',
+                                         'Oppfølgingsmetode' = 'Opf0metode',
                                          'Operasjon i legens vakttid' = 'OpIVaktTid',
                                          'Operasjonsmetode' = 'OpMetode',
                                          'Operasjonstid (minutter)' = 'OpTid',
@@ -670,13 +670,11 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
 #-------Registeradministrasjon----------
 tabPanel(p("Registeradministrasjon", title='Registeradministrasjonens side for registreringer og resultater'),
          value = "Registeradministrasjon",
-         h3('Bare synlig for SC-bruker'),
+         h3('Siden er bare synlig for SC-bruker', align = 'center'),
          #uiOutput('rolle'),
-         h4('Alternativt kan vi ha elementer på andre sider som bare er synlig for SC'),
-         br(),
-         br(),
-         # tabsetPanel(
-         #   tabPanel(
+
+         tabsetPanel(
+           #tabPanel(
              # sidebarPanel(
              #   h4('Nedlasting av data til Resultatportalen:'), MÅ EVT. ENDRES TIL SYKEHUSVISER..
              #
@@ -704,16 +702,29 @@ tabPanel(p("Registeradministrasjon", title='Registeradministrasjonens side for r
              #   #downloadButton(outputId = 'lastNed_dataTilResPort', label='Last ned data')
              # ),
            #),
-           #tabPanel(
-             h3("Eksport av krypterte data"),
+           tabPanel(
+             h4("Utsending av rapporter"),
+                   # title = "Utsending av rapporter",
+                    #sidebarLayout(
+                      sidebarPanel(
+                        rapbase::autoReportOrgInput("NGERutsending"),
+                        rapbase::autoReportInput("NGERutsending")
+                      ),
+                      mainPanel(
+                        rapbase::autoReportUI("NGERutsending")
+                      )
+                    #)
+           ), #Utsending-tab
+           tabPanel(
+             h4("Eksport av krypterte data"),
              sidebarPanel(
                rapbase::exportUCInput("ngerExport")
              ),
              mainPanel(
                rapbase::exportGuideUI("ngerExportGuide")
              )
-         #  ) #Eksport-tab
-        # ) #tabsetPanel
+           ) #Eksport-tab
+         ) #tabsetPanel
 ), #tab SC
 #----------Abonnement-----------------
 tabPanel(p("Abonnement",
@@ -1447,6 +1458,43 @@ output$lastNed_dataDump <- downloadHandler(
         #                                  as.numeric(input$opMetodeRes), '.csv')},
         #     content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = F, na = '')})
         # })
+
+        #---Utsendinger---------------
+        ## liste med orgnr og navn
+
+        # sykehusNavn <- sort(unique(as.character(HovedSkjema$ShNavn)), index.return=T)
+        # orgs <- c(0, unique(HovedSkjema$ReshId)[sykehusNavn$ix])
+        # names(orgs) <- c('Alle',sykehusNavn$x)
+        orgs <- as.list(sykehusValg)
+
+        ## liste med metadata for rapport
+        reports <- list(
+          MndRapp = list(
+            synopsis = "Månedsrapport",
+            fun = "abonnement",
+            paramNames = c('rnwFil', "reshID"),
+            paramValues = c('NGERmndRapp.Rnw', 0)
+          ), #abonnementNGER(rnwFil, brukernavn='ngerBrukernavn', reshID=0,
+          SamleRapp = list(
+            synopsis = "Rapport med samling av div. resultater",
+            fun = "abonnementNGER",
+            paramNames = c('rnwFil', "reshID"),
+            paramValues = c('NGERSamleRapp.Rnw', 0)
+          )
+        )
+
+        org <- rapbase::autoReportOrgServer("NGERutsending", orgs)
+
+        # oppdatere reaktive parametre, for å få inn valgte verdier (overskrive de i report-lista)
+        paramNames <- shiny::reactive("reshID")
+        paramValues <- shiny::reactive(org$value())
+
+        rapbase::autoReportServer(
+          id = "NGERutsending", registryName = "nger", type = "dispatchment",
+          org = org$value, paramNames = paramNames, paramValues = paramValues,
+          reports = reports, orgs = orgs, eligible = TRUE
+        )
+
 
         #----------- Eksport ----------------
         registryName <- "nger"
