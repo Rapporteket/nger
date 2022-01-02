@@ -1471,7 +1471,7 @@ output$lastNed_dataDump <- downloadHandler(
         reports <- list(
           MndRapp = list(
             synopsis = "Månedsrapport",
-            fun = "abonnement",
+            fun = "abonnementNGER",
             paramNames = c('rnwFil', "reshID"),
             paramValues = c('NGERmndRapp.Rnw', 0)
           ), #abonnementNGER(rnwFil, brukernavn='ngerBrukernavn', reshID=0,
