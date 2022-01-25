@@ -84,6 +84,7 @@ query <- paste0('SELECT
     OpBMIKategori,
     OpDagkirurgi,
     OpDato,
+    Opf0BesvarteProm,   -- ny jan.-2022
     Opf0metode,
     OpIVaktTid,
     -- OpGraviditeter,
@@ -108,6 +109,7 @@ query <- paste0('SELECT
     R0Spm2,
     R0Status,
     RY1metode,
+    R1BesvarteProm,    -- ny jan.-2022
     R1ScorePhys,
     R1ScoreRoleLmtPhy,
     R1ScorePain,
@@ -120,6 +122,7 @@ query <- paste0('SELECT
     RY1Status,
     Tss2Behandling,
     Tss2Behandlere,
+    Tss2BesvarteProm,  -- ny jan.-2022
     Tss2Enighet,
     Tss2Generelt,
     Tss2Lytte,
