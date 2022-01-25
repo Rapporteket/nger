@@ -171,6 +171,9 @@ query <- paste0('SELECT
  WHERE HovedDato >= \'', datoFra, '\' AND HovedDato <= \'', datoTil, '\'')
 
 
+# FROM alleVarNum INNER JOIN ForlopsOversikt ON alleVarNum.MCEID = ForlopsOversikt.ForlopsID
+# WHERE HovedDato >= \'', datoFra, '\' AND HovedDato <= \'', datoTil, '\'')
+
 #  FROM AlleVarNum
 #  INNER JOIN ForlopsOversikt
 #  ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID
