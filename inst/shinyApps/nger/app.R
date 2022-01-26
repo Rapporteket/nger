@@ -26,6 +26,8 @@ regTitle = ifelse(paaServer,'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER',
 #----------Hente data og evt. parametre som er statiske i appen----------
 if (paaServer) {
   RegData <- NGERRegDataSQL() #datoFra = datoFra, datoTil = datoTil)
+  #stopifnot(dim(RegData)[1]>0)
+  errorCondition(dim(RegData)[1]==0, )
   qSkjemaOversikt <- 'SELECT * FROM SkjemaOversikt'
   SkjemaOversikt <- rapbase::loadRegData(registryName='nger',
                                          query=qSkjemaOversikt, dbType='mysql')
@@ -760,7 +762,7 @@ tabPanel(p("Abonnement",
 #----- Define server logic required to draw a histogram-------
 server <- function(input, output, session) {
   if (paaServer) {
-  raplog::appLogger(session, msg = 'Starter Rapporteket-NGER')}
+  rapbase::appLogger(session, msg = 'Starter Rapporteket-NGER')}
   #system.file('NGERmndRapp.Rnw', package='nger')
 
     #hospitalName <-getHospitalName(rapbase::getUserReshId(session))
@@ -1510,7 +1512,7 @@ output$lastNed_dataDump <- downloadHandler(
       ## reaktive verdier for å holde rede på endringer som skjer mens
       ## applikasjonen kjører
       rv <- reactiveValues(
-        subscriptionTab = rapbase::makeUserSubscriptionTab(session))
+        subscriptionTab = rapbase::makeAutoReportTab(session))
       ## lag tabell over gjeldende status for abonnement
       output$activeSubscriptions <- DT::renderDataTable(
         rv$subscriptionTab, server = FALSE, escape = FALSE, selection = 'none',

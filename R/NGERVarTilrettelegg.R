@@ -417,24 +417,25 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
   }
 
   if (valgtVar == 'Opf0metode') {   #Andeler, andelGrVar
-    # Oppfølging Post, telefon, ikke mulig
+    # Oppfølging 1:Post, 2:telefon, 3:ePROM, 4:ikke mulig
     tittel <- switch(figurtype,
-                     andeler= 'Oppfølgingsmetode NB: Må filtrere på undervariabel av ePROM svart: JA/NEI',
+                     andeler= 'Oppfølgingsmetode',
                      andelGrVar = 'Oppfølging: Ikke mulig')
     gr <- c(1,2,3,9)
     grtxt <- c('post', 'telefon', 'ePROM', 'ikke mulig')
-    RegData <- RegData[which(RegData$Opf0Status==1) %i% which(RegData$Opf0metode %in% gr), ]
+    RegData <- RegData[which(RegData$Opf0Status==1 | RegData$Opf0BesvarteProm==1)
+                       %i% which(RegData$Opf0metode %in% gr), ]
     RegData$Variabel[RegData$Opf0metode==9] <- 1
     RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = gr)
   }
-
+#Opf0BesvarteProm
   if (valgtVar=='Opf0Status') { #andelGrVar, andelTid
     #Andel med RegData$Opf0metode %in% 1:2 (av samtlige, også tomme reg. 9-oppf. ikke mulig)
     #Kode: tomme, -1,0,1
     #Tar ut hendelser siste 8 uker:
     datoTil <- as.Date(Sys.Date() - 8*7)  #min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 8*7))
     RegData <- RegData[which(as.Date(RegData$InnDato) <= datoTil),]
-
+#USIKKER PÅ OM DETTE ER RIKTIG. MÅ VENTE TIL HAR DATA FOR Opf0BesvarteProm for å teste
     RegData$Variabel[((RegData$Opf0metode %in% 1:2) | RegData$Opf0metode==3 & RegData$Opf0BesvarteProm==1) &
                        RegData$Opf0Status==1] <- 1 #Opf0Status==1
     varTxt <- 'svar på postoperativ oppfølging'
