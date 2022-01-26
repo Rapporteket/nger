@@ -27,7 +27,7 @@ regTitle = ifelse(paaServer,'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER',
 if (paaServer) {
   RegData <- NGERRegDataSQL() #datoFra = datoFra, datoTil = datoTil)
   #stopifnot(dim(RegData)[1]>0)
-  errorCondition(dim(RegData)[1]==0, )
+  errorCondition(dim(RegData)[1]==0, 'ingen data')
   qSkjemaOversikt <- 'SELECT * FROM SkjemaOversikt'
   SkjemaOversikt <- rapbase::loadRegData(registryName='nger',
                                          query=qSkjemaOversikt, dbType='mysql')

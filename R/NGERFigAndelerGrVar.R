@@ -43,7 +43,7 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', datoFra='2013-01-01
                                 velgDiag=0, preprosess=1, hentData=0, ...
                                 ) {
   if ("session" %in% names(list(...))) {
-    raplog::repLogger(session = list(...)[["session"]], msg = paste0('FigAndelerGrVar: ',valgtVar))
+    rapbase::repLogger(session = list(...)[["session"]], msg = paste0('FigAndelerGrVar: ',valgtVar))
   }
   ## Hvis spørring skjer fra R på server. ######################
   if(hentData == 1){

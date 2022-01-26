@@ -84,7 +84,7 @@ query <- paste0('SELECT
     OpBMIKategori,
     OpDagkirurgi,
     OpDato,
-    Opf0BesvarteProm,   -- ny jan.-2022
+    -- Opf0BesvarteProm,   -- ny jan.-2022
     Opf0metode,
     OpIVaktTid,
     -- OpGraviditeter,

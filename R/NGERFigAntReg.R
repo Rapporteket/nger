@@ -21,7 +21,7 @@ NGERFigAntReg  <- function(RegData, datoTil=Sys.Date(),
 
 
   # if ("session" %in% names(list(...))) {
-  #   raplog::repLogger(session = list(...)[["session"]], msg = paste0('NGERFigAntReg: ',valgtVar))
+  #   rapbase::repLogger(session = list(...)[["session"]], msg = paste0('NGERFigAntReg: ',valgtVar))
   # }
 
   ## Hvis spørring skjer fra R på server. ######################
