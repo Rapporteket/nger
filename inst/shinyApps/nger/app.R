@@ -13,7 +13,7 @@ library(shinyjs)
 
 idag <- Sys.Date()
 startDato <- startDato <- paste0(as.numeric(format(idag-100, "%Y")), '-01-01') #'2019-01-01' #Sys.Date()-364
-sluttDato <- idag
+#sluttDato <- idag
 # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
 addResourcePath('rap', system.file('www', package='rapbase'))
 
@@ -131,7 +131,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                         kan du bestille dette under fanen "Abonnement."'))
                ),
                mainPanel(width = 8,
-                         shinyalert::useShinyalert(),
                          tags$head(tags$link(rel="shortcut icon", href="rap/favicon.ico")),
                          rapbase::appNavbarUserWidget(user = uiOutput("appUserName"),
                                              organization = uiOutput("appOrgName")
@@ -211,7 +210,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                             br(),
                             h3('Last ned egne data '),
                             #uiOutput("test"),
-                            dateRangeInput(inputId = 'datovalgRegKtr', start = startDato, end = idag,
+                            dateRangeInput(inputId = 'datovalgRegKtr', start = startDato, end = Sys.Date(),
                                            label = "Tidsperiode", separator="t.o.m.", language="nb"),
                             selectInput(inputId = 'velgReshReg', label='Velg sykehus',
                                         selected = 0,

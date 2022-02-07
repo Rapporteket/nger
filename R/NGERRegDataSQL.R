@@ -12,7 +12,7 @@
 NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = '2099-01-01',...) {
 
   if ("session" %in% names(list(...))) {
-    raplog::repLogger(session = list(...)[["session"]], msg = paste0('Hentet rådata'))
+    rapbase::repLogger(session = list(...)[["session"]], msg = paste0('Hentet rådata'))
   }
 #  query <- paste0('SELECT ',
 #  paste0('AlleVarNum.',varUtvalg,suffix=', \n'),
@@ -84,7 +84,7 @@ query <- paste0('SELECT
     OpBMIKategori,
     OpDagkirurgi,
     OpDato,
-    -- Opf0BesvarteProm,   -- ny jan.-2022
+    Opf0BesvarteProm,   -- ny jan.-2022
     Opf0metode,
     OpIVaktTid,
     -- OpGraviditeter,
@@ -109,7 +109,7 @@ query <- paste0('SELECT
     R0Spm2,
     R0Status,
     RY1metode,
-    -- NB R1BesvarteProm,    -- ny jan.-2022
+    R1BesvarteProm,    -- ny jan.-2022
     R1ScorePhys,
     R1ScoreRoleLmtPhy,
     R1ScorePain,
@@ -122,7 +122,7 @@ query <- paste0('SELECT
     RY1Status,
     Tss2Behandling,
     Tss2Behandlere,
-    -- NB Tss2BesvarteProm,  -- ny jan.-2022
+    Tss2BesvarteProm,  -- ny jan.-2022
     Tss2Enighet,
     Tss2Generelt,
     Tss2Lytte,
