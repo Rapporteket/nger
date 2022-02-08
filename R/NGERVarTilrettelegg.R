@@ -416,17 +416,13 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
     retn <- 'V'
   }
 
-  if (valgtVar == 'Opf0metode') {   #Andeler, andelGrVar
+  if (valgtVar == 'Opf0metode') {   #Andeler, andelGrVar - fjernet
     # Oppfølging 1:Post, 2:telefon, 3:ePROM, 4:ikke mulig
-    tittel <- switch(figurtype,
-                     andeler= 'Oppfølgingsmetode',
-                     andelGrVar = 'Oppfølging: Ikke mulig')
+    tittel <- 'Oppfølgingsmetode for PROM-skjema'
     gr <- c(1,2,3,9)
-    grtxt <- c('post', 'telefon', 'ePROM', 'ikke mulig')
-    RegData <- RegData[which(RegData$Opf0Status==1) # | RegData$Opf0BesvarteProm==1)
-                       %i% which(RegData$Opf0metode %in% gr), ]
-    RegData$Variabel[RegData$Opf0metode==9] <- 1
-    #RegData$Variabel[RegData$Opf0BesvarteProm == ?] = 1
+    grtxt <- c('post', 'telefon', 'ePROM', 'Ikke besvart')
+    RegData$Opf0metode[RegData$Opf0metode==3 & RegData$Opf0BesvarteProm==0] <- 9
+    RegData[RegData$Opf0metode %in% c(1:3,9), ]
     RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = gr)
   }
 
@@ -440,12 +436,12 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
 
   if (valgtVar=='Opf0Status') { #andelGrVar, andelTid
     #Andel med RegData$Opf0metode %in% 1:2 (av samtlige, også tomme reg. 9-oppf. ikke mulig)
-    #Kode: tomme, -1,0,1
+    #Kode: tomme, -1,0,1 8.feb.2022 -1 og 0 har "forsvunnet". Nå bare 1 og tomme
     #Tar ut hendelser siste 8 uker:
     datoTil <- as.Date(Sys.Date() - 8*7)  #min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 8*7))
     RegData <- RegData[which(as.Date(RegData$InnDato) <= datoTil),]
     RegData$Variabel[(RegData$Opf0metode %in% 1:2) | (RegData$Opf0metode==3 & RegData$Opf0BesvarteProm==1)] <- 1
-    RegData$Variabel[RegData$Opf0metode %in% 1:3 ] <- 1 # Må fjerne de som ikke har svart på PROM
+    #RegData$Variabel[RegData$Opf0metode %in% 1:3 ] <- 1 # Må fjerne de som ikke har svart på PROM
   #RegData$Variabel[RegData$Opf0Status==1] <- 1 Her vil vi også få med de som har oppfølging ikke mulig. Uansett er denne variabelen feil (7.feb.2022
     varTxt <- 'svar på postoperativ oppfølging'
     tittel <- 'Pasienter som har svart på oppfølging'
