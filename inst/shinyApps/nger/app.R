@@ -13,7 +13,7 @@ library(shinyjs)
 
 idag <- Sys.Date()
 startDato <- startDato <- paste0(as.numeric(format(idag-100, "%Y")), '-01-01') #'2019-01-01' #Sys.Date()-364
-sluttDato <- idag
+#sluttDato <- idag
 # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
 addResourcePath('rap', system.file('www', package='rapbase'))
 
@@ -26,6 +26,8 @@ regTitle = ifelse(paaServer,'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER',
 #----------Hente data og evt. parametre som er statiske i appen----------
 if (paaServer) {
   RegData <- NGERRegDataSQL() #datoFra = datoFra, datoTil = datoTil)
+  #stopifnot(dim(RegData)[1]>0)
+  errorCondition(dim(RegData)[1]==0, 'ingen data')
   qSkjemaOversikt <- 'SELECT * FROM SkjemaOversikt'
   SkjemaOversikt <- rapbase::loadRegData(registryName='nger',
                                          query=qSkjemaOversikt, dbType='mysql')
@@ -129,7 +131,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                         kan du bestille dette under fanen "Abonnement."'))
                ),
                mainPanel(width = 8,
-                         shinyalert::useShinyalert(),
                          tags$head(tags$link(rel="shortcut icon", href="rap/favicon.ico")),
                          rapbase::appNavbarUserWidget(user = uiOutput("appUserName"),
                                              organization = uiOutput("appOrgName")
@@ -209,7 +210,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                             br(),
                             h3('Last ned egne data '),
                             #uiOutput("test"),
-                            dateRangeInput(inputId = 'datovalgRegKtr', start = startDato, end = idag,
+                            dateRangeInput(inputId = 'datovalgRegKtr', start = startDato, end = Sys.Date(),
                                            label = "Tidsperiode", separator="t.o.m.", language="nb"),
                             selectInput(inputId = 'velgReshReg', label='Velg sykehus',
                                         selected = 0,
@@ -381,7 +382,7 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
                                          'Laparoskopiske intraabdominale komplikasjoner' = 'LapIntraabdominell',
                                          'Laparoskopiske intrapoerative komplikasjoner' = 'LapKomplikasjoner',
                                          'Norskkunnskaper' = 'Norsktalende',
-                                         'Opfølgingsmetode' = 'Opf0metode',
+                                         'Oppfølgingsmetode' = 'Opf0metode',
                                          'Operasjon i legens vakttid' = 'OpIVaktTid',
                                          'Operasjonsmetode' = 'OpMetode',
                                          'Operasjonstid (minutter)' = 'OpTid',
@@ -670,40 +671,61 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
 #-------Registeradministrasjon----------
 tabPanel(p("Registeradministrasjon", title='Registeradministrasjonens side for registreringer og resultater'),
          value = "Registeradministrasjon",
-         h3('Bare synlig for SC-bruker'),
+         h3('Siden er bare synlig for SC-bruker', align = 'center'),
          #uiOutput('rolle'),
-         h4('Alternativt kan vi ha elementer på andre sider som bare er synlig for SC'),
-         br(),
-         br(),
-         sidebarPanel(
-           h4('Nedlasting av data til Resultatportalen:'),
 
-           selectInput(inputId = "valgtVarRes", label="Velg variabel",
-                       choices = c('Komplikasjoner under operasjon' = 'KomplIntra',
-                                   'Komplikasjoner, postoperativt' = 'KomplPostop',
-                                   'Alvorlighetsgrad, postop.kompl.' = 'Opf0AlvorlighetsGrad',
-                                   'Konvertert, hys-lap' = 'HysKonvertert',
-                                   'Konvertert, lap-lap, ikke forventet' = 'LapKonvertert',
-                                   'TSS2-generelt, positiv oppfatning avd.' = 'Tss2Generelt',
-                                   'TSS2-sumskår' = 'Tss2Sumskaar'
-                                   )
-           ),
-           selectInput(inputId = 'opMetodeRes', label='Operasjonstype',
-                       choices = opMetode
-           ),
-
-           # dateRangeInput(inputId = 'aarRes', start = startDato, end = Sys.Date(),
-           #                label = "Operasjonaår", separator="t.o.m.", language="nb", format = 'yyyy'
-           #                ),
-           sliderInput(inputId="aarRes", label = "Operasjonsår", min = as.numeric(2016),
-                       max = as.numeric(year(idag)), value = c(2016, year(idag)), step=1, sep=""
-           ),
-           br(),
-           #downloadButton(outputId = 'lastNed_dataTilResPort', label='Last ned data')
-           ),
-
-         fluidRow(h3('Mer som skal med her?')
-                  )
+         tabsetPanel(
+           #tabPanel(
+             # sidebarPanel(
+             #   h4('Nedlasting av data til Resultatportalen:'), MÅ EVT. ENDRES TIL SYKEHUSVISER..
+             #
+             #   selectInput(inputId = "valgtVarRes", label="Velg variabel",
+             #               choices = c('Komplikasjoner under operasjon' = 'KomplIntra',
+             #                           'Komplikasjoner, postoperativt' = 'KomplPostop',
+             #                           'Alvorlighetsgrad, postop.kompl.' = 'Opf0AlvorlighetsGrad',
+             #                           'Konvertert, hys-lap' = 'HysKonvertert',
+             #                           'Konvertert, lap-lap, ikke forventet' = 'LapKonvertert',
+             #                           'TSS2-generelt, positiv oppfatning avd.' = 'Tss2Generelt',
+             #                           'TSS2-sumskår' = 'Tss2Sumskaar'
+             #               )
+             #   ),
+             #   selectInput(inputId = 'opMetodeRes', label='Operasjonstype',
+             #               choices = opMetode
+             #   ),
+             #
+             #   # dateRangeInput(inputId = 'aarRes', start = startDato, end = Sys.Date(),
+             #   #                label = "Operasjonaår", separator="t.o.m.", language="nb", format = 'yyyy'
+             #   #                ),
+             #   sliderInput(inputId="aarRes", label = "Operasjonsår", min = as.numeric(2016),
+             #               max = as.numeric(year(idag)), value = c(2016, year(idag)), step=1, sep=""
+             #   ),
+             #   br(),
+             #   #downloadButton(outputId = 'lastNed_dataTilResPort', label='Last ned data')
+             # ),
+           #),
+           tabPanel(
+             h4("Utsending av rapporter"),
+                   # title = "Utsending av rapporter",
+                    #sidebarLayout(
+                      sidebarPanel(
+                        rapbase::autoReportOrgInput("NGERutsending"),
+                        rapbase::autoReportInput("NGERutsending")
+                      ),
+                      mainPanel(
+                        rapbase::autoReportUI("NGERutsending")
+                      )
+                    #)
+           ), #Utsending-tab
+           tabPanel(
+             h4("Eksport av krypterte data"),
+             sidebarPanel(
+               rapbase::exportUCInput("ngerExport")
+             ),
+             mainPanel(
+               rapbase::exportGuideUI("ngerExportGuide")
+             )
+           ) #Eksport-tab
+         ) #tabsetPanel
 ), #tab SC
 #----------Abonnement-----------------
 tabPanel(p("Abonnement",
@@ -739,7 +761,7 @@ tabPanel(p("Abonnement",
 #----- Define server logic required to draw a histogram-------
 server <- function(input, output, session) {
   if (paaServer) {
-  raplog::appLogger(session, msg = 'Starter Rapporteket-NGER')}
+  rapbase::appLogger(session, msg = 'Starter Rapporteket-NGER')}
   #system.file('NGERmndRapp.Rnw', package='nger')
 
     #hospitalName <-getHospitalName(rapbase::getUserReshId(session))
@@ -1437,12 +1459,59 @@ output$lastNed_dataDump <- downloadHandler(
         #                                  as.numeric(input$opMetodeRes), '.csv')},
         #     content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = F, na = '')})
         # })
-      }
+
+        #---Utsendinger---------------
+        ## liste med orgnr og navn
+
+        # sykehusNavn <- sort(unique(as.character(HovedSkjema$ShNavn)), index.return=T)
+        # orgs <- c(0, unique(HovedSkjema$ReshId)[sykehusNavn$ix])
+        # names(orgs) <- c('Alle',sykehusNavn$x)
+        orgs <- as.list(sykehusValg)
+
+        ## liste med metadata for rapport
+        reports <- list(
+          MndRapp = list(
+            synopsis = "Månedsrapport",
+            fun = "abonnementNGER",
+            paramNames = c('rnwFil', "reshID"),
+            paramValues = c('NGERmndRapp.Rnw', 0)
+          ), #abonnementNGER(rnwFil, brukernavn='ngerBrukernavn', reshID=0,
+          SamleRapp = list(
+            synopsis = "Rapport med samling av div. resultater",
+            fun = "abonnementNGER",
+            paramNames = c('rnwFil', "reshID"),
+            paramValues = c('NGERSamleRapp.Rnw', 0)
+          )
+        )
+
+        org <- rapbase::autoReportOrgServer("NGERutsending", orgs)
+
+        # oppdatere reaktive parametre, for å få inn valgte verdier (overskrive de i report-lista)
+        paramNames <- shiny::reactive("reshID")
+        paramValues <- shiny::reactive(org$value())
+
+        rapbase::autoReportServer(
+          id = "NGERutsending", registryName = "nger", type = "dispatchment",
+          org = org$value, paramNames = paramNames, paramValues = paramValues,
+          reports = reports, orgs = orgs, eligible = TRUE
+        )
+
+
+        #----------- Eksport ----------------
+        registryName <- "nger"
+        ## brukerkontroller
+        rapbase::exportUCServer("ngerExport", registryName)
+        ## veileding
+        rapbase::exportGuideServer("ngerExportGuide", registryName)
+
+
+
+         }
       #------------------ Abonnement ----------------------------------------------
       ## reaktive verdier for å holde rede på endringer som skjer mens
       ## applikasjonen kjører
       rv <- reactiveValues(
-        subscriptionTab = rapbase::makeUserSubscriptionTab(session))
+        subscriptionTab = rapbase::makeAutoReportTab(session))
       ## lag tabell over gjeldende status for abonnement
       output$activeSubscriptions <- DT::renderDataTable(
         rv$subscriptionTab, server = FALSE, escape = FALSE, selection = 'none',

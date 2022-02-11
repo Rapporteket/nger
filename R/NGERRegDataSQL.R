@@ -12,7 +12,7 @@
 NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = '2099-01-01',...) {
 
   if ("session" %in% names(list(...))) {
-    raplog::repLogger(session = list(...)[["session"]], msg = paste0('Hentet rådata'))
+    rapbase::repLogger(session = list(...)[["session"]], msg = paste0('Hentet rådata'))
   }
 #  query <- paste0('SELECT ',
 #  paste0('AlleVarNum.',varUtvalg,suffix=', \n'),
@@ -84,9 +84,10 @@ query <- paste0('SELECT
     OpBMIKategori,
     OpDagkirurgi,
     OpDato,
+    Opf0BesvarteProm,   -- ny jan.-2022
     Opf0metode,
     OpIVaktTid,
-    OpGraviditeter,
+    -- OpGraviditeter,
     OpKategori,
     OpMetode,
     OpPariteter,
@@ -108,6 +109,7 @@ query <- paste0('SELECT
     R0Spm2,
     R0Status,
     RY1metode,
+    R1BesvarteProm,    -- ny jan.-2022
     R1ScorePhys,
     R1ScoreRoleLmtPhy,
     R1ScorePain,
@@ -120,6 +122,7 @@ query <- paste0('SELECT
     RY1Status,
     Tss2Behandling,
     Tss2Behandlere,
+    Tss2BesvarteProm,  -- ny jan.-2022
     Tss2Enighet,
     Tss2Generelt,
     Tss2Lytte,
@@ -131,6 +134,7 @@ query <- paste0('SELECT
     Utdanning,
     Opf0AlvorlighetsGrad,
     Opf0KomplBlodning,
+
     Opf0BlodningAbdom,
     Opf0BlodningIntraabdominal,
     Opf0BlodningVaginal,
@@ -169,7 +173,10 @@ query <- paste0('SELECT
     INNER JOIN ForlopsOversikt
     ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID
  WHERE HovedDato >= \'', datoFra, '\' AND HovedDato <= \'', datoTil, '\'')
+# -- NB  Opf0BesvarteProm, -- -- ny jan.-2022
 
+# FROM alleVarNum INNER JOIN ForlopsOversikt ON alleVarNum.MCEID = ForlopsOversikt.ForlopsID
+# WHERE HovedDato >= \'', datoFra, '\' AND HovedDato <= \'', datoTil, '\'')
 
 #  FROM AlleVarNum
 #  INNER JOIN ForlopsOversikt

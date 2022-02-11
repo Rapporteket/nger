@@ -34,13 +34,45 @@ tools::texi2pdf('NGERSamleRapp.tex')
 knit('NGERmndRapp.Rnw', encoding = 'UTF-8')
 tools:: texi2pdf('NGERmndRapp.tex')
 
+#--Vil undersøke variabelen Opf0Status nærmere
+RegData <- NGERPreprosess(NGERRegDataSQL(datoFra = '2021-01-01', datoTil = '2021-10-31'))
 
-# 'Tss2Mott',
-# 'Tss2Behandling',
-# 'Tss2Lytte',
-# 'Tss2Behandlere',
-# 'Tss2Enighet',
-# 'Tss2Generelt')
+table(RegData$Opf0Status, useNA = 'a')
+#Alle med Opf0Status=NA har også NA for 'Opf0metode', 'Opf0BesvarteProm', 'Opf0Komplikasjoner'
+RegData[is.na(RegData$Opf0Status), c('Opf0metode', 'Opf0BesvarteProm', 'Opf0Komplikasjoner')]
+prop.table(table(RegData$Opf0Komplikasjoner, useNA = 'a'))
+prop.table(table(RegData$Opf0InfOpSaar, useNA = 'a'))
+
+table(RegData[which(RegData$Opf0Status==1 & RegData$Opf0metode %in% 1:2), c('Opf0Komplikasjoner', 'Opf0BesvarteProm')], useNA = 'a')
+
+addmargins(table(RegData[which(RegData$Opf0Status==1), c('Opf0metode', 'Opf0BesvarteProm')], useNA = 'a'))
+addmargins(table(RegData[which(RegData$Opf0Status==1), c('Opf0metode', 'Opf0Komplikasjoner')], useNA = 'a'))
+addmargins(table(RegData[which(RegData$Opf0Status==1), c('Opf0metode', 'Opf0InfOpSaar')], useNA = 'a'))
+
+
+table(RegData$Opf0metode, useNA = 'a')
+
+sum(RegData$Opf0metode %in% 1:2 | (RegData$Opf0metode == 3 & RegData$Opf0BesvarteProm==1), na.rm = T)
+prop.table(table(RegData$Opf0metode %in% 1:2 | (RegData$Opf0metode == 3 & RegData$Opf0BesvarteProm==1), useNA = 'a'))
+sum(RegData$Opf0Komplikasjoner %in% 0:1)
+
+RegData$Variabel <- 0
+RegData$Variabel[RegData$Opf0metode %in% 1:3 ] <- 1 # Må fjerne de som ikke har svart på PROM, 950 8364
+RegData$Variabel[RegData$Opf0Komplikasjoner %in% 0:1] <- 1 #  0 1: 2333 6981
+table(RegData$Variabel)
+
+table(RegData[,c('Opf0Komplikasjoner', 'Opf0metode', 'Opf0Status')], useNA = 'a')
+# , , Opf0Status = 1
+# Opf0Komplikasjoner / Opf0metode
+#         1    2    3    9 <NA>
+# 0    1681   38 4964    0    0
+# 1      78    2  218    0    0
+# <NA>    0    0 1383  781    0
+#NB: Mulig ikke bør bruke Komplikasjoner for å sjekke...
+table(RegData[which(is.na(RegData$Opf0Status)), c('Opf0metode', 'Aar')], useNA = 'a')
+
+
+
 #------------------------------Kjøre App----------------------------
 rm(list=ls())
 load(paste0('A:/NGER/NGER2019-09-03.Rdata'))

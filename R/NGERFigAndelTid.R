@@ -34,7 +34,7 @@ NGERFigAndelTid <- function(RegData=0, valgtVar, datoFra='2015-01-01', datoTil=S
                             ...) {
 
   if ("session" %in% names(list(...))) {
-    raplog::repLogger(session = list(...)[["session"]], msg = paste0('FigAndelTid: ',valgtVar))
+    rapbase::repLogger(session = list(...)[["session"]], msg = paste0('FigAndelTid: ',valgtVar))
   }
 
   ## Hvis spørring skjer fra R på server. ######################

@@ -127,11 +127,9 @@ abonnementNGER <- function(rnwFil, brukernavn='ngerBrukernavn', reshID=0,
                       registryName = 'NGER',
                       msg = paste("Abonnement, ", rnwFil))
 
-  #rnwFil  <- rnwFil[[1]]
-  #brukernavn <- brukernavn[[1]]
-  reshID <- reshID[[1]]
-  datoFra <- datoFra[[1]]
-  datoTil <- datoTil[[1]]
+  # reshID <- reshID[[1]]
+  # datoFra <- datoFra[[1]]
+  # datoTil <- datoTil[[1]]
 
   filbase <- substr(rnwFil, 1, nchar(rnwFil)-4)
   tmpFile <- paste0(filbase, Sys.Date(),'_',digest::digest(brukernavn), '.Rnw')
