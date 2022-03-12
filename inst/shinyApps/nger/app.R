@@ -1566,14 +1566,14 @@ output$lastNed_dataDump <- downloadHandler(
                                   email = email, organization = organization,
                                   runDayOfYear = runDayOfYear, interval = interval,
                                   intervalName = intervalName)
-        rv$subscriptionTab <- rapbase::makeUserSubscriptionTab(session)
+        rv$subscriptionTab <- rapbase::makeAutoReportTab(session)
       })
 
       ## slett eksisterende abonnement
       observeEvent(input$del_button, {
         selectedRepId <- strsplit(input$del_button, "_")[[1]][2]
         rapbase::deleteAutoReport(selectedRepId)
-        rv$subscriptionTab <- rapbase::makeUserSubscriptionTab(session)
+        rv$subscriptionTab <- rapbase::makeAutoReportTab(session)
       })
 
 } #server
