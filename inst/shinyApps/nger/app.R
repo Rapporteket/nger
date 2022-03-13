@@ -46,12 +46,12 @@ SkjemaOversikt <- NGERPreprosess(RegData = SkjemaOversikt)
 
 #-----Definere utvalgsinnhold
 #Definere utvalgsinnhold
-#sykehusNavn <- sort(c('',unique(RegData$ShNavn)), index.return=T)
-#sykehusValg <- c(0,unique(RegData$ReshId))[sykehusNavn$ix]
 sykehusNavn <- sort(unique(RegData$ShNavn), index.return=T)
 sykehusValg <- unique(RegData$ReshId)[sykehusNavn$ix]
-sykehusValg <- c(0,sykehusValg)
-names(sykehusValg) <- c('Alle',sykehusNavn$x)
+names(sykehusValg) <- sykehusNavn$x #c('Alle',sykehusNavn$x)
+sykehusValgDump <- c(0,sykehusValg)
+names(sykehusValgDump) <- c('Alle',sykehusNavn$x)
+
 
 enhetsUtvalg <- c("Egen mot resten av landet"=1,
                         "Hele landet"=0,
@@ -210,11 +210,12 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                             br(),
                             h3('Last ned egne data '),
                             #uiOutput("test"),
+
                             dateRangeInput(inputId = 'datovalgRegKtr', start = startDato, end = Sys.Date(),
                                            label = "Tidsperiode", separator="t.o.m.", language="nb"),
                             selectInput(inputId = 'velgReshReg', label='Velg sykehus',
                                         selected = 0,
-                                        choices = sykehusValg),
+                                        choices = sykehusValgDump),
                             downloadButton(outputId = 'lastNed_dataTilRegKtr', label='Last ned fødselsdato og operasjonsdato'),
                             br(),
                             br(),
@@ -294,7 +295,6 @@ h3('Registerets kvalitetsindikatorer', align='center'),
                                   choices = alvorKompl
                       ),
                       selectInput(inputId = 'velgReshKval', label='Velg eget Sykehus',
-                                  #selected = 0,
                                   choices = sykehusValg),
                       selectInput(inputId = "bildeformatKval",
                                   label = "Velg format for nedlasting av figur",
@@ -437,7 +437,6 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
                                   choices = alvorKompl
                       ),
                       selectInput(inputId = 'velgResh', label='Velg eget Sykehus',
-                                  selected = 0,
                                   choices = sykehusValg),
                       selectInput(inputId = "bildeformatFord",
                                   label = "Velg format for nedlasting av figur",
