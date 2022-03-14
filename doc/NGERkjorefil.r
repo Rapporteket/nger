@@ -27,11 +27,11 @@ load('A:/NGER/NGER2019-09-03.Rdata')
 RegData <- NGERPreprosess(RegData=RegData) #I App'en preprosesseres data
 
 src <- normalizePath(system.file('NGERSamleRapp.Rnw', package='nger'))
-knitr::knit(src <- normalizePath(system.file('NGERSamleRapp.Rnw', package='nger')), encoding = 'UTF-8')
+knitr::knit(src <- normalizePath(system.file('NGERSamleRapp.Rnw', package='nger')))
 knitr::knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
 tools::texi2pdf('NGERSamleRapp.tex')
 
-knit2pdf('NGERmndRapp.Rnw', encoding = 'UTF-8')
+knitr::knit2pdf('NGERmndRapp.Rnw')
 
 #--Vil undersøke variabelen Opf0Status nærmere
 RegData <- NGERPreprosess(NGERRegDataSQL(datoFra = '2021-01-01', datoTil = '2021-10-31'))

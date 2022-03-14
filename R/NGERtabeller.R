@@ -22,7 +22,7 @@ tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0,
       RegData <- Utvalg$RegData
       RegDataDum <- RegData[RegData$InnDato <= as.Date(datoTil, tz='UTC')
                               & RegData$InnDato > as.Date(datoFra, tz='UTC'), aggVar]
-      RegDataDum$Maaned1 <- floor_date(RegDataDum$InnDato, 'month')
+      RegDataDum$Maaned1 <- lubridate::floor_date(RegDataDum$InnDato, 'month')
       tabAvdMnd1 <- table(RegDataDum[ , c('ShNavn', 'Maaned1')])
       colnames(tabAvdMnd1) <- format(ymd(colnames(tabAvdMnd1)), '%b %y') #month(ymd(colnames(tabAvdMnd1)), label = T)
       if (reshID==0){

@@ -3,9 +3,7 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-%\usepackage[english, norsk]{babel}
-\usepackage[english]{babel}
-\usepackage[norsk]{babel}
+\usepackage[english, norsk]{babel}
 \usepackage{xspace}
 \usepackage{booktabs}
 \usepackage{rotating}
