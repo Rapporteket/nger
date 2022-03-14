@@ -3,7 +3,9 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[english, norsk]{babel}
+%\usepackage[english, norsk]{babel}
+\usepackage[english]{babel}
+\usepackage[norsk]{babel}
 \usepackage{xspace}
 \usepackage{booktabs}
 \usepackage{rotating}
@@ -26,41 +28,26 @@ if (!exists('RegData')){
       RegData <- NGERPreprosess(RegData=RegData)
 }
 
-#RegData <- NGERRegDataSQL(datoFra=datoFra, datoTil=datoTil)
 @
 
 
 <<'SetteParametreOgLageFig', include=FALSE>>=
-#minald <- 0
-#maxald <- 110
-OpMetode <- 99
-Hastegrad <- ""
-AlvorlighetKompl <- ""
-enhetsUtvalg <- 1
 tidsenhet <- 'Mnd'
-preprosess <- 0
-hentData <- 0
 
-
-shtxt <- switch(as.character(enhetsUtvalg),
-                     '0' = 'Hele landet',
-                     '1' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]),
-                     '2' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]))
-
+shtxt <- as.character(RegData$ShNavn[match(reshID, RegData$ReshId)])
 RegDataEget <- RegData[which(RegData$ReshId==reshID), ]
 maxDatoEget <- format.Date(max(RegDataEget$InnDato), format='%d.%m.%Y', tz='UTC')
 
 NGERFigKvalInd(RegData=RegData, reshID=reshID, datoFra=datoFra, datoTil=datoTil,
-                             valgtVar='kvalInd', enhetsUtvalg=1, OpMetode=99,
-                             hentData=0, preprosess=preprosess, outfile='KvalIndPros.pdf')
+                             valgtVar='kvalInd', enhetsUtvalg=1,
+                             preprosess=0, outfile='KvalIndPros.pdf')
 
 
 variable <- c('KomplIntra', 'KomplPostop', 'Opf0Status')
 for (valgtVar in variable) {
 	outfile <- paste0(valgtVar, '_Alle', tidsenhet, '.pdf')
-	NGERFigAndelerGrVar(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra,OpMetode = OpMetode,
-                datoTil=datoTil, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg,
-                hentData=0, preprosess=preprosess)
+	NGERFigAndelerGrVar(RegData=RegData, valgtVar=valgtVar, preprosess=0, datoFra=datoFra,
+                datoTil=datoTil, outfile=outfile, reshID=reshID, enhetsUtvalg=1)
 }
 
 variable <- c('Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan', 'Opf0Reoperasjon',
@@ -68,15 +55,10 @@ variable <- c('Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf
               'OpASA', 'OpBMI', 'Opf0Status')
 for (valgtVar in variable) {
 	outfile <- paste0(valgtVar, '_', tidsenhet, '.pdf')
-	NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
-              reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile, OpMetode = OpMetode,
-              tidsenhet=tidsenhet, preprosess=preprosess)
+	NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
+	                datoTil=datoTil, reshID=reshID, enhetsUtvalg=1,
+              tidsenhet=tidsenhet, preprosess=0, outfile=outfile)
 }
-# 	NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar='KomplIntra', datoTil=datoTil,
-#               reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='', OpMetode = OpMetode,
-#               tidsenhet=tidsenhet, preprosess=preprosess)
-# 	NGERFigAndelerGrVar(RegData=RegData, valgtVar='KomplIntra', outfile='', reshID=reshID,
-# 	                    hentData=0, preprosess=1)
 
 @
 
@@ -91,21 +73,6 @@ MÅNEDSRAPPORT \\
 \begin{tiny}
 
 \maketitle
-
-% Tatt bort, mars -19:
-% \includegraphics[scale=0.35]{OpBMI_Mnd.pdf}
-% \caption{Pasienter med fedme (BMI>30)}
-% \includegraphics[scale=0.35]{Opf0KomplBlodning_Mnd.pdf}
-% \caption{Postoperativ komplikasjon: Blødning}
-%
-% \includegraphics[scale=0.35]{Opf0KomplUtstyr_Mnd.pdf}
-% \caption{Postoperativ komplikasjon: Problemer med ustyr}
-%
-% \includegraphics[scale=0.35]{Opf0KomplInfeksjon_Mnd.pdf}
-% \caption{Postoperativ komplikasjon: Infeksjon}
-%
-% \includegraphics[scale=0.35]{Opf0KomplOrgan_Mnd.pdf}
-% \caption{Postoperativ komplikasjon: Organskade}
 
 \section{Info}
 \begin{frame}[fragile] {Datagrunnlag}

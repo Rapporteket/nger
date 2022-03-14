@@ -1448,23 +1448,7 @@ output$lastNed_dataDump <- downloadHandler(
       #-----------Registeradministrasjon-----------
 
       if (rolle=='SC') {
-        # observe({
-        #   tabdataTilResPort <- dataTilOffVisning(RegData=RegData, valgtVar = input$valgtVarRes,
-        #                                       aar=as.numeric(input$aarRes[1]):as.numeric(input$aarRes[2]),
-        #                                       OpMetode = as.numeric(input$opMetodeRes))
-        #
-        #   output$lastNed_dataTilResPort <- downloadHandler(
-        #     filename = function(){paste0('dataTilResPort_', input$valgtVarRes, '_',
-        #                                  as.numeric(input$opMetodeRes), '.csv')},
-        #     content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = F, na = '')})
-        # })
 
-        #---Utsendinger---------------
-        ## liste med orgnr og navn
-
-        # sykehusNavn <- sort(unique(as.character(HovedSkjema$ShNavn)), index.return=T)
-        # orgs <- c(0, unique(HovedSkjema$ReshId)[sykehusNavn$ix])
-        # names(orgs) <- c('Alle',sykehusNavn$x)
         orgs <- as.list(sykehusValg)
 
         ## liste med metadata for rapport
@@ -1556,8 +1540,7 @@ output$lastNed_dataDump <- downloadHandler(
         paramNames <- c('rnwFil', 'brukernavn', "reshID", "datoFra", 'datoTil')
         paramValues <- c(rnwFil, brukernavn(), reshID, startDato, as.character(idag)) #input$subscriptionFileFormat)
 
-        #test <- abonnementNGER(rnwFil="NGERSamleRapp.Rnw", brukernavn='tullebukk',
-        #                       reshID=105460, datoFra = '2019-03-01')
+        #test <- abonnementNGER(rnwFil="NGERmndRapp.Rnw", brukernavn='tullebukk', reshID=105460, datoFra = '2020-03-01')
 
         rapbase::createAutoReport(synopsis = synopsis, package = 'nger',
                                   fun = fun, paramNames = paramNames,

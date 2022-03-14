@@ -127,11 +127,7 @@ abonnementNGER <- function(rnwFil, brukernavn='ngerBrukernavn', reshID=0,
                       registryName = 'NGER',
                       msg = paste("Abonnement, ", rnwFil))
 
-  # reshID <- reshID[[1]]
-  # datoFra <- datoFra[[1]]
-  # datoTil <- datoTil[[1]]
-
-  filbase <- substr(rnwFil, 1, nchar(rnwFil)-4)
+    filbase <- substr(rnwFil, 1, nchar(rnwFil)-4)
   tmpFile <- paste0(filbase, Sys.Date(),'_',digest::digest(brukernavn), '.Rnw')
   src <- normalizePath(system.file(rnwFil, package='nger'))
   # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
