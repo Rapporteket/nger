@@ -20,10 +20,10 @@ datoTil <- Sys.Date()
 dato <- as.POSIXlt(datoTil)
 datoFra <- as.Date(paste0(1900+dato$year-1,'-', dato$mon+1, '-', '01'))
 #I månedsfigurene er datoFra automatisk satt til 13 mnd før dagens dato.
-RegData2aar <- NGERPreprosess(NGERRegDataSQL(datoFra = (datoFra-365), datoTil = datoTil))
+RegData2aar <- nger::NGERPreprosess(NGERRegDataSQL(datoFra = (datoFra-365), datoTil = datoTil))
 if (!exists('RegData')){
-      RegData <- NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil)
-      RegData <- NGERPreprosess(RegData=RegData)
+      RegData <- nger::NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil)
+      RegData <- nger::NGERPreprosess(RegData=RegData)
 }
 
 @
@@ -36,7 +36,7 @@ shtxt <- as.character(RegData$ShNavn[match(reshID, RegData$ReshId)])
 RegDataEget <- RegData[which(RegData$ReshId==reshID), ]
 maxDatoEget <- format.Date(max(RegDataEget$InnDato), format='%d.%m.%Y', tz='UTC')
 
-NGERFigKvalInd(RegData=RegData, reshID=reshID, datoFra=datoFra, datoTil=datoTil,
+nger::NGERFigKvalInd(RegData=RegData, reshID=reshID, datoFra=datoFra, datoTil=datoTil,
                              valgtVar='kvalInd', enhetsUtvalg=1,
                              preprosess=0, outfile='KvalIndPros.pdf')
 
@@ -44,16 +44,16 @@ NGERFigKvalInd(RegData=RegData, reshID=reshID, datoFra=datoFra, datoTil=datoTil,
 variable <- c('KomplIntra', 'KomplPostop', 'Opf0Status')
 for (valgtVar in variable) {
 	outfile <- paste0(valgtVar, '_Alle', tidsenhet, '.pdf')
-	NGERFigAndelerGrVar(RegData=RegData, valgtVar=valgtVar, preprosess=0, datoFra=datoFra,
+	nger::NGERFigAndelerGrVar(RegData=RegData, valgtVar=valgtVar, preprosess=0, datoFra=datoFra,
                 datoTil=datoTil, outfile=outfile, reshID=reshID, enhetsUtvalg=1)
 }
 
-variable <- c('Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan', 'Opf0Reoperasjon',
+variabler <- c('Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan', 'Opf0Reoperasjon',
               'Opf0AlvorlighetsGrad', 'KomplIntra', 'KomplPostop', 'OpAntibProfylakse',
               'OpASA', 'OpBMI', 'Opf0Status')
-for (valgtVar in variable) {
+for (valgtVar in variabler) {
 	outfile <- paste0(valgtVar, '_', tidsenhet, '.pdf')
-	NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
+	nger::NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
 	                datoTil=datoTil, reshID=reshID, enhetsUtvalg=1,
               tidsenhet=tidsenhet, preprosess=0, outfile=outfile)
 }
@@ -111,11 +111,11 @@ sammenlikningsgrunnlag.
 
 <<'AntMnd', results='asis'>>=
 antMnd <- 6
-xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil = Sys.Date(), antMnd=antMnd, reshID=reshID),
+xtable::xtable(nger::tabAntOpphShMnd(RegData=RegData, datoTil = Sys.Date(), antMnd=antMnd, reshID=reshID),
                digits=0,
                caption=paste0('Antall registreringer ved ditt sykehus siste ', antMnd, ' måneder.'))
 
-xtable::xtable(tabAntOpphShMnd(RegData=RegData2aar, datoTil = Sys.Date()-365, antMnd=antMnd, reshID=reshID),
+xtable::xtable(nger::tabAntOpphShMnd(RegData=RegData2aar, datoTil = Sys.Date()-365, antMnd=antMnd, reshID=reshID),
                digits=0,
                caption=paste0('Antall registreringer ved ditt sykehus forrige år.'))
 

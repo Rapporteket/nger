@@ -24,7 +24,7 @@ tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0,
                               & RegData$InnDato > as.Date(datoFra, tz='UTC'), aggVar]
       RegDataDum$Maaned1 <- lubridate::floor_date(RegDataDum$InnDato, 'month')
       tabAvdMnd1 <- table(RegDataDum[ , c('ShNavn', 'Maaned1')])
-      colnames(tabAvdMnd1) <- format(ymd(colnames(tabAvdMnd1)), '%b %y') #month(ymd(colnames(tabAvdMnd1)), label = T)
+      colnames(tabAvdMnd1) <- format(lubridate::ymd(colnames(tabAvdMnd1)), '%b %y') #month(lubridate::ymd(colnames(tabAvdMnd1)), label = T)
       if (reshID==0){
         tabAvdMnd1 <- addmargins((tabAvdMnd1))}
       #tabAvdMnd1 <- RegDataDum %>% group_by(Maaned=floor_date(InnDato, "month"), ShNavn) %>%

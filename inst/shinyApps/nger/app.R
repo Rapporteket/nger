@@ -727,28 +727,44 @@ tabPanel(p("Registeradministrasjon", title='Registeradministrasjonens side for r
          ) #tabsetPanel
 ), #tab SC
 #----------Abonnement-----------------
+
 tabPanel(p("Abonnement",
            title='Bestill automatisk utsending av rapporter på e-post'),
+         value = 'Abonnement',
+
          sidebarLayout(
-           sidebarPanel(width = 3,
-                        selectInput("subscriptionRep", "Rapport:",
-                                    c("Månedsrapport", "Samlerapport")),
-                        selectInput("subscriptionFreq", "Frekvens:",
-                                    list(Årlig="Årlig-year",
-                                          Kvartalsvis="Kvartalsvis-quarter",
-                                          Månedlig="Månedlig-month",
-                                          Ukentlig="Ukentlig-week",
-                                          Daglig="Daglig-DSTday"),
-                                    selected = "Månedlig-month"),
-                        #selectInput("subscriptionFileFormat", "Format:",
-                        #            c("html", "pdf")),
-                        actionButton("subscribe", "Bestill!")
+           sidebarPanel(
+             autoReportInput("ngerAbb")
            ),
-           mainPanel(
-             uiOutput("subscriptionContent")
+           shiny::mainPanel(
+             autoReportUI("ngerAbb")
            )
          )
-) #tab abonnement
+), #tab abonnement
+
+
+# tabPanel(p("Abonnement",
+#            title='Bestill automatisk utsending av rapporter på e-post'),
+#          sidebarLayout(
+#            sidebarPanel(width = 3,
+#                         selectInput("subscriptionRep", "Rapport:",
+#                                     c("Månedsrapport", "Samlerapport")),
+#                         selectInput("subscriptionFreq", "Frekvens:",
+#                                     list(Årlig="Årlig-year",
+#                                           Kvartalsvis="Kvartalsvis-quarter",
+#                                           Månedlig="Månedlig-month",
+#                                           Ukentlig="Ukentlig-week",
+#                                           Daglig="Daglig-DSTday"),
+#                                     selected = "Månedlig-month"),
+#                         #selectInput("subscriptionFileFormat", "Format:",
+#                         #            c("html", "pdf")),
+#                         actionButton("subscribe", "Bestill!")
+#            ),
+#            mainPanel(
+#              uiOutput("subscriptionContent")
+#            )
+#          )
+#) #tab abonnement
 
 #--------slutt tab'er----------
 
@@ -759,20 +775,16 @@ tabPanel(p("Abonnement",
 
 #----- Define server logic required to draw a histogram-------
 server <- function(input, output, session) {
+
+  #-- Div serveroppstart----
   if (paaServer) {
   rapbase::appLogger(session, msg = 'Starter Rapporteket-NGER')}
-  #system.file('NGERmndRapp.Rnw', package='nger')
 
     #hospitalName <-getHospitalName(rapbase::getUserReshId(session))
-    #reshID <- reactive({ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)),
-                         #      ifelse(tulledata==1, 8, 105460))})
     reshID <- ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)
     #rolle <- reactive({ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')})
     rolle <- ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')
     brukernavn <- reactive({ifelse(paaServer, rapbase::getUserName(session), 'inkognito')})
-
-
-    #output$reshID <- renderText({ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)}) #evt renderUI
 
      observe({
        #vise <- rolle =='SC'
@@ -808,23 +820,6 @@ server <- function(input, output, session) {
     paste0(fileBaseName, as.character(as.integer(as.POSIXct(Sys.time()))), '.pdf')
     }
 
-        # contentFile <- function(file, srcFil, tmpFil, package,
-      #                           reshID=0, datoFra=startDato, datoTil=Sys.Date()) {
-      #       src <- normalizePath(system.file(srcFil, package="nger"))
-      #       #dev.off()
-      #
-      #       # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
-      #       owd <- setwd(tempdir())
-      #       on.exit(setwd(owd))
-      #       file.copy(src, tmpFil, overwrite = TRUE)
-      #
-      #       #texfil <- knitr::knit(tmpFil, encoding = 'UTF-8')
-      #       #tools::texi2pdf(texfil, clean = TRUE)
-      #       knitr::knit2pdf(tmpFil)
-      #
-      #       gc() #Opprydning gc-"garbage collection"
-      #       file.rename(stringr::str_replace(texfil,'tex','pdf'), file)
-      # }
        output$mndRapp.pdf <- downloadHandler(
             filename = function(){ downloadFilename('NGERmaanedsrapport')},
             content = function(file){
@@ -842,10 +837,7 @@ server <- function(input, output, session) {
         }
       )
 
-      #output$lenkeNorScir <- renderUI({tagList("www.norscir.no", www.norscir.no)})
-
      output$tabEgneReg <- renderTable({
-       #print(input$sluttDatoReg-365)
        xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg,
                                       antMnd=12, reshID = reshID))},
             rownames=T,
@@ -857,7 +849,7 @@ server <- function(input, output, session) {
        rownames=T,
        digits = 0
      )
-      #tabAntOpphShMnd(RegData=RegData, reshID = 8)
+
  #----------Registreringsoversikter ----------------------
 
             output$undertittelReg <- renderUI({
@@ -886,8 +878,6 @@ server <- function(input, output, session) {
                                      Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg,
                                                           OpMetode=as.numeric(input$opMetodeReg),
                                                           velgDiag=as.numeric(input$velgDiagReg)))
-        #utvalg <- tabAntOpphShMndAarDUM[[2]]
-        #Aar=xtable::xtable(tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg)), digits=0)
         output$tabAntOpphSh <- renderTable(tabAntOpphShMndAar, rownames = T, digits=0, spacing="xs")
         output$lastNed_tabAntOpph <- downloadHandler(
           filename = function(){paste0('tabAntOpph.csv')},
@@ -940,9 +930,6 @@ server <- function(input, output, session) {
       RegDataAlle <- rapbase::loadRegData(registryName = "nger", query=qAlle, dbType = "mysql")
       RegDataAlle <- NGERPreprosess(RegDataAlle)
       observe({
-        # DataDump <- dplyr::filter(RegData,
-        #                              as.Date(OpDato) >= input$datovalgRegKtr[1],
-        #                              as.Date(OpDato) <= input$datovalgRegKtr[2])
         DataDump <- dplyr::filter(RegDataAlle,
                                   as.Date(OpDato) >= input$datovalgRegKtr[1],
                                   as.Date(OpDato) <= input$datovalgRegKtr[2])
@@ -1024,8 +1011,6 @@ output$lastNed_dataDump <- downloadHandler(
             h3(UtDataKvalInd$tittel),
             h5(HTML(paste0(UtDataKvalInd$utvalgTxt, '<br />')))
           )}) #, align='center'
-
-        #output$kvalIndTab <- renderTable(tabKvalInd, rownames = T)
 
         output$kvalIndTab <- function() {
           antKol <- ncol(tabKvalInd)
@@ -1429,7 +1414,6 @@ output$lastNed_dataDump <- downloadHandler(
                                 , digits = 1 #c(0,1,1,1)[1:antKol]
               ) %>%
                 add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
-                #add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
                 column_spec(column = 1, width_min = '7em') %>%
                 column_spec(column = 2:(antKol+1), width = '7em') %>%
                 row_spec(0, bold = T)
@@ -1445,11 +1429,108 @@ output$lastNed_dataDump <- downloadHandler(
 
                 }) #observe gjsnGrVar
 
-      #-----------Registeradministrasjon-----------
+
+      #------------------ Abonnement ----------------------------------------------
+
+      #--------Start modul, abonnement
+      orgs <- as.list(sykehusValg)
+
+      ## make a list for report metadata
+      reports <- list(
+        MndRapp = list(
+          synopsis = "Rapporteket-NGER: Månedsrapport",
+          fun = "abonnementNGER", #Lag egen funksjon for utsending
+          paramNames = c('rnwFil', 'reshID', 'brukernavn'), #"valgtRHF"),
+          paramValues = c('NGERmndRapp.Rnw', reshID, brukernavn) #'Alle')
+        ),
+        SamleRapp = list(
+          synopsis = "Rapporteket-NGER: Samlerapport",
+          fun = "abonnementNGER",
+          paramNames = c('rnwFil','reshID', 'brukernavn'),
+          paramValues = c('NGERSamleRapp.Rnw', reshID, brukernavn)
+        )
+      )
+      #c("Månedsrapport", "Samlerapport")
+      #test <- nger::abonnementNGER(rnwFil="NGERmndRapp.Rnw", brukernavn='tullebukk', reshID=105460)
+      autoReportServer(
+        id = "ngerAbb", registryName = "nger", type = "subscription",
+        paramNames = paramNames, paramValues = paramValues, #org = orgAbb$value,
+        reports = reports, orgs = orgs, eligible = TRUE
+      )
+
+
+      # ## reaktive verdier for å holde rede på endringer som skjer mens
+      # ## applikasjonen kjører
+      # rv <- reactiveValues(
+      #   subscriptionTab = rapbase::makeAutoReportTab(session))
+      # ## lag tabell over gjeldende status for abonnement
+      # output$activeSubscriptions <- DT::renderDataTable(
+      #   rv$subscriptionTab, server = FALSE, escape = FALSE, selection = 'none',
+      #   rownames = FALSE, options = list(dom = 't')
+      # )
+      #
+      # ## lag side som viser status for abonnement, også når det ikke finnes noen
+      # output$subscriptionContent <- renderUI({
+      #   fullName <- rapbase::getUserFullName(session)
+      #   if (length(rv$subscriptionTab) == 0) {
+      #     p(paste("Ingen aktive abonnement for", fullName))
+      #   } else {
+      #     tagList(
+      #       p(paste("Aktive abonnement for", fullName, "som sendes per epost til ",
+      #               rapbase::getUserEmail(session), ":")),
+      #       DT::dataTableOutput("activeSubscriptions")
+      #     )
+      #   }
+      # })
+      #
+      #
+      #       ## nye abonnement
+      # observeEvent (input$subscribe, { #MÅ HA
+      #   #package <- "intensiv"
+      #   owner <- rapbase::getUserName(session)
+      #   interval <- strsplit(input$subscriptionFreq, "-")[[1]][2]
+      #   intervalName <- strsplit(input$subscriptionFreq, "-")[[1]][1]
+      #   organization <- rapbase::getUserReshId(session)
+      #   runDayOfYear <- rapbase::makeRunDayOfYearSequence(
+      #     interval = interval
+      #   )
+      #   email <- rapbase::getUserEmail(session)
+      #   if (input$subscriptionRep == "Månedsrapport") {
+      #     synopsis <- "NGER/Rapporteket: Månedsrapport"
+      #     rnwFil <- "NGERmndRapp.Rnw" #Navn på fila
+      #   }
+      #   if (input$subscriptionRep == "Samlerapport") {
+      #     synopsis <- "NGER/Rapporteket: Samlerapport"
+      #     rnwFil <- "NGERSamleRapp.Rnw" #Navn på fila
+      #   }
+      #
+      #   fun <- "abonnementNGER"  #"henteSamlerapporter"
+      #   paramNames <- c('rnwFil', 'brukernavn', "reshID", "datoFra", 'datoTil')
+      #   paramValues <- c(rnwFil, brukernavn(), reshID, startDato, as.character(idag)) #input$subscriptionFileFormat)
+      #
+      #   #test <- nger::abonnementNGER(rnwFil="NGERmndRapp.Rnw", brukernavn='tullebukk', reshID=105460, datoFra = '2021-03-01')
+      #
+      #   rapbase::createAutoReport(synopsis = synopsis, package = 'nger',
+      #                             fun = fun, paramNames = paramNames,
+      #                             paramValues = paramValues, owner = owner,
+      #                             email = email, organization = organization,
+      #                             runDayOfYear = runDayOfYear, interval = interval,
+      #                             intervalName = intervalName)
+      #   rv$subscriptionTab <- rapbase::makeAutoReportTab(session)
+      # })
+      #
+      # ## slett eksisterende abonnement
+      # observeEvent(input$del_button, {
+      #   selectedRepId <- strsplit(input$del_button, "_")[[1]][2]
+      #   rapbase::deleteAutoReport(selectedRepId)
+      #   rv$subscriptionTab <- rapbase::makeAutoReportTab(session)
+      # })
+
+#-----------Registeradministrasjon-----------
+  #-----Utsendinger
 
       if (rolle=='SC') {
 
-        orgs <- as.list(sykehusValg)
 
         ## liste med metadata for rapport
         reports <- list(
@@ -1458,7 +1539,7 @@ output$lastNed_dataDump <- downloadHandler(
             fun = "abonnementNGER",
             paramNames = c('rnwFil', "reshID"),
             paramValues = c('NGERmndRapp.Rnw', 0)
-          ), #abonnementNGER(rnwFil, brukernavn='ngerBrukernavn', reshID=0,
+          ),
           SamleRapp = list(
             synopsis = "Rapport med samling av div. resultater",
             fun = "abonnementNGER",
@@ -1480,83 +1561,14 @@ output$lastNed_dataDump <- downloadHandler(
         )
 
 
-        #----------- Eksport ----------------
-        registryName <- "nger"
-        ## brukerkontroller
-        rapbase::exportUCServer("ngerExport", registryName)
-        ## veileding
-        rapbase::exportGuideServer("ngerExportGuide", registryName)
 
-
-
-         }
-      #------------------ Abonnement ----------------------------------------------
-      ## reaktive verdier for å holde rede på endringer som skjer mens
-      ## applikasjonen kjører
-      rv <- reactiveValues(
-        subscriptionTab = rapbase::makeAutoReportTab(session))
-      ## lag tabell over gjeldende status for abonnement
-      output$activeSubscriptions <- DT::renderDataTable(
-        rv$subscriptionTab, server = FALSE, escape = FALSE, selection = 'none',
-        rownames = FALSE, options = list(dom = 't')
-      )
-
-      ## lag side som viser status for abonnement, også når det ikke finnes noen
-      output$subscriptionContent <- renderUI({
-        fullName <- rapbase::getUserFullName(session)
-        if (length(rv$subscriptionTab) == 0) {
-          p(paste("Ingen aktive abonnement for", fullName))
-        } else {
-          tagList(
-            p(paste("Aktive abonnement for", fullName, "som sendes per epost til ",
-                    rapbase::getUserEmail(session), ":")),
-            DT::dataTableOutput("activeSubscriptions")
-          )
-        }
-      })
-
-
-            ## nye abonnement
-      observeEvent (input$subscribe, { #MÅ HA
-        #package <- "intensiv"
-        owner <- rapbase::getUserName(session)
-        interval <- strsplit(input$subscriptionFreq, "-")[[1]][2]
-        intervalName <- strsplit(input$subscriptionFreq, "-")[[1]][1]
-        organization <- rapbase::getUserReshId(session)
-        runDayOfYear <- rapbase::makeRunDayOfYearSequence(
-          interval = interval
-        )
-        email <- rapbase::getUserEmail(session)
-        if (input$subscriptionRep == "Månedsrapport") {
-          synopsis <- "NGER/Rapporteket: Månedsrapport"
-          rnwFil <- "NGERmndRapp.Rnw" #Navn på fila
-        }
-        if (input$subscriptionRep == "Samlerapport") {
-          synopsis <- "NGER/Rapporteket: Samlerapport"
-          rnwFil <- "NGERSamleRapp.Rnw" #Navn på fila
-        }
-
-        fun <- "abonnementNGER"  #"henteSamlerapporter"
-        paramNames <- c('rnwFil', 'brukernavn', "reshID", "datoFra", 'datoTil')
-        paramValues <- c(rnwFil, brukernavn(), reshID, startDato, as.character(idag)) #input$subscriptionFileFormat)
-
-        #test <- abonnementNGER(rnwFil="NGERmndRapp.Rnw", brukernavn='tullebukk', reshID=105460, datoFra = '2020-03-01')
-
-        rapbase::createAutoReport(synopsis = synopsis, package = 'nger',
-                                  fun = fun, paramNames = paramNames,
-                                  paramValues = paramValues, owner = owner,
-                                  email = email, organization = organization,
-                                  runDayOfYear = runDayOfYear, interval = interval,
-                                  intervalName = intervalName)
-        rv$subscriptionTab <- rapbase::makeAutoReportTab(session)
-      })
-
-      ## slett eksisterende abonnement
-      observeEvent(input$del_button, {
-        selectedRepId <- strsplit(input$del_button, "_")[[1]][2]
-        rapbase::deleteAutoReport(selectedRepId)
-        rv$subscriptionTab <- rapbase::makeAutoReportTab(session)
-      })
+      #----------- Eksport ----------------
+      registryName <- "nger"
+      ## brukerkontroller
+      rapbase::exportUCServer("ngerExport", registryName)
+      ## veileding
+      rapbase::exportGuideServer("ngerExportGuide", registryName)
+      }
 
 } #server
 # Run the application
