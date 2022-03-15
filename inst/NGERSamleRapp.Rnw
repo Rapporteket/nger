@@ -162,12 +162,8 @@ if (!exists('RegData')){
 @
 
 <<FellesParamOgPreprosess, echo=FALSE, warnings=FALSE>>=
-
-
-outfile <- ''
 enhetsUtvalg <- 1
 OpMetode<-99
-Hastegrad <- ''
 tidsenhet <- 'Mnd'
 tidsspenn <- difftime(datoTil,datoFra, units = 'weeks')
 if (tidsspenn > 60) {tidsenhet <- 'Kvartal'}
@@ -177,7 +173,7 @@ tidsperiodeTxt <- paste0('Operasjonene er utført i perioden ', datoFra, ' til '
 RegDataHele <- NGERUtvalgEnh(RegData = RegData, datoFra = startAar, datoTil = datoTil)$RegData
 #RegDataHele$Aar <- as.factor(RegDataHele$Aar)
 NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, datoFra = datoFra,
-                         datoTil = datoTil, OpMetode = OpMetode, Hastegrad=Hastegrad)
+                         datoTil = datoTil, OpMetode = OpMetode)
 RegData <- NGERUtvalg$RegData
 #RegData$Aar <- as.factor(RegData$Aar)
 
@@ -230,9 +226,9 @@ print(xtable::xtable(tabAvdN, digits=0, align=c('l', rep('r', max(c(1,ncol(tabAv
 
 <<'Tabell:Pasientkarakterisika', results='asis', warnings=FALSE, echo=FALSE, eval=T >>=
 
-TabPasKar <- tabNGERpasientegenskaper(RegDataHele[indEgetHele,])
+TabPasKar <- tabNGERpasientegenskaper(RegDataHele[indEgetHele,], datoFra = datoFra)
 
-cap <- paste0("Gjennomsnittlig BMI, fødsler, graviditeter og knivtid ved ", egetSh, '. ', tidsperiodeTxt)
+cap <- paste0("Gjennomsnittlig BMI, fødsler og knivtid ved ", egetSh, '. ', tidsperiodeTxt)
 
 tab <- xtable::xtable(TabPasKar, align=c("l", "l", rep("r", ncol(TabPasKar)-1)),
                       digits=c(0,0,rep(1, ncol(TabPasKar)-1)),
@@ -249,27 +245,24 @@ dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='A
                       reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='AlderFord.pdf')
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='OpAnestesi', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='OpAnestesiLap.pdf', OpMetode = 1,
-                      Hastegrad=Hastegrad)
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='OpAnestesiLap.pdf', OpMetode = 1
+                      )
 
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='OpAnestesi', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='OpAnestesiHyp.pdf', OpMetode = 2,
-                      Hastegrad=Hastegrad)
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='OpAnestesiHyp.pdf', OpMetode = 2
+                      )
 
 dum <-  NGERFigAndelerGrVar(RegData=RegData, preprosess=0,datoFra=datoFra, datoTil=datoTil,
                             valgtVar='OpAntibProfylakse',
-                            reshID=reshID, outfile='OpAntibProfylakse.pdf', OpMetode=OpMetode,
-                            Hastegrad = Hastegrad)
+                            reshID=reshID, outfile='OpAntibProfylakse.pdf', OpMetode=OpMetode)
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='LapEkstrautstyr', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='LapEkstrautstyr.pdf', OpMetode = 1,
-                      Hastegrad=Hastegrad)
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='LapEkstrautstyr.pdf', OpMetode = 1)
 
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='LapTeknikk', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='LapTeknikk.pdf', OpMetode = 1,
-                      Hastegrad=Hastegrad)
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='LapTeknikk.pdf', OpMetode = 1)
 
 dum <- NGERFigAndelTid(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplIntra', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplIntraLapAar.pdf',
@@ -280,12 +273,10 @@ dum <- NGERFigAndelTid(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='
                        OpMetode=2, tidsenhet = tidsenhet)
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplPostopType', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostLap.pdf', OpMetode = 1,
-                      Hastegrad=Hastegrad)
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostLap.pdf', OpMetode = 1)
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplPostopType', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostHys.pdf', OpMetode = 2,
-                      Hastegrad=Hastegrad)
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostHys.pdf', OpMetode = 2)
 
 dum <- NGERFigAndelTid(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplPostop', datoTil=datoTil,
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostLapAar.pdf',
@@ -305,21 +296,17 @@ dum <- NGERFigAndelTid(RegData=RegData,preprosess=0, datoFra=datoFra, valgtVar='
                        OpMetode=2, tidsenhet = tidsenhet)
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='Opf0AlvorlighetsGrad', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='Opf0AlvorLap.pdf', OpMetode = 1,
-                      Hastegrad=Hastegrad)
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='Opf0AlvorLap.pdf', OpMetode = 1)
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='Opf0AlvorlighetsGrad', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='Opf0AlvorHys.pdf', OpMetode = 2,
-                      Hastegrad=Hastegrad)
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='Opf0AlvorHys.pdf', OpMetode = 2)
 
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='LapIntraabdominell', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='LapIntraabdominell.pdf', OpMetode = '',
-                      Hastegrad=Hastegrad)
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='LapIntraabdominell.pdf')
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='HysKomplikasjoner', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='HysKompl.pdf', OpMetode = '',
-                      Hastegrad=Hastegrad)
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='HysKompl.pdf')
 
 
 @
@@ -530,29 +517,23 @@ utvikling over tid.}
 <<'DivFig2', results='asis', echo=FALSE, eval=T>>=
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplPostUtd', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostUtd.pdf', OpMetode = '',
-                      Hastegrad=Hastegrad)
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplPostUtd.pdf')
 
 dum <- NGERFigAndeler(RegData=RegData, preprosess=0,datoFra=datoFra, valgtVar='KomplReopUtd', datoTil=datoTil,
-                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplReopUtd.pdf', OpMetode = '',
-                      Hastegrad=Hastegrad)
+                      reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='KomplReopUtd.pdf')
 
 dum <- NGERFigAndelerGrVar(RegData=RegData, preprosess=0,datoFra=datoFra, datoTil=datoTil, valgtVar='KomplPostop',
-                           reshID=reshID, outfile='KomplPostLapShus.pdf', OpMetode=1,
-                           Hastegrad = Hastegrad)
+                           reshID=reshID, outfile='KomplPostLapShus.pdf', OpMetode=1)
 
 dum <- NGERFigAndelerGrVar(RegData=RegData, preprosess=0,datoFra=datoFra, datoTil=datoTil, valgtVar='KomplPostop',
-                           reshID=reshID, outfile='KomplPostHysShus.pdf', OpMetode=2,
-                           Hastegrad = Hastegrad)
+                           reshID=reshID, outfile='KomplPostHysShus.pdf', OpMetode=2)
 
 
 dum <- NGERFigAndelerGrVar(RegData=RegData,preprosess=0, datoFra=datoFra, datoTil=datoTil, valgtVar='Opf0AlvorlighetsGrad',
-                           reshID=reshID, outfile='Opf0AlvorligLapShus.pdf', OpMetode=1,
-                           Hastegrad = Hastegrad)
+                           reshID=reshID, outfile='Opf0AlvorligLapShus.pdf', OpMetode=1)
 
 dum <- NGERFigAndelerGrVar(RegData=RegData, preprosess=0,datoFra=datoFra, datoTil=datoTil, valgtVar='Opf0AlvorlighetsGrad',
-                           reshID=reshID, outfile='Opf0AlvorligHysShus.pdf', OpMetode=2,
-                           Hastegrad = Hastegrad)
+                           reshID=reshID, outfile='Opf0AlvorligHysShus.pdf', OpMetode=2)
 
 @
 

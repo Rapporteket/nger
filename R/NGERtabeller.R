@@ -144,18 +144,12 @@ lagTabavFigGjsnGrVar <- function(UtDataFraFig){
 #'  Generere tabell med nøkkeltall
 #' @export
 
-tabNGERpasientegenskaper <- function(RegData, datoFra='2019-01-01', datoTil=Sys.Date(), tidsenhet='Kvartal') {
+tabNGERpasientegenskaper <- function(RegData, datoFra='2022-01-01', datoTil=Sys.Date(), tidsenhet='Kvartal') {
   # make dummy column for all MCEs
   RegData <- NGERUtvalgEnh(RegData=RegData, datoFra = datoFra, datoTil = datoTil)$RegData
   RegDataFunk <- SorterOgNavngiTidsEnhet(RegData=RegData, tidsenhet = tidsenhet)
   RegData <- RegDataFunk$RegData
   tidtxt <- RegDataFunk$tidtxt
-  # xAkseTxt <- switch(tidsenhet,
-  #                    Aar='Operasjonsår',
-  #                    Halvaar = 'Operasjonsår og -halvår',
-  #                    Kvartal = 'Operasjonsår og -kvartal',
-  #                    Mnd='Operasjonsår og -måned')
-
 
   n <- dim(RegData)[1]
   RegData$dummy <- rep("\\textbf{BMI, alle} ($kg/m^2$)", n)
@@ -171,13 +165,6 @@ tabNGERpasientegenskaper <- function(RegData, datoFra='2019-01-01', datoTil=Sys.
   myTab <- rbind(myTab,
                  xtabs(OpPariteter ~ OpMetode + TidsEnhetSort,
                        aggregate(OpPariteter~OpMetode+TidsEnhetSort,RegData,mean)))
-  RegData$dummy <- "\\textbf{Graviditeter, alle} (\\textit{antall})"
-  myTab <- rbind(myTab,
-                 xtabs(OpGraviditeter ~ dummy + TidsEnhetSort,
-                       aggregate(OpGraviditeter~dummy+TidsEnhetSort,RegData,mean)))
-  myTab <- rbind(myTab,
-                 xtabs(OpGraviditeter ~ OpMetode + TidsEnhetSort,
-                       aggregate(OpGraviditeter~OpMetode+TidsEnhetSort,RegData,mean)))
   RegData$dummy <- "\\textbf{Knivtider, alle} (\\textit{minutt})"
   myTab <- rbind(myTab,
                  xtabs(OpTid ~ dummy + TidsEnhetSort,

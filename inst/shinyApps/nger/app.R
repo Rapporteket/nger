@@ -1444,7 +1444,7 @@ output$lastNed_dataDump <- downloadHandler(
           paramValues = c('NGERmndRapp.Rnw', reshID, brukernavn) #'Alle')
         ),
         SamleRapp = list(
-          synopsis = "Rapporteket-NGER: Samlerapport, abonnement",
+          synopsis = "NGER/Rapporteket: Samlerapport, abonnement",
           fun = "abonnementNGER",
           paramNames = c('rnwFil','reshID', 'brukernavn'),
           paramValues = c('NGERSamleRapp.Rnw', reshID, brukernavn)
