@@ -1438,13 +1438,13 @@ output$lastNed_dataDump <- downloadHandler(
       ## make a list for report metadata
       reports <- list(
         MndRapp = list(
-          synopsis = "Rapporteket-NGER: Månedsrapport",
+          synopsis = "NGER/Rapporteket: Månedsrapport, abonnement",
           fun = "abonnementNGER", #Lag egen funksjon for utsending
           paramNames = c('rnwFil', 'reshID', 'brukernavn'), #"valgtRHF"),
           paramValues = c('NGERmndRapp.Rnw', reshID, brukernavn) #'Alle')
         ),
         SamleRapp = list(
-          synopsis = "Rapporteket-NGER: Samlerapport",
+          synopsis = "Rapporteket-NGER: Samlerapport, abonnement",
           fun = "abonnementNGER",
           paramNames = c('rnwFil','reshID', 'brukernavn'),
           paramValues = c('NGERSamleRapp.Rnw', reshID, brukernavn)
@@ -1531,17 +1531,16 @@ output$lastNed_dataDump <- downloadHandler(
 
       if (rolle=='SC') {
 
-
         ## liste med metadata for rapport
         reports <- list(
           MndRapp = list(
-            synopsis = "Månedsrapport",
+            synopsis = "Rapporteket-NGER: Månedsrapport",
             fun = "abonnementNGER",
             paramNames = c('rnwFil', "reshID"),
             paramValues = c('NGERmndRapp.Rnw', 0)
           ),
           SamleRapp = list(
-            synopsis = "Rapport med samling av div. resultater",
+            synopsis = "Rapporteket-NGER: Rapport, div. resultater",
             fun = "abonnementNGER",
             paramNames = c('rnwFil', "reshID"),
             paramValues = c('NGERSamleRapp.Rnw', 0)
