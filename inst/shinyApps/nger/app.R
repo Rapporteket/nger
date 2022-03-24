@@ -67,6 +67,7 @@ enhetsUtvalg <- c("Egen mot resten av landet"=1,
                'Tot. lap. hysterektomi (LCD01/LCD04)'=4,
                'Lap. subtotal hysterektomi (LCC11)'=5,
                'Lap. ass. vag. hysterektomi (LCD11)'=6,
+               'Alle hysterektomier' = 9,
                'Robotassisert inngrep' = 7,
                'Kolpopeksiene' = 8)
 
@@ -178,48 +179,40 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
                sidebarPanel(width=3,
                             h3('Utvalg'),
+
                             conditionalPanel(condition = "input.ark == 'Antall operasjoner'",
                                              dateInput(inputId = 'sluttDatoReg', label = 'Velg sluttdato', language="nb",
                                                        value = Sys.Date(), max = Sys.Date() ),
-                                             selectInput(inputId = 'opMetodeReg', label='Operasjonstype',
-                                                         choices = opMetode
-                                             ),
+                                             selectInput(inputId = "tidsenhetReg", label="Velg tidsenhet",
+                                                         choices = rev(c('År'= 'Aar', 'Måned'='Mnd'))),
                                              selectInput(inputId = 'velgDiagReg', label='Diagnose',
                                                          choices = diag
+                                             ),
+                                             selectInput(inputId = 'opMetodeReg', label='Operasjonstype',
+                                                         choices = opMetode
+                                             )
+                            ),
+                            conditionalPanel(condition = "input.ark == 'Antall registrerte skjema' || input.ark == 'Last ned egne data' ",
+                                             dateRangeInput(inputId = 'datovalgReg', start = startDato, end = Sys.Date(),
+                                                            label = "Tidsperiode", separator="t.o.m.", language="nb")
+
+                            ),
+                            conditionalPanel(condition = "input.ark == 'Antall registrerte skjema' ",
+                                             selectInput(inputId = 'skjemastatus', label='Velg skjemastatus',
+                                                         choices = c("Ferdigstilt"=1,
+                                                                     "Kladd"=0,
+                                                                     "Åpen"=-1)
                                              )
 
                             ),
-                            conditionalPanel(
-                              condition = "input.ark == 'Antall operasjoner'"  ,
-                              selectInput(inputId = "tidsenhetReg", label="Velg tidsenhet",
-                                          choices = rev(c('År'= 'Aar', 'Måned'='Mnd')))),
-                            conditionalPanel(
-                              condition = "input.ark == 'Antall registrerte skjema'",
-                              dateRangeInput(inputId = 'datovalgReg', start = startDato, end = Sys.Date(),
-                                             label = "Tidsperiode", separator="t.o.m.", language="nb"),
-                              selectInput(inputId = 'skjemastatus', label='Velg skjemastatus',
-                                          choices = c("Ferdigstilt"=1,
-                                                      "Kladd"=0,
-                                                      "Åpen"=-1)
-                              )
-                            ),
-
-                            br(),
-                            br(),
-                            br(),
-                            br(),
-                            h3('Last ned egne data '),
-                            #uiOutput("test"),
-
-                            dateRangeInput(inputId = 'datovalgRegKtr', start = startDato, end = Sys.Date(),
-                                           label = "Tidsperiode", separator="t.o.m.", language="nb"),
-                            selectInput(inputId = 'velgReshReg', label='Velg sykehus',
-                                        selected = 0,
-                                        choices = sykehusValgDump),
-                            downloadButton(outputId = 'lastNed_dataTilRegKtr', label='Last ned fødselsdato og operasjonsdato'),
-                            br(),
-                            br(),
-                            downloadButton(outputId = 'lastNed_dataDump', label='Last ned datadump')
+                            conditionalPanel(condition = "input.ark == 'Last ned egne data' ",
+                                             selectInput(inputId = 'velgReshReg', label='Velg sykehus',
+                                                         selected = 0,
+                                                         choices = sykehusValgDump),
+                                             selectInput(inputId = 'opMetodeRegDump', label='Operasjonstype (kun datadump)',
+                                                         choices = opMetode
+                                             )
+                            )
                ),
 
                mainPanel(
@@ -234,11 +227,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                         ,downloadButton(outputId = 'lastNed_tabAntOpph', label='Last ned')
                                       )
                              ),
-                              # output$tabAntOpphSh <- renderTable({
-                             #   switch(input$tidsenhetReg,
-                             #          Mnd=tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12), #input$datovalgTab[2])
-                             #          Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg))
-                             # }, rownames = T, digits=0, spacing="xs"
 
                              tabPanel('Antall registrerte skjema',
                                       h4("Tabellen viser antall registrerte skjema for valgt tidsperiode"),
@@ -248,8 +236,18 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                         tableOutput("tabAntSkjema")
                                         ,downloadButton(outputId = 'lastNed_tabAntSkjema', label='Last ned')
                                       )
+                             ),
+                             tabPanel('Last ned egne data',
+                                      h4("Gjør utvalg og last ned egne data"),
+                                      p("Velg tidsperiode  og evt. operasjonsmetode i menyen til venstre"),
+                                      br(),
+                                      #fluidRow(
+                                        downloadButton(outputId = 'lastNed_dataTilRegKtr', label='Last ned fødselsdato og operasjonsdato'),
+                                        br(),
+                                        br(),
+                                        downloadButton(outputId = 'lastNed_dataDump', label='Last ned datadump')
+                                      #)
                              )
-
                  )
                )
 
@@ -870,41 +868,42 @@ server <- function(input, output, session) {
                   # h4(HTML(paste0(names(opMetode[opMetode==as.numeric(input$opMetodeReg)]), '<br />'),
                    #       names(velgDiag[velgDiag==as.numeric(input$velgDiag)]), '<br />'))
                   })
-      observe({
-        tabAntOpphShMndAar <- switch(input$tidsenhetReg,
-                                     Mnd=tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12,
+     observe({
+       tabAntOpphShMndAar <- switch(input$tidsenhetReg,
+                                    Mnd=tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12,
+                                                        OpMetode=as.numeric(input$opMetodeReg),
+                                                        velgDiag=as.numeric(input$velgDiagReg)), #input$datovalgTab[2])
+                                    Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg,
                                                          OpMetode=as.numeric(input$opMetodeReg),
-                                                         velgDiag=as.numeric(input$velgDiagReg)), #input$datovalgTab[2])
-                                     Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg,
-                                                          OpMetode=as.numeric(input$opMetodeReg),
-                                                          velgDiag=as.numeric(input$velgDiagReg)))
-        output$tabAntOpphSh <- renderTable(tabAntOpphShMndAar, rownames = T, digits=0, spacing="xs")
-        output$lastNed_tabAntOpph <- downloadHandler(
-          filename = function(){paste0('tabAntOpph.csv')},
-          content = function(file, filename){write.csv2(tabAntOpphShMndAar, file, row.names = T, na = '')
-          })
+                                                         velgDiag=as.numeric(input$velgDiagReg)))
+       output$tabAntOpphSh <- renderTable(tabAntOpphShMndAar, rownames = T, digits=0, spacing="xs")
+       output$lastNed_tabAntOpph <- downloadHandler(
+         filename = function(){paste0('tabAntOpph.csv')},
+         content = function(file, filename){write.csv2(tabAntOpphShMndAar, file, row.names = T, na = '')
+         })
 
 
 
-        #RegData som har tilknyttede skjema av ulik type
-        AntSkjemaAvHver <- tabAntSkjema(SkjemaOversikt=SkjemaOversikt,
-                                        datoFra = input$datovalgReg[1],
-                                        datoTil=input$datovalgReg[2],
-                                        skjemastatus=as.numeric(input$skjemastatus))
-        output$tabAntSkjema <- renderTable(AntSkjemaAvHver
-                                           ,rownames = T, digits=0, spacing="xs" )
-        output$lastNed_tabAntSkjema <- downloadHandler(
-          filename = function(){'tabAntSkjema.csv'},
-          content = function(file, filename){write.csv2(AntSkjemaAvHver, file, row.names = T, na = '')
-          })
-      })
+       #RegData som har tilknyttede skjema av ulik type
+       AntSkjemaAvHver <- tabAntSkjema(SkjemaOversikt=SkjemaOversikt,
+                                       datoFra = input$datovalgReg[1],
+                                       datoTil=input$datovalgReg[2],
+                                       skjemastatus=as.numeric(input$skjemastatus))
+       output$tabAntSkjema <- renderTable(AntSkjemaAvHver
+                                          ,rownames = T, digits=0, spacing="xs" )
+       output$lastNed_tabAntSkjema <- downloadHandler(
+         filename = function(){'tabAntSkjema.csv'},
+         content = function(file, filename){write.csv2(AntSkjemaAvHver, file, row.names = T, na = '')
+         })
+     })
 
       # Hente oversikt over hvilke registrereinger som er gjort (opdato og fødselsdato)
       RegOversikt <- RegData[ , c('Fodselsdato', 'OpDato', 'ReshId', 'ShNavn', 'BasisRegStatus')]
       observe({
         RegOversikt <- dplyr::filter(RegOversikt,
-                                     as.Date(OpDato) >= input$datovalgRegKtr[1],
-                                     as.Date(OpDato) <= input$datovalgRegKtr[2])
+                        as.Date(OpDato) >= input$datovalgReg[1],
+                        as.Date(OpDato) <= input$datovalgReg[2])
+
         if (rolle == 'SC') {
           valgtResh <- as.numeric(input$velgReshReg)
           ind <- if (valgtResh == 0) {1:dim(RegOversikt)[1]
@@ -930,11 +929,11 @@ server <- function(input, output, session) {
       RegDataAlle <- rapbase::loadRegData(registryName = "nger", query=qAlle, dbType = "mysql")
       RegDataAlle <- NGERPreprosess(RegDataAlle)
       observe({
-        DataDump <- dplyr::filter(RegDataAlle,
-                                  as.Date(OpDato) >= input$datovalgRegKtr[1],
-                                  as.Date(OpDato) <= input$datovalgRegKtr[2])
-
-        if (rolle =='SC') {
+        DataDump <- NGERUtvalgEnh(RegData = RegDataAlle,
+                                                datoFra = input$datovalgReg[1],
+                                                datoTil = input$datovalgReg[2],
+                                                OpMetode = as.numeric(input$opMetodeRegDump))$RegData
+         if (rolle =='SC') {
           valgtResh <- as.numeric(input$velgReshReg)
           ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
           } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
@@ -945,8 +944,6 @@ server <- function(input, output, session) {
           fjernVarInd <- c(grep('Opf0', navn), grep('Opf1', navn),grep('R0', navn), grep('R1', navn), grep('RY1', navn), grep('Tss', navn))
           tabDataDump <-
             DataDump[which(DataDump$ReshId == reshID), -fjernVarInd] #which(names(DataDump) %in% variablePRM)]
-          #DataDump[which(DataDump$ReshId == reshID), -fjernVariabler]
-          #navn[fjernVariInd]
 
           #output$test <- renderText(dim(tabDataDump)[1])
           } #Tar bort PROM/PREM til egen avdeling

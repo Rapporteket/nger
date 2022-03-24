@@ -123,9 +123,9 @@ henteSamlerapporter <- function(filnavn, rnwFil, reshID=0,
 abonnementNGER <- function(rnwFil, brukernavn='ngerBrukernavn', reshID=0,
                            datoFra=Sys.Date()-180, datoTil=Sys.Date()) {
 
-    raplog::subLogger(author = brukernavn, reshId = reshID,
-                      registryName = 'NGER',
-                      msg = paste("Abonnement, ", rnwFil))
+    # raplog::subLogger(author = brukernavn, reshId = reshID,
+    #                   registryName = 'NGER',
+    #                   msg = paste("Abonnement, ", rnwFil))
 
   filbase <- substr(rnwFil, 1, nchar(rnwFil)-4)
   tmpFile <- paste0(filbase, Sys.Date(),'_',digest::digest(brukernavn), '.Rnw')
@@ -134,18 +134,18 @@ abonnementNGER <- function(rnwFil, brukernavn='ngerBrukernavn', reshID=0,
   setwd(tempdir())
   dir <- getwd()
   file.copy(src, tmpFile, overwrite = TRUE)
-  raplog::subLogger(author = brukernavn, reshId = reshID,
-                    registryName = 'NGER',
-                    msg = paste("1 Klar til strikking, ", rnwFil))
+  # raplog::subLogger(author = brukernavn, reshId = reshID,
+  #                   registryName = 'NGER',
+  #                   msg = paste("1 Klar til strikking, ", rnwFil))
   knitr::knit2pdf(input=tmpFile) #, output = paste0(filbase, digest::digest(brukernavn),'.tex'))
-  raplog::subLogger(author = brukernavn, reshId = reshID,
-                    registryName = 'NGER',
-                    msg = paste("2 Ferdig med strikking, ", rnwFil))
+  # raplog::subLogger(author = brukernavn, reshId = reshID,
+  #                   registryName = 'NGER',
+  #                   msg = paste("2 Ferdig med strikking, ", rnwFil))
   utfil <- paste0(dir, '/', substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf')
 
-  raplog::subLogger(author = brukernavn, reshId = reshID,
-                    registryName = 'NGER',
-                    msg = paste("Sender: ", utfil))
+  # raplog::subLogger(author = brukernavn, reshId = reshID,
+  #                   registryName = 'NGER',
+  #                   msg = paste("Sender: ", utfil))
   return(utfil)
 }
 
