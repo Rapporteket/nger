@@ -6,7 +6,7 @@
 \usage{
 tabNGERpasientegenskaper(
   RegData,
-  datoFra = "2019-01-01",
+  datoFra = "2022-01-01",
   datoTil = Sys.Date(),
   tidsenhet = "Kvartal"
 )

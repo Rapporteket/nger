@@ -20,19 +20,18 @@ reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 datoFra <- '2019-01-01'
 datoTil <- Sys.Date()
 sluttDato <- datoTil
-setwd('C:/ResultattjenesteGIT/nger/inst/')
-setwd('../inst/')
+#setwd('C:/ResultattjenesteGIT/nger/inst/')
+setwd('~/nger/inst/')
 data('NGERtulledata', package = 'nger')
 load('A:/NGER/NGER2019-09-03.Rdata')
 RegData <- NGERPreprosess(RegData=RegData) #I App'en preprosesseres data
 
 src <- normalizePath(system.file('NGERSamleRapp.Rnw', package='nger'))
-knitr::knit(src <- normalizePath(system.file('NGERSamleRapp.Rnw', package='nger')), encoding = 'UTF-8')
+knitr::knit(src <- normalizePath(system.file('NGERSamleRapp.Rnw', package='nger')))
 knitr::knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
 tools::texi2pdf('NGERSamleRapp.tex')
 
-knit('NGERmndRapp.Rnw', encoding = 'UTF-8')
-tools:: texi2pdf('NGERmndRapp.tex')
+knitr::knit2pdf('NGERmndRapp.Rnw')
 
 #--Vil undersøke variabelen Opf0Status nærmere
 RegData <- NGERPreprosess(NGERRegDataSQL(datoFra = '2021-01-01', datoTil = '2021-10-31'))
@@ -70,8 +69,6 @@ table(RegData[,c('Opf0Komplikasjoner', 'Opf0metode', 'Opf0Status')], useNA = 'a'
 # <NA>    0    0 1383  781    0
 #NB: Mulig ikke bør bruke Komplikasjoner for å sjekke...
 table(RegData[which(is.na(RegData$Opf0Status)), c('Opf0metode', 'Aar')], useNA = 'a')
-
-
 
 #------------------------------Kjøre App----------------------------
 rm(list=ls())

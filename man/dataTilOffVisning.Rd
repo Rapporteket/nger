@@ -32,7 +32,8 @@ dataTilOffVisning(
 5: LCC11 (laparoskopisk subtotal hysterektomi)
 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
 7: Robotassisert inngrep
-8: Kolpopeksiene}
+8: Kolpopeksiene
+9: Hysterectomier (alle)}
 
 \item{indID}{indikator-id, eks. 'ind1', 'ind2', osv.}
 
