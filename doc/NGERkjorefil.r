@@ -70,8 +70,6 @@ table(RegData[,c('Opf0Komplikasjoner', 'Opf0metode', 'Opf0Status')], useNA = 'a'
 #NB: Mulig ikke bør bruke Komplikasjoner for å sjekke...
 table(RegData[which(is.na(RegData$Opf0Status)), c('Opf0metode', 'Aar')], useNA = 'a')
 
-
-
 #------------------------------Kjøre App----------------------------
 rm(list=ls())
 load(paste0('A:/NGER/NGER2019-09-03.Rdata'))
