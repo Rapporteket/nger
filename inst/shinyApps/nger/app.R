@@ -47,10 +47,10 @@ SkjemaOversikt <- NGERPreprosess(RegData = SkjemaOversikt)
 #-----Definere utvalgsinnhold
 #Definere utvalgsinnhold
 sykehusNavn <- sort(unique(RegData$ShNavn), index.return=T)
-sykehusValg <- unique(RegData$ReshId)[sykehusNavn$ix]
-names(sykehusValg) <- sykehusNavn$x #c('Alle',sykehusNavn$x)
-sykehusValgDump <- c(0,sykehusValg)
-names(sykehusValgDump) <- c('Alle',sykehusNavn$x)
+sykehusValgUts <- unique(RegData$ReshId)[sykehusNavn$ix]
+names(sykehusValgUts) <- sykehusNavn$x #c('Alle',sykehusNavn$x)
+sykehusValg <- c(0,sykehusValgUts)
+names(sykehusValg) <- c('Alle',sykehusNavn$x)
 
 
 enhetsUtvalg <- c("Egen mot resten av landet"=1,
@@ -208,7 +208,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                             conditionalPanel(condition = "input.ark == 'Last ned egne data' ",
                                              selectInput(inputId = 'velgReshReg', label='Velg sykehus',
                                                          selected = 0,
-                                                         choices = sykehusValgDump),
+                                                         choices = sykehusValg),
                                              selectInput(inputId = 'opMetodeRegDump', label='Operasjonstype (kun datadump)',
                                                          choices = opMetode
                                              )
@@ -1430,7 +1430,7 @@ output$lastNed_dataDump <- downloadHandler(
       #------------------ Abonnement ----------------------------------------------
 
       #--------Start modul, abonnement
-      orgs <- as.list(sykehusValg)
+      orgs <- as.list(sykehusValgUts)
 
       ## make a list for report metadata
       reports <- list(
