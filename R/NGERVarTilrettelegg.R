@@ -581,7 +581,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
     indFerdig <- switch(valgtVar,
                         R0ScoreGeneral = which(RegData$R0Status==1),
                         R1ScoreGeneral = which(RegData$RY1Status==1))
-    RegData <- RegData[indFerdig %i% which(RegData[,valgtVar] > -1), ]
+    RegData <- RegData[intersect(indFerdig, which(RegData[,valgtVar] > -1)), ]
     tittel <- paste0('Generell helsetilstand ', c('før operasjon', ', ett år etter')[spm12])
     subtxt <- 'sumskår (høyest er best)'
     gr <- seq(0, 100, 20)
@@ -997,17 +997,16 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData <- RegData[which(RegData$OpMetode %in% c(1,3)), ] #Laparoskopi
     tittel <- 'Laparoskopisk tilgang, teknikk og metode' #  'Teknikk for laparaskopisk tilgang'
     grtxt <- c(paste0('Metode: \n', c('Åpent', 'Veress-nål', 'Visiport [1/1-20]','Annet')),
-               paste0('Tilgang: \n', c('Palmers point[1/3-16]', 'Navlen[1/3-16]', 'Annet[1/2-22]'), ' [1/3-16]')) #LapTilgangsMetode
+               paste0('Tilgang: \n', c('Palmers point[1/3-16]', 'Navlen[1/3-16]', 'Annet[1/2-22]'))) #LapTilgangsMetode
     indMar16tilg <- which(as.Date(RegData$HovedDato)>='2016-03-01')
-    #indJan20met <- which(as.Date(RegData$HovedDato)>='2020-01-01')
     indMet <- which(RegData$LapTilgangsMetode %in% c(0:2,9))
     indTilg <- which(RegData$LapTilgang %in% 1:2,9)
 
-    variable <- c(paste0('met',0:3), paste0('tilg', 1:2))
+    variable <- c(paste0('met',0:3), paste0('tilg', 1:3))
     ind1met <- cbind(indMet, RegData$LapTilgangsMetode[indMet]+1) #Verdi 1,2,3,10...#Alle ja/nei
     ind1met[ind1met[,2]==10,2] <- 4
     ind01tilg <- intersect(indMar16tilg,indTilg)
-    ind1tilg <- cbind(ind01tilg, RegData$LapTilgang[ind01tilg]) #which(RegData[ ,variable] != -1, arr.ind = T) #Alle ja/nei
+    ind1tilg <- cbind(ind01tilg, RegData$LapTilgang[ind01tilg]) #Verdi 1,2,9 #Alle ja/nei
 
     RegData[ ,variable] <- NA
     RegData[ ,variable[1:4]] <- 0

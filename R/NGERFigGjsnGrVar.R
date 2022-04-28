@@ -47,8 +47,9 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
   sortAvtagende <- NGERVarSpes$sortAvtagende
 
   #------- Gjøre utvalg
-  NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra,
-                              datoTil = datoTil, OpMetode = OpMetode, AlvorlighetKompl=AlvorlighetKompl,
+  NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, datoFra = datoFra, datoTil = datoTil,
+                              minald = minald, maxald = maxald,
+                              OpMetode = OpMetode, AlvorlighetKompl=AlvorlighetKompl,
                               Hastegrad=Hastegrad, velgAvd=velgAvd, velgDiag=velgDiag)
   smltxt <- NGERUtvalg$smltxt
   #medSml <- NGERUtvalg$medSml
