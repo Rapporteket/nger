@@ -6,7 +6,7 @@ kodebok_kategorier = klokebok %>% filter(type == 'Listevariabel')
 #"Opf0UtstyrInstrumenter", "Opf0UtstyrNett" og "Opf0UtstyrSutur"
 
 #--------------------------------------SamleRAPPORTER-----------------------------------
-
+TEST
 rm(list=ls())
 library(nger)
 library(knitr)
