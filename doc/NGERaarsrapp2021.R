@@ -36,6 +36,7 @@ for (valgtVar in variable) {
 	outfile <- paste0(valgtVar, '_ford.pdf')
 	NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar, outfile=outfile)
 }
+#NGERFigAndeler(RegData=RegData, preprosess=0, valgtVar='LapTeknikk')
 
 NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Diagnoser', OpMetode = 1,
                outfile='Diagnoser_fordLap.pdf')
@@ -200,8 +201,6 @@ for (OpMetode in c(1,2,4)) {
 #Skal bare ha med Haugesund 701437, Bodø 706220, Trondheim 107644, Ullevål 700399 og Tønsberg 110734.
 NGERDataUtvSh1aar <- NGERData[which(NGERData1aar$ReshId %in% c(701437, 706220, 107644, 700399, 110734)),]
 
-NGERFigGjsnGrVar(RegData=NGERDataUtvSh1aar, valgtVar='R0ScoreGeneral', preprosess = 0,
-                 outfile=paste0('R0ScoreGeneral_UtvalgteShGjsn.pdf'))
 NGERFigGjsnGrVar(RegData=NGERDataUtvSh, valgtVar='R0ScoreGeneral', datoFra=datoFra1Yoppf, datoTil=datoTil1Yoppf,
                  outfile=paste0('R0ScoreGeneralForrige_UtvalgteShGjsn.pdf'))
 NGERFigGjsnGrVar(RegData=NGERDataUtvSh, valgtVar='R1ScoreGeneral', datoFra=datoFra1Yoppf, datoTil=datoTil1Yoppf,
