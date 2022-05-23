@@ -4,7 +4,7 @@
 #' Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus
 #'
 #'  Variable funksjonen benytter: Alder (beregnes), Opf0Komplikasjoner, Opf0Reoperasjon, Opf0KomplBlodning, Opf0KomplUtstyr,
-#'  Opf0KomplInfeksjon, Opf0KomplOrganUtdanning, Opf0AlvorlighetsGrad
+#'  Opf0KomplInfeksjon, Opf0KomplOrganUtdanning, KomplPostopAlvor
 #'  HysKomplikasjoner, LapKomplikasjoner, OpMetode, OpAntibProfylakse, OpASA, OpBMI, Opf0Status.
 #'  Det benyttes også andre variable til utvalg osv.
 #'
@@ -16,7 +16,7 @@
 #'		\item OpAntibProfylakse: Fått antibiotikaprofylakse
 #'		\item OpASA: ASA-grad > II
 #'		\item OpBMI: Pasienter med fedme (BMI>30)
-#'		\item Opf0AlvorlighetsGrad: Alvorlige komplikasjoner (grad 3 og 4)
+#'		\item KomplPostopAlvor: Alvorlige komplikasjoner (grad 3 og 4)
 #'		\item Opf0KomplBlodning: Postop. komplikasjon: Blødning
 #'		\item Opf0KomplUtstyr: Postop. komplikasjon: Problemer med ustyr
 #'		\item Opf0KomplInfeksjon: Postop. komplikasjon: Infeksjon

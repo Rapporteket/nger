@@ -36,7 +36,7 @@ for (valgtVar in variable) {
 	outfile <- paste0(valgtVar, '_ford.pdf')
 	NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar, outfile=outfile)
 }
-#NGERFigAndeler(RegData=RegData, preprosess=0, valgtVar='LapTeknikk')
+#NGERFigAndeler(RegData=RegData, preprosess=0, valgtVar='KomplAlvorligPostopType')
 
 NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Diagnoser', OpMetode = 1,
                outfile='Diagnoser_fordLap.pdf')
@@ -72,6 +72,9 @@ NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='KomplPostopType',
 
 NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='KomplPostopType', OpMetode = 4,
                outfile='KomplPostopType_fordTotLapHys.pdf')
+#Postop, alvorlige og middels alvorlige komplikasjoner:
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='KomplAlvorPostopType', OpMetode = 4,
+               outfile='KomplAlvorPostopType_fordTotLapHys.pdf')
 
 #Fordelingsfigurer: alder  og BMI på Laparoskopi, og på Hysteroskopi og på TLH (total laparaskopisk hysrektomi).
 
@@ -107,7 +110,7 @@ NGERFigAndelTid(RegData=NGERData, valgtVar='OpDagkirurgi', preprosess = 0,
 
 #--Laparoskopi
 #Fjernet 2021: 'KomplPostop',
-for (valgtVar in c('KomplIntra', 'Opf0AlvorlighetsGrad1', 'Opf0AlvorlighetsGrad',
+for (valgtVar in c('KomplIntra', 'Opf0AlvorlighetsGrad1', 'KomplPostopAlvor',
                    'Opf0Reoperasjon','LapKonvertert')) {
   outfile <- paste0(valgtVar, '_', 'LapAar.pdf')
   NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar=valgtVar,
@@ -119,7 +122,7 @@ NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf0AlvorlighetsGrad
 
 #--Hysteroskopi
 #Fjernet 2021: 'KomplPostop',
-for (valgtVar in c('KomplIntra','Opf0AlvorlighetsGrad1', 'Opf0AlvorlighetsGrad',
+for (valgtVar in c('KomplIntra','Opf0AlvorlighetsGrad1', 'KomplPostopAlvor',
                    'Opf0Reoperasjon')) {
   outfile <- paste0(valgtVar, '_', 'HystAar.pdf')
   NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar=valgtVar,
@@ -155,7 +158,7 @@ for (valgtVar in variable) {
 
 #Laparoskopi
 #Fjernet 2021: 'Alder', 'KomplPostop', 'OpBMI',
-for (valgtVar in c( 'KomplIntra','Opf0AlvorlighetsGrad1', 'Opf0AlvorlighetsGrad',
+for (valgtVar in c( 'KomplIntra','Opf0AlvorlighetsGrad1', 'KomplPostopAlvor',
                    'Opf0Reoperasjon','LapKonvertert', 'LapKonvertertUventet', 'OpDagkirurgi')) {
   outfile <- paste0(valgtVar, '_LapShus.pdf')
   NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar,
@@ -165,7 +168,7 @@ for (valgtVar in c( 'KomplIntra','Opf0AlvorlighetsGrad1', 'Opf0AlvorlighetsGrad'
 
 #--Hysteroskopi
 #Fjernet 2021: 'Alder', 'OpBMI',
-for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad1', 'Opf0AlvorlighetsGrad',
+for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad1', 'KomplPostopAlvor',
                    'Opf0Reoperasjon')) {
   outfile <- paste0(valgtVar, '_HystShus.pdf')
   NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar,
@@ -295,7 +298,7 @@ write.table(tab, file="TabPasienkarakteristika.csv", row.names=F, sep=';')
 
 
 #--------------------Data til SKDE/Resultaportalen------------------
-#KomplIntra, KomplPostop, Opf0AlvorlighetsGrad
+#KomplIntra, KomplPostop, KomplPostopAlvor
 #OpMetode  1: Laparoskopi #2: Hysteroskopi, 2019: 5954 3146
 library(nger)
 RegData <- NGERPreprosess(RegData = NGERRegDataSQL(datoFra = '2016-01-01',
@@ -323,7 +326,7 @@ dataTilSKDE <- dataTilOffVisning(RegData=RegData, valgtVar = 'KomplPostopAlvor',
                                  ResPort=0, lastNedFil=1,
                                  indID = 'nger_kompl_postop_lap', filUt='KomplPostopLap')
 
-dataTilSKDE <- dataTilOffVisning(RegData=RegData, valgtVar = 'KomplPostopAlvor', #'Opf0AlvorlighetsGrad', #
+dataTilSKDE <- dataTilOffVisning(RegData=RegData, valgtVar = 'KomplPostopAlvor',
                                  OpMetode = 2,
                                  ResPort=0, lastNedFil=1,
                                  indID = 'nger_kompl_postop_hys', filUt='KomplPostopHys')

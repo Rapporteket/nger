@@ -374,7 +374,9 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
                                          'Hjelpeinnstikk, antall' = 'LapNumHjelpeinnstikk',
                                          'Hysteroskopi intrapoerative komplikasjoner' = 'HysKomplikasjoner',
                                          'Infeksjoner, type' = 'Opf0KomplInfeksjon',
+                                         'Infeksjoner, type (alvorlig/middels)' = 'Opf0KomplAlvorInfeksjon',
                                          'Komplikasjoner, postoperativt' = 'KomplPostopType',
+                                         'Komplikasjoner, postop. alvorlig/middels' = 'KomplAlvorPostopType',
                                          'Laparaskopisk ekstrautstyr' = 'LapEkstrautstyr',
                                          'Laparaskopisk tilgang, teknikk og metode' = 'LapTeknikk',
                                          'Laparoskopiske intraabdominale komplikasjoner' = 'LapIntraabdominell',
@@ -478,7 +480,7 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
            selectInput(
              inputId = "valgtVarAndel", label="Velg variabel",
              choices = c('Kval.ind: Komplikasjoner under operasjon' = 'KomplIntra',
-                         'Kval.ind: Postop. komplikasjon: moderate/alvorlige (grad 2-4)' = 'Opf0AlvorlighetsGrad',
+                         'Kval.ind: Postop. komplikasjon: moderate/alvorlige (grad 2-4)' = 'KomplPostopAlvor',
                          'Kval.ind: TSS2: Positiv oppfatning om gyn. avd.' = 'Tss2Generelt',
                          'Alder over 70 år' = 'Alder',
                          'Antibiotika' = 'OpAntibProfylakse',
@@ -492,9 +494,10 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
                          'Operasjonstid (minutter)' = 'OpTid',
                          'Pasienter med høyere utdanning' = 'Utdanning',
                          'Postop. komplikasjon: Alle' = 'KomplPostop',
+                         'Postop. komplikasjon: Alvorlig og middels' = 'KomplPostopAlvor',
                          'Postop. komplikasjon: Blødning' = 'Opf0KomplBlodning',
-                         #'Postop. komplikasjon: Problemer med ustyr' = 'Opf0KomplUtstyr',
                          'Postop. komplikasjon: Infeksjon' = 'Opf0KomplInfeksjon',
+                         'Postop. komplikasjon: Infeksjon, alvorlig/middels' = 'Opf0KomplAlvorInfeksjon',
                          'Postop. komplikasjon: Organskade' = 'Opf0KomplOrgan',
                          'Postop. komplikasjon: Reoperasjon' = 'Opf0Reoperasjon',
                          'Postop. komplikasjon: lav alvorlighet (grad 1)' = 'Opf0AlvorlighetsGrad1',
@@ -674,12 +677,12 @@ tabPanel(p("Registeradministrasjon", title='Registeradministrasjonens side for r
          tabsetPanel(
            #tabPanel(
              # sidebarPanel(
-             #   h4('Nedlasting av data til Resultatportalen:'), MÅ EVT. ENDRES TIL SYKEHUSVISER..
+             #   h4('Nedlasting av data til Resultatportalen:'), MÅ ENDRES TIL SYKEHUSVISER.. SJEKK INDIKATORER
              #
              #   selectInput(inputId = "valgtVarRes", label="Velg variabel",
              #               choices = c('Komplikasjoner under operasjon' = 'KomplIntra',
              #                           'Komplikasjoner, postoperativt' = 'KomplPostop',
-             #                           'Alvorlighetsgrad, postop.kompl.' = 'Opf0AlvorlighetsGrad',
+             #                           'Alvorlige, postop.kompl.' = 'KomplPostopAlvor',
              #                           'Konvertert, hys-lap' = 'HysKonvertert',
              #                           'Konvertert, lap-lap, ikke forventet' = 'LapKonvertert',
              #                           'TSS2-generelt, positiv oppfatning avd.' = 'Tss2Generelt',

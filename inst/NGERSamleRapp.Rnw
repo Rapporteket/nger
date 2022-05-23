@@ -529,10 +529,10 @@ dum <- NGERFigAndelerGrVar(RegData=RegData, preprosess=0,datoFra=datoFra, datoTi
                            reshID=reshID, outfile='KomplPostHysShus.pdf', OpMetode=2)
 
 
-dum <- NGERFigAndelerGrVar(RegData=RegData,preprosess=0, datoFra=datoFra, datoTil=datoTil, valgtVar='Opf0AlvorlighetsGrad',
+dum <- NGERFigAndelerGrVar(RegData=RegData,preprosess=0, datoFra=datoFra, datoTil=datoTil, valgtVar='KomplPostopAlvor',
                            reshID=reshID, outfile='Opf0AlvorligLapShus.pdf', OpMetode=1)
 
-dum <- NGERFigAndelerGrVar(RegData=RegData, preprosess=0,datoFra=datoFra, datoTil=datoTil, valgtVar='Opf0AlvorlighetsGrad',
+dum <- NGERFigAndelerGrVar(RegData=RegData, preprosess=0,datoFra=datoFra, datoTil=datoTil, valgtVar='KomplPostopAlvor',
                            reshID=reshID, outfile='Opf0AlvorligHysShus.pdf', OpMetode=2)
 
 @
