@@ -1,6 +1,7 @@
 
 #--------------------------------Data og parametrekobling--------------------------
 # Inndata til funksjon:
+library(nger)
 datoFra <- '2016-01-01'
 datoFra1aar <- '2021-01-01'
 datoTil <- '2021-12-31'
@@ -10,7 +11,7 @@ datoTil1Yoppf <- '2020-12-31'
 NGERData <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil))
 NGERData1aar <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra1aar, datoTil = datoTil))
 
-setwd('/home/aarsrapp/nger' ) #"P:/Registerinfo og historie/NGER/aarsrapp/")
+setwd('/home/rstudio/speil/aarsrapp/NGER' ) #"P:/Registerinfo og historie/NGER/aarsrapp/")
 
 #------------------------------ Fordelingsfigurer --------------------------
 # 'BMI-kategori' = 'OpBMI',
@@ -156,6 +157,7 @@ for (valgtVar in variable) {
   NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar,  outfile=outfile)
 }
 
+#valgtVar <- 'OpDagkirurgi'
 #Laparoskopi
 #Fjernet 2021: 'Alder', 'KomplPostop', 'OpBMI',
 for (valgtVar in c( 'KomplIntra','Opf0AlvorlighetsGrad1', 'KomplPostopAlvor',
@@ -301,40 +303,45 @@ write.table(tab, file="TabPasienkarakteristika.csv", row.names=F, sep=';')
 #KomplIntra, KomplPostop, KomplPostopAlvor
 #OpMetode  1: Laparoskopi #2: Hysteroskopi, 2019: 5954 3146
 library(nger)
+setwd('/home/rstudio/speil/aarsrapp/NGER' )
 RegData <- NGERPreprosess(RegData = NGERRegDataSQL(datoFra = '2016-01-01',
-                                                   datoTil = '2020-12-31'))
+                                                   datoTil = '2021-12-31'))
 
-# dataTilOffVisning(RegData = RegData, valgtVar, datoFra = '2014-01-01', aar=0,
-#                               OpMetode=0,
-#                               indID = 'indDummy', ResPort=0, lastNedFil=1, filUt='dummy')
-#Forekomsten av komplikasjoner ved  inngrep.
-#Lap Hys
-dataTilSKDE <- dataTilOffVisning(RegData=RegData, valgtVar = 'KomplIntra',
+dataTilSKDE <- dataTilOffVisning(RegData=RegData,
+                                 valgtVar = 'KomplIntra',
                                  OpMetode = 1,
-                                 ResPort=0, lastNedFil=1,
+                                 lastNedFil=1,
                                  indID = 'nger_kompl_intra_lap', filUt='KomplIntraLap')
 
 dataTilSKDE <- dataTilOffVisning(RegData=RegData, valgtVar = 'KomplIntra',
                                  OpMetode = 2,
-                                 ResPort=0, lastNedFil=1,
+                                 lastNedFil=1,
                                  indID = 'nger_kompl_intra_hys', filUt='KomplIntraHys')
 
 #Forekomsten av middels og alvorlige komplikasjoner etter  inngrep.
 #Lap Hys
 dataTilSKDE <- dataTilOffVisning(RegData=RegData, valgtVar = 'KomplPostopAlvor',
                                  OpMetode = 1,
-                                 ResPort=0, lastNedFil=1,
+                                 lastNedFil=1,
                                  indID = 'nger_kompl_postop_lap', filUt='KomplPostopLap')
 
 dataTilSKDE <- dataTilOffVisning(RegData=RegData, valgtVar = 'KomplPostopAlvor',
                                  OpMetode = 2,
-                                 ResPort=0, lastNedFil=1,
+                                 lastNedFil=1,
                                  indID = 'nger_kompl_postop_hys', filUt='KomplPostopHys')
 
-#Andel pasienter som har positiv eller svært positiv oppfatning av gynekologisk avdeling.
-dataTilSKDE <- dataTilOffVisning(RegData=RegData, valgtVar = 'Tss2Generelt',
-                                 #aar=2016:2019,
-                                 ResPort=0, lastNedFil=1,
-                                 indID = 'nger_pasient_tilfredshet', filUt='Tss2Generelt')
+#Andel pasienter som har positiv eller svært positiv oppfatning av gynekologisk avdeling - UTGÅR!
+# dataTilSKDE <- dataTilOffVisning(RegData=RegData, valgtVar = 'Tss2Generelt',
+#                                  lastNedFil=1,
+#                                  indID = 'nger_pasient_tilfredshet', filUt='Tss2Generelt')
+
+#Generell pasienttilfredshet
+dataTilSKDE <- dataTilOffVisning(RegData=RegData,
+                                 valgtVar = 'Tss2Sumskaar',
+                                 aggData = 1,
+                                 lastNedFil=1,
+                                 indID = 'nger_TSS2sumskaar',
+                                 filUt='Tss2Sumskaar')
+
 
 tapply(dataTilSKDE$var, dataTilSKDE$year, FUN='mean')*100
