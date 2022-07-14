@@ -162,14 +162,14 @@ abonnementNGER <- function(rnwFil, brukernavn='ngerBrukernavn', reshID=0,
 #' @export
 
 dataTilOffVisning <- function(RegData = RegData, valgtVar, aggData=0,
-                              datoFra = '2014-01-01', datoTil = Sys.Date(), #OpMetode=0,
+                              datoFra = '2014-01-01', datoTil = Sys.Date(), OpMetode=0,
                               indID = 'indDummy', lastNedFil=0, filUt='dummy'){
 
 
   filUt <- paste0('NGER', ifelse(filUt=='dummy',  valgtVar, filUt),'.csv')
   figurtype <- ifelse(valgtVar=='Tss2Sumskaar', 'gjsnGrVar', 'andelGrVar')
   NGERVarSpes <- NGERVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = figurtype)
-  RegData <- NGERUtvalgEnh(RegData=NGERVarSpes$RegData, #OpMetode = OpMetode,
+  RegData <- NGERUtvalgEnh(RegData=NGERVarSpes$RegData, OpMetode = OpMetode,
                            datoFra = datoFra, datoTil = datoTil,
                            )$RegData
 
@@ -186,10 +186,11 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, aggData=0,
       #aggData <- tapply(RegData$Variabel, INDEX = RegData[,c('Aar', 'ReshId')], FUN = mean)
       #aggData <- aggregate(RegData$Variabel, by = list(RegData$Aar, RegData$ReshId), FUN = mean)
       RegDataUt <- RegData %>%
-        group_by(ReshId, Aar) %>%
+        dplyr::group_by(ReshId, Aar) %>%
         dplyr::summarise(
           denominator = sum(!is.na(Variabel)),
           var = mean(Variabel, na.rm=T))
+      RegDataUt <- RegDataUt[-which(RegDataUt$denominator == 0), ] #Fjerner tomme
       RegDataUt <- dplyr::rename(RegDataUt, year = Aar)
     } }
 

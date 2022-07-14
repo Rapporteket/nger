@@ -299,7 +299,7 @@ write.table(tab, file="TabPasienkarakteristika.csv", row.names=F, sep=';')
 
 
 
-#--------------------Data til SKDE/Resultaportalen------------------
+#--------------------Data til SKDE interaktive nettsider------------------
 #KomplIntra, KomplPostop, KomplPostopAlvor
 #OpMetode  1: Laparoskopi #2: Hysteroskopi, 2019: 5954 3146
 library(nger)
@@ -340,7 +340,7 @@ dataTilSKDE <- dataTilOffVisning(RegData=RegData,
                                  valgtVar = 'Tss2Sumskaar',
                                  aggData = 1,
                                  lastNedFil=1,
-                                 indID = 'nger_TSS2sumskaar',
+                                 indID = 'nger_pasient_tilfredshet',
                                  filUt='Tss2Sumskaar')
 
 
