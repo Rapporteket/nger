@@ -140,24 +140,27 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
     #postop.kompl. lap og - hys
     tittel <- 'Kvalitetsindikatorer, prosessmål'
     grNavn <- c('Postop. komplikasjon: \n Reoperasjon',
-                'Postop. komp., middels og alvorlig ved \n laparoskopi', #NY
-                'Postop. komp., middels og alvorlig ved \n hysteroskopi', #NY
+                'Postop. komp., middels/alvorlig, \n laparoskopi', #NY
+                'Postop. komp., middels/alvorlig, \n hysteroskopi', #NY
                'Intraop. komplikasjon ved \n laparoskopi',
                'Intraop. komplikasjon ved \n hysteroskopi',
                'Konvertert lap. til laparotomi \n ', #"LapKonvertert":
                'Konvertert hysteroskopi til \n laparaskopi/-tomi') #"HysKonvertert":
                # 'Ikke utført oppfølging \n etter 4 uker')
                # 'Ikke ferdistilt registrering \n innen 6 uker')
-    variable <- c('PostOpKomplReop', 'LapKomplikasjoner', 'HysKomplikasjoner',
+    variable <- c('PostOpKomplReop', 'PostKomplLap', 'PostKomplHys', 'LapKomplikasjoner', 'HysKomplikasjoner',
                   'LapKonvertert', 'HysKonvertert') #, 'Opf0') #, 'Innen6uker')
 
     #Postop.kompl. laparoskopi
-    RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
-    RegData$Variabel <- RegData$Opf0Komplikasjoner
-    #Alle lap: [OpMetode==1 | OpMetode == 3]
-    #Må legge inn NA på de som ikke har laparoskopi, så 0 og 1 på de som har
-    #Postop.kompl. laparoskopi
-    OpMetode==2
+    #RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
+    indLap <- which(RegData$OpMetode==1 | RegData$OpMetode == 3)
+    RegData$PostKomplLap <- NA
+    RegData$PostKomplLap[indLap] <- RegData$Opf0Komplikasjoner[indLap]
+
+    #Postop.kompl. hysteroskopi
+    indHys <- which(RegData$OpMetode==2 | RegData$OpMetode == 3)
+    RegData$PostKomplHys <- NA
+    RegData$PostKomplHys[indHys] <- RegData$Opf0Komplikasjoner[indHys]
 
     #Reoperasjon som følge av komplikasjon
     #Kode 0: Nei, 1:Ja
@@ -248,7 +251,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
     FigTypUt <- rapFigurer::figtype(outfile, fargepalett=NGERUtvalg$fargepalett)
     #Tilpasse marger for ? kunne skrive utvalgsteksten
     NutvTxt <- length(utvalgTxt)
-    vmarg <- max(0, strwidth(grtxt, units='figure', cex=cexgr)*0.65)
+    vmarg <- max(0, strwidth(grtxt, units='figure', cex=cexgr)*0.7)
     par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1)))	#Har alltid datoutvalg med
 
     farger <- FigTypUt$farger
