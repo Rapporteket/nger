@@ -62,7 +62,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
   RegData <- NGERUtvalg$RegData
 
 
-    KImaal <- switch(valgtVar, #dummym?l!!
+    KImaal <- switch(valgtVar,
                    RAND0 = 80,
                    TSS0 = 80,
                    kvalInd = 1:4)
@@ -104,15 +104,6 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
     xakseTxt <- 'Gjennomsnittlig skår (høyest er best)'
   }
 
-  # R1ScorePhys,
-  # -- R1ScoreRoleLmtPhy,
-  # R1ScoreRoleLmtEmo,
-  # R1ScoreGeneral,
-  # R1ScoreEnergy,
-  # R1ScoreEmo,
-  # R1ScoreSosial,
-  # --  R1ScorePain,
-  # RY1Status,
 
   if (valgtVar == 'TSS0') {
 
@@ -145,8 +136,12 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
     #	Intraoperative kompl.: HysKomplikasjoner/LapKomplikasjoner er NA hvis ikke hys/lap el. begge er utf.
     #	Oppfølging etter 4 uker, kun de som faktisk har fått oppfølging:
     #               Ønsker å heller benytte RegData$Variabel[RegData$Opf0Metode %in% 1:2] <- 1
+
+    #postop.kompl. lap og - hys
     tittel <- 'Kvalitetsindikatorer, prosessmål'
     grNavn <- c('Postop. komplikasjon: \n Reoperasjon',
+                'Postop. komp., middels og alvorlig ved \n laparoskopi', #NY
+                'Postop. komp., middels og alvorlig ved \n hysteroskopi', #NY
                'Intraop. komplikasjon ved \n laparoskopi',
                'Intraop. komplikasjon ved \n hysteroskopi',
                'Konvertert lap. til laparotomi \n ', #"LapKonvertert":
@@ -156,10 +151,13 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
     variable <- c('PostOpKomplReop', 'LapKomplikasjoner', 'HysKomplikasjoner',
                   'LapKonvertert', 'HysKonvertert') #, 'Opf0') #, 'Innen6uker')
 
-    # RegData$Diff <- as.numeric(as.Date(RegData$Leveringsdato) - as.Date(RegData$InnDato)) #difftime(RegData$InnDato, RegData$Leveringsdato) #
-    # RegData$Innen6uker <- NA
-    # RegData$Innen6uker[which(RegData$OpStatus==1) %i% which(RegData$Diff > -1)] <- 0
-    # RegData$Innen6uker[RegData$Diff > 6*7] <- 1
+    #Postop.kompl. laparoskopi
+    RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
+    RegData$Variabel <- RegData$Opf0Komplikasjoner
+    #Alle lap: [OpMetode==1 | OpMetode == 3]
+    #Må legge inn NA på de som ikke har laparoskopi, så 0 og 1 på de som har
+    #Postop.kompl. laparoskopi
+    OpMetode==2
 
     #Reoperasjon som følge av komplikasjon
     #Kode 0: Nei, 1:Ja

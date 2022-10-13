@@ -111,24 +111,22 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                br(),
 
                sidebarPanel(width = 3,
-                           h3('Nedlastbare dokumenter med samling av resultater'),
                             h3("Månedsrapport"), #),
+                            h5('(Nedlastbart dokument med samling av resultater)'),
                             downloadButton(outputId = 'mndRapp.pdf', label='Last ned MÅNEDSRAPPORT', class = "butt"),
                             br(),
                             br(),
-               h3('Samledokument'),
-               helpText('Samledokumentet er ei samling av utvalgte tabeller og figurer basert på
-                        operasjoner i valgt tidsrom.'),
-               dateRangeInput(inputId = 'datovalgSamleDok', start = startDato, end = Sys.Date(),
-                            label = "Tidsperiode", separator="t.o.m.", language="nb"),
+               # h3('Samledokument'),
+               # helpText('Samledokumentet er ei samling av utvalgte tabeller og figurer basert på
+               #          operasjoner i valgt tidsrom.'),
+               # dateRangeInput(inputId = 'datovalgSamleDok', start = startDato, end = Sys.Date(),
+               #              label = "Tidsperiode", separator="t.o.m.", language="nb"),
+               #
+               #  downloadButton(outputId = 'samleDok.pdf', label='Last ned samledokument', class = "butt"),
 
-                downloadButton(outputId = 'samleDok.pdf', label='Last ned samledokument', class = "butt"),
-                             br(),
-               br(),
-               br(),
-               helpText('Det tar noen sekunder å generere en samlerapport/månedsrapport.
+               helpText('Det tar noen sekunder å generere en månedsrapport.
                         I mellomtida får du ikke sett på andre resultater'),
-               helpText(tags$b('Ønsker du månedsrapporten eller samlerapporten tilsendt regelmessig på e-post,
+               helpText(tags$b('Ønsker du månedsrapporten tilsendt regelmessig på e-post,
                         kan du bestille dette under fanen "Abonnement."'))
                ),
                mainPanel(width = 8,
@@ -211,6 +209,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                                          choices = sykehusValg),
                                              selectInput(inputId = 'opMetodeRegDump', label='Operasjonstype (kun datadump)',
                                                          choices = opMetode
+                                             ),
+                                             selectInput(inputId = 'diagnoseRegDump', label='Diagnose (kun datadump)',
+                                                         choices = diag
                                              )
                             )
                ),
@@ -805,15 +806,15 @@ server <- function(input, output, session) {
                                   reshID = reshID)
             })
 
-      output$samleDok.pdf <- downloadHandler(
-        filename = function(){ downloadFilename('Samledokument')},
-        content = function(file){
-          henteSamlerapporter(file, rnwFil="NGERSamleRapp.Rnw",
-                      reshID = reshID,
-                      datoFra = input$datovalgSamleDok[1],
-                      datoTil = input$datovalgSamleDok[2])
-        }
-      )
+      # output$samleDok.pdf <- downloadHandler(
+      #   filename = function(){ downloadFilename('Samledokument')},
+      #   content = function(file){
+      #     henteSamlerapporter(file, rnwFil="NGERSamleRapp.Rnw",
+      #                 reshID = reshID,
+      #                 datoFra = input$datovalgSamleDok[1],
+      #                 datoTil = input$datovalgSamleDok[2])
+      #   }
+      # )
 
      output$tabEgneReg <- renderTable({
        xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg,
@@ -910,9 +911,10 @@ server <- function(input, output, session) {
       RegDataAlle <- NGERPreprosess(RegDataAlle)
       observe({
         DataDump <- NGERUtvalgEnh(RegData = RegDataAlle,
-                                                datoFra = input$datovalgReg[1],
-                                                datoTil = input$datovalgReg[2],
-                                                OpMetode = as.numeric(input$opMetodeRegDump))$RegData
+                                   datoFra = input$datovalgReg[1],
+                                   datoTil = input$datovalgReg[2],
+                                   OpMetode = as.numeric(input$opMetodeRegDump),
+                                  velgDiag = as.numeric(input$diagnoseRegDump))$RegData
          if (rolle =='SC') {
           valgtResh <- as.numeric(input$velgReshReg)
           ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
@@ -1419,15 +1421,14 @@ output$lastNed_dataDump <- downloadHandler(
           fun = "abonnementNGER", #Lag egen funksjon for utsending
           paramNames = c('rnwFil', 'reshID', 'brukernavn'), #"valgtRHF"),
           paramValues = c('NGERmndRapp.Rnw', reshID, brukernavn) #'Alle')
-        ),
-        SamleRapp = list(
-          synopsis = "NGER/Rapporteket: Samlerapport, abonnement",
-          fun = "abonnementNGER",
-          paramNames = c('rnwFil','reshID', 'brukernavn'),
-          paramValues = c('NGERSamleRapp.Rnw', reshID, brukernavn)
         )
+        # SamleRapp = list(
+        #   synopsis = "NGER/Rapporteket: Samlerapport, abonnement",
+        #   fun = "abonnementNGER",
+        #   paramNames = c('rnwFil','reshID', 'brukernavn'),
+        #   paramValues = c('NGERSamleRapp.Rnw', reshID, brukernavn)
+        # )
       )
-      #c("Månedsrapport", "Samlerapport")
       #test <- nger::abonnementNGER(rnwFil="NGERmndRapp.Rnw", brukernavn='tullebukk', reshID=105460)
       autoReportServer(
         id = "ngerAbb", registryName = "nger", type = "subscription",

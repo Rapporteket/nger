@@ -190,8 +190,19 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, aggData=0,
         dplyr::summarise(
           denominator = sum(!is.na(Variabel)),
           var = mean(Variabel, na.rm=T))
+
+      RegDataUtLand <- RegData %>%
+        dplyr::group_by(Aar) %>%
+        dplyr::summarise(
+          denominator = sum(!is.na(Variabel)),
+          var = mean(Variabel, na.rm=T),
+          ReshId = '1')
+
+      RegDataUt <- rbind(RegDataUt, RegDataUtLand)
+
       RegDataUt <- RegDataUt[-which(RegDataUt$denominator == 0), ] #Fjerner tomme
       RegDataUt <- dplyr::rename(RegDataUt, year = Aar)
+
     } }
 
     # nytt navn = gammelt navn
@@ -225,6 +236,7 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, aggData=0,
                 '111180' = 	'994958682',		#Lillehammer	HELSE NORD-TRØNDELAG HF SYKEHUSET LEVANGER - REHABILITERING	Levanger
                 '700789' = 	'974795515',		#Mo i Rana	HELGELANDSSYKEHUSET HF MO I RANA - SOMATIKK	Mo i Rana
                 '103188' = 	'974745569',		#Molde	HELSE MØRE OG ROMSDAL HF MOLDE SJUKEHUS - SOMATIKK	Molde
+                '108048' = 	'974633752',		#Kalnes Østfold	SYKEHUSET ØSTFOLD
                 '105874' = 	'974753898',		#Namsos	HELSE NORD-TRØNDELAG HF SOMATIKK - NAMSOS	Namsos
                 '706130' = 	'974795396',		#Narvik	UNIVERSITETSSYKEHUSET NORD-NORGE HF NARVIK - SOMATIKK	Narvik
                 '103575' = 	'974631407',		#Ringerike	VESTRE VIKEN HF RINGERIKE SYKESHUS - SOMATIKK	Ringerike
@@ -240,8 +252,8 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, aggData=0,
                 '102583' = 	'974747545',		#Volda	HELSE MØRE OG ROMSDAL HF VOLDA SJUKEHUS - SOMATIKK	Volda
                 '4215139' = '973129856',    #Volvat Majorstuen
                 '106026' = 	'974743272',		#Voss	HELSE BERGEN HF VOSS SJUKEHUS	Voss
-                '108048' = 	'974633698',		#Østfold	SYKEHUSET ØSTFOLD HF MOSS - SOMATIKK	Moss
-                '102582' = 	'974747138'		#Ålesund	HELSE MØRE OG ROMSDAL HF ÅLESUND SJUKEHUS - SOMATIKK	Ålesund
+                '102582' = 	'974747138',		#Ålesund	HELSE MØRE OG ROMSDAL HF ÅLESUND SJUKEHUS - SOMATIKK	Ålesund
+                    '1' = '1'              #Hele landet
       )
 
     RegDataUt$orgnr <- as.character(nyID[as.character(RegDataUt$ReshId)])

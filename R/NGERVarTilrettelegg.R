@@ -673,7 +673,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     #Alle variable må besvares for å kunne ferdigstille skjema.
     RegData <- RegData[which(RegData$Tss2Status == 1) %i% which(RegData$Tss2Type %in% 1:3), ] #3:eprom fra 2021
     #if (figurtype=='gjsnGrVar'){
-    #RegData$Test <- (RegData$Tss2Score-1)/6 OK
+    RegData$Test <- (RegData$Tss2Score-1)/6 #OK
     RegData$Variabel <- (rowSums(RegData[ ,c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
                                           'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')])-1)/6 #}
     gr <- c(-1:3)
