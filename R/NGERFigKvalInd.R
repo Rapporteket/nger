@@ -152,15 +152,17 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
                   'LapKonvertert', 'HysKonvertert') #, 'Opf0') #, 'Innen6uker')
 
     #Postop.kompl. laparoskopi
-    #RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
+    #NB: Det er et bevisst valg at vi også har med OpMetode=3
     indLap <- which(RegData$OpMetode==1 | RegData$OpMetode == 3)
     RegData$PostKomplLap <- NA
-    RegData$PostKomplLap[indLap] <- RegData$Opf0Komplikasjoner[indLap]
+    RegData$PostKomplLap[indLap] <- 0
+    RegData$PostKomplLap[which(RegData$Opf0AlvorlighetsGrad[indLap] %in% 2:4)] <- 1
 
     #Postop.kompl. hysteroskopi
     indHys <- which(RegData$OpMetode==2 | RegData$OpMetode == 3)
     RegData$PostKomplHys <- NA
-    RegData$PostKomplHys[indHys] <- RegData$Opf0Komplikasjoner[indHys]
+    RegData$PostKomplHys[indHys] <- 0
+    RegData$PostKomplHys[which(RegData$Opf0AlvorlighetsGrad[indHys] %in% 2:4)] <- 1
 
     #Reoperasjon som følge av komplikasjon
     #Kode 0: Nei, 1:Ja
@@ -251,7 +253,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
     FigTypUt <- rapFigurer::figtype(outfile, fargepalett=NGERUtvalg$fargepalett)
     #Tilpasse marger for ? kunne skrive utvalgsteksten
     NutvTxt <- length(utvalgTxt)
-    vmarg <- max(0, strwidth(grtxt, units='figure', cex=cexgr)*0.7)
+    vmarg <- max(0, strwidth(grtxt, units='figure', cex=cexgr)*0.75)
     par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1)))	#Har alltid datoutvalg med
 
     farger <- FigTypUt$farger

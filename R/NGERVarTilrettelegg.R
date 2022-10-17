@@ -101,18 +101,25 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
     # Noen få Hys-skjema ikke ferdigstilt ved begge (OpMetode=3). Lar disse stå.
     # Bare ferdigstilte skjema ellers, så filtrerer ikke på ferdigstilte.
     #Kode 0: Nei, 1:Ja, tomme
-    indVar <- which((RegData$LapKomplikasjoner==1) | (RegData$HysKomplikasjoner==1))
-    RegData$Variabel[indVar] <- 1
     varTxt <- 'komplikasjoner'
     tittel <- 'Komplikasjoner, intraoperativt'
-    sortAvtagende <- F
+    if (!(OpMetode %in% 1:2)) {OpMetode=0} #
+    indFerdig <- switch(valgtVar,
+                        R0ScoreGeneral = which(RegData$R0Status==1),
+                        '1' = which(RegData$RY1Status==1))
+    indVar <- switch(as.character(OpMetode),
+                     '0' = which((RegData$LapKomplikasjoner==1) | (RegData$HysKomplikasjoner==1)),
+                     '1' = which(RegData$LapKomplikasjoner==1) ,
+                     '2' = which(RegData$HysKomplikasjoner==1))
+    RegData$Variabel[indVar] <- 1
     if (OpMetode %in% 1:2) {KvalIndGrenser <- c(0,2,4,100)}
+    sortAvtagende <- F
   }
 
   if (valgtVar=='KomplPostop') { #andelGrVar, andelTid
     # Andel postoperative komplikasjoner
     #Kode 0: Nei, 1:Ja, tomme
-    RegData <- RegData[intersect(which(RegData$Opf0Komplikasjoner %in% 0:1), which(RegData$Opf0Status == 1)), ]
+    RegData <- RegData[which(RegData$Opf0Komplikasjoner %in% 0:1), ]
     RegData$Variabel <- RegData$Opf0Komplikasjoner
 	varTxt <- 'komplikasjoner'
     tittel <- 'Komplikasjoner, postoperativt'

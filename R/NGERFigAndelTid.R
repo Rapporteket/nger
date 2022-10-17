@@ -47,7 +47,8 @@ NGERFigAndelTid <- function(RegData=0, valgtVar, datoFra='2015-01-01', datoTil=S
     RegData <- NGERPreprosess(RegData=RegData)
   }
 
-  NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, grVar='', figurtype='andelTid')
+  NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, grVar='',
+                                     OpMetode=OpMetode, figurtype='andelTid')
   RegData <- NGERVarSpes$RegData
   flerevar <- NGERVarSpes$flerevar
   subtxt <- NGERVarSpes$subtxt
