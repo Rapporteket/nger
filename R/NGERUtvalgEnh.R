@@ -7,7 +7,7 @@
 #' @param maxald Alder, til og med (Standardverdi: 130)
 #' @param OpMetode  1: Laparoskopi
 #'                 2: Hysteroskopi
-#'                 3: Begge
+#'                 3: Begge # 21.okt. 2022: Fjernes som eget valg. Blir med i både laparaskopi og hysteroskopi
 #'                 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
 #'                 5: LCC11 (laparoskopisk subtotal hysterektomi)
 #'                 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
@@ -80,7 +80,7 @@ NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', f
   #Operasjonstype:
   indMCE <- if (OpMetode %in% c(1:3)){which(RegData$OpMetode %in% c(OpMetode,3))
     } else {indMCE <- 1:Ninn}
-  if (OpMetode == 7) {indMCE <- which(RegData$LapRobotKirurgi == 1)} #ROBOT_KIRURGI==TRUE
+  #if (OpMetode == 7) {indMCE <- which(RegData$LapRobotKirurgi == 1)} #ROBOT_KIRURGI==TRUE
   if (OpMetode %in% c(4:6,8,9)) {
       ProsLap <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3')
       indMCE <- switch(as.character(OpMetode),
@@ -89,6 +89,7 @@ NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', f
               '5' = which(RegData[,ProsLap] == 'LCC11', arr.ind = TRUE)[,1], #LCC11: laparoskopisk subtotal hysterektomi)
 
               '6' = which(RegData[,ProsLap] == 'LCD11', arr.ind = TRUE)[,1], #LCD11: laparoskopisk assistert vaginal hysterektomi).
+              '7' = which(RegData$LapRobotKirurgi == 1), #ROBOT_KIRURGI==TRUE
               '8' = which(RegData[,ProsLap] == 'LEF51', arr.ind = TRUE)[,1], #LCC11: Kolpopeksiene)
       #        '9' = rowSums(RegData[,ProsLap] == "M017" | RegData[,ProsLap] == "M018", na.rm = TRUE) > 0L%in% LCD00, LCD01,LCD04,LCD11, LCC1
               '9' = unique(c(which(RegData$LapProsedyre1 %in% c('LCD00', 'LCD01','LCD04','LCD11', 'LCC11')),
