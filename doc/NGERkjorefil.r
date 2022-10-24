@@ -70,13 +70,6 @@ table(RegData[,c('Opf0Komplikasjoner', 'Opf0metode', 'Opf0Status')], useNA = 'a'
 #NB: Mulig ikke bør bruke Komplikasjoner for å sjekke...
 table(RegData[which(is.na(RegData$Opf0Status)), c('Opf0metode', 'Aar')], useNA = 'a')
 
-#------------------------------Kjøre App----------------------------
-rm(list=ls())
-load(paste0('A:/NGER/NGER2019-09-03.Rdata'))
-
-#SkjemaOversikt <- NGERPreprosess(SkjemaOversikt)
-indAvvikDato <- which(as.numeric(as.Date(RegData$OpDato) - as.Date(RegData$HovedDato))>1)
-RegData[indAvvikDato[1:5], c('InnDato', "HovedDato")]
 #--------------------------------Datakobling--------------------------
 
 rm(list=ls())
@@ -286,6 +279,12 @@ for (valgtVar in variable) {
   NGERFigGjsnGrVar(RegData=RegData, valgtVar=valgtVar, datoFra=datoFra,datoTil=datoTil,
                       valgtMaal='Gjsn',outfile=outfile)
 }
+
+#-----------------------------Ant. registereringer------------------------------
+
+NGERFigAntReg(RegData=0, datoTil=Sys.Date(),
+                           minald=0, maxald=130, erMann='', outfile='',
+                           reshID=0, enhetsUtvalg=2, hentData=1)
 
 
 

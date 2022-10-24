@@ -10,6 +10,7 @@ dataTilOffVisning(
   aggData = 0,
   datoFra = "2014-01-01",
   datoTil = Sys.Date(),
+  OpMetode = 0,
   indID = "indDummy",
   lastNedFil = 0,
   filUt = "dummy"
@@ -23,6 +24,16 @@ dataTilOffVisning(
 \item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}
 
 \item{datoTil}{Seneste dato i utvalget (vises alltid i figuren).}
+
+\item{OpMetode}{1: Laparoskopi
+2: Hysteroskopi
+3: Begge # 21.okt. 2022: Fjernes som eget valg. Blir med i både laparaskopi og hysteroskopi
+4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
+5: LCC11 (laparoskopisk subtotal hysterektomi)
+6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
+7: Robotassisert inngrep
+8: Kolpopeksiene
+9: Hysterectomier (alle)}
 
 \item{indID}{indikator-id, eks. 'ind1', 'ind2', osv.}
 

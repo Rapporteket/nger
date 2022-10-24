@@ -36,7 +36,7 @@ NGERUtvalgEnh(
 
 \item{OpMetode}{1: Laparoskopi
 2: Hysteroskopi
-3: Begge
+3: Begge # 21.okt. 2022: Fjernes som eget valg. Blir med i både laparaskopi og hysteroskopi
 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
 5: LCC11 (laparoskopisk subtotal hysterektomi)
 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
