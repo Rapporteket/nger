@@ -160,10 +160,11 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                          br(),
                          br(),
                          h4('Antall registreringer ved eget sykehus siste år:'),
-                         uiOutput("tabEgneReg"),
-                         br(),
-                         h4('Antall registreringer ved eget sykehus forrige år:'),
-                         uiOutput("tabEgneRegForrige"),
+                         plotOutput('antRegMnd', height="auto"),
+                         # uiOutput("tabEgneReg"),
+                         # br(),
+                         # h4('Antall registreringer ved eget sykehus forrige år:'),
+                         # uiOutput("tabEgneRegForrige"),
                          br(),
                          h4('Oversikt over registerets kvalitetsindikatorer og resultater med offentlig tilgjengelige tall
                             finner du på www.kvalitetsregistre.no:', #helpText
@@ -816,18 +817,29 @@ server <- function(input, output, session) {
       #   }
       # )
 
-     output$tabEgneReg <- renderTable({
-       xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg,
-                                      antMnd=12, reshID = reshID))},
-            rownames=T,
-            digits = 0
-      )
-     output$tabEgneRegForrige <- renderTable({
-       xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg-365,
-                                      antMnd=12, reshID = reshID))},
-       rownames=T,
-       digits = 0
-     )
+     # output$tabEgneReg <- renderTable({
+     #   xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg,
+     #                                  antMnd=12, reshID = reshID))},
+     #        rownames=T,
+     #        digits = 0
+     #  )
+     # output$tabEgneRegForrige <- renderTable({
+     #   xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg-365,
+     #                                  antMnd=12, reshID = reshID))},
+     #   rownames=T,
+     #   digits = 0
+     # )
+
+
+      output$antRegMnd <- renderPlot({NGERFigAntReg(RegData=RegData,
+                                                       reshID = reshID
+                                                       # ,OpMetode = as.numeric(input$opMetodeKval)
+                                                       # ,Hastegrad = as.numeric(input$hastegradKval)
+                                                       # ,velgDiag = as.numeric(input$velgDiagKval)
+           )
+         }, height=500, width=900
+         )
+
 
  #----------Registreringsoversikter ----------------------
 

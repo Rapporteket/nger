@@ -26,6 +26,7 @@ tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0,
       colnames(tabAvdMnd1) <- format(lubridate::ymd(colnames(tabAvdMnd1)), '%b %y') #month(lubridate::ymd(colnames(tabAvdMnd1)), label = T)
       if (reshID==0){
         tabAvdMnd1 <- addmargins((tabAvdMnd1))}
+      tabAvdMnd1 <- xtable::xtable(tabAvdMnd1, digits=0)
       return(tabAvdMnd1)
 	#return(list(tabAvdMnd1=tabAvdMnd1, utvalgTxt <- Utvalg$utvalgTxt))
 }

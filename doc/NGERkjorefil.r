@@ -33,6 +33,10 @@ tools::texi2pdf('NGERSamleRapp.tex')
 
 knitr::knit2pdf('NGERmndRapp.Rnw')
 
+NGERFigAntReg(RegData=0, datoTil='2021-02-02', reshID=110734,
+                           #minald=0, maxald=130, erMann='',
+                           preprosess=1, hentData=1, outfile='')
+
 #--Vil undersøke variabelen Opf0Status nærmere
 RegData <- NGERPreprosess(NGERRegDataSQL(datoFra = '2021-01-01', datoTil = '2021-10-31'))
 
