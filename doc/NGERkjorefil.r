@@ -34,8 +34,8 @@ tools::texi2pdf('NGERSamleRapp.tex')
 knitr::knit2pdf('NGERmndRapp.Rnw')
 
 NGERFigAntReg(RegData=0, datoTil='2021-02-02', reshID=110734,
-                           #minald=0, maxald=130, erMann='',
                            preprosess=1, hentData=1, outfile='')
+enhetsUtvalg <- 1
 
 #--Vil undersøke variabelen Opf0Status nærmere
 RegData <- NGERPreprosess(NGERRegDataSQL(datoFra = '2021-01-01', datoTil = '2021-10-31'))
@@ -296,9 +296,10 @@ NGERFigAntReg(RegData=0, datoTil=Sys.Date(),
 #valgtVar <- 'kvalInd' #RAND0, TSS0, kvalInd
 outfile <- '' #paste0(valgtVar, '_kvalInd.png')
 data("NGERtulledata")
-UtKval <- NGERFigKvalInd(RegData=RegData, datoFra='2017-10-01', datoTil='3000-01-02', valgtVar='kvalInd', OpMetode=99,
-               Hastegrad=99, preprosess=0, Ngrense=10, enhetsUtvalg=1, reshID = 8, velgAvd = 0,
+UtKval <- NGERFigKvalInd(RegData=0, hentData = 1, datoFra='2017-10-01', valgtVar='kvalInd', OpMetode=99,
+               Hastegrad=99, preprosess=1, Ngrense=10, enhetsUtvalg=1, reshID = 8, velgAvd = 0,
                outfile=outfile)
+tabKvalInd <- lagTabavFig(UtDataFraFig = UtKval)
 
 RegData <- RegData[which(as.Date(RegData$HovedDato)>= as.Date('2017-01-01')), ]
 ind <- which(as.Date(RegData$HovedDato) < '2017-03-30')

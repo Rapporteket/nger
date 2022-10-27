@@ -11,7 +11,7 @@
 #' @return Søylediagram som fordeling av valgt variabel, ved operasjon, samt 1 og 3 år etter.
 #'
 #' @export
-NGERFigPrePost  <- function(RegData, valgtVar='Antall', datoFra='2012-04-01', datoTil=Sys.Date(),
+NGERFigPrePost  <- function(RegData, valgtVar='ScoreGeneral', datoFra='2015-01-01', datoTil=Sys.Date(),
                             minald=0, maxald=130, OpMetode=99, velgDiag=0, Ngrense=10,
                             outfile='', reshID=0, preprosess=0, hentData=0,...)
 {
@@ -55,20 +55,14 @@ txtretn <- 1
 grtxt <- ''
 subtxt <- ''
 
-	#RegData <- RegData[RegData$VarPre %in% 0:100, ]
-	#RegData <- RegData[RegData$VarPost %in% 0:100, ]
-	#RegData$VarPre <- factor(as.numeric(RegData$VarPre), levels=gr, labels = grtxt)
-	#RegData$VarPost <- factor(as.numeric(RegData$VarPost), levels=gr, labels = grtxt)
 #---------------BEREGNINGER --------------------------
-
-
 utvalg <- c('Hoved','Rest')
 AndelerPP <- list(Hoved = 0, Rest =0)
 
-AntHovedPre <-tapply(RegData$VarPre, RegData$SykehusNavn, FUN = 'mean', na.rm=T)
-AntHovedPost <- tapply(RegData$VarPost, RegData$SykehusNavn, FUN = 'mean', na.rm=T)
-NHoved <- sum(AntHovedPre)	#length(indHoved)
-AndelerPP <- cbind(AntHovedPre, AntHovedPost)/NHoved*100
+GjsnPre <-tapply(RegData$VarPre, RegData$SykehusNavn, FUN = 'mean', na.rm=T)
+Gjsn1aar <- tapply(RegData$VarPost, RegData$SykehusNavn, FUN = 'mean', na.rm=T)
+Ngr <- table(RegData$SykehusNavn)
+GjsnPP <- cbind(GjsnPre, Gjsn1aar)
 
 #LEGGE TIL ALLE?
 
@@ -99,7 +93,6 @@ farger <- FigTypUt$farger
 fargeHoved <- farger[1]
 fargeRest <- farger[3]
 antGr <- length(grtxt)
-#Ngr <- matrix(c(AntPre, AntPost), antGr, 2)
 lwdRest <- 3	#tykkelse på linja som repr. landet
 cexleg <- 0.9	#Størrelse på legendtekst
 cexpt <- 2	#Størrelse på punkter (resten av landet)

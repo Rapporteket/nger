@@ -958,7 +958,7 @@ output$lastNed_dataDump <- downloadHandler(
                          Hastegrad = as.numeric(input$hastegradKval),
                          dagkir = as.numeric(input$dagkirKval),
                          velgDiag = as.numeric(input$velgDiagKval),
-                        # AlvorlighetKompl = as.numeric(input$alvorlighetKompl),
+                         AlvorlighetKompl = as.numeric(input$alvorlighetKompl),
                          enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
                          velgAvd=input$velgReshKval,
                         session = session)
