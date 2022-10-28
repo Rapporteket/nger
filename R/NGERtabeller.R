@@ -95,11 +95,11 @@ lagTabavFig <- function(UtDataFraFig, figurtype='andeler'){ #lagTabavFigAndeler
   #medSml==1
 
   if (figurtype %in% c('andeler','gjsnGrVar', 'andelTid')){
-  tab <-cbind(Ngr$Hoved,
-              AggVerdier$Hoved,
+  tab <-cbind(UtDataFraFig$Ngr$Hoved,
+              UtDataFraFig$AggVerdier$Hoved,
               if (medSml==1){cbind(
-                Ngr$Rest,
-                AggVerdier$Rest)})
+                UtDataFraFig$Ngr$Rest,
+                UtDataFraFig$AggVerdier$Rest)})
   }
 
   if (figurtype %in% c('andeler', 'andelTid')) {

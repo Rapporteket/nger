@@ -2,20 +2,21 @@
 % Please edit documentation in R/NGERFigPrePost.R
 \name{NGERFigPrePost}
 \alias{NGERFigPrePost}
-\title{Søylediagram som viser frekvens av valgt variabel, målt i to tidspunkter}
+\title{Søylediagram som viser resultat av valgt variabel, målt ved tre tidspunkter}
 \usage{
 NGERFigPrePost(
   RegData,
-  valgtVar = "Antall",
-  datoFra = "2012-04-01",
-  datoTil = "2050-12-31",
+  valgtVar = "ScoreGeneral",
+  datoFra = "2015-01-01",
+  datoTil = Sys.Date(),
   minald = 0,
-  maxald = 110,
-  erMann = "",
+  maxald = 130,
+  OpMetode = 99,
+  velgDiag = 0,
+  Ngrense = 10,
   outfile = "",
-  reshID,
-  enhetsUtvalg = 0,
-  preprosess = 1,
+  reshID = 0,
+  preprosess = 0,
   hentData = 0,
   ...
 )
@@ -23,11 +24,7 @@ NGERFigPrePost(
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
 
-\item{valgtVar}{Hvilken variabel som skal visualiseres
-Boligforh: Boligforhold ved innleggelse og 3 mnd etter slaget
-Bosituasjon: Bosituasjon ved innleggelse og 3 mnd etter slaget
-Toalett: Toalettbesok før innleggelse og 3 mnd etter slaget
-Forflytning: Evne til forflytning før innleggelse og 3 mnd etter slaget}
+\item{valgtVar}{Hvilken variabel som skal visualiseres}
 
 \item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}
 
@@ -37,16 +34,26 @@ Forflytning: Evne til forflytning før innleggelse og 3 mnd etter slaget}
 
 \item{maxald}{Alder, til og med (Standardverdi: 130)}
 
+\item{OpMetode}{1: Laparoskopi
+2: Hysteroskopi
+3: Begge # 21.okt. 2022: Fjernes som eget valg. Blir med i både laparaskopi og hysteroskopi
+4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
+5: LCC11 (laparoskopisk subtotal hysterektomi)
+6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
+7: Robotassisert inngrep
+8: Kolpopeksiene
+9: Hysterectomier (alle)}
+
+\item{velgDiag}{0: Alle
+1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
+2: Endometriose, livmorvegg (N80.0)
+3: Endometriose, unntatt livmorvegg.}
+
 \item{outfile}{Navn på fil figuren skrives til. Standard: '' (Figur skrives
 til systemets standard utdataenhet (som regel skjerm))}
 
 \item{reshID}{Parameter følger fra innlogging helseregister.no og angir
 hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
-
-\item{enhetsUtvalg}{Lag figur for
-0: Hele landet
-1: Egen enhet mot resten av landet (Standard)
-2: Egen enhet}
 
 \item{preprosess}{Preprosesser data
 0: Nei (Standard)
@@ -57,10 +64,10 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 1: Ja}
 }
 \value{
-Søylediagram som fordeling av valgt variabel, målt både før og etter hjerneslaget
+Søylediagram som fordeling av valgt variabel, ved operasjon, samt 1 og 3 år etter.
 }
 \description{
-Funksjon som genererer en figur med som viser endring i en variabels fordeling fra før til etter.
+Funksjon som genererer en figur med som viser endring i en variabels fordeling ved tre ulike tidspunkter.
 Man kan velge om det skal vises andeler eller antall
 }
 \details{

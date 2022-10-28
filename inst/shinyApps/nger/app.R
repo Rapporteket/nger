@@ -958,7 +958,7 @@ output$lastNed_dataDump <- downloadHandler(
                          Hastegrad = as.numeric(input$hastegradKval),
                          dagkir = as.numeric(input$dagkirKval),
                          velgDiag = as.numeric(input$velgDiagKval),
-                         AlvorlighetKompl = as.numeric(input$alvorlighetKompl),
+                         AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
                          enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
                          velgAvd=input$velgReshKval,
                         session = session)
@@ -977,6 +977,7 @@ output$lastNed_dataDump <- downloadHandler(
                            Hastegrad = as.numeric(input$hastegradKval),
                            dagkir = as.numeric(input$dagkirKval),
                            velgDiag = as.numeric(input$velgDiagKval),
+                           AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
                            enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
                            velgAvd=input$velgReshKval,
                            session = session,
@@ -991,10 +992,12 @@ output$lastNed_dataDump <- downloadHandler(
                                      OpMetode = as.numeric(input$opMetodeKval),
                                      Hastegrad = as.numeric(input$hastegradKval),
                                      velgDiag = as.numeric(input$velgDiagKval),
+                                     AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
                                      enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
                                      velgAvd=input$velgReshKval,
                                      session = session)
 
+              #print(UtDataKvalInd$)
               tabKvalInd <- lagTabavFig(UtDataFraFig = UtDataKvalInd) #lagTabavFigAndeler
 
         output$tittelKvalInd <- renderUI({

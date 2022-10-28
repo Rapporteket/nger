@@ -296,7 +296,7 @@ NGERFigAntReg(RegData=0, datoTil=Sys.Date(),
 #valgtVar <- 'kvalInd' #RAND0, TSS0, kvalInd
 outfile <- '' #paste0(valgtVar, '_kvalInd.png')
 data("NGERtulledata")
-UtKval <- NGERFigKvalInd(RegData=0, hentData = 1, datoFra='2017-10-01', valgtVar='kvalInd', OpMetode=99,
+UtDataFraFig <- NGERFigKvalInd(RegData=0, hentData = 1, datoFra='2017-10-01', valgtVar='kvalInd', OpMetode=99,
                Hastegrad=99, preprosess=1, Ngrense=10, enhetsUtvalg=1, reshID = 8, velgAvd = 0,
                outfile=outfile)
 tabKvalInd <- lagTabavFig(UtDataFraFig = UtKval)

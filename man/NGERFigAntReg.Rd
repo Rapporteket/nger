@@ -11,7 +11,7 @@ NGERFigAntReg(
   minald = 0,
   maxald = 130,
   erMann = "",
-  preprosess = 1,
+  preprosess = 0,
   hentData = 0,
   outfile = ""
 )
