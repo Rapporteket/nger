@@ -159,7 +159,6 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
     RegData$PostKomplLap <- NA
     RegData$PostKomplLap[indLap] <- 0
     RegData$PostKomplLap[intersect(which(RegData$Opf0AlvorlighetsGrad %in% 2:4), indLap) ] <- 1
-    #FEIL: RegData$PostKomplLap[which(RegData$Opf0AlvorlighetsGrad[indLap] %in% 2:4)] <- 1
     sum(RegData$PostKomplLap[ind$Hoved], na.rm = T)
     table(RegData$ShNavn[ind$Hoved])
     table(RegData$PostKomplLap)
@@ -168,8 +167,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
     indHys <- which(RegData$OpMetode==2 | RegData$OpMetode == 3)
     RegData$PostKomplHys <- NA
     RegData$PostKomplHys[indHys] <- 0
-    RegData$PostKomplHys[intersect(which(RegData$Opf0AlvorlighetsGrad[indHys] %in% 2:4), indHys)] <- 1
-    #FEIL: RegData$PostKomplHys[which(RegData$Opf0AlvorlighetsGrad[indHys] %in% 2:4)] <- 1
+    RegData$PostKomplHys[intersect(which(RegData$Opf0AlvorlighetsGrad %in% 2:4), indHys)] <- 1
 
     #Reoperasjon som følge av komplikasjon
     #Kode 0: Nei, 1:Ja
