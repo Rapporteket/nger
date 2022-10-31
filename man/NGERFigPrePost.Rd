@@ -7,7 +7,7 @@
 NGERFigPrePost(
   RegData,
   valgtVar = "ScoreGeneral",
-  datoFra = "2015-01-01",
+  datoFra = "2019-01-01",
   datoTil = Sys.Date(),
   minald = 0,
   maxald = 130,
@@ -15,7 +15,6 @@ NGERFigPrePost(
   velgDiag = 0,
   Ngrense = 10,
   outfile = "",
-  reshID = 0,
   preprosess = 0,
   hentData = 0,
   ...
@@ -51,9 +50,6 @@ NGERFigPrePost(
 
 \item{outfile}{Navn på fil figuren skrives til. Standard: '' (Figur skrives
 til systemets standard utdataenhet (som regel skjerm))}
-
-\item{reshID}{Parameter følger fra innlogging helseregister.no og angir
-hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 
 \item{preprosess}{Preprosesser data
 0: Nei (Standard)

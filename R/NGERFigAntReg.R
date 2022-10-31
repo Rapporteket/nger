@@ -15,8 +15,8 @@ NGERFigAntReg  <- function(RegData, datoTil=Sys.Date(), reshID=0,
                            preprosess=0, hentData=0, outfile='')
 {
   #reshID <- 103575
+  datoFra <- lubridate::floor_date(as.Date(datoTil), unit='month')- months(23)
 
-  datoFra <- lubridate::floor_date(as.Date(datoTil)- months(23, abbreviate = T), unit='month')
   ## Hvis spørring skjer fra R på server. ######################
   if(hentData == 1){
     RegData <- NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil) #, datoTil = datoTil)

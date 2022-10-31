@@ -11,9 +11,9 @@
 #' @return Søylediagram som fordeling av valgt variabel, ved operasjon, samt 1 og 3 år etter.
 #'
 #' @export
-NGERFigPrePost  <- function(RegData, valgtVar='ScoreGeneral', datoFra='2015-01-01', datoTil=Sys.Date(),
+NGERFigPrePost  <- function(RegData, valgtVar='ScoreGeneral', datoFra='2019-01-01', datoTil=Sys.Date(),
                             minald=0, maxald=130, OpMetode=99, velgDiag=0, Ngrense=10,
-                            outfile='', reshID=0, preprosess=0, hentData=0,...)
+                            outfile='', preprosess=0, hentData=0,...)
 {
 
   if (hentData == 1) {
@@ -43,7 +43,7 @@ RegData <- RegData[!(is.na(RegData$VarPre) | is.na(RegData$VarPost)), ]
 
 tittel <- grtxt[varNr]
 
-NGERUtvalg <- NGERUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil)
+NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil)
 RegData <- NGERUtvalg$RegData
 utvalgTxt <- NGERUtvalg$utvalgTxt
 
@@ -57,12 +57,14 @@ subtxt <- ''
 
 #---------------BEREGNINGER --------------------------
 utvalg <- c('Hoved','Rest')
-AndelerPP <- list(Hoved = 0, Rest =0)
+GjsnPP <- list(Hoved = 0, Rest =0)
 
-GjsnPre <-tapply(RegData$VarPre, RegData$SykehusNavn, FUN = 'mean', na.rm=T)
-Gjsn1aar <- tapply(RegData$VarPost, RegData$SykehusNavn, FUN = 'mean', na.rm=T)
-Ngr <- table(RegData$SykehusNavn)
-GjsnPP <- cbind(GjsnPre, Gjsn1aar)
+GjsnPre <-tapply(RegData$VarPre, RegData$ShNavn, FUN = 'mean', na.rm=T)
+Gjsn1aar <- tapply(RegData$VarPost, RegData$ShNavn, FUN = 'mean', na.rm=T)
+Gjsn3aar <- Gjsn1aar
+Ngr <- table(RegData$ShNavn)
+N <- sum(Ngr)
+GjsnPP <- cbind(GjsnPre, Gjsn1aar, Gjsn3aar)
 
 #LEGGE TIL ALLE?
 
@@ -92,42 +94,33 @@ par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1+length(tittel)-1)))	#Har alltid datou
 farger <- FigTypUt$farger
 fargeHoved <- farger[1]
 fargeRest <- farger[3]
-antGr <- length(grtxt)
+antGr <- length(Ngr)
 lwdRest <- 3	#tykkelse på linja som repr. landet
 cexleg <- 0.9	#Størrelse på legendtekst
 cexpt <- 2	#Størrelse på punkter (resten av landet)
 
 if (retn == 'V' ) {
 #Vertikale søyler eller linje
-	ymax <- min(max(c(AndelerPP$Hoved, AndelerPP$Rest),na.rm=T)*1.25, 110)
-	pos <- barplot(t(AndelerPP$Hoved), beside=TRUE, las=txtretn, ylab="Andel pasienter (%)",
-		sub=subtxt,	names.arg=grtxt, cex.names=cexgr,
-		col=farger[c(2,1)], border='white', ylim=c(0, ymax))	#
-		legend('top', c('Før', 'Etter', paste('N=', NHoved , sep='')), bty='n',
-			fill=farger[c(2,1,NA)], border=NA, ncol=3, cex=cexleg)
+	ymax <- min(max(c(GjsnPP),na.rm=T)*1.25, 110)
+	pos <- barplot(t(GjsnPP), beside=TRUE, horiz=FALSE, las=txtretn, ylab="Andel pasienter (%)",
+		sub=subtxt,	cex.names=cexgr, #names.arg=grtxt,
+		col=farger[1:3], border='white', ylim=c(0, ymax))	#
+		legend('top', c('perop.', '1 år', '3 år', paste0('N=', N)), bty='n',
+			fill=farger[c(1:3,NA)], border=NA, ncol=4, cex=cexleg)
 }
 
 if (retn == 'H') {
 #Horisontale søyler
-	ymax <- 2*antGr*1.6
-	xmax <- min(max(c(AndelerPP$Hoved, AndelerPP$Rest),na.rm=T)*1.25, 100)
-pos <- barplot(t(AndelerPP), beside=TRUE, horiz=TRUE, main='', las=1,
-		col=farger[c(2,1)], border='white', font.main=1,  xlim=c(0,xmax), ylim=c(0.25, 3.3)*antGr,
-		names.arg=grtxt, cex.names=cexgr, xlab="Andel pasienter (%)")
-	if (medSml == 1) {
-		points(as.numeric(t(AndelerPP$Rest)), y=pos+0.1,  col=fargeRest,  cex=cexpt, pch=18) #c("p","b","o"),
-		legend('topleft', c(paste(c('Før, N=', 'Etter, N='), NHoved , sep=''),
-			paste(smltxt, ' N=', Nrest, sep='')), text.width = c(0.2,0.2,0.21)*xmax,
-			bty='n', pch=c(15,15,18), pt.cex=cexpt, #lty=c(NA,NA,NA),
-			col=farger[c(2,1,3)], border=farger[c(2,1,3)], ncol=3, cex=cexleg)
-		} else {
-		legend('top', c('Før', 'Etter',paste('N=',NHoved,sep='')), bty='n',
-			fill=farger[c(2,1,NA)], border=NA, ncol=3, cex=cexleg)
-		}
+#	ymax <- 2*antGr*1.6
+	xmax <- min(max(GjsnPP,na.rm=T)*1.25, 100)
+pos <- barplot(t(GjsnPP), beside=TRUE, horiz=TRUE, main='', las=1,
+		col=farger[1:3], border='white', font.main=1,  xlim=c(0,xmax), #ylim=c(0, ymax),
+		cex.names=cexgr, xlab="Skår") #names.arg=grtxt,
+		legend('top', c('Før', 'Etter',paste0('N=',N)), bty='n',
+			fill=farger[c(1:3,NA)], border=NA, ncol=3, cex=cexleg)
 }
 
 title(tittel, font.main=1)	#line=0.5,
-title(shtxt, font.main=1, line=0.5)
 #Tekst som angir hvilket utvalg som er gjort
 avst <- 0.8
 utvpos <- 3+length(tittel)-1	#Startlinje for teksten

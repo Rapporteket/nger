@@ -16,7 +16,6 @@ library(lubridate)
 
 dev.off()
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
-#reshID <- 8
 datoFra <- '2019-01-01'
 datoTil <- Sys.Date()
 sluttDato <- datoTil
@@ -290,7 +289,9 @@ NGERFigAntReg(RegData=0, datoTil=Sys.Date(),
                            minald=0, maxald=130, erMann='', outfile='',
                            reshID=0, enhetsUtvalg=2, hentData=1)
 
-
+NGERFigPrePost(RegData=0, valgtVar='ScoreGeneral',
+               datoFra='2019-01-01', datoTil=Sys.Date(), preprosess=1, hentData=1,
+               outfile='test.png')
 
 #-----------------------------Kvalietsindikatorer------------------------------
 #valgtVar <- 'kvalInd' #RAND0, TSS0, kvalInd
