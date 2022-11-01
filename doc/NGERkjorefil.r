@@ -104,8 +104,11 @@ load(paste0('A:/NGER/Aarsrapp20182019-03-18.Rdata'))
 library(nger)
 #----------------------------------- Lage tulledata ------------------------------
 #Denne inneholder ingen id'er og trenger ikke
-SkjemaOversikt <- NGERSkjema[ ,c("Skjemanavn", "SkjemaRekkeflg",  "SkjemaStatus",  "OpprettetDato", "HovedDato")]
-
+#SkjemaOversikt <- NGERSkjema[ ,c("Skjemanavn", "SkjemaRekkeflg",  "SkjemaStatus",  "OpprettetDato", "HovedDato")]
+qSkjemaOversikt <- 'SELECT * FROM SkjemaOversikt'
+SkjemaOversikt <- rapbase::loadRegData(registryName='nger',
+                                       query=qSkjemaOversikt, dbType='mysql')
+SkjemaOversikt <- NGERPreprosess(SkjemaOversikt)
 SkjemaOversikt<- lageTulleData(RegData=SkjemaOversikt, antSh=26, antObs=20000)
 
 varBort <- c('PasRegDato', 'PersonNr', 'PersonNrType', 'FodselsDato', 'Morsmaal', 'MorsmaalAnnet',
@@ -114,9 +117,9 @@ varBort <- c('PasRegDato', 'PersonNr', 'PersonNrType', 'FodselsDato', 'Morsmaal'
            'AvdodYY', 'InnDato', 'Mnd', 'Kvartal', 'Halvaar', 'Aar',
            'SykehusNavn', 'AvdRESH',
            grep('Opf1', names(RegData)), grep('RY1', names(RegData)))
-RegData <- lageTulleData(RegData=RegData, varBort=varBort, antSh=26, antObs=20000)
+RegData <- lageTulleData(RegData=0, varBort=varBort, antSh=26, antObs=20000)
 
-save(SkjemaOversikt, RegData, file = 'A:/NGER/NGERtulledata.Rdata')
+save(SkjemaOversikt, RegData, file = './data/NGERtulledata.Rdata')
 
 #----------------------------------- PARAMETRE ------------------------------
 RegData <- NGERRegDataSQL()
