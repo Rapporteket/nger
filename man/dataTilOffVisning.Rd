@@ -2,16 +2,16 @@
 % Please edit documentation in R/NGERhjelpefunksjoner.R
 \name{dataTilOffVisning}
 \alias{dataTilOffVisning}
-\title{Generere data til Resultatportalen/SKDE-viser}
+\title{Generere data til SKDEs interaktive nettsider}
 \usage{
 dataTilOffVisning(
   RegData = RegData,
   valgtVar,
+  aggData = 0,
   datoFra = "2014-01-01",
   datoTil = Sys.Date(),
   OpMetode = 0,
   indID = "indDummy",
-  ResPort = 0,
   lastNedFil = 0,
   filUt = "dummy"
 )
@@ -19,7 +19,7 @@ dataTilOffVisning(
 \arguments{
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
 
-\item{valgtVar}{- beinsmLavPre, peropKompDura, sympVarighUtstr, p.t. 10 kvalitetsind.}
+\item{valgtVar}{- parameter for hvilken variabel det skal lages resultat for}
 
 \item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}
 
@@ -27,7 +27,7 @@ dataTilOffVisning(
 
 \item{OpMetode}{1: Laparoskopi
 2: Hysteroskopi
-3: Begge
+3: Begge # 21.okt. 2022: Fjernes som eget valg. Blir med i både laparaskopi og hysteroskopi
 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
 5: LCC11 (laparoskopisk subtotal hysterektomi)
 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
@@ -37,13 +37,12 @@ dataTilOffVisning(
 
 \item{indID}{indikator-id, eks. 'ind1', 'ind2', osv.}
 
-\item{ResPort}{1-hvis data til resultatportalen (standard), 0-data til SKDE-viser}
-
 \item{filUt}{tilnavn for utdatatabell (fjern?)}
 }
 \value{
-Datafil til Resultatportalen
+Datafil til Resultatportalen. Utfila må inneholde:
+'year', 'orgnr', 'var', 'denominator', 'caregiver' og 'ind_id'
 }
 \description{
-Generere data til Resultatportalen/SKDE-viser
+Generere data til SKDEs interaktive nettsider
 }

@@ -7,14 +7,13 @@
 NGERFigAntReg(
   RegData,
   datoTil = Sys.Date(),
+  reshID = 0,
   minald = 0,
   maxald = 130,
   erMann = "",
-  outfile = "",
-  reshID = 0,
-  enhetsUtvalg = 2,
-  preprosess = 1,
-  hentData = 0
+  preprosess = 0,
+  hentData = 0,
+  outfile = ""
 )
 }
 \arguments{
@@ -22,20 +21,12 @@ NGERFigAntReg(
 
 \item{datoTil}{Seneste dato i utvalget (vises alltid i figuren).}
 
-\item{minald}{Alder, fra og med (Standardverdi: 0)}
-
-\item{maxald}{Alder, til og med (Standardverdi: 130)}
-
-\item{outfile}{Navn på fil figuren skrives til. Standard: '' (Figur skrives
-til systemets standard utdataenhet (som regel skjerm))}
-
 \item{reshID}{Parameter følger fra innlogging helseregister.no og angir
 hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 
-\item{enhetsUtvalg}{Gjør gruppeutvalg for
- 0: Hele landet
- 2: Egen enhet
-7: Egen region}
+\item{minald}{Alder, fra og med (Standardverdi: 0)}
+
+\item{maxald}{Alder, til og med (Standardverdi: 130)}
 
 \item{preprosess}{Preprosesser data
 0: Nei (Standard)
@@ -44,6 +35,9 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 \item{hentData}{Gjør spørring mot database
 0: Nei, RegData gis som input til funksjonen (Standard)
 1: Ja}
+
+\item{outfile}{Navn på fil figuren skrives til. Standard: '' (Figur skrives
+til systemets standard utdataenhet (som regel skjerm))}
 }
 \value{
 Søylediagram som viser antall registreringer per måned for valgte 12 måneder

@@ -11,7 +11,7 @@
 #'		\item Opf0KomplInfeksjon: Postop. komplikasjon: Infeksjon
 #'		\item Opf0KomplOrgan: Postop. komplikasjon: Organskade
 #'		\item Opf0Reoperasjon: Andel reoperasjon som følge av komplikasjon
-#'		\item Opf0AlvorlighetsGrad: Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
+#'		\item KomplPostopAlvor: Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
 #'		\item KomplIntra: Komplikasjoner ved operasjon. (kombinerer variablene HysKomplikasjoner og LapKomplikasjoner)
 #'		\item KomplPostop: Andel postoperative komplikasjoner
 #'		\item LapKonvertert: Konvertert til laparoromi?
@@ -47,7 +47,8 @@ NGERFigAndelTid <- function(RegData=0, valgtVar, datoFra='2015-01-01', datoTil=S
     RegData <- NGERPreprosess(RegData=RegData)
   }
 
-  NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, grVar='', figurtype='andelTid')
+  NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, grVar='',
+                                     OpMetode=OpMetode, figurtype='andelTid')
   RegData <- NGERVarSpes$RegData
   flerevar <- NGERVarSpes$flerevar
   subtxt <- NGERVarSpes$subtxt

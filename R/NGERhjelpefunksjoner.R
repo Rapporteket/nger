@@ -63,23 +63,23 @@ SorterOgNavngiTidsEnhet <- function(RegData, tidsenhet='Aar', tab=0) {
 #' @param antObs antall observasjoner (rader)
 #'
 #' @export
-lageTulleData <- function(RegData, varBort=NA, antSh=26, antObs=20000) {
+lageTulleData <- function(RegData=0, varBort=NA, datoFra= '2017-01-01', antSh=26, antObs=20000) {
   #Må også legge på resh som svarer til sykehusnavn.
-      library(synthpop)
-      library(dplyr)
-      #ForlopsID <- RegData$ForlopsID
+      #library(synthpop)
+      #library(dplyr)
+  if (RegData == 0){
+      RegData <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra))}
   if (!is.na(varBort[1])) {
       RegData <- RegData[,-which(names(RegData) %in% varBort)]}
-      #RegData <- RegData[sample(1:dim(RegData)[1], antObs, replace = T),]
-      sykehus <- cbind(ShNavn=paste('Sykehus', LETTERS[1:antSh]),
-                       ReshId=1:antSh)
-      fordelingPasienter <- sample(1:10,antSh, replace = TRUE)
+      sykehus <- cbind('ShNavn'=paste('Sykehus', LETTERS[1:antSh]),
+                       'ReshId'=1:antSh)
+      fordelingPasienter <- sample(1:10, antSh, replace = TRUE)
       indSample <-  sample(1:antSh, prob=fordelingPasienter/sum(fordelingPasienter),
                            replace = TRUE, size=antObs)
 
       RegDataSyn <- synthpop::syn(RegData, method = "sample", k=antObs, seed = 500) #Trekker med tilbakelegging
       RegData <- data.frame(RegDataSyn$syn)
-      RegData[c('SykehusNavn','ReshId')] <- sykehus[indSample,]
+      RegData[ ,c('ShNavn','ReshId')] <- sykehus[indSample,]
 
 	  return(RegData)
 }
@@ -151,62 +151,62 @@ abonnementNGER <- function(rnwFil, brukernavn='ngerBrukernavn', reshID=0,
 
 
 
-#' Generere data til Resultatportalen/SKDE-viser
+#' Generere data til SKDEs interaktive nettsider
 #'
 #' @param filUt tilnavn for utdatatabell (fjern?)
-#' @param valgtVar - beinsmLavPre, peropKompDura, sympVarighUtstr, p.t. 10 kvalitetsind.
+#' @param valgtVar - parameter for hvilken variabel det skal lages resultat for
 #' @param indID indikator-id, eks. 'ind1', 'ind2', osv.
-#' @param ResPort 1-hvis data til resultatportalen (standard), 0-data til SKDE-viser
 #' @inheritParams NGERUtvalgEnh
-#' @return Datafil til Resultatportalen
+#' @return Datafil til Resultatportalen. Utfila må inneholde:
+#' 'year', 'orgnr', 'var', 'denominator', 'caregiver' og 'ind_id'
 #' @export
 
-dataTilOffVisning <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01',
-                              datoTil = Sys.Date(), OpMetode=0,
-                              indID = 'indDummy', ResPort=0, lastNedFil=0, filUt='dummy'){
+dataTilOffVisning <- function(RegData = RegData, valgtVar, aggData=0,
+                              datoFra = '2014-01-01', datoTil = Sys.Date(), OpMetode=0,
+                              indID = 'indDummy', lastNedFil=0, filUt='dummy'){
 
 
-  filUt <- paste0('NGER', ifelse(filUt=='dummy',  valgtVar, filUt), c('_SKDE', '_ResPort')[ResPort+1],'.csv')
-  figurtype <- ifelse(valgtVar=='Tss2Sumskaar', 'gjsnGrVar', 'andelGrVar') #MÅ ENDRES FOR SUMSKÅR!!
+  filUt <- paste0('NGER', ifelse(filUt=='dummy',  valgtVar, filUt),'.csv')
+  figurtype <- ifelse(valgtVar=='Tss2Sumskaar', 'gjsnGrVar', 'andelGrVar')
   NGERVarSpes <- NGERVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = figurtype)
   RegData <- NGERUtvalgEnh(RegData=NGERVarSpes$RegData, OpMetode = OpMetode,
                            datoFra = datoFra, datoTil = datoTil,
                            )$RegData
 
-  if (ResPort == 1){
-      #  For hver kvalitetsindikator
-      #  Fil, KIdata: År	EnhetsID	Teller	Nevner	Kvalitetsindikator
-      RegData$Variabel <- 0
-      RegData$ShNavn <- as.factor(RegData$ShNavn)
-      RegData$ReshId <- as.factor(RegData$ReshId)
-
-      RegData <- NGERVarTilrettelegg(RegData = RegData, valgtVar = valgtVar, figurtype=figurtype)$RegData
-      dataDum <- aggregate(data=RegData[ ,c("ReshId", 'Aar', 'Variabel' )], Variabel~ReshId+Aar,
-                           #x=RegData$Variabel, by=RegData[]
-                           FUN=function(x) {c(sum(x, na.rm=T), sum(!is.na(x)))})
-
-      opMetTxt <- c('','Lap','Hys')[OpMetode+1]
-      RegDataUt <- data.frame(dataDum[,1:2], Teller=dataDum$Variabel[,1], Nevner=dataDum$Variabel[,2],
-                           KvalInd=paste0(valgtVar, opMetTxt))
-    # Uten aggregering
-    # #Variabler: Aar	ReshId	Teller Ind1	Nevner Ind1	  AarID	   Indikator
-    # #          2014	103469	  0	          1	       2014103469	  ind1
-    # RegDataUt <- RegData[,c('Aar', "ReshId", "ShNavn", "Variabel")]
-    # RegDataUt<- dplyr::rename(RegDataUt, Teller = Variabel)
-    # RegDataUt$AarID <- paste0(RegDataUt$Aar, RegDataUt$ReshId)
-    # RegDataUt$Indikator <- indID
-    # RegDataUt$Nevner <- 1
-  }
-
-  if (ResPort == 0){
-    #Variabler: year, orgnr, var, denominator, ind_id
-    RegDataUt <- RegData #[,c('Aar', "ReshId", "Variabel")]
-    RegDataUt$ind_id <- indID
-    RegDataUt$denominator <- 1
-    # nytt navn = gammelt navn
+  if (aggData == 0) {
+    RegDataUt <- RegData[,c('Aar', "ReshId", "Variabel")]
     RegDataUt <- dplyr::rename(RegDataUt,
                                year = Aar,
                                var = Variabel)
+    RegDataUt$denominator <- 1
+  }
+
+  if (aggData == 1) {
+    if (figurtype == 'gjsnGrVar'){
+      #aggData <- tapply(RegData$Variabel, INDEX = RegData[,c('Aar', 'ReshId')], FUN = mean)
+      #aggData <- aggregate(RegData$Variabel, by = list(RegData$Aar, RegData$ReshId), FUN = mean)
+      RegDataUt <- RegData %>%
+        dplyr::group_by(ReshId, Aar) %>%
+        dplyr::summarise(
+          denominator = sum(!is.na(Variabel)),
+          var = mean(Variabel, na.rm=T))
+
+      RegDataUtLand <- RegData %>%
+        dplyr::group_by(Aar) %>%
+        dplyr::summarise(
+          denominator = sum(!is.na(Variabel)),
+          var = mean(Variabel, na.rm=T),
+          ReshId = '1')
+
+      RegDataUt <- rbind(RegDataUt, RegDataUtLand)
+
+      RegDataUt <- RegDataUt[-which(RegDataUt$denominator == 0), ] #Fjerner tomme
+      RegDataUt <- dplyr::rename(RegDataUt, year = Aar)
+
+    } }
+
+    # nytt navn = gammelt navn
+
 
     #Legge på orgID ("Sykehusviser")
     #ReshId	orgnr	RapporteketNavn	SKDEnavn
@@ -231,11 +231,12 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01
                 '104174' = 	'974631385',		#Kongsberg	VESTRE VIKEN HF KONGSBERG SYKEHUS - SOMATIKK	Kongsberg
                 '4215373' = 	'974631776',		#Kongsvinger	AHUS KONGSVINGER SOMATIKK	Kongsvinger
                 '100412' = 	'974733013',		#Kristiansand	SØRLANDET SYKEHUS HF SOMATIKK KRISTIANSAND	Kristiansand
-                '103189' = 	'974746948',		#Kristiansund	HELSE MØRE OG ROMSDAL HF KRISTIANSUND SJUKEHUS - SOMATIKK	Kristiansund
+        #        '103189' = 	'974746948',		#Kristiansund	HELSE MØRE OG ROMSDAL HF KRISTIANSUND SJUKEHUS - SOMATIKK	Kristiansund. Ingen reg...
                 '105863' = 	'974754118',		#Levanger	HELSE NORD-TRØNDELAG HF SOMATIKK - LEVANGER	Levanger
                 '111180' = 	'994958682',		#Lillehammer	HELSE NORD-TRØNDELAG HF SYKEHUSET LEVANGER - REHABILITERING	Levanger
                 '700789' = 	'974795515',		#Mo i Rana	HELGELANDSSYKEHUSET HF MO I RANA - SOMATIKK	Mo i Rana
                 '103188' = 	'974745569',		#Molde	HELSE MØRE OG ROMSDAL HF MOLDE SJUKEHUS - SOMATIKK	Molde
+                '108048' = 	'974633752',		#Kalnes Østfold	SYKEHUSET ØSTFOLD
                 '105874' = 	'974753898',		#Namsos	HELSE NORD-TRØNDELAG HF SOMATIKK - NAMSOS	Namsos
                 '706130' = 	'974795396',		#Narvik	UNIVERSITETSSYKEHUSET NORD-NORGE HF NARVIK - SOMATIKK	Narvik
                 '103575' = 	'974631407',		#Ringerike	VESTRE VIKEN HF RINGERIKE SYKESHUS - SOMATIKK	Ringerike
@@ -251,14 +252,19 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01
                 '102583' = 	'974747545',		#Volda	HELSE MØRE OG ROMSDAL HF VOLDA SJUKEHUS - SOMATIKK	Volda
                 '4215139' = '973129856',    #Volvat Majorstuen
                 '106026' = 	'974743272',		#Voss	HELSE BERGEN HF VOSS SJUKEHUS	Voss
-                '108048' = 	'974633698',		#Østfold	SYKEHUSET ØSTFOLD HF MOSS - SOMATIKK	Moss
-                '102582' = 	'974747138'		#Ålesund	HELSE MØRE OG ROMSDAL HF ÅLESUND SJUKEHUS - SOMATIKK	Ålesund
+                '102582' = 	'974747138',		#Ålesund	HELSE MØRE OG ROMSDAL HF ÅLESUND SJUKEHUS - SOMATIKK	Ålesund
+                    '1' = '1'              #Hele landet
       )
 
     RegDataUt$orgnr <- as.character(nyID[as.character(RegDataUt$ReshId)])
     #unique(RegDataUt[ ,c('ShNavn', "ReshId", "orgnr")])
-    RegDataUt <- RegDataUt[ ,c('year', 'orgnr', 'var', 'denominator', 'ind_id')]
-  }
+    RegDataUt <- RegDataUt[ ,c('year', 'orgnr', 'var', 'denominator')]
+
+    #finnNyResh <- setdiff(sort(unique(RegDataUt$ReshId)), sort(names(nyID)))
+    #RegDataUt[match(nyResh, RegDataUt$ReshId), 'ShNavn']
+    RegDataUt$ind_id <- indID
+    RegDataUt$context <- 'caregiver'
+
 
   if (lastNedFil==1) {
     write.table(RegDataUt, file = filUt, sep = ';', row.names = F)} #, fileEncoding = 'UTF-8')}

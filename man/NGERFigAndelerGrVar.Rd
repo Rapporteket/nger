@@ -43,7 +43,7 @@ IKKE tatt høyde for sammenlikning mot "resten".}
 
 \item{OpMetode}{1: Laparoskopi
 2: Hysteroskopi
-3: Begge
+3: Begge # 21.okt. 2022: Fjernes som eget valg. Blir med i både laparaskopi og hysteroskopi
 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
 5: LCC11 (laparoskopisk subtotal hysterektomi)
 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
@@ -93,7 +93,7 @@ Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable e
 }
 \details{
 Variable funksjonen benytter: Alder (beregnes), Opf0Komplikasjoner, Opf0Reoperasjon, Opf0KomplBlodning, Opf0KomplUtstyr,
- Opf0KomplInfeksjon, Opf0KomplOrganUtdanning, Opf0AlvorlighetsGrad
+ Opf0KomplInfeksjon, Opf0KomplOrganUtdanning, KomplPostopAlvor
  HysKomplikasjoner, LapKomplikasjoner, OpMetode, OpAntibProfylakse, OpASA, OpBMI, Opf0Status.
  Det benyttes også andre variable til utvalg osv.
 
@@ -105,7 +105,7 @@ Argumentet \emph{valgtVar} har følgende valgmuligheter:
 	\item OpAntibProfylakse: Fått antibiotikaprofylakse
 	\item OpASA: ASA-grad > II
 	\item OpBMI: Pasienter med fedme (BMI>30)
-	\item Opf0AlvorlighetsGrad: Alvorlige komplikasjoner (grad 3 og 4)
+	\item KomplPostopAlvor: Alvorlige komplikasjoner (grad 3 og 4)
 	\item Opf0KomplBlodning: Postop. komplikasjon: Blødning
 	\item Opf0KomplUtstyr: Postop. komplikasjon: Problemer med ustyr
 	\item Opf0KomplInfeksjon: Postop. komplikasjon: Infeksjon

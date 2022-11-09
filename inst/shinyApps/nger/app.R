@@ -63,7 +63,7 @@ enhetsUtvalg <- c("Egen mot resten av landet"=1,
  opMetode <- c('Alle'=0,
                'Laparoskopi'=1,
                'Hysteroskopi'=2,
-               'Begge'=3,
+               #'Begge'=3,
                'Tot. lap. hysterektomi (LCD01/LCD04)'=4,
                'Lap. subtotal hysterektomi (LCC11)'=5,
                'Lap. ass. vag. hysterektomi (LCD11)'=6,
@@ -111,24 +111,22 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                br(),
 
                sidebarPanel(width = 3,
-                           h3('Nedlastbare dokumenter med samling av resultater'),
                             h3("Månedsrapport"), #),
+                            h5('(Nedlastbart dokument med samling av resultater)'),
                             downloadButton(outputId = 'mndRapp.pdf', label='Last ned MÅNEDSRAPPORT', class = "butt"),
                             br(),
                             br(),
-               h3('Samledokument'),
-               helpText('Samledokumentet er ei samling av utvalgte tabeller og figurer basert på
-                        operasjoner i valgt tidsrom.'),
-               dateRangeInput(inputId = 'datovalgSamleDok', start = startDato, end = Sys.Date(),
-                            label = "Tidsperiode", separator="t.o.m.", language="nb"),
+               # h3('Samledokument'),
+               # helpText('Samledokumentet er ei samling av utvalgte tabeller og figurer basert på
+               #          operasjoner i valgt tidsrom.'),
+               # dateRangeInput(inputId = 'datovalgSamleDok', start = startDato, end = Sys.Date(),
+               #              label = "Tidsperiode", separator="t.o.m.", language="nb"),
+               #
+               #  downloadButton(outputId = 'samleDok.pdf', label='Last ned samledokument', class = "butt"),
 
-                downloadButton(outputId = 'samleDok.pdf', label='Last ned samledokument', class = "butt"),
-                             br(),
-               br(),
-               br(),
-               helpText('Det tar noen sekunder å generere en samlerapport/månedsrapport.
+               helpText('Det tar noen sekunder å generere en månedsrapport.
                         I mellomtida får du ikke sett på andre resultater'),
-               helpText(tags$b('Ønsker du månedsrapporten eller samlerapporten tilsendt regelmessig på e-post,
+               helpText(tags$b('Ønsker du månedsrapporten tilsendt regelmessig på e-post,
                         kan du bestille dette under fanen "Abonnement."'))
                ),
                mainPanel(width = 8,
@@ -162,10 +160,11 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                          br(),
                          br(),
                          h4('Antall registreringer ved eget sykehus siste år:'),
-                         uiOutput("tabEgneReg"),
-                         br(),
-                         h4('Antall registreringer ved eget sykehus forrige år:'),
-                         uiOutput("tabEgneRegForrige"),
+                         plotOutput('antRegMnd', height="auto"),
+                         # uiOutput("tabEgneReg"),
+                         # br(),
+                         # h4('Antall registreringer ved eget sykehus forrige år:'),
+                         # uiOutput("tabEgneRegForrige"),
                          br(),
                          h4('Oversikt over registerets kvalitetsindikatorer og resultater med offentlig tilgjengelige tall
                             finner du på www.kvalitetsregistre.no:', #helpText
@@ -211,6 +210,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                                          choices = sykehusValg),
                                              selectInput(inputId = 'opMetodeRegDump', label='Operasjonstype (kun datadump)',
                                                          choices = opMetode
+                                             ),
+                                             selectInput(inputId = 'diagnoseRegDump', label='Diagnose (kun datadump)',
+                                                         choices = diag
                                              )
                             )
                ),
@@ -374,7 +376,9 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
                                          'Hjelpeinnstikk, antall' = 'LapNumHjelpeinnstikk',
                                          'Hysteroskopi intrapoerative komplikasjoner' = 'HysKomplikasjoner',
                                          'Infeksjoner, type' = 'Opf0KomplInfeksjon',
+                                         'Infeksjoner, type (alvorlig/middels)' = 'Opf0KomplAlvorInfeksjon',
                                          'Komplikasjoner, postoperativt' = 'KomplPostopType',
+                                         'Komplikasjoner, postop. alvorlig/middels' = 'KomplAlvorPostopType',
                                          'Laparaskopisk ekstrautstyr' = 'LapEkstrautstyr',
                                          'Laparaskopisk tilgang, teknikk og metode' = 'LapTeknikk',
                                          'Laparoskopiske intraabdominale komplikasjoner' = 'LapIntraabdominell',
@@ -478,7 +482,7 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
            selectInput(
              inputId = "valgtVarAndel", label="Velg variabel",
              choices = c('Kval.ind: Komplikasjoner under operasjon' = 'KomplIntra',
-                         'Kval.ind: Postop. komplikasjon: moderate/alvorlige (grad 2-4)' = 'Opf0AlvorlighetsGrad',
+                         'Kval.ind: Postop. komplikasjon: moderate/alvorlige (grad 2-4)' = 'KomplPostopAlvor',
                          'Kval.ind: TSS2: Positiv oppfatning om gyn. avd.' = 'Tss2Generelt',
                          'Alder over 70 år' = 'Alder',
                          'Antibiotika' = 'OpAntibProfylakse',
@@ -492,9 +496,10 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
                          'Operasjonstid (minutter)' = 'OpTid',
                          'Pasienter med høyere utdanning' = 'Utdanning',
                          'Postop. komplikasjon: Alle' = 'KomplPostop',
+                         'Postop. komplikasjon: Alvorlig og middels' = 'KomplPostopAlvor',
                          'Postop. komplikasjon: Blødning' = 'Opf0KomplBlodning',
-                         #'Postop. komplikasjon: Problemer med ustyr' = 'Opf0KomplUtstyr',
                          'Postop. komplikasjon: Infeksjon' = 'Opf0KomplInfeksjon',
+                         'Postop. komplikasjon: Infeksjon, alvorlig/middels' = 'Opf0KomplAlvorInfeksjon',
                          'Postop. komplikasjon: Organskade' = 'Opf0KomplOrgan',
                          'Postop. komplikasjon: Reoperasjon' = 'Opf0Reoperasjon',
                          'Postop. komplikasjon: lav alvorlighet (grad 1)' = 'Opf0AlvorlighetsGrad1',
@@ -674,12 +679,12 @@ tabPanel(p("Registeradministrasjon", title='Registeradministrasjonens side for r
          tabsetPanel(
            #tabPanel(
              # sidebarPanel(
-             #   h4('Nedlasting av data til Resultatportalen:'), MÅ EVT. ENDRES TIL SYKEHUSVISER..
+             #   h4('Nedlasting av data til interaktive nettsider'), MÅ ENDRES TIL SYKEHUSVISER.. SJEKK INDIKATORER
              #
              #   selectInput(inputId = "valgtVarRes", label="Velg variabel",
              #               choices = c('Komplikasjoner under operasjon' = 'KomplIntra',
              #                           'Komplikasjoner, postoperativt' = 'KomplPostop',
-             #                           'Alvorlighetsgrad, postop.kompl.' = 'Opf0AlvorlighetsGrad',
+             #                           'Alvorlige, postop.kompl.' = 'KomplPostopAlvor',
              #                           'Konvertert, hys-lap' = 'HysKonvertert',
              #                           'Konvertert, lap-lap, ikke forventet' = 'LapKonvertert',
              #                           'TSS2-generelt, positiv oppfatning avd.' = 'Tss2Generelt',
@@ -740,29 +745,6 @@ tabPanel(p("Abonnement",
          )
 ), #tab abonnement
 
-
-# tabPanel(p("Abonnement",
-#            title='Bestill automatisk utsending av rapporter på e-post'),
-#          sidebarLayout(
-#            sidebarPanel(width = 3,
-#                         selectInput("subscriptionRep", "Rapport:",
-#                                     c("Månedsrapport", "Samlerapport")),
-#                         selectInput("subscriptionFreq", "Frekvens:",
-#                                     list(Årlig="Årlig-year",
-#                                           Kvartalsvis="Kvartalsvis-quarter",
-#                                           Månedlig="Månedlig-month",
-#                                           Ukentlig="Ukentlig-week",
-#                                           Daglig="Daglig-DSTday"),
-#                                     selected = "Månedlig-month"),
-#                         #selectInput("subscriptionFileFormat", "Format:",
-#                         #            c("html", "pdf")),
-#                         actionButton("subscribe", "Bestill!")
-#            ),
-#            mainPanel(
-#              uiOutput("subscriptionContent")
-#            )
-#          )
-#) #tab abonnement
 
 #--------slutt tab'er----------
 
@@ -825,28 +807,39 @@ server <- function(input, output, session) {
                                   reshID = reshID)
             })
 
-      output$samleDok.pdf <- downloadHandler(
-        filename = function(){ downloadFilename('Samledokument')},
-        content = function(file){
-          henteSamlerapporter(file, rnwFil="NGERSamleRapp.Rnw",
-                      reshID = reshID,
-                      datoFra = input$datovalgSamleDok[1],
-                      datoTil = input$datovalgSamleDok[2])
-        }
-      )
+      # output$samleDok.pdf <- downloadHandler(
+      #   filename = function(){ downloadFilename('Samledokument')},
+      #   content = function(file){
+      #     henteSamlerapporter(file, rnwFil="NGERSamleRapp.Rnw",
+      #                 reshID = reshID,
+      #                 datoFra = input$datovalgSamleDok[1],
+      #                 datoTil = input$datovalgSamleDok[2])
+      #   }
+      # )
 
-     output$tabEgneReg <- renderTable({
-       xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg,
-                                      antMnd=12, reshID = reshID))},
-            rownames=T,
-            digits = 0
-      )
-     output$tabEgneRegForrige <- renderTable({
-       xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg-365,
-                                      antMnd=12, reshID = reshID))},
-       rownames=T,
-       digits = 0
-     )
+     # output$tabEgneReg <- renderTable({
+     #   xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg,
+     #                                  antMnd=12, reshID = reshID))},
+     #        rownames=T,
+     #        digits = 0
+     #  )
+     # output$tabEgneRegForrige <- renderTable({
+     #   xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg-365,
+     #                                  antMnd=12, reshID = reshID))},
+     #   rownames=T,
+     #   digits = 0
+     # )
+
+
+      output$antRegMnd <- renderPlot({NGERFigAntReg(RegData=RegData,
+                                                       reshID = reshID
+                                                       # ,OpMetode = as.numeric(input$opMetodeKval)
+                                                       # ,Hastegrad = as.numeric(input$hastegradKval)
+                                                       # ,velgDiag = as.numeric(input$velgDiagKval)
+           )
+         }, height=500, width=900
+         )
+
 
  #----------Registreringsoversikter ----------------------
 
@@ -930,9 +923,10 @@ server <- function(input, output, session) {
       RegDataAlle <- NGERPreprosess(RegDataAlle)
       observe({
         DataDump <- NGERUtvalgEnh(RegData = RegDataAlle,
-                                                datoFra = input$datovalgReg[1],
-                                                datoTil = input$datovalgReg[2],
-                                                OpMetode = as.numeric(input$opMetodeRegDump))$RegData
+                                   datoFra = input$datovalgReg[1],
+                                   datoTil = input$datovalgReg[2],
+                                   OpMetode = as.numeric(input$opMetodeRegDump),
+                                  velgDiag = as.numeric(input$diagnoseRegDump))$RegData
          if (rolle =='SC') {
           valgtResh <- as.numeric(input$velgReshReg)
           ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
@@ -964,7 +958,7 @@ output$lastNed_dataDump <- downloadHandler(
                          Hastegrad = as.numeric(input$hastegradKval),
                          dagkir = as.numeric(input$dagkirKval),
                          velgDiag = as.numeric(input$velgDiagKval),
-                        # AlvorlighetKompl = as.numeric(input$alvorlighetKompl),
+                         AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
                          enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
                          velgAvd=input$velgReshKval,
                         session = session)
@@ -983,6 +977,7 @@ output$lastNed_dataDump <- downloadHandler(
                            Hastegrad = as.numeric(input$hastegradKval),
                            dagkir = as.numeric(input$dagkirKval),
                            velgDiag = as.numeric(input$velgDiagKval),
+                           AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
                            enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
                            velgAvd=input$velgReshKval,
                            session = session,
@@ -997,10 +992,12 @@ output$lastNed_dataDump <- downloadHandler(
                                      OpMetode = as.numeric(input$opMetodeKval),
                                      Hastegrad = as.numeric(input$hastegradKval),
                                      velgDiag = as.numeric(input$velgDiagKval),
+                                     AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
                                      enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
                                      velgAvd=input$velgReshKval,
                                      session = session)
 
+              #print(UtDataKvalInd$)
               tabKvalInd <- lagTabavFig(UtDataFraFig = UtDataKvalInd) #lagTabavFigAndeler
 
         output$tittelKvalInd <- renderUI({
@@ -1439,89 +1436,20 @@ output$lastNed_dataDump <- downloadHandler(
           fun = "abonnementNGER", #Lag egen funksjon for utsending
           paramNames = c('rnwFil', 'reshID', 'brukernavn'), #"valgtRHF"),
           paramValues = c('NGERmndRapp.Rnw', reshID, brukernavn) #'Alle')
-        ),
-        SamleRapp = list(
-          synopsis = "NGER/Rapporteket: Samlerapport, abonnement",
-          fun = "abonnementNGER",
-          paramNames = c('rnwFil','reshID', 'brukernavn'),
-          paramValues = c('NGERSamleRapp.Rnw', reshID, brukernavn)
         )
+        # SamleRapp = list(
+        #   synopsis = "NGER/Rapporteket: Samlerapport, abonnement",
+        #   fun = "abonnementNGER",
+        #   paramNames = c('rnwFil','reshID', 'brukernavn'),
+        #   paramValues = c('NGERSamleRapp.Rnw', reshID, brukernavn)
+        # )
       )
-      #c("Månedsrapport", "Samlerapport")
       #test <- nger::abonnementNGER(rnwFil="NGERmndRapp.Rnw", brukernavn='tullebukk', reshID=105460)
       autoReportServer(
         id = "ngerAbb", registryName = "nger", type = "subscription",
         paramNames = paramNames, paramValues = paramValues, #org = orgAbb$value,
         reports = reports, orgs = orgs, eligible = TRUE
       )
-
-
-      # ## reaktive verdier for å holde rede på endringer som skjer mens
-      # ## applikasjonen kjører
-      # rv <- reactiveValues(
-      #   subscriptionTab = rapbase::makeAutoReportTab(session))
-      # ## lag tabell over gjeldende status for abonnement
-      # output$activeSubscriptions <- DT::renderDataTable(
-      #   rv$subscriptionTab, server = FALSE, escape = FALSE, selection = 'none',
-      #   rownames = FALSE, options = list(dom = 't')
-      # )
-      #
-      # ## lag side som viser status for abonnement, også når det ikke finnes noen
-      # output$subscriptionContent <- renderUI({
-      #   fullName <- rapbase::getUserFullName(session)
-      #   if (length(rv$subscriptionTab) == 0) {
-      #     p(paste("Ingen aktive abonnement for", fullName))
-      #   } else {
-      #     tagList(
-      #       p(paste("Aktive abonnement for", fullName, "som sendes per epost til ",
-      #               rapbase::getUserEmail(session), ":")),
-      #       DT::dataTableOutput("activeSubscriptions")
-      #     )
-      #   }
-      # })
-      #
-      #
-      #       ## nye abonnement
-      # observeEvent (input$subscribe, { #MÅ HA
-      #   #package <- "intensiv"
-      #   owner <- rapbase::getUserName(session)
-      #   interval <- strsplit(input$subscriptionFreq, "-")[[1]][2]
-      #   intervalName <- strsplit(input$subscriptionFreq, "-")[[1]][1]
-      #   organization <- rapbase::getUserReshId(session)
-      #   runDayOfYear <- rapbase::makeRunDayOfYearSequence(
-      #     interval = interval
-      #   )
-      #   email <- rapbase::getUserEmail(session)
-      #   if (input$subscriptionRep == "Månedsrapport") {
-      #     synopsis <- "NGER/Rapporteket: Månedsrapport"
-      #     rnwFil <- "NGERmndRapp.Rnw" #Navn på fila
-      #   }
-      #   if (input$subscriptionRep == "Samlerapport") {
-      #     synopsis <- "NGER/Rapporteket: Samlerapport"
-      #     rnwFil <- "NGERSamleRapp.Rnw" #Navn på fila
-      #   }
-      #
-      #   fun <- "abonnementNGER"  #"henteSamlerapporter"
-      #   paramNames <- c('rnwFil', 'brukernavn', "reshID", "datoFra", 'datoTil')
-      #   paramValues <- c(rnwFil, brukernavn(), reshID, startDato, as.character(idag)) #input$subscriptionFileFormat)
-      #
-      #   #test <- nger::abonnementNGER(rnwFil="NGERmndRapp.Rnw", brukernavn='tullebukk', reshID=105460, datoFra = '2021-03-01')
-      #
-      #   rapbase::createAutoReport(synopsis = synopsis, package = 'nger',
-      #                             fun = fun, paramNames = paramNames,
-      #                             paramValues = paramValues, owner = owner,
-      #                             email = email, organization = organization,
-      #                             runDayOfYear = runDayOfYear, interval = interval,
-      #                             intervalName = intervalName)
-      #   rv$subscriptionTab <- rapbase::makeAutoReportTab(session)
-      # })
-      #
-      # ## slett eksisterende abonnement
-      # observeEvent(input$del_button, {
-      #   selectedRepId <- strsplit(input$del_button, "_")[[1]][2]
-      #   rapbase::deleteAutoReport(selectedRepId)
-      #   rv$subscriptionTab <- rapbase::makeAutoReportTab(session)
-      # })
 
 #-----------Registeradministrasjon-----------
   #-----Utsendinger

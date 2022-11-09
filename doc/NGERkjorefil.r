@@ -6,7 +6,7 @@ kodebok_kategorier = klokebok %>% filter(type == 'Listevariabel')
 #"Opf0UtstyrInstrumenter", "Opf0UtstyrNett" og "Opf0UtstyrSutur"
 
 #--------------------------------------SamleRAPPORTER-----------------------------------
-
+TEST
 rm(list=ls())
 library(nger)
 library(knitr)
@@ -16,22 +16,34 @@ library(lubridate)
 
 dev.off()
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
-#reshID <- 8
-datoFra <- '2019-01-01'
-datoTil <- Sys.Date()
-sluttDato <- datoTil
+# datoFra <- '2019-01-01'
+# datoTil <- Sys.Date()
+# sluttDato <- datoTil
 #setwd('C:/ResultattjenesteGIT/nger/inst/')
 setwd('~/nger/inst/')
 data('NGERtulledata', package = 'nger')
-load('A:/NGER/NGER2019-09-03.Rdata')
+
+AVN <- read.table('C:/Registerdata/nger/AlleVarNum2022-11-09.csv', sep = ';',
+                      header = T,encoding = 'UTF-8')
+ForlData <- read.table('C:/Registerdata/nger/ForlopsOversikt2022-11-09.csv', sep = ';',
+                       header = T,encoding = 'UTF-8')
+varForl <- c('BasisRegStatus', 'HovedDato','OppflgRegStatus','OppflgStatus','PasientAlder','SykehusNavn','ForlopsID')
+RegData <- merge(AVN, ForlData[,varForl], by = 'ForlopsID')
 RegData <- NGERPreprosess(RegData=RegData) #I App'en preprosesseres data
+SkjemaData <- read.table('C:/Registerdata/nger/SkjemaOversikt2022-11-09.csv', sep = ';',
+                       header = T,encoding = 'UTF-8')
+SkjemaData <- NGERPreprosess(RegData = SkjemaData)
 
 src <- normalizePath(system.file('NGERSamleRapp.Rnw', package='nger'))
 knitr::knit(src <- normalizePath(system.file('NGERSamleRapp.Rnw', package='nger')))
 knitr::knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
 tools::texi2pdf('NGERSamleRapp.tex')
 
-knitr::knit2pdf('NGERmndRapp.Rnw')
+knitr::knit2pdf('C:/RegistreGIT/nger/inst/NGERmndRapp.Rnw') #src <- normalizePath(system.file('NGERmndRapp.Rnw', package = 'nger')))
+
+NGERFigAntReg(RegData=0, datoTil='2021-02-02', reshID=110734,
+                           preprosess=1, hentData=1, outfile='')
+enhetsUtvalg <- 1
 
 #--Vil undersøke variabelen Opf0Status nærmere
 RegData <- NGERPreprosess(NGERRegDataSQL(datoFra = '2021-01-01', datoTil = '2021-10-31'))
@@ -70,13 +82,6 @@ table(RegData[,c('Opf0Komplikasjoner', 'Opf0metode', 'Opf0Status')], useNA = 'a'
 #NB: Mulig ikke bør bruke Komplikasjoner for å sjekke...
 table(RegData[which(is.na(RegData$Opf0Status)), c('Opf0metode', 'Aar')], useNA = 'a')
 
-#------------------------------Kjøre App----------------------------
-rm(list=ls())
-load(paste0('A:/NGER/NGER2019-09-03.Rdata'))
-
-#SkjemaOversikt <- NGERPreprosess(SkjemaOversikt)
-indAvvikDato <- which(as.numeric(as.Date(RegData$OpDato) - as.Date(RegData$HovedDato))>1)
-RegData[indAvvikDato[1:5], c('InnDato', "HovedDato")]
 #--------------------------------Datakobling--------------------------
 
 rm(list=ls())
@@ -108,8 +113,11 @@ load(paste0('A:/NGER/Aarsrapp20182019-03-18.Rdata'))
 library(nger)
 #----------------------------------- Lage tulledata ------------------------------
 #Denne inneholder ingen id'er og trenger ikke
-SkjemaOversikt <- NGERSkjema[ ,c("Skjemanavn", "SkjemaRekkeflg",  "SkjemaStatus",  "OpprettetDato", "HovedDato")]
-
+#SkjemaOversikt <- NGERSkjema[ ,c("Skjemanavn", "SkjemaRekkeflg",  "SkjemaStatus",  "OpprettetDato", "HovedDato")]
+qSkjemaOversikt <- 'SELECT * FROM SkjemaOversikt'
+SkjemaOversikt <- rapbase::loadRegData(registryName='nger',
+                                       query=qSkjemaOversikt, dbType='mysql')
+SkjemaOversikt <- NGERPreprosess(SkjemaOversikt)
 SkjemaOversikt<- lageTulleData(RegData=SkjemaOversikt, antSh=26, antObs=20000)
 
 varBort <- c('PasRegDato', 'PersonNr', 'PersonNrType', 'FodselsDato', 'Morsmaal', 'MorsmaalAnnet',
@@ -118,9 +126,9 @@ varBort <- c('PasRegDato', 'PersonNr', 'PersonNrType', 'FodselsDato', 'Morsmaal'
            'AvdodYY', 'InnDato', 'Mnd', 'Kvartal', 'Halvaar', 'Aar',
            'SykehusNavn', 'AvdRESH',
            grep('Opf1', names(RegData)), grep('RY1', names(RegData)))
-RegData <- lageTulleData(RegData=RegData, varBort=varBort, antSh=26, antObs=20000)
+RegData <- lageTulleData(RegData=0, varBort=varBort, antSh=26, antObs=20000)
 
-save(SkjemaOversikt, RegData, file = 'A:/NGER/NGERtulledata.Rdata')
+save(SkjemaOversikt, RegData, file = './data/NGERtulledata.Rdata')
 
 #----------------------------------- PARAMETRE ------------------------------
 RegData <- NGERRegDataSQL()
@@ -287,15 +295,24 @@ for (valgtVar in variable) {
                       valgtMaal='Gjsn',outfile=outfile)
 }
 
+#-----------------------------Ant. registereringer------------------------------
 
+NGERFigAntReg(RegData=0, datoTil=Sys.Date(),
+                           minald=0, maxald=130, erMann='', outfile='',
+                           reshID=0, enhetsUtvalg=2, hentData=1)
+
+NGERFigPrePost(RegData=0, valgtVar='ScoreGeneral',
+               datoFra='2019-01-01', datoTil=Sys.Date(), preprosess=1, hentData=1,
+               outfile='test.png')
 
 #-----------------------------Kvalietsindikatorer------------------------------
 #valgtVar <- 'kvalInd' #RAND0, TSS0, kvalInd
 outfile <- '' #paste0(valgtVar, '_kvalInd.png')
 data("NGERtulledata")
-UtKval <- NGERFigKvalInd(RegData=RegData, datoFra='2017-10-01', datoTil='3000-01-02', valgtVar='kvalInd', OpMetode=99,
-               Hastegrad=99, preprosess=0, Ngrense=10, enhetsUtvalg=1, reshID = 8, velgAvd = 0,
+UtDataFraFig <- NGERFigKvalInd(RegData=0, hentData = 1, datoFra='2017-10-01', valgtVar='kvalInd', OpMetode=99,
+               Hastegrad=99, preprosess=1, Ngrense=10, enhetsUtvalg=1, reshID = 8, velgAvd = 0,
                outfile=outfile)
+tabKvalInd <- lagTabavFig(UtDataFraFig = UtKval)
 
 RegData <- RegData[which(as.Date(RegData$HovedDato)>= as.Date('2017-01-01')), ]
 ind <- which(as.Date(RegData$HovedDato) < '2017-03-30')

@@ -15,6 +15,7 @@ NGERFigKvalInd(
   minald = 0,
   maxald = 130,
   OpMetode = 99,
+  AlvorlighetKompl = 0,
   Hastegrad = 99,
   dagkir = 9,
   hentData = 0,
@@ -51,13 +52,20 @@ IKKE tatt høyde for sammenlikning mot "resten".}
 
 \item{OpMetode}{1: Laparoskopi
 2: Hysteroskopi
-3: Begge
+3: Begge # 21.okt. 2022: Fjernes som eget valg. Blir med i både laparaskopi og hysteroskopi
 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
 5: LCC11 (laparoskopisk subtotal hysterektomi)
 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
 7: Robotassisert inngrep
 8: Kolpopeksiene
 9: Hysterectomier (alle)}
+
+\item{AlvorlighetKompl}{Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
+Angis som en vektor av tall som tekst, f.eks. c('1','2')
+1: Lite alvorlig
+2: Middels alvorlig
+3: Alvorlig
+4: Dødelig}
 
 \item{Hastegrad}{Hastegrad av operasjon.
 1: Elektiv

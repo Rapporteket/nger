@@ -22,6 +22,7 @@
 
 NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', datoTil=Sys.Date(),
                            valgtVar='kvalInd', enhetsUtvalg=0, minald=0, maxald=130, OpMetode=99,
+                           AlvorlighetKompl = 0,
                            Hastegrad=99, dagkir=9, hentData=0, preprosess=1, velgDiag=0, Ngrense=10,
                            outfile='', ...) {
 
@@ -51,9 +52,10 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
                     TSS0 = RegData[which(RegData$Tss2Status==1) %i% which(RegData$Tss2Type %in% 1:2)
                                    %i% which(RegData$InnDato >= '2016-01-01'), ],
                     kvalInd = RegData)
-
+  #NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, reshID=reshID, enhetsUtvalg=enhetsUtvalg)
   NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, reshID=reshID,  minald = minald, maxald = maxald, datoFra = datoFra,
                               datoTil = datoTil, OpMetode = OpMetode, Hastegrad=Hastegrad, velgDiag=velgDiag,
+                              AlvorlighetKompl = AlvorlighetKompl,
                               dagkir = dagkir, enhetsUtvalg=enhetsUtvalg, velgAvd=velgAvd)
   smltxt <- NGERUtvalg$smltxt
   medSml <- NGERUtvalg$medSml
@@ -62,7 +64,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
   RegData <- NGERUtvalg$RegData
 
 
-    KImaal <- switch(valgtVar, #dummym?l!!
+    KImaal <- switch(valgtVar,
                    RAND0 = 80,
                    TSS0 = 80,
                    kvalInd = 1:4)
@@ -104,15 +106,6 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
     xakseTxt <- 'Gjennomsnittlig skår (høyest er best)'
   }
 
-  # R1ScorePhys,
-  # -- R1ScoreRoleLmtPhy,
-  # R1ScoreRoleLmtEmo,
-  # R1ScoreGeneral,
-  # R1ScoreEnergy,
-  # R1ScoreEmo,
-  # R1ScoreSosial,
-  # --  R1ScorePain,
-  # RY1Status,
 
   if (valgtVar == 'TSS0') {
 
@@ -145,21 +138,36 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
     #	Intraoperative kompl.: HysKomplikasjoner/LapKomplikasjoner er NA hvis ikke hys/lap el. begge er utf.
     #	Oppfølging etter 4 uker, kun de som faktisk har fått oppfølging:
     #               Ønsker å heller benytte RegData$Variabel[RegData$Opf0Metode %in% 1:2] <- 1
+
+    #postop.kompl. lap og - hys
     tittel <- 'Kvalitetsindikatorer, prosessmål'
     grNavn <- c('Postop. komplikasjon: \n Reoperasjon',
+                'Postop. komp., middels/alvorlig, \n laparoskopi', #NY
+                'Postop. komp., middels/alvorlig, \n hysteroskopi', #NY
                'Intraop. komplikasjon ved \n laparoskopi',
                'Intraop. komplikasjon ved \n hysteroskopi',
                'Konvertert lap. til laparotomi \n ', #"LapKonvertert":
                'Konvertert hysteroskopi til \n laparaskopi/-tomi') #"HysKonvertert":
                # 'Ikke utført oppfølging \n etter 4 uker')
                # 'Ikke ferdistilt registrering \n innen 6 uker')
-    variable <- c('PostOpKomplReop', 'LapKomplikasjoner', 'HysKomplikasjoner',
+    variable <- c('PostOpKomplReop', 'PostKomplLap', 'PostKomplHys', 'LapKomplikasjoner', 'HysKomplikasjoner',
                   'LapKonvertert', 'HysKonvertert') #, 'Opf0') #, 'Innen6uker')
 
-    # RegData$Diff <- as.numeric(as.Date(RegData$Leveringsdato) - as.Date(RegData$InnDato)) #difftime(RegData$InnDato, RegData$Leveringsdato) #
-    # RegData$Innen6uker <- NA
-    # RegData$Innen6uker[which(RegData$OpStatus==1) %i% which(RegData$Diff > -1)] <- 0
-    # RegData$Innen6uker[RegData$Diff > 6*7] <- 1
+    #Postop.kompl. laparoskopi
+    #NB: Det er et bevisst valg at vi også har med OpMetode=3
+    indLap <- which(RegData$OpMetode==1 | RegData$OpMetode == 3)
+    RegData$PostKomplLap <- NA
+    RegData$PostKomplLap[indLap] <- 0
+    RegData$PostKomplLap[intersect(which(RegData$Opf0AlvorlighetsGrad %in% 2:4), indLap) ] <- 1
+    sum(RegData$PostKomplLap[ind$Hoved], na.rm = T)
+    table(RegData$ShNavn[ind$Hoved])
+    table(RegData$PostKomplLap)
+
+    #Postop.kompl. hysteroskopi
+    indHys <- which(RegData$OpMetode==2 | RegData$OpMetode == 3)
+    RegData$PostKomplHys <- NA
+    RegData$PostKomplHys[indHys] <- 0
+    RegData$PostKomplHys[intersect(which(RegData$Opf0AlvorlighetsGrad %in% 2:4), indHys)] <- 1
 
     #Reoperasjon som følge av komplikasjon
     #Kode 0: Nei, 1:Ja
@@ -167,13 +175,6 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
     RegData$PostOpKomplReop[which(RegData$Opf0Komplikasjoner %in% 0:1)
                             %i% which(RegData$Opf0Status == 1)] <- 0
     RegData$PostOpKomplReop[which(RegData$Opf0Reoperasjon == 1)] <- 1
-
-    # RegData$LapKonvertertIkkePlan <- NA
-    # RegData$LapKonvertertIkkePlan[which(RegData$LapKonvertert %in% 0:1)  %i%
-    #                               which(RegData$LapStatus == 1)] <- 0
-    # RegData$LapKonvertertIkkePlan[(RegData$LapStatus == 1) & (RegData$Konverteringsstatus ==2)] <- 1
-
-
 
 
     Ngr$Hoved <- apply(RegData[ind$Hoved,variable], MARGIN=2,
@@ -250,7 +251,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
     FigTypUt <- rapFigurer::figtype(outfile, fargepalett=NGERUtvalg$fargepalett)
     #Tilpasse marger for ? kunne skrive utvalgsteksten
     NutvTxt <- length(utvalgTxt)
-    vmarg <- max(0, strwidth(grtxt, units='figure', cex=cexgr)*0.65)
+    vmarg <- max(0, strwidth(grtxt, units='figure', cex=cexgr)*0.75)
     par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1)))	#Har alltid datoutvalg med
 
     farger <- FigTypUt$farger

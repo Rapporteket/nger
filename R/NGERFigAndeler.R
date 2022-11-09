@@ -101,7 +101,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   '%i%' <- intersect
 
   if (!(valgtVar %in% c('Diagnoser', 'Prosedyrer'))) {
-  NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, figurtype='andeler')
+  NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, OpMetode = OpMetode, figurtype='andeler')
   RegData <- NGERVarSpes$RegData
 }
   ###Gjør utvalg (NGERUtvalg)

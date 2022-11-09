@@ -20,12 +20,11 @@ datoTil <- Sys.Date()
 dato <- as.POSIXlt(datoTil)
 datoFra <- as.Date(paste0(1900+dato$year-1,'-', dato$mon+1, '-', '01'))
 #I månedsfigurene er datoFra automatisk satt til 13 mnd før dagens dato.
-RegData2aar <- nger::NGERPreprosess(NGERRegDataSQL(datoFra = (datoFra-365), datoTil = datoTil))
 if (!exists('RegData')){
       RegData <- nger::NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil)
       RegData <- nger::NGERPreprosess(RegData=RegData)
 }
-
+      RegData2aar <- nger::NGERUtvalgEnh(RegData=RegData, datoFra = (datoFra-365), datoTil = datoTil)$RegData
 @
 
 
@@ -49,7 +48,7 @@ for (valgtVar in variable) {
 }
 
 variabler <- c('Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan', 'Opf0Reoperasjon',
-              'Opf0AlvorlighetsGrad', 'KomplIntra', 'KomplPostop', 'OpAntibProfylakse',
+              'KomplPostopAlvor', 'KomplIntra', 'KomplPostop', 'OpAntibProfylakse',
               'OpASA', 'OpBMI', 'Opf0Status')
 for (valgtVar in variabler) {
 	outfile <- paste0(valgtVar, '_', tidsenhet, '.pdf')
@@ -156,7 +155,7 @@ xtable::xtable(nger::tabAntOpphShMnd(RegData=RegData2aar, datoTil = Sys.Date()-3
 \begin{frame}[fragile]
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.35]{Opf0AlvorlighetsGrad_Mnd.pdf}
+\includegraphics[scale=0.35]{KomplPostopAlvor_Mnd.pdf}
 \caption{Moderate og alvorlige komplikasjoner (grad 2-4)}
 \end{figure}
 \end{frame}

@@ -1,7 +1,7 @@
 
 #--------------------------------Data og parametrekobling--------------------------
-library(nger)
 # Inndata til funksjon:
+library(nger)
 datoFra <- '2016-01-01'
 datoFra1aar <- '2021-01-01'
 datoTil <- '2021-12-31'
@@ -13,6 +13,8 @@ NGERData1aar <- NGERRegDataSQL(datoFra = datoFra1aar, datoTil = datoTil)
 
 setwd('/home/rstudio/speil/aarsrapp/NGER' ) #"P:/Registerinfo og historie/NGER/aarsrapp/")
 
+###### NB KAN VÆRE MYE TULL HER. FIKK MERGE-KONFLIKT!!!!!!!!!!!!!!!!!!
+
 #-------------------------------Årsrapport 2020 og 21-------------------------------
 #Figurer med RAND?
 
@@ -20,6 +22,11 @@ setwd('/home/rstudio/speil/aarsrapp/NGER' ) #"P:/Registerinfo og historie/NGER/a
 #   Antall registreringer per år 2016-20
 # Endres? Opphold per sykehus og operasjonstype (Lap Hys Begge) per år
 
+
+NGERData <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil))
+NGERData1aar <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra1aar, datoTil = datoTil))
+
+setwd('/home/rstudio/speil/aarsrapp/NGER' ) #"P:/Registerinfo og historie/NGER/aarsrapp/")
 
 #------------------------------ Fordelingsfigurer --------------------------
 # 'BMI-kategori' = 'OpBMI',
@@ -99,7 +106,62 @@ NGERFigAndeler(RegData=NGERData1aar, valgtVar='Alder', datoTil=datoTil, OpMetode
                outfile='Alder_fordLap.pdf')
 NGERFigAndeler(RegData=NGERData1aar, valgtVar='Alder', datoTil=datoTil, OpMetode = 2,
                outfile='Alder_fordHys.pdf')
-NGERFigAndeler(RegData=NGERData1aar, valgtVar='Alder', datoTil=datoTil, OpMetode = 4,
+#NGERFigAndeler(RegData=NGERData1aar, valgtVar='Alder', datoTil=datoTil, OpMetode = 4,
+#Fjernet, 2021: 'Diagnoser','KomplPostopType', 'LapEkstrautstyr', 'Opf0AlvorlighetsGrad','Prosedyrer',
+variable <- c('OpBMI', 'HysGjforingsGrad','HysKomplikasjoner',
+              'LapIntraabdominell', 'LapKomplikasjoner', 'LapTeknikk',
+               'RegForsinkelse', 'Tss2Generelt')
+for (valgtVar in variable) {
+	outfile <- paste0(valgtVar, '_ford.pdf')
+	NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar, outfile=outfile)
+}
+#NGERFigAndeler(RegData=RegData, preprosess=0, valgtVar='KomplAlvorligPostopType')
+
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Diagnoser', OpMetode = 1,
+               outfile='Diagnoser_fordLap.pdf')
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Diagnoser', OpMetode = 2,
+               outfile='Diagnoser_fordHys.pdf')
+
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Prosedyrer', OpMetode = 1,
+               outfile='Prosedyrer_fordLap.pdf')
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Prosedyrer', OpMetode = 2,
+               outfile='Prosedyrer_fordHys.pdf')
+
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='LapIntraabdominell', OpMetode = 4,
+               outfile='LapIntraabdominell_fordTotLapHys.pdf')
+
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Opf0AlvorlighetsGrad', OpMetode = 1,
+               outfile='Opf0AlvorlighetsGrad_fordLap.pdf')
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Opf0AlvorlighetsGrad', OpMetode = 2,
+               outfile='Opf0AlvorlighetsGrad_fordHys.pdf')
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Opf0AlvorlighetsGrad', OpMetode = 4,
+               outfile='Opf0AlvorlighetsGrad_fordTotLapHys.pdf')
+
+# Postoperative komplikasjoner Laparoskopi, fordeling: *--lite alvorlige, *--moderat/ alvorlig
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='KomplPostopType',
+               OpMetode = 1, AlvorlighetKompl = 1, outfile='KomplPostopType_fordLapAlv1.pdf')
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='KomplPostopType',
+               OpMetode = 1, AlvorlighetKompl = 2:4, outfile='KomplPostopType_fordLapAlv234.pdf')
+
+# Postoperative komplikasjoner Hysteroskopi, fordeling: *--lite alvorlige, *--moderat/ alvorlig
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='KomplPostopType',
+               OpMetode = 2, AlvorlighetKompl = 1, outfile='KomplPostopType_fordHysAlv1.pdf')
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='KomplPostopType',
+               OpMetode = 2, AlvorlighetKompl = 2:4, outfile='KomplPostopType_fordHysAlv234.pdf')
+
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='KomplPostopType', OpMetode = 4,
+               outfile='KomplPostopType_fordTotLapHys.pdf')
+#Postop, alvorlige og middels alvorlige komplikasjoner:
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='KomplAlvorPostopType', OpMetode = 4,
+               outfile='KomplAlvorPostopType_fordTotLapHys.pdf')
+
+#Fordelingsfigurer: alder  og BMI på Laparoskopi, og på Hysteroskopi og på TLH (total laparaskopisk hysrektomi).
+
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Alder', OpMetode = 1,
+               outfile='Alder_fordLap.pdf')
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Alder', OpMetode = 2,
+               outfile='Alder_fordHys.pdf')
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Alder', OpMetode = 4,
                outfile='Alder_fordTLH.pdf')
 
 
@@ -111,6 +173,8 @@ NGERFigKvalInd(RegData=NGERData1aar, valgtVar='TSS0', datoTil=datoTil, OpMetode 
                              outfile='TSS0_fordHys.pdf')
 NGERFigKvalInd(RegData=NGERData1aar, valgtVar='TSS0', datoTil=datoTil, OpMetode = 4,
                                outfile='TSS0_fordTotLapHys.pdf')
+NGERFigKvalInd(RegData=NGERData1aar, preprosess=0, valgtVar='TSS0',
+                           outfile='TSS0_ford.pdf')
 
 #------------------------------ Andeler per år (AndelTid)--------------------------
 # 'Dagkirurgiske inngrep' = 'OpDagkirurgi', (lapraroskopi, elektiv)
@@ -161,7 +225,37 @@ for (valgtVar in c('KomplIntra', 'Opf0AlvorlighetsGrad1', 'Opf0AlvorlighetsGrad'
   NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
                   OpMetode=2, outfile=outfile, tidsenhet='Aar')
 }
-NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar='Opf0AlvorlighetsGrad1', datoTil=datoTil,
+#NGERFigAndelTid(RegData=NGERData, datoFra=datoFra, valgtVar='Opf0AlvorlighetsGrad1', datoTil=datoTil,
+
+#Fjernet 2021: 'KomplIntra', 'KomplPostop', 'OpASA', 'Opf0Reoperasjon'
+  NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='LapKonvertert',
+              outfile='LapKonvertert_Aar.pdf', tidsenhet='Aar')
+
+NGERFigAndelTid(RegData=NGERData, valgtVar='OpDagkirurgi', preprosess = 0,
+                OpMetode=1, Hastegrad=1, tidsenhet='Aar', outfile='OpDagkirLapEl_aar.pdf')
+
+
+#--Laparoskopi
+#Fjernet 2021: 'KomplPostop',
+for (valgtVar in c('KomplIntra', 'Opf0AlvorlighetsGrad1', 'KomplPostopAlvor',
+                   'Opf0Reoperasjon','LapKonvertert')) {
+  outfile <- paste0(valgtVar, '_', 'LapAar.pdf')
+  NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar=valgtVar,
+                  OpMetode=1, outfile=outfile, tidsenhet='Aar')
+}
+#Postoperative komplikasjoner Laparoskopi, lite alvorlige, utvikling siste 4 år
+NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf0AlvorlighetsGrad1',
+                OpMetode=1, outfile='Opf0AlvorlighetsGrad1_LapAar.pdf', tidsenhet='Aar')
+
+#--Hysteroskopi
+#Fjernet 2021: 'KomplPostop',
+for (valgtVar in c('KomplIntra','Opf0AlvorlighetsGrad1', 'KomplPostopAlvor',
+                   'Opf0Reoperasjon')) {
+  outfile <- paste0(valgtVar, '_', 'HystAar.pdf')
+  NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar=valgtVar,
+                  OpMetode=2, outfile=outfile, tidsenhet='Aar')
+}
+NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf0AlvorlighetsGrad1',
                 OpMetode=4, outfile='KomplPostop_TLHaar.pdf', tidsenhet='Aar')
 
 
@@ -194,7 +288,7 @@ for (valgtVar in variable) {
 for (valgtVar in c('KomplIntra', 'Opf0AlvorlighetsGrad1', 'Opf0AlvorlighetsGrad', #
                    'Opf0Reoperasjon','LapKonvertert', 'LapKonvertertUventet', 'OpDagkirurgi')) {
   outfile <- paste0(valgtVar, '_LapShus.pdf')
-  NGERFigAndelerGrVar(RegData=NGERData1aar, valgtVar=valgtVar,
+  NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar,
                       OpMetode=1, outfile=outfile)
 }
 
@@ -205,6 +299,13 @@ for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad1', 'Opf0Alv
                    'Opf0Reoperasjon')) {
   outfile <- paste0(valgtVar, '_HystShus.pdf')
   NGERFigAndelerGrVar(RegData=NGERData1aar, valgtVar=valgtVar,
+                      OpMetode=2, outfile=outfile)
+}
+#Fjernet 2021: 'Alder', 'OpBMI',
+for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad1', 'KomplPostopAlvor',
+                   'Opf0Reoperasjon')) {
+  outfile <- paste0(valgtVar, '_HystShus.pdf')
+  NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar,
                       OpMetode=2, outfile=outfile)
 }
 
@@ -220,21 +321,33 @@ for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad1', 'Opf0Alv
 # variable <- 'OpTid'
 # variable <- 'RegForsinkelse'
 
+<<<<<<< HEAD
 #NGERData <- NGERRegDataSQL(datoFra = datoFra1Yoppf, datoTil = datoTil)
 #'TSS2, sumskår' = 'Tss2Sumskaar'
 for (valgtVar in c('Tss2Sumskaar')) {
   outfile <- paste0(valgtVar, '_' ,'ShGjsn.pdf')
   NGERFigGjsnGrVar(RegData=NGERData1aar, valgtVar=valgtVar,
+=======
+#'TSS2, sumskår' = 'Tss2Sumskaar'
+for (valgtVar in c('Tss2Sumskaar')) {
+  outfile <- paste0(valgtVar, '_' ,'ShGjsn.pdf')
+  NGERFigGjsnGrVar(RegData=NGERData, preprosess = 0, valgtVar=valgtVar, datoFra=datoFra1aar,
+>>>>>>> rel
                       outfile=outfile)
 }
 
 for (OpMetode in c(1,2,4)) {
   outfile <- paste0('OpTid_', c('Lap','Hyst','', 'TLH')[OpMetode] ,'ShGjsn.pdf')
+<<<<<<< HEAD
   NGERFigGjsnGrVar(RegData=NGERData1aar, valgtVar='OpTid',
+=======
+  NGERFigGjsnGrVar(RegData=NGERData1aar, valgtVar='OpTid', preprosess = 0,
+>>>>>>> rel
                    OpMetode = OpMetode, outfile=outfile)
 }
 
 #Skal bare ha med Haugesund 701437, Bodø 706220, Trondheim 107644, Ullevål 700399 og Tønsberg 110734.
+<<<<<<< HEAD
 NGERDataUtvSh <- NGERData[which(NGERData$AvdRESH %in% c(701437, 706220, 107644, 700399, 110734)),]
 NGERDataUtvSh <- NGERPreprosess(RegData = NGERDataUtvSh)
 
@@ -251,6 +364,20 @@ for (valgtVar in c('kvalInd', 'RAND0', 'TSS0')) {
 outfile <- paste0(valgtVar, '_' ,'KI.pdf')
 NGERFigKvalInd(RegData=NGERData1aar, datoTil=datoTil,
                            valgtVar=valgtVar, outfile=outfile)
+=======
+NGERDataUtvSh1aar <- NGERData[which(NGERData1aar$ReshId %in% c(701437, 706220, 107644, 700399, 110734)),]
+
+NGERFigGjsnGrVar(RegData=NGERDataUtvSh, valgtVar='R0ScoreGeneral', datoFra=datoFra1Yoppf, datoTil=datoTil1Yoppf,
+                 outfile=paste0('R0ScoreGeneralForrige_UtvalgteShGjsn.pdf'))
+NGERFigGjsnGrVar(RegData=NGERDataUtvSh, valgtVar='R1ScoreGeneral', datoFra=datoFra1Yoppf, datoTil=datoTil1Yoppf,
+                  outfile=paste0('R1ScoreGeneral_UtvalgteShGjsn.pdf'))
+
+
+#KvalInd
+for (valgtVar in c('kvalInd', 'RAND0')) {
+outfile <- paste0(valgtVar, '_' ,'KI.pdf')
+NGERFigKvalInd(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar, outfile=outfile)
+>>>>>>> rel
 }
 
 #Ønsker også Rand etter 1 år
@@ -261,11 +388,16 @@ NGERFigKvalInd(RegData=NGERData1aar, datoTil=datoTil,
 #------------------------------Tabeller-----------------------------------
 library(xtable)
 library(nger)
+<<<<<<< HEAD
 aarsRappAar <- 2021
 datoFra1aar <- paste0(aarsRappAar, '-01-01')
 datoTil <- paste0(aarsRappAar, '-12-31')
 RegData <- NGERPreprosess(NGERRegDataSQL(datoFra = '2016-01-01', datoTil = datoTil))
 RegData1aar <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra1aar, datoTil = datoTil))
+=======
+RegData <- NGERData
+RegData <- NGERPreprosess(RegData)
+>>>>>>> rel
 
 #Antall registreringer siste 5 år
 tabOpph <- tabAntOpphSh5Aar(RegData=RegData, datoTil=datoTil)
@@ -277,6 +409,7 @@ xtable::xtable(tabAvdAarN, digits=0, align=c('l', rep('r',ncol(tabAvdAarN))),
 
 
 #Tabell med antall registreringer for hvert sykehus, splittet på lap, hys og begge
+<<<<<<< HEAD
 tab <- table(RegData1aar[ ,c('ShNavn', "OpMetode")]) #, 'Aar'
 dimnames(tab)$OpMetode <- c('Lap', 'Hys', 'Begge')
 tab <- addmargins(tab, margin = 1)
@@ -297,6 +430,14 @@ xtable::xtable(tab, align=c('l', rep('r',ncol(tab))), digits=0)
 #                 ' ',
 #                 tab[,,'2020'])
 
+=======
+RegData1aar <- NGERPreprosess(RegData = NGERRegDataSQL(datoFra = datoFra1aar, datoTil = datoTil))
+tab <- table(RegData[ ,c('ShNavn', "OpMetode")]) #, 'Aar'
+dimnames(tab)$OpMetode <- c('Lap', 'Hys', 'Begge')
+tab <- addmargins(tab, margin = 1)
+
+xtable::xtable(tab, align=c('l', rep('r',ncol(tab))), digits=0)
+>>>>>>> rel
 
 # ggplot::ggplot(RegData, aes(OpMetode)) +
 #   geom_histogram(bins = 3) +
@@ -367,14 +508,27 @@ RegData <- NGERPreprosess(RegData = NGERRegDataSQL(datoFra = '2016-01-01',
 #                               indID = 'indDummy', ResPort=0, lastNedFil=1, filUt='dummy')
 #Forekomsten av komplikasjoner ved  inngrep.
 #Lap Hys
-dataTilSKDE <- dataTilOffVisning(RegData=RegData, valgtVar = 'KomplIntra',
+# dataTilSKDE <- dataTilOffVisning(RegData=RegData, valgtVar = 'KomplIntra',
+#                                  OpMetode = 1,
+#                                  ResPort=0, lastNedFil=1,
+#--------------------Data til SKDE interaktive nettsider------------------
+#KomplIntra, KomplPostop, KomplPostopAlvor
+#OpMetode  1: Laparoskopi #2: Hysteroskopi, 2019: 5954 3146
+library(nger)
+setwd('/home/rstudio/speil/aarsrapp/NGER' )
+RegData <- NGERPreprosess(RegData = NGERRegDataSQL(datoFra = '2016-01-01',
+                                                   datoTil = '2021-12-31'))
+
+dataTilSKDE <- dataTilOffVisning(RegData=RegData,
+                                 valgtVar = 'KomplIntra',
                                  OpMetode = 1,
-                                 ResPort=0, lastNedFil=1,
+                                 lastNedFil=1,
                                  indID = 'nger_kompl_intra_lap', filUt='KomplIntraLap')
 
 dataTilSKDE <- dataTilOffVisning(RegData=RegData, valgtVar = 'KomplIntra',
                                  OpMetode = 2,
                                  ResPort=0, lastNedFil=1,
+                                 lastNedFil=1,
                                  indID = 'nger_kompl_intra_hys', filUt='KomplIntraHys')
 
 #Forekomsten av middels og alvorlige komplikasjoner etter  inngrep.
@@ -394,5 +548,26 @@ dataTilSKDE <- dataTilOffVisning(RegData=RegData, valgtVar = 'Tss2Generelt',
                                  #aar=2016:2019,
                                  ResPort=0, lastNedFil=1,
                                  indID = 'nger_pasient_tilfredshet', filUt='Tss2Generelt')
+                                 # lastNedFil=1,
+                                 # indID = 'nger_kompl_postop_lap', filUt='KomplPostopLap')
+
+dataTilSKDE <- dataTilOffVisning(RegData=RegData, valgtVar = 'KomplPostopAlvor',
+                                 OpMetode = 2,
+                                 lastNedFil=1,
+                                 indID = 'nger_kompl_postop_hys', filUt='KomplPostopHys')
+
+#Andel pasienter som har positiv eller svært positiv oppfatning av gynekologisk avdeling - UTGÅR!
+# dataTilSKDE <- dataTilOffVisning(RegData=RegData, valgtVar = 'Tss2Generelt',
+#                                  lastNedFil=1,
+#                                  indID = 'nger_pasient_tilfredshet', filUt='Tss2Generelt')
+
+#Generell pasienttilfredshet
+dataTilSKDE <- dataTilOffVisning(RegData=RegData,
+                                 valgtVar = 'Tss2Sumskaar',
+                                 aggData = 1,
+                                 lastNedFil=1,
+                                 indID = 'nger_pasient_tilfredshet',
+                                 filUt='Tss2Sumskaar')
+
 
 tapply(dataTilSKDE$var, dataTilSKDE$year, FUN='mean')*100

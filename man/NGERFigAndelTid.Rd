@@ -39,7 +39,7 @@ NGERFigAndelTid(
 
 \item{OpMetode}{1: Laparoskopi
 2: Hysteroskopi
-3: Begge
+3: Begge # 21.okt. 2022: Fjernes som eget valg. Blir med i både laparaskopi og hysteroskopi
 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
 5: LCC11 (laparoskopisk subtotal hysterektomi)
 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
@@ -101,7 +101,7 @@ Argumentet \emph{valgtVar} har følgende valgmuligheter:
 	\item Opf0KomplInfeksjon: Postop. komplikasjon: Infeksjon
 	\item Opf0KomplOrgan: Postop. komplikasjon: Organskade
 	\item Opf0Reoperasjon: Andel reoperasjon som følge av komplikasjon
-	\item Opf0AlvorlighetsGrad: Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
+	\item KomplPostopAlvor: Andel av postoperative komplikasjoner som var alvorlige (3 og 4)
 	\item KomplIntra: Komplikasjoner ved operasjon. (kombinerer variablene HysKomplikasjoner og LapKomplikasjoner)
 	\item KomplPostop: Andel postoperative komplikasjoner
 	\item LapKonvertert: Konvertert til laparoromi?

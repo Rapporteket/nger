@@ -4,7 +4,7 @@
 #' Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus
 #'
 #'  Variable funksjonen benytter: Alder (beregnes), Opf0Komplikasjoner, Opf0Reoperasjon, Opf0KomplBlodning, Opf0KomplUtstyr,
-#'  Opf0KomplInfeksjon, Opf0KomplOrganUtdanning, Opf0AlvorlighetsGrad
+#'  Opf0KomplInfeksjon, Opf0KomplOrganUtdanning, KomplPostopAlvor
 #'  HysKomplikasjoner, LapKomplikasjoner, OpMetode, OpAntibProfylakse, OpASA, OpBMI, Opf0Status.
 #'  Det benyttes også andre variable til utvalg osv.
 #'
@@ -16,7 +16,7 @@
 #'		\item OpAntibProfylakse: Fått antibiotikaprofylakse
 #'		\item OpASA: ASA-grad > II
 #'		\item OpBMI: Pasienter med fedme (BMI>30)
-#'		\item Opf0AlvorlighetsGrad: Alvorlige komplikasjoner (grad 3 og 4)
+#'		\item KomplPostopAlvor: Alvorlige komplikasjoner (grad 3 og 4)
 #'		\item Opf0KomplBlodning: Postop. komplikasjon: Blødning
 #'		\item Opf0KomplUtstyr: Postop. komplikasjon: Problemer med ustyr
 #'		\item Opf0KomplInfeksjon: Postop. komplikasjon: Infeksjon
@@ -66,13 +66,10 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', datoFra='2013-01-01
   tittel <- NGERVarSpes$tittel
   KvalIndGrenser <- NGERVarSpes$KvalIndGrenser
   sortAvtagende <- NGERVarSpes$sortAvtagende
-
   grVar <- 'ShNavn'
-  #RegData[ ,grVar] <- factor(RegData[ ,grVar])
 
-
-  NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, OpMetode=OpMetode,
-                              minald=minald, maxald=maxald,
+  NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, OpMetode=OpMetode
+                              ,minald=minald, maxald=maxald,
                               AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
                               velgAvd=velgAvd, velgDiag=velgDiag)
   RegData <- NGERUtvalg$RegData
@@ -85,6 +82,7 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', datoFra='2013-01-01
   Nvar <- tapply(RegData$Variabel, RegData[ ,grVar], sum, na.rm=T)
   if(N > 0) {Ngr <- table(RegData[ ,grVar])}	else {Ngr <- 0}
   AntGr <- length(which(Ngr >= Ngrense))	#length(which(Midt>0))
+  #Nvar[names(Nvar) == 'Trondheim'] <- 387-191
   AndelerGr <- round(100*Nvar/Ngr,2)
 
   indGrUt <- as.numeric(which(Ngr < Ngrense))
@@ -99,7 +97,6 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', datoFra='2013-01-01
   AggVerdier$Hoved <- AndelerGr[sortInd]
   AggVerdier$Tot <- round(100*sum(RegData$Variabel)/N, 2)
   GrNavnSort <- paste0(names(Ngr)[sortInd], ' (',Ngrtxt[sortInd], ')')
-  #	GrNavnSort <- names(Ngr)[sortInd]
 
   andeltxt <- paste0(sprintf('%.1f',AggVerdier$Hoved), '%') 	#round(as.numeric(AggVerdier$Hoved),1)
   if (length(indGrUt)>0) {andeltxt[(AntGr+1):(AntGr+length(indGrUt))] <- ''}
@@ -108,12 +105,8 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', datoFra='2013-01-01
                        N=N, #Nfig,
                        Ngr=Ngr[sortInd],
                        KvalIndGrenser <- NGERVarSpes$KvalIndGrenser,
-                       #grtxt2=grtxt2,
                        grtxt=grtxt,
-                       #grTypeTxt=grTypeTxt,
                        tittel=tittel,
-                       #xAkseTxt=xAkseTxt,
-                       #yAkseTxt=yAkseTxt,
                        utvalgTxt=utvalgTxt,
                        fargepalett=NGERUtvalg$fargepalett,
                        hovedgrTxt=NGERUtvalg$hovedgrTxt)

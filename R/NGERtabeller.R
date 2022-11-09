@@ -15,7 +15,6 @@ tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0,
       #RegData må inneholde ..
   gyldigResh <- reshID!=0 & !is.na(match(reshID, RegData$ReshId))
   if (gyldigResh) {RegData <- RegData[which(RegData$ReshId==reshID), ]}
-      #datoFra <- lubridate::floor_date(as.Date(datoTil)%m-% months(antMnd, abbreviate = T), unit='month')
       datoFra <- lubridate::floor_date(as.Date(datoTil)- months(antMnd, abbreviate = T), unit='month')
       aggVar <-  c('ShNavn', 'InnDato')
       Utvalg <- NGERUtvalgEnh(RegData=RegData, OpMetode = OpMetode, velgDiag=velgDiag)
@@ -27,8 +26,6 @@ tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0,
       colnames(tabAvdMnd1) <- format(lubridate::ymd(colnames(tabAvdMnd1)), '%b %y') #month(lubridate::ymd(colnames(tabAvdMnd1)), label = T)
       if (reshID==0){
         tabAvdMnd1 <- addmargins((tabAvdMnd1))}
-      #tabAvdMnd1 <- RegDataDum %>% group_by(Maaned=floor_date(InnDato, "month"), ShNavn) %>%
-      #      summarize(Antall=length(ShNavn))
       tabAvdMnd1 <- xtable::xtable(tabAvdMnd1, digits=0)
       return(tabAvdMnd1)
 	#return(list(tabAvdMnd1=tabAvdMnd1, utvalgTxt <- Utvalg$utvalgTxt))
@@ -98,11 +95,11 @@ lagTabavFig <- function(UtDataFraFig, figurtype='andeler'){ #lagTabavFigAndeler
   #medSml==1
 
   if (figurtype %in% c('andeler','gjsnGrVar', 'andelTid')){
-  tab <-cbind(Ngr$Hoved,
-              AggVerdier$Hoved,
+  tab <-cbind(UtDataFraFig$Ngr$Hoved,
+              UtDataFraFig$AggVerdier$Hoved,
               if (medSml==1){cbind(
-                Ngr$Rest,
-                AggVerdier$Rest)})
+                UtDataFraFig$Ngr$Rest,
+                UtDataFraFig$AggVerdier$Rest)})
   }
 
   if (figurtype %in% c('andeler', 'andelTid')) {
