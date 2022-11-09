@@ -16,21 +16,30 @@ library(lubridate)
 
 dev.off()
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
-datoFra <- '2019-01-01'
-datoTil <- Sys.Date()
-sluttDato <- datoTil
+# datoFra <- '2019-01-01'
+# datoTil <- Sys.Date()
+# sluttDato <- datoTil
 #setwd('C:/ResultattjenesteGIT/nger/inst/')
 setwd('~/nger/inst/')
 data('NGERtulledata', package = 'nger')
-load('A:/NGER/NGER2019-09-03.Rdata')
+
+AVN <- read.table('C:/Registerdata/nger/AlleVarNum2022-11-09.csv', sep = ';',
+                      header = T,encoding = 'UTF-8')
+ForlData <- read.table('C:/Registerdata/nger/ForlopsOversikt2022-11-09.csv', sep = ';',
+                       header = T,encoding = 'UTF-8')
+varForl <- c('BasisRegStatus', 'HovedDato','OppflgRegStatus','OppflgStatus','PasientAlder','SykehusNavn','ForlopsID')
+RegData <- merge(AVN, ForlData[,varForl], by = 'ForlopsID')
 RegData <- NGERPreprosess(RegData=RegData) #I App'en preprosesseres data
+SkjemaData <- read.table('C:/Registerdata/nger/SkjemaOversikt2022-11-09.csv', sep = ';',
+                       header = T,encoding = 'UTF-8')
+SkjemaData <- NGERPreprosess(RegData = SkjemaData)
 
 src <- normalizePath(system.file('NGERSamleRapp.Rnw', package='nger'))
 knitr::knit(src <- normalizePath(system.file('NGERSamleRapp.Rnw', package='nger')))
 knitr::knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
 tools::texi2pdf('NGERSamleRapp.tex')
 
-knitr::knit2pdf('NGERmndRapp.Rnw')
+knitr::knit2pdf('C:/RegistreGIT/nger/inst/NGERmndRapp.Rnw') #src <- normalizePath(system.file('NGERmndRapp.Rnw', package = 'nger')))
 
 NGERFigAntReg(RegData=0, datoTil='2021-02-02', reshID=110734,
                            preprosess=1, hentData=1, outfile='')

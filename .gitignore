@@ -8,6 +8,7 @@ testing
 *.docx
 *.lof
 *.log
+*.tex
 *NGERSamledok.pdf
 *.lot
 *.synctex.gz
@@ -24,7 +25,7 @@ NGERmonthlyReport.pdf
 NGERmonthlyReport.tex
 config
 nger.Rproj
-#*.pdf
+*.pdf
 testRAND36.csv
 testRAND36.xlsx
 figurer/
