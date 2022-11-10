@@ -9,7 +9,7 @@
 #' @return RegData data frame
 #' @export
 #'
-NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = '2099-01-01',...) {
+NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = Sys.Date(),...) {
 
   if ("session" %in% names(list(...))) {
     rapbase::repLogger(session = list(...)[["session"]], msg = paste0('Hentet rådata'))

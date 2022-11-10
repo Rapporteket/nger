@@ -23,14 +23,14 @@ reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 setwd('~/nger/inst/')
 data('NGERtulledata', package = 'nger')
 
-AVN <- read.table('C:/Registerdata/nger/AlleVarNum2022-11-09.csv', sep = ';',
+AVN <- read.table('C:/Registerdata/nger/AlleVarNum2022-11-10.csv', sep = ';',
                       header = T,encoding = 'UTF-8')
-ForlData <- read.table('C:/Registerdata/nger/ForlopsOversikt2022-11-09.csv', sep = ';',
+ForlData <- read.table('C:/Registerdata/nger/ForlopsOversikt2022-11-10.csv', sep = ';',
                        header = T,encoding = 'UTF-8')
 varForl <- c('BasisRegStatus', 'HovedDato','OppflgRegStatus','OppflgStatus','PasientAlder','SykehusNavn','ForlopsID')
 RegData <- merge(AVN, ForlData[,varForl], by = 'ForlopsID')
 RegData <- NGERPreprosess(RegData=RegData) #I App'en preprosesseres data
-SkjemaData <- read.table('C:/Registerdata/nger/SkjemaOversikt2022-11-09.csv', sep = ';',
+SkjemaData <- read.table('C:/Registerdata/nger/SkjemaOversikt2022-11-10.csv', sep = ';',
                        header = T,encoding = 'UTF-8')
 SkjemaData <- NGERPreprosess(RegData = SkjemaData)
 

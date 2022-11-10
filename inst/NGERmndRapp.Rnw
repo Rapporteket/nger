@@ -23,8 +23,8 @@ datoFra <- as.Date(paste0(1900+dato$year-1,'-', dato$mon+1, '-', '01'))
 if (!exists('RegData')){
       RegData <- nger::NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil)
       RegData <- nger::NGERPreprosess(RegData=RegData)
+      RegData2aar <- nger::NGERPreprosess(RegData = NGERRegDataSQL(datoFra=datoFra-365, datoTil = datoTil))
 }
-      RegData2aar <- nger::NGERUtvalgEnh(RegData=RegData, datoFra = (datoFra-365), datoTil = datoTil)$RegData
 @
 
 
@@ -114,7 +114,7 @@ xtable::xtable(nger::tabAntOpphShMnd(RegData=RegData, datoTil = Sys.Date(), antM
                digits=0,
                caption=paste0('Antall registreringer ved ditt sykehus siste ', antMnd, ' måneder.'))
 
-xtable::xtable(nger::tabAntOpphShMnd(RegData=RegData2aar, datoTil = Sys.Date()-365, antMnd=antMnd, reshID=reshID),
+xtable::xtable(nger::tabAntOpphShMnd(RegData=RegData, datoTil = Sys.Date()-365, antMnd=antMnd, reshID=reshID),
                digits=0,
                caption=paste0('Antall registreringer ved ditt sykehus forrige år.'))
 
