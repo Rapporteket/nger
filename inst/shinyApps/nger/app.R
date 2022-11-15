@@ -35,8 +35,9 @@ if (paaServer) {
 
 tulledata <- 0
 if (!exists('RegData')) {
-  data('NGERtulledata', package = 'nger')
+  data('NGERtulledata.Rdata', package = 'nger')
   #SkjemaOversikt <- plyr::rename(SkjemaOversikt, replace=c('SykehusNavn'='ShNavn'))
+  load('./data/NGERtulledata.Rdata')
   tulledata <- 1 #Må få med denne i tulledatafila..
   }
 
