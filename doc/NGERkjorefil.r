@@ -16,9 +16,6 @@ library(lubridate)
 
 dev.off()
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
-# datoFra <- '2019-01-01'
-# datoTil <- Sys.Date()
-# sluttDato <- datoTil
 #setwd('C:/ResultattjenesteGIT/nger/inst/')
 setwd('~/nger/inst/')
 data('NGERtulledata', package = 'nger')
@@ -33,6 +30,8 @@ RegData <- NGERPreprosess(RegData=RegData) #I App'en preprosesseres data
 SkjemaData <- read.table('C:/Registerdata/nger/SkjemaOversikt2022-11-10.csv', sep = ';',
                        header = T,encoding = 'UTF-8')
 SkjemaData <- NGERPreprosess(RegData = SkjemaData)
+
+test <-
 
 src <- normalizePath(system.file('NGERSamleRapp.Rnw', package='nger'))
 knitr::knit(src <- normalizePath(system.file('NGERSamleRapp.Rnw', package='nger')))

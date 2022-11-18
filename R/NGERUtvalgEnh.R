@@ -81,7 +81,7 @@ NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', f
   indMCE <- if (OpMetode %in% c(1:3)){which(RegData$OpMetode %in% c(OpMetode,3))
     } else {indMCE <- 1:Ninn}
   #if (OpMetode == 7) {indMCE <- which(RegData$LapRobotKirurgi == 1)} #ROBOT_KIRURGI==TRUE
-  if (OpMetode %in% c(4:6,8,9)) {
+  if (OpMetode %in% c(4:6:9)) {
       ProsLap <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3')
       indMCE <- switch(as.character(OpMetode),
               '4' = unique(c(which(RegData[,ProsLap] == 'LCD01', arr.ind = TRUE)[,1],
