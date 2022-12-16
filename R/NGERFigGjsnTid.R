@@ -53,39 +53,39 @@ NGERFigGjsnTid <- function(RegData, valgtVar='alder', datoFra='2011-01-01', dato
   medSml <- NGERUtvalg$medSml
   #------------------------Klargjøre tidsenhet--------------
   N <- list(Hoved = dim(RegData)[1], Rest=0)
-  #N <- list(Hoved = 0, Rest =0)
- # if (N$Hoved>9) {
+  ind <- NGERUtvalg$ind
+  Ngr <- list(Hoved = length(ind$Hoved), Rest =length(ind$Rest))
+
+    #Nok observasjoner til å lage figur?
+  if (length(ind$Hoved)<10 | ((medSml == 1) & (length(ind$Rest) < 10))) {
+
+    FigDataParam <- list(AggVerdier = rbind(Midt=NA, Konf=NA, MidtRest=NA, KonfRest=NA),
+                         N=N,
+                         Ngr=Ngr,
+                         grtxt=levels(RegData$TidsEnhet),
+                         tittel=NGERVarSpes$tittel,
+                         utvalgTxt=utvalgTxt,
+                         fargepalett=NGERUtvalg$fargepalett,
+                         medSml=medSml,
+                         hovedgrTxt=NGERUtvalg$hovedgrTxt,
+                         smltxt=NGERUtvalg$smltxt)
+
+    rapFigurer::figtype(outfile)
+    plot.new()
+    title(main=NGERVarSpes$tittel)
+    text(0.5, 0.65, 'Færre enn 10 registreringer i hoved-', cex=1.2)
+    text(0.55, 0.6, 'eller sammenlikningsgruppe', cex=1.2)
+    #	text(0.5, 0.5, tekst,cex=1.5)	#, family="sans")
+    if ( outfile != '') {dev.off()}
+
+  } else {
+
     RegDataFunk <- SorterOgNavngiTidsEnhet(RegData=RegData, tidsenhet = tidsenhet)
     RegData <- RegDataFunk$RegData
     tidNum <- min(RegData$TidsEnhetSort, na.rm=T):max(RegData$TidsEnhetSort, na.rm = T) #as.numeric(levels(RegData$TidsEnhetSort))
 
     KIekstrem <- NULL
-    ind <- NGERUtvalg$ind
-    Ngr <- list(Hoved = length(ind$Hoved), Rest =length(ind$Rest))
 
-    #Nok observasjoner til å lage figur?
-    if (length(ind$Hoved)<10 | ((medSml == 1) & (length(ind$Rest) < 10))) {
-
-       FigDataParam <- list(AggVerdier = rbind(Midt=NA, Konf=NA, MidtRest=NA, KonfRest=NA),
-                           N=N,
-                           Ngr=Ngr,
-                           grtxt=levels(RegData$TidsEnhet),
-                           tittel=NGERVarSpes$tittel,
-                           utvalgTxt=utvalgTxt,
-                           fargepalett=NGERUtvalg$fargepalett,
-                           medSml=medSml,
-                           hovedgrTxt=NGERUtvalg$hovedgrTxt,
-                           smltxt=NGERUtvalg$smltxt)
-
-      rapFigurer::figtype(outfile)
-      plot.new()
-      title(main=tittel)
-      text(0.5, 0.65, 'Færre enn 10 registreringer i hoved-', cex=1.2)
-      text(0.55, 0.6, 'eller sammenlikningsgruppe', cex=1.2)
-      #	text(0.5, 0.5, tekst,cex=1.5)	#, family="sans")
-      if ( outfile != '') {dev.off()}
-
-      } else {
 
         #--------------- Gjøre beregninger ------------------------------
 
@@ -217,7 +217,7 @@ if (lagFigur==1) {
 
     if ( outfile != '') {dev.off()}
 } #lag figur
- # }	#end if statement for 0 observations
+ }	#end if statement for få observations
   return(invisible(FigDataParam))
 
 }	#end function

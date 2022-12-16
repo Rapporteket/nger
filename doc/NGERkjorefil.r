@@ -94,7 +94,7 @@ NGERSkjema <- read.table(paste0('C:/Registerdata/nger/SkjemaOversikt', dato, '.c
 #NGERData <- merge(NGERData, NGEROppf, by = "ForlopsID", suffixes = c('','YY'),all.x = TRUE)
 NGERData <- merge(NGERBasis, NGERForlop, by = "ForlopsID", suffixes = c('','YY'),all.x = TRUE, all.y=FALSE)
 #write.table(NGERData, file = paste0("NGER", dato), row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
- RegData <- NGERData
+ RegData <- nger::NGERPreprosess(NGERData)
 # RegData <- NGERPreprosess(NGERData)
 # RegData <- NGERUtvalgEnh(RegData, datoFra = '2016-01-01', datoTil = '2018-12-31')$RegData
 # save(RegData, file=paste0('A:/NGER/Aarsrapp2018', dato, '.Rdata'))
@@ -270,8 +270,8 @@ for (valgtVar in variable) {
 
 valgtVar <- 'Tss2Sumskaar'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
                             #R0ScoreEmo, R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral, RegForsinkelse, OpTid
-                          #'Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
-                          #'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt', 'Tss2Sumskaar'
+                          # 'Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
+                          # 'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt', 'Tss2Sumskaar'
 
 outfile <- ''
 #outfile <- paste0(valgtVar, '_sh.png')
@@ -284,6 +284,7 @@ testGjsnTid <- NGERFigGjsnTid(RegData=RegData,valgtVar=valgtVar, datoFra='2017-0
                  valgtMaal='gjsn', hentData=0, tidsenhet = 'Kvartal', enhetsUtvalg = enhetsUtvalg, #OpMetode=OpMetode, medKI=1, , velgAvd = ''
                  outfile=outfile, reshID = reshID)#AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
 
+testGjsnTid <- NGERFigGjsnTid(RegData=RegData,valgtVar='R0ScoreGeneral', datoFra='2022-01-01', preprosess = 0)
 variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
               'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')
 variable <- c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
