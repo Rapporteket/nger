@@ -54,16 +54,40 @@ NGERFigGjsnTid <- function(RegData, valgtVar='alder', datoFra='2011-01-01', dato
   #------------------------Klargjøre tidsenhet--------------
   N <- list(Hoved = dim(RegData)[1], Rest=0)
   #N <- list(Hoved = 0, Rest =0)
-  if (N$Hoved>9) {
+ # if (N$Hoved>9) {
     RegDataFunk <- SorterOgNavngiTidsEnhet(RegData=RegData, tidsenhet = tidsenhet)
     RegData <- RegDataFunk$RegData
-    #tidtxt <- RegDataFunk$tidtxt
     tidNum <- min(RegData$TidsEnhetSort, na.rm=T):max(RegData$TidsEnhetSort, na.rm = T) #as.numeric(levels(RegData$TidsEnhetSort))
 
-    #--------------- Gjøre beregninger ------------------------------
     KIekstrem <- NULL
     ind <- NGERUtvalg$ind
     Ngr <- list(Hoved = length(ind$Hoved), Rest =length(ind$Rest))
+
+    #Nok observasjoner til å lage figur?
+    if (length(ind$Hoved)<10 | ((medSml == 1) & (length(ind$Rest) < 10))) {
+
+       FigDataParam <- list(AggVerdier = rbind(Midt=NA, Konf=NA, MidtRest=NA, KonfRest=NA),
+                           N=N,
+                           Ngr=Ngr,
+                           grtxt=levels(RegData$TidsEnhet),
+                           tittel=NGERVarSpes$tittel,
+                           utvalgTxt=utvalgTxt,
+                           fargepalett=NGERUtvalg$fargepalett,
+                           medSml=medSml,
+                           hovedgrTxt=NGERUtvalg$hovedgrTxt,
+                           smltxt=NGERUtvalg$smltxt)
+
+      rapFigurer::figtype(outfile)
+      plot.new()
+      title(main=tittel)
+      text(0.5, 0.65, 'Færre enn 10 registreringer i hoved-', cex=1.2)
+      text(0.55, 0.6, 'eller sammenlikningsgruppe', cex=1.2)
+      #	text(0.5, 0.5, tekst,cex=1.5)	#, family="sans")
+      if ( outfile != '') {dev.off()}
+
+      } else {
+
+        #--------------- Gjøre beregninger ------------------------------
 
     #Resultat for hovedgruppe
     N <- tapply(RegData[ind$Hoved ,'Variabel'], RegData[ind$Hoved, 'TidsEnhet'], length)
@@ -108,7 +132,7 @@ NGERFigGjsnTid <- function(RegData, valgtVar='alder', datoFra='2011-01-01', dato
       }
     }
 
-  }
+ # }
   t1 <- switch(valgtMaal,
                med = 'Median ',
                gjsn = 'Gjennomsnittlig ')
@@ -119,23 +143,12 @@ NGERFigGjsnTid <- function(RegData, valgtVar='alder', datoFra='2011-01-01', dato
   ResData <- round(rbind(Midt, Konf, MidtRest, KonfRest), 1)
   rownames(ResData) <- c(maaltxt, 'KImin', 'KImaks',
                          paste0(maaltxt, 'Resten'), 'KImin, Resten', 'KImaks, Resten')[1:(3*(medSml+1))]
-  #UtData <- list(paste0(toString(NGERVarSpes$tittel),'.'), ResData )
-  #names(UtData) <- c('tittel', 'Data')
 
   FigDataParam <- list(AggVerdier=ResData,
                        N=N,
                        Ngr=Ngr,
-                       #KImaal <- KImaal,
-                       #KImaaltxt <- KImaaltxt,
-                       #soyletxt=soyletxt,
                        grtxt=levels(RegData$TidsEnhet),
-                       #grtxt2=grtxt2,
-                       #varTxt=varTxt,
-                       #tidtxt=tidtxt, #NGERVarSpes$grtxt,
                        tittel=NGERVarSpes$tittel,
-                       #retn='V',
-                       # xAkseTxt=xAkseTxt,
-                       #yAkseTxt=yAkseTxt,
                        utvalgTxt=utvalgTxt,
                        fargepalett=NGERUtvalg$fargepalett,
                        medSml=medSml,
@@ -145,15 +158,7 @@ NGERFigGjsnTid <- function(RegData, valgtVar='alder', datoFra='2011-01-01', dato
 
 if (lagFigur==1) {
   #-----------Figur---------------------------------------
-  if (length(ind$Hoved)<10 | ((medSml == 1) & (length(ind$Rest) < 10))) {
-    rapFigurer::figtype(outfile)
-    plot.new()
-    title(main=tittel)
-    text(0.5, 0.65, 'Færre enn 10 registreringer i hoved-', cex=1.2)
-    text(0.55, 0.6, 'eller sammenlikningsgruppe', cex=1.2)
-    #	text(0.5, 0.5, tekst,cex=1.5)	#, family="sans")
-    if ( outfile != '') {dev.off()}
-  } else {
+
 
     xmin <- min(tidNum)-0.5
     xmax <- max(tidNum)+0.5
@@ -211,9 +216,8 @@ if (lagFigur==1) {
       mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))}
 
     if ( outfile != '') {dev.off()}
-
-  }	#end if statement for 0 observations
 } #lag figur
+ # }	#end if statement for 0 observations
   return(invisible(FigDataParam))
 
 }	#end function
