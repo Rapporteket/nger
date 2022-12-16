@@ -45,11 +45,11 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
   #------- Gjøre utvalg
 #Utvalg fra variable:
   RegData <- switch(valgtVar,
-                    RAND0 = RegData[which(RegData$R0Status==1) %i% which(RegData$R0Metode %in% 1:2)
+                    RAND0 = RegData[which(RegData$R0Metode %in% 1:2) #which(RegData$R0Status==1) %i%
                                     %i% which(RegData$InnDato >= '2016-01-01'), ],
-                    RAND1 = RegData[which(RegData$RY1Status==1) %i% which(RegData$RY1metode %in% 1:2)
+                    RAND1 = RegData[ which(RegData$RY1metode %in% 1:3) #which(RegData$RY1Status==1) %i%
                                     %i% which(RegData$InnDato >= '2018-01-01'), ],
-                    TSS0 = RegData[which(RegData$Tss2Status==1) %i% which(RegData$Tss2Type %in% 1:2)
+                    TSS0 = RegData[which(RegData$Tss2Type %in% 1:3) #which(RegData$Tss2Status==1) %i%
                                    %i% which(RegData$InnDato >= '2016-01-01'), ],
                     kvalInd = RegData)
   #NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, reshID=reshID, enhetsUtvalg=enhetsUtvalg)
@@ -172,8 +172,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
     #Reoperasjon som følge av komplikasjon
     #Kode 0: Nei, 1:Ja
     RegData$PostOpKomplReop <- NA
-    RegData$PostOpKomplReop[which(RegData$Opf0Komplikasjoner %in% 0:1)
-                            %i% which(RegData$Opf0Status == 1)] <- 0
+    RegData$PostOpKomplReop[which(RegData$Opf0Komplikasjoner %in% 0:1)] <- 0
     RegData$PostOpKomplReop[which(RegData$Opf0Reoperasjon == 1)] <- 1
 
 

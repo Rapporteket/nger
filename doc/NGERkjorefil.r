@@ -16,7 +16,7 @@ library(lubridate)
 
 dev.off()
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
-#setwd('C:/ResultattjenesteGIT/nger/inst/')
+setwd('C:/RegistreGIT/nger/inst/')
 setwd('~/nger/inst/')
 data('NGERtulledata', package = 'nger')
 
@@ -26,19 +26,19 @@ ForlData <- read.table('C:/Registerdata/nger/ForlopsOversikt2022-11-10.csv', sep
                        header = T,encoding = 'UTF-8')
 varForl <- c('BasisRegStatus', 'HovedDato','OppflgRegStatus','OppflgStatus','PasientAlder','SykehusNavn','ForlopsID')
 RegData <- merge(AVN, ForlData[,varForl], by = 'ForlopsID')
-RegData <- NGERPreprosess(RegData=RegData) #I App'en preprosesseres data
+RegData <- nger::NGERPreprosess(RegData=RegData) #I App'en preprosesseres data
 SkjemaData <- read.table('C:/Registerdata/nger/SkjemaOversikt2022-11-10.csv', sep = ';',
                        header = T,encoding = 'UTF-8')
-SkjemaData <- NGERPreprosess(RegData = SkjemaData)
+SkjemaData <- nger::NGERPreprosess(RegData = SkjemaData)
 
-test <-
 
 src <- normalizePath(system.file('NGERSamleRapp.Rnw', package='nger'))
 knitr::knit(src <- normalizePath(system.file('NGERSamleRapp.Rnw', package='nger')))
 knitr::knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
-tools::texi2pdf('NGERSamleRapp.tex')
+tools::texi2pdf('NGERSamleRapp.tex', clean = TRUE)
 
 knitr::knit2pdf('C:/RegistreGIT/nger/inst/NGERmndRapp.Rnw') #src <- normalizePath(system.file('NGERmndRapp.Rnw', package = 'nger')))
+tools::texi2pdf('NGERmndRapp.tex')
 
 NGERFigAntReg(RegData=0, datoTil='2021-02-02', reshID=110734,
                            preprosess=1, hentData=1, outfile='')
@@ -84,11 +84,11 @@ table(RegData[which(is.na(RegData$Opf0Status)), c('Opf0metode', 'Aar')], useNA =
 #--------------------------------Datakobling--------------------------
 
 rm(list=ls())
-dato <- '2019-09-03'
+dato <- '2022-11-10'
 #dato <- '2019-03-18Aarsrapp18'
-NGERBasis <- read.table(paste0('A:/NGER/AlleVarNum', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #,
-NGERForlop <- read.table(paste0('A:/NGER/ForlopsOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
-NGERSkjema <- read.table(paste0('A:/NGER/SkjemaOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
+NGERBasis <- read.table(paste0('C:/Registerdata/nger/AlleVarNum', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #,
+NGERForlop <- read.table(paste0('C:/Registerdata/nger/ForlopsOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
+NGERSkjema <- read.table(paste0('C:/Registerdata/nger/SkjemaOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
 #NGEROppf <- read.table('C:/Registre/NGER/data/FollowupsNum2016-10-14.csv', sep=';', header=T, fileEncoding = 'UTF-8')
 #NGERData <- merge(NGERForlop, NGERBasis, by = "ForlopsID", suffixes = c('','xx'), all = FALSE)
 #NGERData <- merge(NGERData, NGEROppf, by = "ForlopsID", suffixes = c('','YY'),all.x = TRUE)
