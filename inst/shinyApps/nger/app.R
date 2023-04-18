@@ -1,19 +1,16 @@
 #Resultattjeneste for NGER
 library(nger)
-library(kableExtra)
-library(knitr)
-library(lubridate)
-library(plyr)
-#ibrary(shinyBS) # Additional Bootstrap Controls
-library(rapbase)
-library(rapFigurer)
-library(shiny)
-library(shinyjs)
-#library(zoo)
+# library(kableExtra)
+# library(knitr)
+# library(lubridate)
+# library(plyr)
+# library(rapbase)
+# library(rapFigurer)
+# library(shiny)
+# library(shinyjs)
 
 idag <- Sys.Date()
 startDato <- startDato <- paste0(as.numeric(format(idag-100, "%Y")), '-01-01') #'2019-01-01' #Sys.Date()-364
-#sluttDato <- idag
 # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
 addResourcePath('rap', system.file('www', package='rapbase'))
 

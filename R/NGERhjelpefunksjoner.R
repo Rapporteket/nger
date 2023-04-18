@@ -211,7 +211,7 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, aggData=0,
     #Legge på orgID ("Sykehusviser")
     #ReshId	orgnr	RapporteketNavn	SKDEnavn
       nyID <- c('108172' = '974706490',		#Ahus	AHUS NORDBYHAGEN SOMATIKK	Ahus
-                '107511' = '974588951',		#Aleris	OSLO UNIVERSITETSSYKEHUS HF AKER - SOMATIKK	Aker
+                '107511' = '943545634',		#Aleris Frogner
                 '103719' = '974631091',		#Arendal	SØRLANDET SYKEHUS HF SOMATIKK ARENDAL	Arendal
                 '106843' = '922748144',		#Betanien	BETANIEN SYKEHUS AS	Betanien
                 '706220' = '974795361',		#Bodø	NORDLANDSSYKEHUSET HF SOMATIKK - BODØ	Bodø
@@ -233,7 +233,7 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, aggData=0,
                 '100412' = 	'974733013',		#Kristiansand	SØRLANDET SYKEHUS HF SOMATIKK KRISTIANSAND	Kristiansand
         #        '103189' = 	'974746948',		#Kristiansund	HELSE MØRE OG ROMSDAL HF KRISTIANSUND SJUKEHUS - SOMATIKK	Kristiansund. Ingen reg...
                 '105863' = 	'974754118',		#Levanger	HELSE NORD-TRØNDELAG HF SOMATIKK - LEVANGER	Levanger
-                '111180' = 	'994958682',		#Lillehammer	HELSE NORD-TRØNDELAG HF SYKEHUSET LEVANGER - REHABILITERING	Levanger
+                '111180' = 	'874632562',		#Lillehammer	SYKEHUSET INNLANDET HF LILLEHAMMER - SOMATIK
                 '700789' = 	'974795515',		#Mo i Rana	HELGELANDSSYKEHUSET HF MO I RANA - SOMATIKK	Mo i Rana
                 '103188' = 	'974745569',		#Molde	HELSE MØRE OG ROMSDAL HF MOLDE SJUKEHUS - SOMATIKK	Molde
                 '108048' = 	'974633752',		#Kalnes Østfold	SYKEHUSET ØSTFOLD

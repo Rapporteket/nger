@@ -13,6 +13,7 @@ library(knitr)
 library(tools)
 library(dplyr)
 library(lubridate)
+# 18.april 2023: Fjernet pakke prodlim fra description-fila
 
 dev.off()
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
