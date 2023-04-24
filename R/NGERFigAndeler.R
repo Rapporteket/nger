@@ -83,7 +83,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
 
   ## Hvis spørring skjer fra R på server. ######################
   if(hentData == 1){
-    RegData <- NGERRegDataSQL(datoFra = datoFra) #, datoTil = datoTil)
+    RegData <- NGERRegDataSQL(datoFra = datoFra)
   }
 
   # Hvis RegData ikke har blitt preprosessert
@@ -100,7 +100,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   antDes <- ifelse(valgtVar %in% c('HysKomplikasjoner', 'LapIntraabdominell', 'LapKomplikasjoner'),2, 1)
   '%i%' <- intersect
 
-  if (!(valgtVar %in% c('Diagnoser', 'Prosedyrer'))) {
+  if (!(valgtVar %in% c('Diagnoser', 'DiagnoseGr', 'Prosedyrer', 'ProsedyreGr'))) {
   NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, OpMetode = OpMetode, figurtype='andeler')
   RegData <- NGERVarSpes$RegData
 }
@@ -118,7 +118,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   smltxt <- NGERUtvalg$smltxt
   hovedgrTxt <- NGERUtvalg$hovedgrTxt
 
-  if (valgtVar %in% c('Diagnoser', 'Prosedyrer')) {
+  if (valgtVar %in% c('Diagnoser', 'DiagnoseGr', 'Prosedyrer', 'ProsedyreGr')) {
     NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, ind=ind, figurtype='andeler')
     RegData <- NGERVarSpes$RegData
   }

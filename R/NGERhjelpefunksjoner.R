@@ -174,7 +174,7 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, aggData=0,
                            )$RegData
 
   if (aggData == 0) {
-    RegDataUt <- RegData[,c('Aar', "ReshId", "Variabel")]
+    RegDataUt <- RegData[,c('Aar', "ReshId", "Variabel", "ShNavn")]
     RegDataUt <- dplyr::rename(RegDataUt,
                                year = Aar,
                                var = Variabel)
@@ -245,6 +245,7 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, aggData=0,
                 '105460' = 	'974703300',		#Stavanger	STAVANGER UNIVERSITETSSJUKEHUS SOMATIKK VÅLAND	Stavanger
                 '100460' = 	'974795574',		#Stokmarknes	NORDLANDSSYKEHUSET HF SOMATIKK - STOKMARKNES	Vesterålen
                 '701482' = 	'974742985',		#Stord	HELSE FONNA HF STORD SJUKEHUS	Stord
+                '601263' = 	'974795787',		#Tromsø	UNIVERSITETSSYKEHUSET NORD-NORGE HF TROMSØ - SOMATIKK	Tromsø gyn. kreft
                 '601227' = 	'974795787',		#Tromsø	UNIVERSITETSSYKEHUSET NORD-NORGE HF TROMSØ - SOMATIKK	Tromsø
                 '107644' = 	'974749025',		#Trondheim	ST OLAVS HOSPITAL HF UNIVERSITETSSYKEHUSET I TRONDHEIM	St. Olavs
                 '110734' = 	'974633574',		#Tønsberg	SYKEHUSET I VESTFOLD HF, SOMATIKK, TØNSBERG	Tønsberg

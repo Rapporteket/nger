@@ -14,6 +14,13 @@ NGERData1aar <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra1aar, datoTil = d
 
 setwd('/home/rstudio/speiler_.ssh/aarsrapp/NGER' ) #"P:/Registerinfo og historie/NGER/aarsrapp/")
 
+
+Mangler figurene:
+Opf0AlvorlighetsGrad_HystAar
+Opf0AlvorlighetsGradFord
+Opf0KomplAlvorInfeksjonTid
+Opf0KomplAlvorInfeksjonShus
+
 #------------------------------ Fordelingsfigurer --------------------------
 # 'BMI-kategori' = 'OpBMI',
 # 'Diagnoser, hyppigste' = 'Diagnoser', hys/lap/tot
@@ -30,10 +37,11 @@ setwd('/home/rstudio/speiler_.ssh/aarsrapp/NGER' ) #"P:/Registerinfo og historie
 # 'Registreringsforsinkelse' =  'RegForsinkelse',
 # 'TSS2, sp.6 Generell oppfatning av avdelinga' = 'Tss2Generelt',
 
-#Fjernet, 2021: 'Diagnoser','KomplPostopType', 'LapEkstrautstyr', 'Opf0AlvorlighetsGrad','Prosedyrer',
+#Fjernet, 2021: 'Diagnoser','KomplPostopType', 'LapEkstrautstyr', 'Prosedyrer',
 variabler <- c('OpBMI', 'HysGjforingsGrad','HysKomplikasjoner',
               'LapIntraabdominell', 'LapKomplikasjoner', 'LapTeknikk',
-               'RegForsinkelse', 'Tss2Generelt')
+              'Opf0AlvorlighetsGrad', 'RegForsinkelse', 'Tss2Generelt')
+variabler <- 'Opf0AlvorlighetsGrad'
 for (valgtVar in variabler) {
 	outfile <- paste0(valgtVar, '_ford.pdf')
 	NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar, outfile=outfile)
@@ -112,8 +120,10 @@ NGERFigAndelTid(RegData=NGERData, valgtVar='OpDagkirurgi', preprosess = 0,
 
 #--Laparoskopi
 #Fjernet 2021: 'KomplPostop',
-for (valgtVar in c('KomplIntra', 'Opf0AlvorlighetsGrad1', 'KomplPostopAlvor',
-                   'Opf0Reoperasjon','LapKonvertert')) {
+variabler <- c('KomplIntra', 'Opf0AlvorlighetsGrad', 'Opf0AlvorlighetsGrad1',
+               'Opf0KomplAlvorInfeksjon', 'KomplPostopAlvor',
+               'Opf0Reoperasjon','LapKonvertert')
+for (valgtVar in variabler) {
   outfile <- paste0(valgtVar, '_', 'LapAar.pdf')
   NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar=valgtVar,
                   OpMetode=1, outfile=outfile, tidsenhet='Aar')
@@ -124,8 +134,9 @@ NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf0AlvorlighetsGrad
 
 #--Hysteroskopi
 #Fjernet 2021: 'KomplPostop',
-for (valgtVar in c('KomplIntra','Opf0AlvorlighetsGrad1', 'KomplPostopAlvor',
-                   'Opf0Reoperasjon')) {
+variabler <- c('KomplIntra', 'Opf0AlvorlighetsGrad', 'Opf0AlvorlighetsGrad1', 'KomplPostopAlvor',
+               'Opf0Reoperasjon')
+for (valgtVar in variabler) {
   outfile <- paste0(valgtVar, '_', 'HystAar.pdf')
   NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar=valgtVar,
                   OpMetode=2, outfile=outfile, tidsenhet='Aar')
@@ -151,8 +162,9 @@ NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf0AlvorlighetsGrad
 # 'Registreringsforsinkelse' = 'RegForsinkelse',Mer enn 4 uker fra op. til reg.
 
 #Fjernet 2021: 'OpDagkirurgi',
-variabler <- c( 'OpBMI', 'KomplPostop', 'RegForsinkelse',
-               'Tss2Mott', 'Tss2Behandling', 'Tss2Lytte', 'Tss2Behandlere', 'Tss2Enighet', 'Tss2Generelt')
+variabler <- c(# 'OpBMI', 'KomplPostop', 'Opf0KomplAlvorInfeksjon', 'RegForsinkelse',
+               'Tss2Mott', 'Tss2Behandling', 'Tss2Lytte', 'Tss2Behandlere',
+               'Tss2Enighet', 'Tss2Generelt')
 for (valgtVar in variabler) {
   outfile <- paste0(valgtVar, '_Shus.pdf')
   NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar,  outfile=outfile)
@@ -161,8 +173,9 @@ for (valgtVar in variabler) {
 #valgtVar <- 'OpDagkirurgi'
 #Laparoskopi
 #Fjernet 2021: 'Alder', 'KomplPostop', 'OpBMI',
-for (valgtVar in c( 'KomplIntra','Opf0AlvorlighetsGrad1', 'KomplPostopAlvor',
-                   'Opf0Reoperasjon','LapKonvertert', 'LapKonvertertUventet', 'OpDagkirurgi')) {
+variabler <- c( 'KomplIntra', 'Opf0AlvorlighetsGrad', 'Opf0AlvorlighetsGrad1', 'KomplPostopAlvor',
+                'Opf0Reoperasjon','LapKonvertert', 'LapKonvertertUventet', 'OpDagkirurgi')
+for (valgtVar in variabler) {
   outfile <- paste0(valgtVar, '_LapShus.pdf')
   NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar,
                       OpMetode=1, outfile=outfile)
@@ -171,8 +184,9 @@ for (valgtVar in c( 'KomplIntra','Opf0AlvorlighetsGrad1', 'KomplPostopAlvor',
 
 #--Hysteroskopi
 #Fjernet 2021: 'Alder', 'OpBMI',
-for (valgtVar in c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad1', 'KomplPostopAlvor',
-                   'Opf0Reoperasjon')) {
+variabler <- c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad', 'Opf0AlvorlighetsGrad1', 'KomplPostopAlvor',
+               'Opf0Reoperasjon')
+for (valgtVar in variabler) {
   outfile <- paste0(valgtVar, '_HystShus.pdf')
   NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar,
                       OpMetode=2, outfile=outfile)
@@ -211,7 +225,7 @@ NGERFigKvalInd(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar, outfile=ou
 }
 
 #Ønsker også Rand etter 1 år
- NGERFigKvalInd(RegData=NGERData, datoFra=datoFra1Yoppf, datoTil=datoTil1Yoppf,
+ NGERFigKvalInd(RegData=NGERData, preprosess=0, datoFra=datoFra1Yoppf, datoTil=datoTil1Yoppf,
                 valgtVar='RAND1', outfile='RAND1_KI.pdf')
 
 
@@ -228,123 +242,66 @@ xtable::xtable(tabAvdAarN, digits=0, align=c('l', rep('r',ncol(tabAvdAarN))),
                caption = 'Antall registrerte opphold',
                label = 'tab:AntRegAar')
 
-% latex table generated in R 4.2.2 by xtable 1.8-4 package
-% Tue Apr 18 16:10:21 2023
-\begin{table}[ht]
-\centering
-\begin{tabular}{lrrrrr}
-\hline
-& 2018 & 2019 & 2020 & 2021 & 2022 \\
-\hline
-Ahus & 637 & 458 & 628 & 614 & 671 \\
-Aleris Frogner & 0 & 0 & 162 & 211 & 370 \\
-Arendal & 137 & 163 & 144 & 167 & 166 \\
-Betanien & 237 & 240 & 235 & 274 & 242 \\
-Bodø & 187 & 259 & 201 & 229 & 223 \\
-Bærum & 274 & 233 & 267 & 340 & 358 \\
-DNR & 132 & 135 & 146 & 107 & 118 \\
-Drammen & 483 & 544 & 567 & 658 & 644 \\
-Elverum & 105 & 254 & 243 & 376 & 368 \\
-Flekkefjord & 33 & 16 & 86 & 70 & 94 \\
-Førde & 63 & 121 & 116 & 134 & 110 \\
-Gjøvik & 308 & 296 & 258 & 279 & 330 \\
-Hammerfest & 82 & 148 & 99 & 99 & 114 \\
-Harstad & 0 & 65 & 132 & 214 & 206 \\
-Haugesund & 325 & 294 & 318 & 250 & 294 \\
-Haukeland & 292 & 388 & 388 & 354 & 310 \\
-Kirkenes & 38 & 48 & 6 & 9 & 52 \\
-Kongsberg & 6 & 112 & 92 & 101 & 98 \\
-Kongsvinger & 63 & 60 & 89 & 107 & 78 \\
-Kristiansand & 212 & 228 & 230 & 265 & 224 \\
-Levanger & 0 & 0 & 87 & 81 & 147 \\
-Lillehammer & 73 & 190 & 177 & 161 & 259 \\
-Lofoten & 0 & 14 & 23 & 21 & 26 \\
-Mo i Rana & 76 & 68 & 53 & 72 & 62 \\
-Molde & 58 & 111 & 104 & 95 & 94 \\
-Namsos & 0 & 0 & 3 & 80 & 97 \\
-Narvik & 0 & 0 & 96 & 63 & 89 \\
-Ringerike & 80 & 89 & 154 & 193 & 182 \\
-Sandnessjøen & 98 & 109 & 117 & 126 & 128 \\
-Skien & 183 & 291 & 463 & 450 & 429 \\
-Stavanger & 285 & 392 & 416 & 483 & 456 \\
-Stord & 0 & 196 & 205 & 168 & 176 \\
-Tromsø & 132 & 137 & 152 & 190 & 181 \\
-Trondheim & 292 & 612 & 819 & 879 & 715 \\
-Tønsberg & 708 & 755 & 694 & 729 & 677 \\
-Ullevål & 1380 & 1571 & 1891 & 1932 & 2080 \\
-Vesterålen & 1 & 46 & 49 & 64 & 47 \\
-Volda & 19 & 21 & 51 & 55 & 55 \\
-Volvat & 0 & 0 & 41 & 4 & 2 \\
-Voss & 67 & 120 & 142 & 132 & 149 \\
-Østfold & 74 & 295 & 265 & 363 & 353 \\
-Ålesund & 50 & 92 & 270 & 237 & 239 \\
-Sum & 7190 & 9171 & 10679 & 11436 & 11713 \\
-\hline
-\end{tabular}
-\caption{Antall registrerte opphold}
-\label{tab:AntRegAar}
-\end{table}
-
 
 #Tabell med antall registreringer for hvert sykehus, splittet på lap, hys og begge
 RegData1aar <- NGERPreprosess(RegData = NGERRegDataSQL(datoFra = datoFra1aar, datoTil = datoTil))
-tab <- table(RegData[ ,c('ShNavn', "OpMetode")]) #, 'Aar'
+tab <- table(RegData1aar[ ,c('ShNavn', "OpMetode")]) #, 'Aar'
 dimnames(tab)$OpMetode <- c('Lap', 'Hys', 'Begge')
 tab <- addmargins(tab, margin = 1)
 
 xtable::xtable(tab, align=c('l', rep('r',ncol(tab))), digits=0)
 
 % latex table generated in R 4.2.2 by xtable 1.8-4 package
-% Tue Apr 18 16:10:55 2023
+% Thu Apr 20 08:42:53 2023
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrr}
 \hline
 & Lap & Hys & Begge \\
 \hline
-Ahus & 2515 & 1286 & 14 \\
-Aleris Frogner & 555 & 182 & 6 \\
-Arendal & 722 & 229 & 4 \\
-Betanien & 647 & 777 & 20 \\
-Bodø & 1002 & 418 & 5 \\
-Bærum & 978 & 667 & 14 \\
-DNR & 850 & 0 & 0 \\
-Drammen & 1790 & 2081 & 40 \\
-Elverum & 1051 & 378 & 2 \\
-Flekkefjord & 247 & 82 & 3 \\
-Førde & 413 & 182 & 3 \\
-Gjøvik & 1161 & 916 & 24 \\
-Hammerfest & 344 & 245 & 11 \\
-Harstad & 308 & 301 & 8 \\
-Haugesund & 1106 & 979 & 8 \\
-Haukeland & 1994 & 302 & 10 \\
-Kirkenes & 213 & 45 & 1 \\
-Kongsberg & 310 & 97 & 2 \\
-Kongsvinger & 469 & 73 & 1 \\
-Kristiansand & 818 & 569 & 10 \\
-Levanger & 147 & 165 & 3 \\
-Lillehammer & 673 & 371 & 8 \\
-Lofoten & 84 & 0 & 0 \\
-Mo i Rana & 321 & 128 & 5 \\
-Molde & 334 & 231 & 51 \\
-Namsos & 138 & 42 & 0 \\
-Narvik & 170 & 73 & 5 \\
-Ringerike & 495 & 199 & 4 \\
-Sandnessjøen & 544 & 215 & 11 \\
-Skien & 1504 & 689 & 7 \\
-Stavanger & 1661 & 817 & 19 \\
-Stord & 473 & 264 & 8 \\
-Tromsø & 552 & 489 & 0 \\
-Trondheim & 1635 & 2141 & 22 \\
-Tønsberg & 2750 & 2156 & 34 \\
-Ullevål & 8404 & 2799 & 46 \\
-Vesterålen & 79 & 124 & 4 \\
-Volda & 149 & 101 & 6 \\
-Volvat & 36 & 10 & 1 \\
-Voss & 452 & 248 & 0 \\
-Østfold & 834 & 650 & 2 \\
-Ålesund & 667 & 318 & 22 \\
-Sum & 39595 & 22039 & 444 \\
+Ahus & 463 & 205 & 3 \\
+Aleris Frogner & 288 & 78 & 4 \\
+Arendal & 116 & 49 & 1 \\
+Betanien & 105 & 137 & 0 \\
+Bodø & 175 & 48 & 0 \\
+Bærum & 198 & 155 & 5 \\
+DNR & 118 & 0 & 0 \\
+Drammen & 264 & 373 & 7 \\
+Elverum & 260 & 108 & 0 \\
+Flekkefjord & 58 & 35 & 1 \\
+Førde & 78 & 31 & 1 \\
+Gjøvik & 139 & 186 & 5 \\
+Hammerfest & 67 & 44 & 3 \\
+Harstad & 105 & 98 & 3 \\
+Haugesund & 160 & 134 & 0 \\
+Haukeland & 276 & 34 & 0 \\
+Kirkenes & 37 & 15 & 0 \\
+Kongsberg & 76 & 22 & 0 \\
+Kongsvinger & 69 & 9 & 0 \\
+Kristiansand & 103 & 121 & 0 \\
+Levanger & 76 & 69 & 2 \\
+Lillehammer & 182 & 77 & 0 \\
+Lofoten & 26 & 0 & 0 \\
+Mo i Rana & 37 & 25 & 0 \\
+Molde & 62 & 31 & 1 \\
+Namsos & 62 & 35 & 0 \\
+Narvik & 65 & 22 & 2 \\
+Ringerike & 142 & 40 & 0 \\
+Sandnessjøen & 84 & 43 & 1 \\
+Skien & 241 & 188 & 0 \\
+Stavanger & 285 & 168 & 3 \\
+Stord & 103 & 73 & 0 \\
+Tromsø & 101 & 80 & 0 \\
+Trondheim & 342 & 368 & 5 \\
+Tønsberg & 408 & 268 & 1 \\
+Ullevål & 1530 & 549 & 1 \\
+Vesterålen & 26 & 20 & 1 \\
+Volda & 25 & 30 & 0 \\
+Volvat & 2 & 0 & 0 \\
+Voss & 82 & 67 & 0 \\
+Østfold & 186 & 167 & 0 \\
+Ålesund & 144 & 90 & 5 \\
+Sum & 7366 & 4292 & 55 \\
 \hline
 \end{tabular}
 \end{table}
@@ -383,44 +340,47 @@ write.table(tab, file="TabPasienkarakteristika.csv", row.names=F, sep=';')
 #OpMetode  1: Laparoskopi #2: Hysteroskopi, 2019: 5954 3146
 library(nger)
 setwd('/home/rstudio/speil/aarsrapp/NGER' )
-RegData <- NGERPreprosess(RegData = NGERRegDataSQL(datoFra = '2016-01-01',
-                                                   datoTil = '2021-12-31'))
+RegData <- NGERPreprosess(RegData = NGERRegDataSQL(datoFra = '2016-01-01'))
+                                                   #,datoTil = '2022-12-31'))
+lastNedFil <- 0
 
-dataTilSKDE <- dataTilOffVisning(RegData=RegData,
+dataTilSKDE_Flere <- dataTilOffVisning(RegData=RegData,
                                  valgtVar = 'KomplIntra',
                                  OpMetode = 1,
-                                 lastNedFil=1,
+                                 lastNedFil = lastNedFil,
                                  indID = 'nger_kompl_intra_lap', filUt='KomplIntraLap')
 
 dataTilSKDE <- dataTilOffVisning(RegData=RegData, valgtVar = 'KomplIntra',
                                  OpMetode = 2,
-                                 lastNedFil=1,
+                                 lastNedFil = lastNedFil,
                                  indID = 'nger_kompl_intra_hys', filUt='KomplIntraHys')
+dataTilSKDE_Flere <- rbind(dataTilSKDE_Flere, dataTilSKDE)
 
 #Forekomsten av middels og alvorlige komplikasjoner etter  inngrep.
 #Lap Hys
 dataTilSKDE <- dataTilOffVisning(RegData=RegData, valgtVar = 'KomplPostopAlvor',
                                  OpMetode = 1,
-                                 lastNedFil=1,
+                                 lastNedFil = lastNedFil,
                                  indID = 'nger_kompl_postop_lap', filUt='KomplPostopLap')
+dataTilSKDE_Flere <- rbind(dataTilSKDE_Flere, dataTilSKDE)
 
 dataTilSKDE <- dataTilOffVisning(RegData=RegData, valgtVar = 'KomplPostopAlvor',
                                  OpMetode = 2,
-                                 lastNedFil=1,
+                                 lastNedFil = lastNedFil,
                                  indID = 'nger_kompl_postop_hys', filUt='KomplPostopHys')
-
-#Andel pasienter som har positiv eller svært positiv oppfatning av gynekologisk avdeling - UTGÅR!
-# dataTilSKDE <- dataTilOffVisning(RegData=RegData, valgtVar = 'Tss2Generelt',
-#                                  lastNedFil=1,
-#                                  indID = 'nger_pasient_tilfredshet', filUt='Tss2Generelt')
+dataTilSKDE_Flere <- rbind(dataTilSKDE_Flere, dataTilSKDE)
 
 #Generell pasienttilfredshet
 dataTilSKDE <- dataTilOffVisning(RegData=RegData,
                                  valgtVar = 'Tss2Sumskaar',
                                  aggData = 1,
-                                 lastNedFil=1,
+                                 lastNedFil = lastNedFil,
                                  indID = 'nger_pasient_tilfredshet',
                                  filUt='Tss2Sumskaar')
 
+dataTilSKDE_Flere <- rbind(dataTilSKDE_Flere, dataTilSKDE)
 
-tapply(dataTilSKDE$var, dataTilSKDE$year, FUN='mean')*100
+sum(is.na(dataTilSKDE_Flere$orgnr))
+write.table(dataTilSKDE_Flere, file = 'dataTilSKDE_Flere.csv', sep = ';', row.names = F)
+
+#tapply(dataTilSKDE$var, dataTilSKDE$year, FUN='mean')*100

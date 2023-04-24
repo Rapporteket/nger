@@ -199,7 +199,7 @@ RegDataUtvalg <- RegData[which(RegData$OpMetode==1), c('ShNavn', Instr)]
 
 
 #InstrTabDum <- plyr::ddply(RegDataUtvalg[ ,Instr], .(RegDataUtvalg$ShNavn), .drop=F, colwise(sum), na.rm=T)  #Dataramme m/7dim
-InstrTabDum <- plyr::ddply(RegDataUtvalg, .variables='ShNavn', .drop=F, colwise(sum), na.rm=T)  #Dataramme m/7dim
+InstrTabDum <- plyr::ddply(RegDataUtvalg, .variables='ShNavn', .drop=F, plyr::colwise(sum), na.rm=T)  #Dataramme m/7dim
 Tot <- colSums(InstrTabDum[,2:(length(Instr)+1)])
 ShNavn <- InstrTabDum[,1]
 

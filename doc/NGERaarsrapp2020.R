@@ -377,8 +377,8 @@ output$gjsnTidTab <- function() {
                     , full_width=F
                     , digits = 1 #c(0,1,1,1)[1:antKol]
   ) %>%
-    add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
-    #add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
+    kableExtra::add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
+    #kableExtra::add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
     column_spec(column = 1, width_min = '7em') %>%
     column_spec(column = 2:(antKol+1), width = '7em') %>%
     row_spec(0, bold = T)

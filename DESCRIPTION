@@ -21,6 +21,7 @@ Imports:
     kableExtra,
     knitr,
     lubridate,
+    dplyr,
     plyr,
     rapbase,
     rapFigurer,

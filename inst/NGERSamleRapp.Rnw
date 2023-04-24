@@ -399,7 +399,7 @@ RegDataUtvalg <- RegData[which(RegData$OpMetode==1), c('ShNavn', Instr)]
 #InstrTab <- plyr::daply(.data=RegDataUtvalg[ ,Instr], .(RegDataUtvalg$ShNavn), .fun=colwise(sum), na.rm=T)  #Liste m/6dim
 #Får trøbbel med at InstrTab blir liste
 
-InstrTabDum <- plyr::ddply(.data =  RegDataUtvalg[ ,Instr], .variables = .(RegDataUtvalg$ShNavn), .drop=F, .fun= colwise(sum), na.rm=T)  #Dataramme m/7dim
+InstrTabDum <- plyr::ddply(.data =  RegDataUtvalg[ ,Instr], .variables = .(RegDataUtvalg$ShNavn), .drop=F, .fun= plyr::colwise(sum), na.rm=T)  #Dataramme m/7dim
 Tot <- colSums(InstrTabDum[,2:(length(Instr)+1)])
 ShNavn <- InstrTabDum[,1]
 
