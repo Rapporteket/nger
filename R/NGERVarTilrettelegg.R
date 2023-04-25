@@ -802,26 +802,38 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData <- data.frame(RegData,nymatr)
   }
 
-  if (valgtVar=='Prosedyrer') {
+  if (valgtVar %in% c('Prosedyrer', 'ProsedyreGr')) {
     tittel <- 'Hyppigst forekommende prosedyrer'
     #RegData$Opf0Status == 1 OK
     #Hver prosedyre skal telles bare en gang per operasjon - unique på hver linje.
     prosVar <- c('HysProsedyre1', 'HysProsedyre2', 'HysProsedyre3', 'LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3')
-    #AllePros <- toupper(as.vector(as.matrix(RegData[ , prosVar])))
-    AllePros <- toupper(unlist(apply(as.matrix(RegData[ind$Hoved, prosVar]), 1,FUN=unique)))
+
+    if (valgtVar == 'ProsedyreGr'){
+      for (k in prosVar) {
+        #LCD04	:	Lapar. hysterektomi
+        #LCD01, LCD97, LCD31, LCC11
+        RegData[RegData[,k] %in% c('LCD04', 'LCD01', 'LCD97', 'LCD31', 'LCC11'),
+                k] <- 'laphyst'
+      #Ta bort: LCA13	Fraksjonert abrasio, LCX00 Innlegging livmorinnlegg, LDA10 Utskrapning cervix uteri, LCA10 Utskrapning corpus uteri
+        RegData[RegData[,k] %in% c('LCA13', 'LCX00', 'LDA10', 'LCA13'), k] <- ''
+      }
+    }
+
+    AllePros <- unlist(apply(as.matrix(RegData[ind$Hoved, prosVar]), 1,FUN=unique)) #toupper()
     #Må fjerne tomme. Tomme behandles som tomme lokalt, men NA på server.
     AlleProsSort <- sort(table(AllePros[which(AllePros != '')]), decreasing = TRUE)
     ant <- 20
     cexgr <- 1-0.005*ant
-    grtxt <- names(AlleProsSort)[1:min(length(AlleProsSort), ant)]
-    variable <- grtxt
-    nymatr <- as.data.frame(matrix(0,dim(RegData)[1],ant))
-    names(nymatr) <- grtxt
-    for (k in grtxt) {
+    variable <- names(AlleProsSort)[1:min(length(AlleProsSort), ant)]
+    grtxt <- variable
+    if (valgtVar == 'ProsedyreGr') {
+      grtxt <- dplyr::recode(variable, 'laphyst' = 'Lapar. hysterektomi')}
+    nymatr <- as.data.frame(matrix(0,dim(RegData)[1], ant))
+    names(nymatr) <- variable
+    for (k in variable) {
       nymatr[rowSums(RegData[ ,prosVar]== k, na.rm = T)>0, k] <- 1
     }
     RegData <- data.frame(RegData,nymatr)
-
   }
 
 
@@ -829,7 +841,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
   if (valgtVar %in% c('Diagnoser', 'DiagnoseGr', 'KomplPostopType', 'KomplAlvorPostopType',
                       'HysKomplikasjoner', 'LapKomplikasjoner',
                       'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr',
-                      'LapIntraabdominell', 'LapTeknikk', 'Prosedyrer')){
+                      'LapIntraabdominell', 'LapTeknikk', 'Prosedyrer', 'ProsedyreGr')){
     flerevar <- 1
     retn <- 'H'}
 

@@ -389,6 +389,7 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
                                          'Operasjonstid (minutter)' = 'OpTid',
                                          'Primæroperasjon eller reoperasjon' = 'OpType',
                                          'Prosedyrer, hyppigste' = 'Prosedyrer',
+                                         'Prosegrupper, hyppigste' = 'ProsedyreGr',
                                          'Postoperative komplikasjoner vs. utdanning' = 'KomplPostUtd',
                                          'RAND36 Fysisk funksjon' = 'R0ScorePhys',
                                          'RAND36 Begrenses av fysisk helse' = 'R0ScoreRoleLmtPhy',
