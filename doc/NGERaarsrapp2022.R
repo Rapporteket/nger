@@ -12,15 +12,12 @@ datoTil1Yoppf <- paste0(rappAar-1, '-12-31') #'2020-12-31'
 NGERData <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil))
 NGERData1aar <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra1aar, datoTil = datoTil))
 
-setwd('/home/rstudio/speiler_.ssh/aarsrapp/NGER' ) #"P:/Registerinfo og historie/NGER/aarsrapp/")
+setwd('~/Aarsrappresultater/NGER' ) #"P:/Registerinfo og historie/NGER/aarsrapp/")
 
-
-Mangler figurene:
-Opf0AlvorlighetsGrad_HystAar
-Opf0AlvorlighetsGradFord
-Opf0KomplAlvorInfeksjonTid
-Opf0KomplAlvorInfeksjonShus
-
+table(NGERData$R3BesvarteProm)
+ind <- which(NGERData$R3BesvarteProm==1)
+test <- NGERData[which(NGERData$R3BesvarteProm==1), grep('ScoreGeneral', names(NGERData))]
+sum(NGERData$R3BesvarteProm==1)
 #------------------------------ Fordelingsfigurer --------------------------
 # 'BMI-kategori' = 'OpBMI',
 # 'Diagnoser, hyppigste' = 'Diagnoser', hys/lap/tot
@@ -100,6 +97,7 @@ NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Alder', OpMetode = 
 # 'TSS2, oppfølging' = 'TSS0', TSS2, alle spørsmål (Alle/tot.lap hysterektomi/hysteroskopi)
 NGERFigKvalInd(RegData=NGERData1aar, preprosess=0, valgtVar='TSS0',
                            outfile='TSS0_ford.pdf')
+
 
 #------------------------------ Andeler per år (AndelTid)--------------------------
 # 'Dagkirurgiske inngrep' = 'OpDagkirurgi', (lapraroskopi, elektiv)
@@ -229,6 +227,17 @@ NGERFigKvalInd(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar, outfile=ou
                 valgtVar='RAND1', outfile='RAND1_KI.pdf')
 
 
+#Oppfølging 1 og 3 år
+ RANDvar <- c('ScorePhys',	'ScoreRoleLmtPhy',	'ScoreRoleLmtEmo',
+              'ScoreEnergy',	'ScoreEmo', 'ScoreSosial',
+              'ScorePain',	'ScoreGeneral')
+ #valgtVar='ScoreRoleLmtPhy'
+ for (valgtVar in RANDvar) {
+ NGERFigPrePost(RegData=NGERData, valgtVar=valgtVar,
+                datoFra='2018-01-01', datoTil=Sys.Date(),
+                outfile=paste0(valgtVar,'_0_1_3.pdf'))
+}
+
 #------------------------------Tabeller-----------------------------------
 library(xtable)
 library(nger)
@@ -250,62 +259,6 @@ dimnames(tab)$OpMetode <- c('Lap', 'Hys', 'Begge')
 tab <- addmargins(tab, margin = 1)
 
 xtable::xtable(tab, align=c('l', rep('r',ncol(tab))), digits=0)
-
-% latex table generated in R 4.2.2 by xtable 1.8-4 package
-% Thu Apr 20 08:42:53 2023
-\begin{table}[ht]
-\centering
-\begin{tabular}{lrrr}
-\hline
-& Lap & Hys & Begge \\
-\hline
-Ahus & 463 & 205 & 3 \\
-Aleris Frogner & 288 & 78 & 4 \\
-Arendal & 116 & 49 & 1 \\
-Betanien & 105 & 137 & 0 \\
-Bodø & 175 & 48 & 0 \\
-Bærum & 198 & 155 & 5 \\
-DNR & 118 & 0 & 0 \\
-Drammen & 264 & 373 & 7 \\
-Elverum & 260 & 108 & 0 \\
-Flekkefjord & 58 & 35 & 1 \\
-Førde & 78 & 31 & 1 \\
-Gjøvik & 139 & 186 & 5 \\
-Hammerfest & 67 & 44 & 3 \\
-Harstad & 105 & 98 & 3 \\
-Haugesund & 160 & 134 & 0 \\
-Haukeland & 276 & 34 & 0 \\
-Kirkenes & 37 & 15 & 0 \\
-Kongsberg & 76 & 22 & 0 \\
-Kongsvinger & 69 & 9 & 0 \\
-Kristiansand & 103 & 121 & 0 \\
-Levanger & 76 & 69 & 2 \\
-Lillehammer & 182 & 77 & 0 \\
-Lofoten & 26 & 0 & 0 \\
-Mo i Rana & 37 & 25 & 0 \\
-Molde & 62 & 31 & 1 \\
-Namsos & 62 & 35 & 0 \\
-Narvik & 65 & 22 & 2 \\
-Ringerike & 142 & 40 & 0 \\
-Sandnessjøen & 84 & 43 & 1 \\
-Skien & 241 & 188 & 0 \\
-Stavanger & 285 & 168 & 3 \\
-Stord & 103 & 73 & 0 \\
-Tromsø & 101 & 80 & 0 \\
-Trondheim & 342 & 368 & 5 \\
-Tønsberg & 408 & 268 & 1 \\
-Ullevål & 1530 & 549 & 1 \\
-Vesterålen & 26 & 20 & 1 \\
-Volda & 25 & 30 & 0 \\
-Volvat & 2 & 0 & 0 \\
-Voss & 82 & 67 & 0 \\
-Østfold & 186 & 167 & 0 \\
-Ålesund & 144 & 90 & 5 \\
-Sum & 7366 & 4292 & 55 \\
-\hline
-\end{tabular}
-\end{table}
-
 
 # ggplot::ggplot(RegData, aes(OpMetode)) +
 #   geom_histogram(bins = 3) +

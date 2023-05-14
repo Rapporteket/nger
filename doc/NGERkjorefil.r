@@ -11,8 +11,8 @@ rm(list=ls())
 library(nger)
 library(knitr)
 library(tools)
-library(dplyr)
-library(lubridate)
+# library(dplyr)
+# library(lubridate)
 # 18.april 2023: Fjernet pakke prodlim fra description-fila
 
 dev.off()
@@ -110,7 +110,7 @@ load(paste0('A:/NGER/NGER', dato, '.Rdata'))
 load(paste0('A:/NGER/Aarsrapp20182019-03-18.Rdata'))
 
 
-library(nger)
+
 #----------------------------------- Lage tulledata ------------------------------
 #Denne inneholder ingen id'er og trenger ikke
 #SkjemaOversikt <- NGERSkjema[ ,c("Skjemanavn", "SkjemaRekkeflg",  "SkjemaStatus",  "OpprettetDato", "HovedDato")]
@@ -302,9 +302,12 @@ NGERFigAntReg(RegData=0, datoTil=Sys.Date(),
                            minald=0, maxald=130, erMann='', outfile='',
                            reshID=0, enhetsUtvalg=2, hentData=1)
 
+RANDvar <- c('ScorePhys',	'ScoreRoleLmtPhy',	'ScoreRoleLmtEmo',
+             'ScoreEnergy',	'ScoreEmo', 'ScoreSosial',
+             'ScorePain',	'ScoreGeneral')
 NGERFigPrePost(RegData=0, valgtVar='ScoreGeneral',
                datoFra='2019-01-01', datoTil=Sys.Date(), preprosess=1, hentData=1,
-               outfile='test.png')
+               outfile='')
 
 #-----------------------------Kvalietsindikatorer------------------------------
 #valgtVar <- 'kvalInd' #RAND0, TSS0, kvalInd

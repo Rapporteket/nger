@@ -29,7 +29,7 @@ NGERVarTilrettelegg(
 9: Hysterectomier (alle)}
 
 \item{ind}{indekser fra enhetsUtvalg. Benyttes normalt ikke her, men trengs for
-valgtVar Diagnoser og Prosedyrer}
+valgtVar Diagnoser, DiagnoseGr, Prosedyrer og ProsedyreGr}
 
 \item{figurtype}{Hvilken figurtype det skal tilrettelegges variable for:
 'andeler', 'andelGrVar', 'andelTid', 'gjsnGrVar', 'gjsnTid'}

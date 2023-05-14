@@ -12,7 +12,7 @@
 #'
 #' @export
 NGERFigPrePost  <- function(RegData, valgtVar='ScoreGeneral', datoFra='2019-01-01', datoTil=Sys.Date(),
-                            minald=0, maxald=130, OpMetode=99, velgDiag=0, Ngrense=10,
+                            minald=0, maxald=130, OpMetode=99, velgDiag=0, Ngrense=10, #reshID = 0,
                             outfile='', preprosess=0, hentData=0,...)
 {
 
@@ -25,23 +25,26 @@ NGERFigPrePost  <- function(RegData, valgtVar='ScoreGeneral', datoFra='2019-01-0
     RegData <- NGERPreprosess(RegData=RegData)
   }
 
-reshID <- as.numeric(reshID)
-RANDvar <- c('ScorePhys',	'ScoreRoleLmtPhy',	'ScoreRoleLmtEmo',
-             'ScoreEnergy',	'ScoreEmo', 'ScoreSosial',
+#reshID <- as.numeric(reshID)
+RANDvar <- c('ScorePhys',	'ScoreRoleLmtPhy',
+             'ScoreRoleLmtEmo', 'ScoreEnergy',
+             'ScoreEmo', 'ScoreSosial',
              'ScorePain',	'ScoreGeneral')
-grtxt <- c('Fysisk funksjon',	'Fysisk \n rollebegrensning',	'Følelsesmessig \n rollebegrensning',
-           'Energinivå/vitalitet',	'Mental helse', 'Sosial funksjon',
-           'Smerte',	'Generell \n helsetilstand')
-valgtVar <- RANDvar[1]
+TittelAlle <- c('Fysisk funksjon',	'Fysisk rollebegrensning',
+                'Følelsesmessig rollebegrensning', 'Energinivå/vitalitet',
+                'Mental helse', 'Sosial funksjon',
+                'Smerte',	'Generell helsetilstand')
 
 varNr <- match(valgtVar, RANDvar)
-PrePostVar <- paste0(c('R0', 'R1'), valgtVar)
+PrePostVar <- paste0(c('R0', 'R1', 'R3'), valgtVar)
 RegData$VarPre <- RegData[ ,PrePostVar[1]]
-RegData$VarPost <- RegData[ ,PrePostVar[2]]
+RegData$VarPost1 <- RegData[ ,PrePostVar[2]]
+RegData$VarPost3 <- RegData[ ,PrePostVar[3]] #!Endres
 #Tar ut de med manglende registrering av valgt variabel og gjør utvalg
-RegData <- RegData[!(is.na(RegData$VarPre) | is.na(RegData$VarPost)), ]
+indSvar <- which(!(is.na(RegData$VarPre) | is.na(RegData$VarPost1) | is.na(RegData$VarPost3))) #
+RegData <- RegData[indSvar, ]
 
-tittel <- grtxt[varNr]
+tittel <- TittelAlle[varNr]
 
 NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil)
 RegData <- NGERUtvalg$RegData
@@ -56,12 +59,12 @@ grtxt <- ''
 subtxt <- ''
 
 #---------------BEREGNINGER --------------------------
-utvalg <- c('Hoved','Rest')
-GjsnPP <- list(Hoved = 0, Rest =0)
+#utvalg <- c('Hoved','Rest')
+#GjsnPP <- list(Hoved = 0, Rest =0)
 
 GjsnPre <-tapply(RegData$VarPre, RegData$ShNavn, FUN = 'mean', na.rm=T)
-Gjsn1aar <- tapply(RegData$VarPost, RegData$ShNavn, FUN = 'mean', na.rm=T)
-Gjsn3aar <- Gjsn1aar
+Gjsn1aar <- tapply(RegData$VarPost1, RegData$ShNavn, FUN = 'mean', na.rm=T)
+Gjsn3aar <- tapply(RegData$VarPost3, RegData$ShNavn, FUN = 'mean', na.rm=T)
 Ngr <- table(RegData$ShNavn)
 N <- sum(Ngr)
 GjsnPP <- cbind(GjsnPre, Gjsn1aar, Gjsn3aar)
@@ -71,7 +74,7 @@ GjsnPP <- cbind(GjsnPre, Gjsn1aar, Gjsn3aar)
 #-----------Figur---------------------------------------
 #Hvis for få observasjoner..
 #if (dim(RegData)[1] < 10 | (length(which(RegData$ReshId == reshID))<5 & enhetsUtvalg == 1)) {
-if (NHoved < 10 ) {
+if (dim(RegData)[1] < 10 ) { #NHoved < 10
 FigTypUt <- rapFigurer::figtype(outfile)
 farger <- FigTypUt$farger
 	plot.new()
@@ -86,7 +89,7 @@ farger <- FigTypUt$farger
 #Innparametre: subtxt, grtxt, tittel, Andeler
 
 #Plottspesifikke parametre:
-FigTypUt <- rapFigurer::figtype(outfile, fargepalett=NGERUtvalg$fargepalett)
+FigTypUt <- rapFigurer::figtype(outfile) #, fargepalett=NGERUtvalg$fargepalett)
 NutvTxt <- length(utvalgTxt)
 vmarg <- switch(retn, V=0, H=max(0, strwidth(grtxt, units='figure', cex=cexgr)*0.7))
 par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1+length(tittel)-1)))	#Har alltid datoutvalg med
@@ -102,7 +105,7 @@ cexpt <- 2	#Størrelse på punkter (resten av landet)
 if (retn == 'V' ) {
 #Vertikale søyler eller linje
 	ymax <- min(max(c(GjsnPP),na.rm=T)*1.25, 110)
-	pos <- barplot(t(GjsnPP), beside=TRUE, horiz=FALSE, las=txtretn, ylab="Andel pasienter (%)",
+	pos <- barplot(t(GjsnPP), beside=TRUE, horiz=FALSE, las=txtretn, ylab="",
 		sub=subtxt,	cex.names=cexgr, #names.arg=grtxt,
 		col=farger[1:3], border='white', ylim=c(0, ymax))	#
 		legend('top', c('perop.', '1 år', '3 år', paste0('N=', N)), bty='n',
