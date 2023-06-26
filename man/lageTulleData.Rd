@@ -4,7 +4,13 @@
 \alias{lageTulleData}
 \title{Lage tulledata (simulerte data)}
 \usage{
-lageTulleData(RegData, varBort = NA, antSh = 26, antObs = 20000)
+lageTulleData(
+  RegData = 0,
+  varBort = NA,
+  datoFra = "2017-01-01",
+  antSh = 26,
+  antObs = 20000
+)
 }
 \arguments{
 \item{RegData}{dataramme}

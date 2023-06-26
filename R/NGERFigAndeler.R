@@ -83,7 +83,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
 
   ## Hvis spørring skjer fra R på server. ######################
   if(hentData == 1){
-    RegData <- NGERRegDataSQL(datoFra = datoFra) #, datoTil = datoTil)
+    RegData <- NGERRegDataSQL(datoFra = datoFra)
   }
 
   # Hvis RegData ikke har blitt preprosessert
@@ -100,9 +100,9 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   antDes <- ifelse(valgtVar %in% c('HysKomplikasjoner', 'LapIntraabdominell', 'LapKomplikasjoner'),2, 1)
   '%i%' <- intersect
 
-  if (!(valgtVar %in% c('Diagnoser', 'Prosedyrer'))) {
-  NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, OpMetode = OpMetode, figurtype='andeler')
-  RegData <- NGERVarSpes$RegData
+  if (!(valgtVar %in% c('Diagnoser', 'DiagnoseGr', 'Prosedyrer', 'ProsedyreGr'))) {
+    NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, OpMetode = OpMetode, figurtype='andeler')
+    RegData <- NGERVarSpes$RegData
 }
   ###Gjør utvalg (NGERUtvalg)
   ###Kjører denne etter variabeldefinisjon for at utvalgTxt skal bli riktig
@@ -118,7 +118,8 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   smltxt <- NGERUtvalg$smltxt
   hovedgrTxt <- NGERUtvalg$hovedgrTxt
 
-  if (valgtVar %in% c('Diagnoser', 'Prosedyrer')) {
+  if (valgtVar %in% c('Diagnoser', 'DiagnoseGr', 'Prosedyrer', 'ProsedyreGr')) {
+    #Må kjøres etter at utvalg er gjort for disse variablene
     NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, ind=ind, figurtype='andeler')
     RegData <- NGERVarSpes$RegData
   }
@@ -173,20 +174,15 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
 
       grtxt2 <- paste0(sprintf('%.1f',AggVerdier$Hoved), '%') #paste0('(', sprintf('%.1f',AggVerdier$Hoved), '%)')
 
-
-      # UtData <- list(paste0(toString(NGERVarSpes$tittel),'.'), AggVerdier, N, grtxt )
-      # names(UtData) <- c('tittel', 'AggVerdier', 'Antall', 'GruppeTekst')
       FigDataParam <- list(AggVerdier=AggVerdier,
                            N=Nfig,
                            Ngr=Ngr,
                            #KImaal <- NIRVarSpes$KImaal,
                            grtxt2=grtxt2,
                            grtxt=grtxt,
-                           #grTypeTxt=grTypeTxt,
                            tittel=tittel,
                            retn=retn,
                            subtxt=subtxt,
-                           #yAkseTxt=yAkseTxt,
                            utvalgTxt=utvalgTxt,
                            fargepalett=NGERUtvalg$fargepalett,
                            medSml=medSml,
@@ -212,7 +208,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
     antDesTxt <- paste0('%.', antDes, 'f')
     if (length(grtxt2) == 1) {grtxt2 <- paste0('(', sprintf(antDesTxt, AggVerdier$Hoved), '%)')}
     grtxtpst <- paste0(rev(grtxt), '\n (', rev(sprintf(antDesTxt, AggVerdier$Hoved)), '%)')
-    if (valgtVar %in% c('Diagnoser', 'Prosedyrer', 'LapEkstrautstyr') ) {
+    if (valgtVar %in% c('Diagnoser', 'DiagnoseGr', 'Prosedyrer', 'ProsedyreGr','LapEkstrautstyr') ) {
       grtxtpst <- paste0(rev(grtxt), ' (', rev(sprintf(antDesTxt, AggVerdier$Hoved)), '%)')}
     vmarg <- switch(retn, V=0, H=max(0, strwidth(grtxtpst, units='figure', cex=cexgr)*0.65))
     par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1)))	#Har alltid datoutvalg med

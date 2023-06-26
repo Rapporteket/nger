@@ -45,11 +45,11 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
   #------- Gjøre utvalg
 #Utvalg fra variable:
   RegData <- switch(valgtVar,
-                    RAND0 = RegData[which(RegData$R0Status==1) %i% which(RegData$R0Metode %in% 1:2)
+                    RAND0 = RegData[which(RegData$R0Metode %in% 1:2) #which(RegData$R0Status==1) %i%
                                     %i% which(RegData$InnDato >= '2016-01-01'), ],
-                    RAND1 = RegData[which(RegData$RY1Status==1) %i% which(RegData$RY1metode %in% 1:2)
+                    RAND1 = RegData[ which(RegData$RY1metode %in% 1:3) #which(RegData$RY1Status==1) %i%
                                     %i% which(RegData$InnDato >= '2018-01-01'), ],
-                    TSS0 = RegData[which(RegData$Tss2Status==1) %i% which(RegData$Tss2Type %in% 1:2)
+                    TSS0 = RegData[which(RegData$Tss2Type %in% 1:3) #which(RegData$Tss2Status==1) %i%
                                    %i% which(RegData$InnDato >= '2016-01-01'), ],
                     kvalInd = RegData)
   #NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, reshID=reshID, enhetsUtvalg=enhetsUtvalg)
@@ -153,27 +153,27 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
     variable <- c('PostOpKomplReop', 'PostKomplLap', 'PostKomplHys', 'LapKomplikasjoner', 'HysKomplikasjoner',
                   'LapKonvertert', 'HysKonvertert') #, 'Opf0') #, 'Innen6uker')
 
+    indKompl <- which(RegData$Opf0Komplikasjoner %in% 0:1)
     #Postop.kompl. laparoskopi
     #NB: Det er et bevisst valg at vi også har med OpMetode=3
     indLap <- which(RegData$OpMetode==1 | RegData$OpMetode == 3)
     RegData$PostKomplLap <- NA
-    RegData$PostKomplLap[indLap] <- 0
+    RegData$PostKomplLap[intersect(indLap, indKompl)] <- 0
     RegData$PostKomplLap[intersect(which(RegData$Opf0AlvorlighetsGrad %in% 2:4), indLap) ] <- 1
-    sum(RegData$PostKomplLap[ind$Hoved], na.rm = T)
-    table(RegData$ShNavn[ind$Hoved])
-    table(RegData$PostKomplLap)
+    #sum(RegData$PostKomplLap[ind$Hoved], na.rm = T)
+    #table(RegData$ShNavn[ind$Hoved])
+    #table(RegData$PostKomplLap)
 
     #Postop.kompl. hysteroskopi
     indHys <- which(RegData$OpMetode==2 | RegData$OpMetode == 3)
     RegData$PostKomplHys <- NA
-    RegData$PostKomplHys[indHys] <- 0
+    RegData$PostKomplHys[intersect(indHys, indKompl)] <- 0
     RegData$PostKomplHys[intersect(which(RegData$Opf0AlvorlighetsGrad %in% 2:4), indHys)] <- 1
 
     #Reoperasjon som følge av komplikasjon
     #Kode 0: Nei, 1:Ja
     RegData$PostOpKomplReop <- NA
-    RegData$PostOpKomplReop[which(RegData$Opf0Komplikasjoner %in% 0:1)
-                            %i% which(RegData$Opf0Status == 1)] <- 0
+    RegData$PostOpKomplReop[which(RegData$Opf0Komplikasjoner %in% 0:1)] <- 0
     RegData$PostOpKomplReop[which(RegData$Opf0Reoperasjon == 1)] <- 1
 
 

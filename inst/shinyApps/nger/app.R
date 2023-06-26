@@ -1,19 +1,16 @@
 #Resultattjeneste for NGER
 library(nger)
-library(kableExtra)
-library(knitr)
-library(lubridate)
-library(plyr)
-#ibrary(shinyBS) # Additional Bootstrap Controls
-library(rapbase)
-library(rapFigurer)
-library(shiny)
-library(shinyjs)
-#library(zoo)
+# library(kableExtra)
+# library(knitr)
+# library(lubridate)
+# library(plyr)
+# library(rapbase)
+# library(rapFigurer)
+# library(shiny)
+# library(shinyjs)
 
 idag <- Sys.Date()
 startDato <- startDato <- paste0(as.numeric(format(idag-100, "%Y")), '-01-01') #'2019-01-01' #Sys.Date()-364
-#sluttDato <- idag
 # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
 addResourcePath('rap', system.file('www', package='rapbase'))
 
@@ -372,6 +369,7 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
                                          'BMI-kategori' = 'OpBMI',
                                          'Dagkirurgiske inngrep' = 'OpDagkirurgi',
                                          'Diagnoser, hyppigste' = 'Diagnoser',
+                                         'Diagnosegrupper, hyppigste' = 'DiagnoseGr',
                                          'Gjennomføringsgrad av hysteroskopi' = 'HysGjforingsGrad',
                                          'Hastegrad av operasjon' = 'OpKategori',
                                          'Hjelpeinnstikk, antall' = 'LapNumHjelpeinnstikk',
@@ -391,6 +389,7 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
                                          'Operasjonstid (minutter)' = 'OpTid',
                                          'Primæroperasjon eller reoperasjon' = 'OpType',
                                          'Prosedyrer, hyppigste' = 'Prosedyrer',
+                                         'Prosegrupper, hyppigste' = 'ProsedyreGr',
                                          'Postoperative komplikasjoner vs. utdanning' = 'KomplPostUtd',
                                          'RAND36 Fysisk funksjon' = 'R0ScorePhys',
                                          'RAND36 Begrenses av fysisk helse' = 'R0ScoreRoleLmtPhy',
@@ -738,10 +737,10 @@ tabPanel(p("Abonnement",
 
          sidebarLayout(
            sidebarPanel(
-             autoReportInput("ngerAbb")
+             rapbase::autoReportInput("ngerAbb")
            ),
            shiny::mainPanel(
-             autoReportUI("ngerAbb")
+             rapbase::autoReportUI("ngerAbb")
            )
          )
 ), #tab abonnement
@@ -1013,10 +1012,10 @@ output$lastNed_dataDump <- downloadHandler(
                             , full_width=F
                             , digits = c(0,1,0,1)[1:antKol]
           ) %>%
-            add_header_above(c(" "=1, 'Egen enhet/gruppe' = 2, 'Resten' = 2)[1:(antKol/2+1)]) %>%
-            column_spec(column = 1, width_min = '7em') %>%
-            column_spec(column = 2:(ncol(tabKvalInd)+1), width = '7em') %>%
-            row_spec(0, bold = T)
+            kableExtra::add_header_above(c(" "=1, 'Egen enhet/gruppe' = 2, 'Resten' = 2)[1:(antKol/2+1)]) %>%
+            kableExtra::column_spec(column = 1, width_min = '7em') %>%
+            kableExtra::column_spec(column = 2:(ncol(tabKvalInd)+1), width = '7em') %>%
+            kableExtra::row_spec(0, bold = T)
         }
 
         output$lastNed_tabKvalInd <- downloadHandler(
@@ -1115,10 +1114,10 @@ output$lastNed_dataDump <- downloadHandler(
                                     , full_width=F
                                     , digits = c(0,1,0,1)[1:antKol]
                   ) %>%
-                        add_header_above(c(" "=1, 'Egen enhet/gruppe' = 2, 'Resten' = 2)[1:(antKol/2+1)]) %>%
-                        column_spec(column = 1, width_min = '7em') %>%
-                        column_spec(column = 2:(ncol(tabFord)+1), width = '7em') %>%
-                        row_spec(0, bold = T)
+                        kableExtra::add_header_above(c(" "=1, 'Egen enhet/gruppe' = 2, 'Resten' = 2)[1:(antKol/2+1)]) %>%
+                    kableExtra::column_spec(column = 1, width_min = '7em') %>%
+                    kableExtra::column_spec(column = 2:(ncol(tabFord)+1), width = '7em') %>%
+                    kableExtra::row_spec(0, bold = T)
             }
 
             output$lastNed_tabFord <- downloadHandler(
@@ -1212,10 +1211,10 @@ output$lastNed_dataDump <- downloadHandler(
                             , full_width=F
                             , digits = c(0,1,0,1)[1:antKol]
           ) %>%
-            add_header_above(c(" "=1, 'Egen enhet/gruppe' = 2, 'Resten' = 2)[1:(antKol/2+1)]) %>%
-            column_spec(column = 1, width_min = '7em') %>%
-            column_spec(column = 2:(antKol+1), width = '7em') %>%
-            row_spec(0, bold = T)
+            kableExtra::add_header_above(c(" "=1, 'Egen enhet/gruppe' = 2, 'Resten' = 2)[1:(antKol/2+1)]) %>%
+            kableExtra::column_spec(column = 1, width_min = '7em') %>%
+            kableExtra::column_spec(column = 2:(antKol+1), width = '7em') %>%
+            kableExtra::row_spec(0, bold = T)
         }
         output$lastNed_tabAndelTid <- downloadHandler(
           filename = function(){
@@ -1244,9 +1243,9 @@ output$lastNed_dataDump <- downloadHandler(
                             #, full_width=T
                             , digits = c(0,1) #,0,1)[1:antKol]
           ) %>%
-            column_spec(column = 1, width_min = '5em') %>%
-            column_spec(column = 2:(antKol+1), width = '4em') %>%
-            row_spec(0, bold = T)
+            kableExtra::column_spec(column = 1, width_min = '5em') %>%
+            kableExtra::column_spec(column = 2:(antKol+1), width = '4em') %>%
+            kableExtra::row_spec(0, bold = T)
         }
         output$lastNed_tabAndelGrVar <- downloadHandler(
           filename = function(){
@@ -1324,9 +1323,9 @@ output$lastNed_dataDump <- downloadHandler(
                                 , full_width=F
                                 , digits = c(0,1) #,1,1)[1:antKol]
               ) %>%
-                column_spec(column = 1, width_min = '7em') %>%
-                column_spec(column = 2:3, width = '7em') %>%
-                row_spec(0, bold = T)
+                kableExtra::column_spec(column = 1, width_min = '7em') %>%
+                kableExtra::column_spec(column = 2:3, width = '7em') %>%
+                kableExtra::row_spec(0, bold = T)
             }
 
             output$lastNed_gjsnGrVarTab <- downloadHandler(
@@ -1408,10 +1407,10 @@ output$lastNed_dataDump <- downloadHandler(
                                 , full_width=F
                                 , digits = 1 #c(0,1,1,1)[1:antKol]
               ) %>%
-                add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
-                column_spec(column = 1, width_min = '7em') %>%
-                column_spec(column = 2:(antKol+1), width = '7em') %>%
-                row_spec(0, bold = T)
+                kableExtra::add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
+                kableExtra::column_spec(column = 1, width_min = '7em') %>%
+                kableExtra::column_spec(column = 2:(antKol+1), width = '7em') %>%
+                kableExtra::row_spec(0, bold = T)
             }
 
             output$lastNed_gjsnTidTab <- downloadHandler(
@@ -1446,7 +1445,7 @@ output$lastNed_dataDump <- downloadHandler(
         # )
       )
       #test <- nger::abonnementNGER(rnwFil="NGERmndRapp.Rnw", brukernavn='tullebukk', reshID=105460)
-      autoReportServer(
+      rapbase::autoReportServer(
         id = "ngerAbb", registryName = "nger", type = "subscription",
         paramNames = paramNames, paramValues = paramValues, #org = orgAbb$value,
         reports = reports, orgs = orgs, eligible = TRUE

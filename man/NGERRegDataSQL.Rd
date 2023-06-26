@@ -4,14 +4,19 @@
 \alias{NGERRegDataSQL}
 \title{Henter global dataramme for NGER}
 \usage{
-NGERRegDataSQL(datoFra = "2014-01-01", datoTil = "2099-01-01", ...)
+NGERRegDataSQL(
+  datoFra = "2014-01-01",
+  datoTil = "2099-01-01",
+  medPROM = 1,
+  ...
+)
 }
 \arguments{
 \item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}
 
 \item{datoTil}{Seneste dato i utvalget (vises alltid i figuren).}
 
-\item{varUtvalg:}{Hvilke variable som skal hentes. (Oppf)}
+\item{medPROM:}{koble på RAND og TSS2-variabler}
 }
 \value{
 RegData data frame

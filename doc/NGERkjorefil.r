@@ -11,12 +11,13 @@ rm(list=ls())
 library(nger)
 library(knitr)
 library(tools)
-library(dplyr)
-library(lubridate)
+# library(dplyr)
+# library(lubridate)
+# 18.april 2023: Fjernet pakke prodlim fra description-fila
 
 dev.off()
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
-#setwd('C:/ResultattjenesteGIT/nger/inst/')
+setwd('C:/RegistreGIT/nger/inst/')
 setwd('~/nger/inst/')
 data('NGERtulledata', package = 'nger')
 
@@ -26,19 +27,19 @@ ForlData <- read.table('C:/Registerdata/nger/ForlopsOversikt2022-11-10.csv', sep
                        header = T,encoding = 'UTF-8')
 varForl <- c('BasisRegStatus', 'HovedDato','OppflgRegStatus','OppflgStatus','PasientAlder','SykehusNavn','ForlopsID')
 RegData <- merge(AVN, ForlData[,varForl], by = 'ForlopsID')
-RegData <- NGERPreprosess(RegData=RegData) #I App'en preprosesseres data
+RegData <- nger::NGERPreprosess(RegData=RegData) #I App'en preprosesseres data
 SkjemaData <- read.table('C:/Registerdata/nger/SkjemaOversikt2022-11-10.csv', sep = ';',
                        header = T,encoding = 'UTF-8')
-SkjemaData <- NGERPreprosess(RegData = SkjemaData)
+SkjemaData <- nger::NGERPreprosess(RegData = SkjemaData)
 
-test <-
 
 src <- normalizePath(system.file('NGERSamleRapp.Rnw', package='nger'))
 knitr::knit(src <- normalizePath(system.file('NGERSamleRapp.Rnw', package='nger')))
 knitr::knit('NGERSamleRapp.Rnw', encoding = 'UTF-8')
-tools::texi2pdf('NGERSamleRapp.tex')
+tools::texi2pdf('NGERSamleRapp.tex', clean = TRUE)
 
 knitr::knit2pdf('C:/RegistreGIT/nger/inst/NGERmndRapp.Rnw') #src <- normalizePath(system.file('NGERmndRapp.Rnw', package = 'nger')))
+tools::texi2pdf('NGERmndRapp.tex')
 
 NGERFigAntReg(RegData=0, datoTil='2021-02-02', reshID=110734,
                            preprosess=1, hentData=1, outfile='')
@@ -84,17 +85,17 @@ table(RegData[which(is.na(RegData$Opf0Status)), c('Opf0metode', 'Aar')], useNA =
 #--------------------------------Datakobling--------------------------
 
 rm(list=ls())
-dato <- '2019-09-03'
+dato <- '2022-11-10'
 #dato <- '2019-03-18Aarsrapp18'
-NGERBasis <- read.table(paste0('A:/NGER/AlleVarNum', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #,
-NGERForlop <- read.table(paste0('A:/NGER/ForlopsOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
-NGERSkjema <- read.table(paste0('A:/NGER/SkjemaOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
+NGERBasis <- read.table(paste0('C:/Registerdata/nger/AlleVarNum', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #,
+NGERForlop <- read.table(paste0('C:/Registerdata/nger/ForlopsOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
+NGERSkjema <- read.table(paste0('C:/Registerdata/nger/SkjemaOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
 #NGEROppf <- read.table('C:/Registre/NGER/data/FollowupsNum2016-10-14.csv', sep=';', header=T, fileEncoding = 'UTF-8')
 #NGERData <- merge(NGERForlop, NGERBasis, by = "ForlopsID", suffixes = c('','xx'), all = FALSE)
 #NGERData <- merge(NGERData, NGEROppf, by = "ForlopsID", suffixes = c('','YY'),all.x = TRUE)
 NGERData <- merge(NGERBasis, NGERForlop, by = "ForlopsID", suffixes = c('','YY'),all.x = TRUE, all.y=FALSE)
 #write.table(NGERData, file = paste0("NGER", dato), row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
- RegData <- NGERData
+ RegData <- nger::NGERPreprosess(NGERData)
 # RegData <- NGERPreprosess(NGERData)
 # RegData <- NGERUtvalgEnh(RegData, datoFra = '2016-01-01', datoTil = '2018-12-31')$RegData
 # save(RegData, file=paste0('A:/NGER/Aarsrapp2018', dato, '.Rdata'))
@@ -109,7 +110,7 @@ load(paste0('A:/NGER/NGER', dato, '.Rdata'))
 load(paste0('A:/NGER/Aarsrapp20182019-03-18.Rdata'))
 
 
-library(nger)
+
 #----------------------------------- Lage tulledata ------------------------------
 #Denne inneholder ingen id'er og trenger ikke
 #SkjemaOversikt <- NGERSkjema[ ,c("Skjemanavn", "SkjemaRekkeflg",  "SkjemaStatus",  "OpprettetDato", "HovedDato")]
@@ -270,8 +271,8 @@ for (valgtVar in variable) {
 
 valgtVar <- 'Tss2Sumskaar'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	R0ScoreRoleLmtEmo,	R0ScoreEnergy,
                             #R0ScoreEmo, R0ScoreSosial,	R0ScorePain,	R0ScoreGeneral, RegForsinkelse, OpTid
-                          #'Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
-                          #'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt', 'Tss2Sumskaar'
+                          # 'Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
+                          # 'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt', 'Tss2Sumskaar'
 
 outfile <- ''
 #outfile <- paste0(valgtVar, '_sh.png')
@@ -284,6 +285,7 @@ testGjsnTid <- NGERFigGjsnTid(RegData=RegData,valgtVar=valgtVar, datoFra='2017-0
                  valgtMaal='gjsn', hentData=0, tidsenhet = 'Kvartal', enhetsUtvalg = enhetsUtvalg, #OpMetode=OpMetode, medKI=1, , velgAvd = ''
                  outfile=outfile, reshID = reshID)#AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
 
+testGjsnTid <- NGERFigGjsnTid(RegData=RegData,valgtVar='R0ScoreGeneral', datoFra='2022-01-01', preprosess = 0)
 variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
               'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')
 variable <- c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',
@@ -300,9 +302,12 @@ NGERFigAntReg(RegData=0, datoTil=Sys.Date(),
                            minald=0, maxald=130, erMann='', outfile='',
                            reshID=0, enhetsUtvalg=2, hentData=1)
 
+RANDvar <- c('ScorePhys',	'ScoreRoleLmtPhy',	'ScoreRoleLmtEmo',
+             'ScoreEnergy',	'ScoreEmo', 'ScoreSosial',
+             'ScorePain',	'ScoreGeneral')
 NGERFigPrePost(RegData=0, valgtVar='ScoreGeneral',
                datoFra='2019-01-01', datoTil=Sys.Date(), preprosess=1, hentData=1,
-               outfile='test.png')
+               outfile='')
 
 #-----------------------------Kvalietsindikatorer------------------------------
 #valgtVar <- 'kvalInd' #RAND0, TSS0, kvalInd
