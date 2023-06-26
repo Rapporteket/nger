@@ -76,13 +76,13 @@ RegDataR <- dplyr::left_join(AlleVarNum, PROM_RANDw, by="ForlopsID")
 RegDataPROM <- dplyr::left_join(RegDataR, PROM_TSS, by="ForlopsID")
 
 
+forl_0 <- PROM$ForlopsID[PROM$Aar==0 & !is.na(PROM$RScoreGeneral)]
+forl_1 <- PROM$ForlopsID[PROM$Aar==1 & !is.na(PROM$RScoreGeneral)]
+forl_3 <- PROM$ForlopsID[PROM$Aar==3 & !is.na(PROM$RScoreGeneral)]
 
-# test <- PROM %>%
-#   dplyr::group_by(ForlopsID, Aar) %>%
-#   dplyr::summarise(n = dplyr::n(), .groups = "drop") %>%
-#   dplyr::filter(n > 1L)
-
-
-
+test13 <- intersect(forl_3, forl_1)
+test1 <- intersect(forl_0, forl_1)
+test013 <- intersect(test1, forl_3)
+test <- PROM[PROM$ForlopsID %in% test013, ]
 
 

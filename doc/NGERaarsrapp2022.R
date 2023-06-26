@@ -14,10 +14,10 @@ NGERData1aar <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra1aar, datoTil = d
 
 setwd('~/Aarsrappresultater/NGER' ) #"P:/Registerinfo og historie/NGER/aarsrapp/")
 
-table(NGERData$R3BesvarteProm)
-ind <- which(NGERData$R3BesvarteProm==1)
-test <- NGERData[which(NGERData$R3BesvarteProm==1), grep('ScoreGeneral', names(NGERData))]
-sum(NGERData$R3BesvarteProm==1)
+# table(NGERData$R3BesvarteProm)
+# ind <- which(NGERData$R3BesvarteProm==1)
+# test <- NGERData[which(NGERData$R3BesvarteProm==1), grep('ScoreGeneral', names(NGERData))]
+# sum(NGERData$R3BesvarteProm==1)
 #------------------------------ Fordelingsfigurer --------------------------
 # 'BMI-kategori' = 'OpBMI',
 # 'Diagnoser, hyppigste' = 'Diagnoser', hys/lap/tot
@@ -38,7 +38,9 @@ sum(NGERData$R3BesvarteProm==1)
 variabler <- c('OpBMI', 'HysGjforingsGrad','HysKomplikasjoner',
               'LapIntraabdominell', 'LapKomplikasjoner', 'LapTeknikk',
               'Opf0AlvorlighetsGrad', 'RegForsinkelse', 'Tss2Generelt')
-variabler <- 'Opf0AlvorlighetsGrad'
+# 'Opf0AlvorlighetsGrad' (alvorlighetsgrad 1-4)
+# 'KomplPostopAlvor' (alvorlighetsgrad 2-4)
+
 for (valgtVar in variabler) {
 	outfile <- paste0(valgtVar, '_ford.pdf')
 	NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar, outfile=outfile)
@@ -109,6 +111,9 @@ NGERFigKvalInd(RegData=NGERData1aar, preprosess=0, valgtVar='TSS0',
 # 'Postop. komplikasjon: Reoperasjon' = 'Opf0Reoperasjon', (Alle/laparoskopi/tot.lap.hysrektomi)
 
 #Fjernet 2021: 'KomplIntra', 'KomplPostop', 'OpASA', 'Opf0Reoperasjon'
+
+
+
 NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='LapKonvertert',
               outfile='LapKonvertert_Aar.pdf', tidsenhet='Aar')
 
@@ -118,7 +123,7 @@ NGERFigAndelTid(RegData=NGERData, valgtVar='OpDagkirurgi', preprosess = 0,
 
 #--Laparoskopi
 #Fjernet 2021: 'KomplPostop',
-variabler <- c('KomplIntra', 'Opf0AlvorlighetsGrad', 'Opf0AlvorlighetsGrad1',
+variabler <- c('KomplIntra', 'KomplPostopAlvor', 'Opf0AlvorlighetsGrad1',
                'Opf0KomplAlvorInfeksjon', 'KomplPostopAlvor',
                'Opf0Reoperasjon','LapKonvertert')
 for (valgtVar in variabler) {
@@ -132,7 +137,7 @@ NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf0AlvorlighetsGrad
 
 #--Hysteroskopi
 #Fjernet 2021: 'KomplPostop',
-variabler <- c('KomplIntra', 'Opf0AlvorlighetsGrad', 'Opf0AlvorlighetsGrad1', 'KomplPostopAlvor',
+variabler <- c('KomplIntra', 'KomplPostopAlvor', 'Opf0AlvorlighetsGrad1', 'KomplPostopAlvor',
                'Opf0Reoperasjon')
 for (valgtVar in variabler) {
   outfile <- paste0(valgtVar, '_', 'HystAar.pdf')
@@ -143,6 +148,7 @@ NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf0AlvorlighetsGrad
                 OpMetode=4, outfile='KomplPostop_TLHaar.pdf', tidsenhet='Aar')
 
 
+#KomplPostopAlvor.. HystAar, ..TLHaar
 
 
 #------------------------------ Andeler per sykehus --------------------------

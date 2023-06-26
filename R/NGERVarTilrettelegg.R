@@ -124,6 +124,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
   if (valgtVar=='Opf0AlvorlighetsGrad') {   #fordeling
     #Postoperative komplikasjoner
     #Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
+
     RegData <- RegData[ which(RegData$Opf0Komplikasjoner %in% 0:1), ]
     grtxt <- c('Ingen kompl.', 'Lite alvorlig', 'Middels alvorlig', 'Alvorlig', 'Dødelig')
     koder <- 1:4
@@ -131,6 +132,10 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
       RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
       RegData$VariabelGr <- factor(RegData$Variabel, levels=c(0,koder), labels = grtxt) #levels=c(nivaa,9)
       tittel <- 'Alvorlighetsgrad av komplikasjoner'
+      if (figurtype %in% c('andelGrVar', 'andelTid')) {
+        RegData$Variabel[which(RegData$Opf0AlvorlighetsGrad %in% 1:4)] <- 1
+        tittel <- 'Postoperativ komplikasjon, alle grader'
+      }
     }
   if (valgtVar=='KomplPostopAlvor') {   #Andeler, andelGrVar #Endret fra Opf0AlvorlighetsGrad
     #Postoperative komplikasjoner
@@ -139,22 +144,16 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
     grtxt <- c('Ingen kompl.', 'Lite alvorlig', 'Middels alvorlig', 'Alvorlig', 'Dødelig')
     koder <- 1:4
     retn <- 'H'
-    # if (figurtype == 'andeler') { #Skal vise alvorlige
-    #   indVar <- which(RegData[ ,valgtVar] %in% koder)
-    #   RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
-    #   RegData$VariabelGr <- factor(RegData$Variabel, levels=c(0,koder), labels = grtxt) #levels=c(nivaa,9)
-    #   tittel <- 'Alvorlighetsgrad av komplikasjoner'
-    # }
-    if (figurtype %in% c('andelGrVar', 'andelTid')) {
+     #if (figurtype %in% c('andelGrVar', 'andelTid')) { #Bare denne type fig
       #Andel av postoperative komplikasjoner som var moderate 2 eller alvorlige (3 og 4)
+    #Ha med denne?  RegData <- RegData[which(RegData$Opf0Komplikasjoner %in% 0:1), ]
       RegData$Variabel[which(RegData$Opf0AlvorlighetsGrad %in% 2:4)] <- 1
 	  varTxt <- 'komplikasjoner grad 2-4'
       tittel <- 'Postop. komplikasjon, moderat/alvorlig'
       sortAvtagende <- F
       if (OpMetode==1) {KvalIndGrenser <- c(0, 2.5, 5, 100)} #Laparoskopi
       if (OpMetode==2) {KvalIndGrenser <- c(0, 0.3, 0.6, 100)} #Hysteroskopi
-
-    }
+    #}
   }
   if (valgtVar=='Opf0AlvorlighetsGrad1') {   # andelGrVar/Tid
     #Postoperative komplikasjoner, lav alvorlighetsgrad
