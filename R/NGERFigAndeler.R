@@ -189,7 +189,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
                            hovedgrTxt=hovedgrTxt,
                            smltxt=smltxt)
   ###-----------Figur---------------------------------------
-  if ( Nfig$Hoved %in% 1:5 | 	(NGERUtvalg$medSml ==1 & Nfig$Rest<10)) {
+  if ((NGERUtvalg$medSml ==1 & Nfig$Rest<10) | Nfig$Hoved %in% 0:5) {
     FigTypUt <- rapFigurer::figtype(outfile)
     farger <- FigTypUt$farger
     plot.new()

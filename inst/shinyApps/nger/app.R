@@ -1,13 +1,5 @@
 #Resultattjeneste for NGER
 library(nger)
-# library(kableExtra)
-# library(knitr)
-# library(lubridate)
-# library(plyr)
-# library(rapbase)
-# library(rapFigurer)
-# library(shiny)
-# library(shinyjs)
 
 idag <- Sys.Date()
 startDato <- startDato <- paste0(as.numeric(format(idag-100, "%Y")), '-01-01') #'2019-01-01' #Sys.Date()-364
@@ -114,13 +106,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                             downloadButton(outputId = 'mndRapp.pdf', label='Last ned MÅNEDSRAPPORT', class = "butt"),
                             br(),
                             br(),
-               # h3('Samledokument'),
-               # helpText('Samledokumentet er ei samling av utvalgte tabeller og figurer basert på
-               #          operasjoner i valgt tidsrom.'),
-               # dateRangeInput(inputId = 'datovalgSamleDok', start = startDato, end = Sys.Date(),
-               #              label = "Tidsperiode", separator="t.o.m.", language="nb"),
-               #
-               #  downloadButton(outputId = 'samleDok.pdf', label='Last ned samledokument', class = "butt"),
 
                helpText('Det tar noen sekunder å generere en månedsrapport.
                         I mellomtida får du ikke sett på andre resultater'),
@@ -807,30 +792,6 @@ server <- function(input, output, session) {
                                   reshID = reshID)
             })
 
-      # output$samleDok.pdf <- downloadHandler(
-      #   filename = function(){ downloadFilename('Samledokument')},
-      #   content = function(file){
-      #     henteSamlerapporter(file, rnwFil="NGERSamleRapp.Rnw",
-      #                 reshID = reshID,
-      #                 datoFra = input$datovalgSamleDok[1],
-      #                 datoTil = input$datovalgSamleDok[2])
-      #   }
-      # )
-
-     # output$tabEgneReg <- renderTable({
-     #   xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg,
-     #                                  antMnd=12, reshID = reshID))},
-     #        rownames=T,
-     #        digits = 0
-     #  )
-     # output$tabEgneRegForrige <- renderTable({
-     #   xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg-365,
-     #                                  antMnd=12, reshID = reshID))},
-     #   rownames=T,
-     #   digits = 0
-     # )
-
-
       output$antRegMnd <- renderPlot({NGERFigAntReg(RegData=RegData,
                                                        reshID = reshID
                                                        # ,OpMetode = as.numeric(input$opMetodeKval)
@@ -1437,12 +1398,6 @@ output$lastNed_dataDump <- downloadHandler(
           paramNames = c('rnwFil', 'reshID', 'brukernavn'), #"valgtRHF"),
           paramValues = c('NGERmndRapp.Rnw', reshID, brukernavn) #'Alle')
         )
-        # SamleRapp = list(
-        #   synopsis = "NGER/Rapporteket: Samlerapport, abonnement",
-        #   fun = "abonnementNGER",
-        #   paramNames = c('rnwFil','reshID', 'brukernavn'),
-        #   paramValues = c('NGERSamleRapp.Rnw', reshID, brukernavn)
-        # )
       )
       #test <- nger::abonnementNGER(rnwFil="NGERmndRapp.Rnw", brukernavn='tullebukk', reshID=105460)
       rapbase::autoReportServer(
