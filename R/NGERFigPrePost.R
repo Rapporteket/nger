@@ -12,8 +12,9 @@
 #'
 #' @export
 NGERFigPrePost  <- function(RegData, valgtVar='ScoreGeneral', datoFra='2019-01-01', datoTil=Sys.Date(),
-                            minald=0, maxald=130, OpMetode=99, velgDiag=0, Ngrense=10, #reshID = 0,
-                            outfile='', preprosess=0, hentData=0,...)
+                            minald=0, maxald=130, OpMetode=99, velgDiag=0,
+                            AlvorlighetKompl = 0, Hastegrad=99, dagkir=9,
+                            Ngrense=10, outfile='', preprosess=0, hentData=0,...)
 {
 
   if (hentData == 1) {
@@ -46,7 +47,9 @@ RegData <- RegData[indSvar, ]
 
 tittel <- TittelAlle[varNr]
 
-NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil)
+NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil,
+                            minald=minald, maxald=maxald, OpMetode=OpMetode, velgDiag=velgDiag,
+                            Hastegrad = Hastegrad, dagkir = dagkir, AlvorlighetKompl = AlvorlighetKompl)
 RegData <- NGERUtvalg$RegData
 utvalgTxt <- NGERUtvalg$utvalgTxt
 
@@ -72,13 +75,18 @@ GjsnPP <- cbind(GjsnPre, Gjsn1aar, Gjsn3aar)
 #LEGGE TIL ALLE?
 
 #-----------Figur---------------------------------------
-#Hvis for få observasjoner..
-#if (dim(RegData)[1] < 10 | (length(which(RegData$ReshId == reshID))<5 & enhetsUtvalg == 1)) {
-if (dim(RegData)[1] < 10 ) { #NHoved < 10
 FigTypUt <- rapFigurer::figtype(outfile)
 farger <- FigTypUt$farger
-	plot.new()
-	title(main=tittel)
+NutvTxt <- length(utvalgTxt)
+vmarg <- switch(retn, V=0, H=max(0, strwidth(grtxt, units='figure', cex=cexgr)*0.7))
+par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1+length(tittel)-1)))	#Har alltid datoutvalg med
+
+#Hvis for få observasjoner..
+#if (dim(RegData)[1] < 10 | (length(which(RegData$ReshId == reshID))<5 & enhetsUtvalg == 1)) {
+  #par('fig'= c(0,1,0,1)) #plot.new()
+
+if (dim(RegData)[1] < 10 ) { #NHoved < 10
+  title(main=tittel)
 	legend('topleft',utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
 	text(0.5, 0.65, 'Færre enn 10 registreringer i hoved-', cex=1.2)
 	text(0.55, 0.6, 'eller sammenlikningsgruppe', cex=1.2)
@@ -89,12 +97,6 @@ farger <- FigTypUt$farger
 #Innparametre: subtxt, grtxt, tittel, Andeler
 
 #Plottspesifikke parametre:
-FigTypUt <- rapFigurer::figtype(outfile) #, fargepalett=NGERUtvalg$fargepalett)
-NutvTxt <- length(utvalgTxt)
-vmarg <- switch(retn, V=0, H=max(0, strwidth(grtxt, units='figure', cex=cexgr)*0.7))
-par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1+length(tittel)-1)))	#Har alltid datoutvalg med
-
-farger <- FigTypUt$farger
 fargeHoved <- farger[1]
 fargeRest <- farger[3]
 antGr <- length(Ngr)

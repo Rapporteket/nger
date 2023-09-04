@@ -522,15 +522,16 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
     grtxt <- levels(RegData$VariabelGr)
   }
-  if (valgtVar %in% c('R0ScoreGeneral','R1ScoreGeneral')) { #Andeler, #GjsnGrVar
+  if (valgtVar %in% c('R0ScoreGeneral','R1ScoreGeneral', 'R3ScoreGeneral')) { #Andeler, #GjsnGrVar
     #Verdier: 0:5:100
-    spm12 <- ifelse(valgtVar=='R0ScoreGeneral', 1, 2)
     RegData$Variabel <- RegData[ ,valgtVar]
-    # indFerdig <- switch(valgtVar,
-    #                     R0ScoreGeneral = which(RegData$R0Status==1),
-    #                     R1ScoreGeneral = which(RegData$RY1Status==1))
+    tittel <- paste0('Generell helsetilstand ',
+                     switch(valgtVar,
+                         R0ScoreGeneral = 'før operasjon',
+                         R1ScoreGeneral = 'ett år etter operasjon',
+                         R3ScoreGeneral = 'tre år etter operasjon')
+    )
     RegData <- RegData[which(RegData[,valgtVar] > -1), ] #indFerdig %i%
-    tittel <- paste0('Generell helsetilstand ', c('før operasjon', ', ett år etter')[spm12])
     subtxt <- 'sumskår (høyest er best)'
     gr <- seq(0, 100, 20)
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
