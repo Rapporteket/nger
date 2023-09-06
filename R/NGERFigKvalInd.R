@@ -48,7 +48,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
   RegData <- switch(valgtVar,
                     RAND0 = RegData[which(RegData$R0Metode %in% 1:2) #Inneholder kun verdiene 1, 2 og tomme
                                     %i% which(RegData$InnDato >= '2016-01-01'), ],
-                    RAND1 = RegData[ which(RegData$R1metode %in% 1:3) #which(RegData$RY1Status==1) %i%
+                    RAND1 = RegData[ which(RegData$R1Metode %in% 1:3) #which(RegData$RY1Status==1) %i%
                                     %i% which(RegData$InnDato >= '2018-01-01'), ],
                     RAND3 = RegData[ which(RegData$R3Metode %in% 1:3) #which(RegData$RY1Status==1) %i%
                                      %i% which(RegData$InnDato >= '2018-01-01'), ],

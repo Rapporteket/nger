@@ -836,12 +836,65 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData <- data.frame(RegData,nymatr)
   }
 
+  if (valgtVar %in% c('ProsViktigLap', 'ProsViktigHys')) {
+    #Viktigste prosedyrer
+    # Laparoskopisk salpingektomi 	LBE01
+    # Laparoskopisk hysterektomi	LCD04 LCD01 LCD97 LCD31 LCC11
+    # Laparoskopisk bilateral salpingo-ooforektomi	LAF11
+    # Laparoskopisk ekstirpasjon eller destruksjon av lesjon i peritoneum	JAL21
+    # Laparoskopisk unilateral salpingo-ooforektomi	LAF01
+    # Laparoskopisk ekstirpasjon av ovarialcyste 	LAC01
+    #
+    # Hysteroskopisk ekstirpasjon av lesjon	LCB25
+    # Hysteroskopi	LUC02
+    # Hysteroskopisk eksisjon av endometrium	LCB28
+    # Hysteroskopisk fjerning av fremmedlegeme	LCA22
+    # Hysteroskopi med biopsi 	LUC05
+    prosVar <- c('HysProsedyre1', 'HysProsedyre2', 'HysProsedyre3', 'LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3')
+
+    for (k in prosVar) {
+      RegData[RegData[,k] %in% c('LCD04', 'LCD01', 'LCD97', 'LCD31', 'LCC11'),
+              k] <- 'laphyst'}  #Laparoskopisk hysterektomi
+
+    AllePros <- unlist(apply(as.matrix(RegData[ind$Hoved, prosVar]), 1,FUN=unique)) #toupper()
+    #Må fjerne tomme. Tomme behandles som tomme lokalt, men NA på server.
+    #AlleProsSort <- sort(table(AllePros[which(AllePros != '')]), decreasing = TRUE)
+
+    if (valgtVar == 'ProsViktigLap'){
+      tittel <- 'Viktigste prosedyrer, laparaskopi '
+      variable <- c('LBE01', 'laphyst',
+                    'LAF11', 'JAL21',
+                    'LAF01', 'LAC01')
+      grtxt <- c('Salpingektomi', 'Lap. hysterektomi',
+                 'Bilateral\n salpingo-ooforektomi', 'Ekstirpasjon eller destruksjon\n  av lesjon i peritoneum',
+                 'Unilateral\n salpingo-ooforektomi', 'Ekstirpasjon av\n ovarialcyste')
+    }
+
+    if (valgtVar == 'ProsViktigHys'){
+      tittel <- 'Viktigste prosedyrer, hysteroskopi '
+      variable <- c('LCB25', 'LUC02', 'LCB28', 'LCA22', 'LUC05')
+      grtxt <- c('Ekstirpasjon av lesjon',
+                 'Hysteroskopi',
+                 'Eksisjon av endometrium',
+                 'Fjerning av fremmedlegeme',
+                 'Hyst. med biopsi')
+    }
+    # if (valgtVar == 'ProsedyreGr') {
+    #   grtxt <- dplyr::recode(variable, 'laphyst' = 'Lapar. hysterektomi')}
+    nymatr <- as.data.frame(matrix(0,dim(RegData)[1], length(variable)))
+    names(nymatr) <- variable
+    for (k in variable) {
+      nymatr[rowSums(RegData[ ,prosVar]== k, na.rm = T)>0, k] <- 1
+    }
+    RegData <- data.frame(RegData,nymatr)
+  }
 
   #FIGURER SATT SAMMEN AV FLERE VARIABLE, ULIKT TOTALUTVALG
   if (valgtVar %in% c('Diagnoser', 'DiagnoseGr', 'KomplPostopType', 'KomplAlvorPostopType',
                       'HysKomplikasjoner', 'LapKomplikasjoner',
                       'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr',
-                      'LapIntraabdominell', 'LapTeknikk', 'Prosedyrer', 'ProsedyreGr')){
+                      'LapIntraabdominell', 'LapTeknikk', 'Prosedyrer', 'ProsedyreGr',
+                      'ProsViktigLap', 'ProsViktigHys')){
     flerevar <- 1
     retn <- 'H'}
 

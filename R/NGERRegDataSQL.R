@@ -194,7 +194,9 @@ if (medPROM==1) {
   #Sjekk ved å sammenligne R0 og R1-variabler fra AllevARnUM OG rand36-TABELL
   R0var <- grep(pattern='R0', x=sort(names(RegData)), value = TRUE, fixed = TRUE)
   R1var <- grep(pattern='R1', x=sort(names(RegData)), value = TRUE, fixed = TRUE)
+  if (length(c(R0var, R1var)) >0) {
   AlleVarNum <- RegData[, -which(names(RegData) %in% c(R0var, R1var))]
+  }
 
 
   queryRAND36 <- 'select * FROM Rand36Report'
