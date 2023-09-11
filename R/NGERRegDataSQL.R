@@ -99,29 +99,29 @@ query <- paste0('SELECT
     OpTidlLapsko,
     OpTidlVagInngrep,
     OpType,
-    R0Metode,
-    R0ScorePhys,
-    R0ScoreRoleLmtPhy,
-    R0ScorePain,
-    R0ScoreGeneral,
-    R0ScoreEnergy,
-    R0ScoreSosial,
-    R0ScoreRoleLmtEmo,
-    R0ScoreEmo,
-    R0Spm2,
-    R0Status,
-    RY1metode,
+    -- R0Metode,
+    -- R0ScorePhys,
+    -- R0ScoreRoleLmtPhy,
+    -- R0ScorePain,
+    -- R0ScoreGeneral,
+    -- R0ScoreEnergy,
+    -- R0ScoreSosial,
+    -- R0ScoreRoleLmtEmo,
+    -- R0ScoreEmo,
+    -- R0Spm2,
+    -- R0Status,
+    -- RY1metode,
     R1BesvarteProm,    -- ny jan.-2022
-    R1ScorePhys,
-    R1ScoreRoleLmtPhy,
-    R1ScorePain,
-    R1ScoreGeneral,
-    R1ScoreEnergy,
-    R1ScoreSosial,
-    R1ScoreRoleLmtEmo,
-    R1ScoreEmo,
+    -- R1ScorePhys,
+    -- R1ScoreRoleLmtPhy,
+    -- R1ScorePain,
+    -- R1ScoreGeneral,
+    -- R1ScoreEnergy,
+    -- R1ScoreSosial,
+    -- R1ScoreRoleLmtEmo,
+    -- R1ScoreEmo,
     -- R1Spm2,
-    RY1Status,
+    -- RY1Status,
     Tss2Behandling,
     Tss2Behandlere,
     Tss2BesvarteProm,  -- ny jan.-2022
@@ -221,11 +221,11 @@ if (medPROM==1) {
       values_from = all_of(c('Metode', Rvar_uR))
     )
 
-  RegDataR <- dplyr::left_join(AlleVarNum, RAND36w, by="ForlopsID")
+  RegData <- dplyr::left_join(AlleVarNum, RAND36w, by="ForlopsID")
 }
 #Testing
 # Rvar <- grep(pattern='R', x=sort(names(RegDataR)), value = TRUE, fixed = TRUE)
 # RegDataR <- RegDataR[,c("ForlopsID", Rvar)]
 # summary(RegDataR)
-
+return(invisible(RegData))
 }

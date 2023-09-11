@@ -52,13 +52,14 @@ tabAntOpphSh5Aar <- function(RegData, datoTil=Sys.Date(),
 
 #'  Hvor mange skjema av hver type
 #' @export
-tabAntSkjema <- function(SkjemaOversikt, datoFra = '2019-01-01', datoTil=Sys.Date(), skjemastatus=1){
+tabAntSkjemaGml <- function(SkjemaOversikt, datoFra = '2019-01-01', datoTil=Sys.Date(), skjemastatus=1){
   #tabAntSkjema(SkjemaOversikt, datoFra = '2019-01-01', datoTil=Sys.Date(), skjemastatus=1)
   #NB: Denne skal også kunne vise skjema i kladd!
-  #Operasjon	Laparoskopi,	Hysteroskopi,	Oppfølging, 6u, RAND36, ,TSS2
+  #Operasjon	Laparoskopi,	Hysteroskopi,	Oppfølging, RAND36, ,TSS2
   #Skjemastatus kan være -1, 0 og 1
   SkjemaOversikt$SkjemaRekkeflg <- factor(SkjemaOversikt$SkjemaRekkeflg, levels = c(1,3,5,7,9,11, 15))
   skjemanavn <- c('Operasjon','Laparoskopi','Hysteroskopi', 'Oppfølging', 'RAND36', 'TSS2', 'RAND36, 1år')
+
 
   indDato <- which(as.Date(SkjemaOversikt$InnDato) >= datoFra & as.Date(SkjemaOversikt$InnDato) <= datoTil)
   indSkjemastatus <- which(SkjemaOversikt$SkjemaStatus==skjemastatus)
@@ -69,6 +70,36 @@ tabAntSkjema <- function(SkjemaOversikt, datoFra = '2019-01-01', datoTil=Sys.Dat
   tab <- xtable::xtable(tab)
 
 return(tab)
+}
+
+#'  Hvor mange skjema av hver type
+#'  @param RegData AlleVarNum påkoblet RAND-data
+#' @export
+tabAntSkjema <- function(RegData, datoFra = '2019-01-01', datoTil=Sys.Date()){
+  #Operasjon	Laparoskopi,	Hysteroskopi - bare besvarte skjema,	Oppfølging, RAND36, ,TSS2
+  #  RAND-tabellen inneholder bare besvarte skjema, så her kan jeg telle ut fra «Metode» = 1,2 el 3.
+#  TSS2 har ingen egen metode-variabel. Teller alle som har fått beregnet en Tss2Score.
+#  For oppfølging en måned etter: Opf0metode = 1 | Opfmetode=2 | (Opf0metode=3 & Opf0BesvarteProm =1)
+
+  indDato <- which(as.Date(RegData$InnDato) >= datoFra & as.Date(RegData$InnDato) <= datoTil)
+  RegData <- RegData[indDato, ]
+  RegData$ShNavn <- as.factor(RegData$ShNavn)
+
+  indOpf0 <- with(RegData, which(Opf0metode == 1 | Opf0metode==2 | (Opf0metode==3 & Opf0BesvarteProm == 1)))
+  tab <- cbind(
+    'Operasjon' = table(RegData$ShNavn),
+    'Laparoskopi' = table(RegData$ShNavn[RegData$LapStatus==1]),
+    'Hysteroskopi' = table(RegData$ShNavn[RegData$HysStatus==1]),
+    'Oppfølging' = table(RegData$ShNavn[indOpf0]),
+    'TSS2' = table(RegData$ShNavn[which(RegData$Tss2Score >=0)]),
+    'RAND36' = table(RegData$ShNavn[which(RegData$R0Metode %in% 1:3)]),
+    "RAND36-1år" = table(RegData$ShNavn[which(RegData$R1Metode %in% 1:3)]),
+    "RAND36-3år" = table(RegData$ShNavn[which(RegData$R3Metode %in% 1:3)])
+  )
+  tab <- addmargins(tab, 1)
+  tab <- xtable::xtable(tab)
+
+  return(tab)
 }
 
 

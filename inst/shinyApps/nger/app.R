@@ -179,14 +179,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                                             label = "Tidsperiode", separator="t.o.m.", language="nb")
 
                             ),
-                            conditionalPanel(condition = "input.ark == 'Antall registrerte skjema' ",
-                                             selectInput(inputId = 'skjemastatus', label='Velg skjemastatus',
-                                                         choices = c("Ferdigstilt"=1,
-                                                                     "Kladd"=0,
-                                                                     "Åpen"=-1)
-                                             )
-
-                            ),
                             conditionalPanel(condition = "input.ark == 'Last ned egne data' ",
                                              selectInput(inputId = 'velgReshReg', label='Velg sykehus',
                                                          selected = 0,
@@ -205,7 +197,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                              tabPanel('Antall operasjoner',
                                       h2("Antall opphold per avdeling"),
                                       uiOutput("undertittelReg"),
-                                      p("Velg tidsperiode ved å velge sluttdato/tidsenhet i menyen til venstre"),
+                                      p("Velg tidsperiode for operasjon ved å velge sluttdato/tidsenhet i menyen til venstre"),
                                       br(),
                                       fluidRow(
                                         tableOutput("tabAntOpphSh")
@@ -215,7 +207,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
                              tabPanel('Antall registrerte skjema',
                                       h4("Tabellen viser antall registrerte skjema for valgt tidsperiode"),
-                                      p("Velg tidsperiode i menyen til venstre"),
+                                      p("Velg tidsperiode for operasjon i menyen til venstre"),
                                       br(),
                                       fluidRow(
                                         tableOutput("tabAntSkjema")
@@ -860,10 +852,9 @@ server <- function(input, output, session) {
 
 
        #RegData som har tilknyttede skjema av ulik type
-       AntSkjemaAvHver <- tabAntSkjema(SkjemaOversikt=SkjemaOversikt,
+       AntSkjemaAvHver <- tabAntSkjema(RegData=RegData,
                                        datoFra = input$datovalgReg[1],
-                                       datoTil=input$datovalgReg[2],
-                                       skjemastatus=as.numeric(input$skjemastatus))
+                                       datoTil=input$datovalgReg[2])
        output$tabAntSkjema <- renderTable(AntSkjemaAvHver
                                           ,rownames = T, digits=0, spacing="xs" )
        output$lastNed_tabAntSkjema <- downloadHandler(
