@@ -12,6 +12,7 @@
 #'
 #' @export
 NGERFigPrePost  <- function(RegData, valgtVar='ScoreGeneral', datoFra='2019-01-01', datoTil=Sys.Date(),
+                            enhetsUtvalg = 0, reshID = 0, velgAvd=0,
                             minald=0, maxald=130, OpMetode=99, velgDiag=0,
                             AlvorlighetKompl = 0, Hastegrad=99, dagkir=9,
                             Ngrense=10, outfile='', preprosess=0, hentData=0,...)
@@ -26,113 +27,111 @@ NGERFigPrePost  <- function(RegData, valgtVar='ScoreGeneral', datoFra='2019-01-0
     RegData <- NGERPreprosess(RegData=RegData)
   }
 
-#reshID <- as.numeric(reshID)
-RANDvar <- c('ScorePhys',	'ScoreRoleLmtPhy',
-             'ScoreRoleLmtEmo', 'ScoreEnergy',
-             'ScoreEmo', 'ScoreSosial',
-             'ScorePain',	'ScoreGeneral')
-TittelAlle <- c('Fysisk funksjon',	'Fysisk rollebegrensning',
-                'Følelsesmessig rollebegrensning', 'Energinivå/vitalitet',
-                'Mental helse', 'Sosial funksjon',
-                'Smerte',	'Generell helsetilstand')
+  RANDvar <- c('ScorePhys',	'ScoreRoleLmtPhy',
+               'ScoreRoleLmtEmo', 'ScoreEnergy',
+               'ScoreEmo', 'ScoreSosial',
+               'ScorePain',	'ScoreGeneral')
+                #Benytter denne til å filtrere
+  TittelAlle <- c('Fysisk funksjon',	'Fysisk rollebegrensning',
+                  'Følelsesmessig rollebegrensning', 'Energinivå/vitalitet',
+                  'Mental helse', 'Sosial funksjon',
+                  'Smerte',	'Generell helsetilstand',
+                  'RAND, alle dimensjoner')
 
-varNr <- match(valgtVar, RANDvar)
-PrePostVar <- paste0(c('R0', 'R1', 'R3'), valgtVar)
-RegData$VarPre <- RegData[ ,PrePostVar[1]]
-RegData$VarPost1 <- RegData[ ,PrePostVar[2]]
-RegData$VarPost3 <- RegData[ ,PrePostVar[3]] #!Endres
-#Tar ut de med manglende registrering av valgt variabel og gjør utvalg
-indSvar <- which(!(is.na(RegData$VarPre) | is.na(RegData$VarPost1) | is.na(RegData$VarPost3))) #
-RegData <- RegData[indSvar, ]
+  varNr <- match(valgtVar, c(RANDvar, 'AlleRANDdim'))
+  PrePostVar <- paste0(c('R0', 'R1', 'R3'), c(RANDvar, 'Metode')[varNr])
+  RegData$VarPre <- RegData[ ,PrePostVar[1]]
+  RegData$VarPost1 <- RegData[ ,PrePostVar[2]]
+  RegData$VarPost3 <- RegData[ ,PrePostVar[3]] #!Endres
+  #Tar ut de med manglende registrering av valgt variabel og gjør utvalg
+  indSvar <- which(!(is.na(RegData$VarPre) | is.na(RegData$VarPost1) | is.na(RegData$VarPost3))) #
+  RegData <- RegData[indSvar, ]
 
-tittel <- TittelAlle[varNr]
+  tittel <- TittelAlle[varNr]
+  retn <- c(rep('V',8),'H')[varNr]
 
-NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil,
-                            minald=minald, maxald=maxald, OpMetode=OpMetode, velgDiag=velgDiag,
-                            Hastegrad = Hastegrad, dagkir = dagkir, AlvorlighetKompl = AlvorlighetKompl)
-RegData <- NGERUtvalg$RegData
-utvalgTxt <- NGERUtvalg$utvalgTxt
+  NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil,
+                              enhetsUtvalg = enhetsUtvalg, reshID = reshID, velgAvd=velgAvd,
+                              minald=minald, maxald=maxald, OpMetode=OpMetode, velgDiag=velgDiag,
+                              Hastegrad = Hastegrad, dagkir = dagkir, AlvorlighetKompl = AlvorlighetKompl)
+  RegData <- NGERUtvalg$RegData
+  utvalgTxt <- NGERUtvalg$utvalgTxt
 
 
-#-----------Definisjoner----------------------------
-cexgr <- 0.9
-retn <- 'V'
-txtretn <- 1
-grtxt <- ''
-subtxt <- ''
+  #-----------Definisjoner----------------------------
+  cexgr <- 0.9
+  txtretn <- 1
+  grtxt <- ''
+  subtxt <- ''
 
-#---------------BEREGNINGER --------------------------
-#utvalg <- c('Hoved','Rest')
-#GjsnPP <- list(Hoved = 0, Rest =0)
+  #---------------BEREGNINGER --------------------------
 
-GjsnPre <-tapply(RegData$VarPre, RegData$ShNavn, FUN = 'mean', na.rm=T)
-Gjsn1aar <- tapply(RegData$VarPost1, RegData$ShNavn, FUN = 'mean', na.rm=T)
-Gjsn3aar <- tapply(RegData$VarPost3, RegData$ShNavn, FUN = 'mean', na.rm=T)
-Ngr <- table(RegData$ShNavn)
-N <- sum(Ngr)
-GjsnPP <- cbind(GjsnPre, Gjsn1aar, Gjsn3aar)
+  if (valgtVar == 'AlleRANDdim') {
+    GjsnPre <-colMeans(RegData[ , paste0('R0',RANDvar)], na.rm=T)
+    Gjsn1aar <- colMeans(RegData[ , paste0('R1',RANDvar)], na.rm=T)
+    Gjsn3aar <-colMeans(RegData[ , paste0('R3',RANDvar)], na.rm=T)
+    N <- dim(RegData)[1]
+    GjsnPP <- cbind(GjsnPre, Gjsn1aar, Gjsn3aar)
+    grtxt <- c('Fysisk funksjon',	'Fysisk\n rollebegrensning',
+                          'Følelsesmessig\n rollebegrensning', 'Energinivå/vitalitet',
+                          'Mental helse', 'Sosial funksjon',
+                          'Smerte',	'Generell\n helsetilstand')
+    rownames(GjsnPP) <- grtxt
+    tittel <- c(tittel, NGERUtvalg$hovedgrTxt)
 
-#LEGGE TIL ALLE?
+  } else {
+    GjsnPre <-tapply(RegData$VarPre, RegData$ShNavn, FUN = 'mean', na.rm=T)
+    Gjsn1aar <- tapply(RegData$VarPost1, RegData$ShNavn, FUN = 'mean', na.rm=T)
+    Gjsn3aar <- tapply(RegData$VarPost3, RegData$ShNavn, FUN = 'mean', na.rm=T)
+    Ngr <- table(RegData$ShNavn)
+    N <- sum(Ngr)
+    GjsnPP <- cbind(GjsnPre, Gjsn1aar, Gjsn3aar)
+  }
 
-#-----------Figur---------------------------------------
-FigTypUt <- rapFigurer::figtype(outfile)
-farger <- FigTypUt$farger
-NutvTxt <- length(utvalgTxt)
-vmarg <- switch(retn, V=0, H=max(0, strwidth(grtxt, units='figure', cex=cexgr)*0.7))
-par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1+length(tittel)-1)))	#Har alltid datoutvalg med
+  #-----------Figur---------------------------------------
+  FigTypUt <- rapFigurer::figtype(outfile)
+  farger <- FigTypUt$farger
+  NutvTxt <- length(utvalgTxt)
+  vmarg <- switch(retn, V=0, H=max(0, strwidth(grtxt, units='figure', cex=cexgr)*0.7))
+  par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1+length(tittel)-1)))	#Har alltid datoutvalg med
 
-#Hvis for få observasjoner..
-#if (dim(RegData)[1] < 10 | (length(which(RegData$ReshId == reshID))<5 & enhetsUtvalg == 1)) {
-  #par('fig'= c(0,1,0,1)) #plot.new()
+  if (dim(RegData)[1] < 10 ) {
+    title(main=tittel)
+    legend('topleft',utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
+    text(0.5, 0.65, 'Færre enn 10 registreringer i hoved-', cex=1.2)
+    text(0.55, 0.6, 'eller sammenlikningsgruppe', cex=1.2)
+    if ( outfile != '') {dev.off()}
+  } else {
 
-if (dim(RegData)[1] < 10 ) { #NHoved < 10
-  title(main=tittel)
-	legend('topleft',utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
-	text(0.5, 0.65, 'Færre enn 10 registreringer i hoved-', cex=1.2)
-	text(0.55, 0.6, 'eller sammenlikningsgruppe', cex=1.2)
-	if ( outfile != '') {dev.off()}
-} else {
+    #-----------Figur---------------------------------------
 
-#-----------Figur---------------------------------------
-#Innparametre: subtxt, grtxt, tittel, Andeler
+    if (retn == 'V' ) { #Benytter denne til å vise ulike grupper av en variabel
+      #Vertikale søyler eller linje
+      ymax <- min(max(c(GjsnPP),na.rm=T)*1.25, 110)
+      pos <- barplot(t(GjsnPP), beside=TRUE, horiz=FALSE, las=txtretn, ylab="",
+                     sub='Gjennomsnittlig sumskår (høyest er best)',
+                     cex.names=cexgr, col=farger[1:3], border='white', ylim=c(0, ymax))
+      legend('top', c('perop.', '1 år', '3 år', paste0('N=', N)), bty='n',
+             fill=farger[c(1:3,NA)], border=NA, ncol=4, cex=0.9)
+    }
 
-#Plottspesifikke parametre:
-fargeHoved <- farger[1]
-fargeRest <- farger[3]
-antGr <- length(Ngr)
-lwdRest <- 3	#tykkelse på linja som repr. landet
-cexleg <- 0.9	#Størrelse på legendtekst
-cexpt <- 2	#Størrelse på punkter (resten av landet)
+    if (retn == 'H') { #Benytte denne til å vise ulike variabler
+      #Horisontale søyler
+      xmax <- min(max(GjsnPP,na.rm=T)*1.25, 100)
+      pos <- barplot(t(GjsnPP), beside=TRUE, horiz=TRUE, main='', las=1,
+                     col=farger[1:3], border='white', font.main=1,  xlim=c(0,xmax),
+                     cex.names=cexgr, xlab='Gjennomsnittlig sumskår (høyest er best)')
+      legend('top', c('Før', 'Etter',paste0('N=',N)), bty='n',
+             fill=farger[c(1:3,NA)], border=NA, ncol=3, cex=0.9)
+    }
 
-if (retn == 'V' ) {
-#Vertikale søyler eller linje
-	ymax <- min(max(c(GjsnPP),na.rm=T)*1.25, 110)
-	pos <- barplot(t(GjsnPP), beside=TRUE, horiz=FALSE, las=txtretn, ylab="",
-		sub=subtxt,	cex.names=cexgr, #names.arg=grtxt,
-		col=farger[1:3], border='white', ylim=c(0, ymax))	#
-		legend('top', c('perop.', '1 år', '3 år', paste0('N=', N)), bty='n',
-			fill=farger[c(1:3,NA)], border=NA, ncol=4, cex=cexleg)
-}
+    title(tittel, font.main=1)	#line=0.5,
+    #Tekst som angir hvilket utvalg som er gjort
+    utvpos <- 3+length(tittel)-1	#Startlinje for teksten
+    mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))
 
-if (retn == 'H') {
-#Horisontale søyler
-#	ymax <- 2*antGr*1.6
-	xmax <- min(max(GjsnPP,na.rm=T)*1.25, 100)
-pos <- barplot(t(GjsnPP), beside=TRUE, horiz=TRUE, main='', las=1,
-		col=farger[1:3], border='white', font.main=1,  xlim=c(0,xmax), #ylim=c(0, ymax),
-		cex.names=cexgr, xlab="Skår") #names.arg=grtxt,
-		legend('top', c('Før', 'Etter',paste0('N=',N)), bty='n',
-			fill=farger[c(1:3,NA)], border=NA, ncol=3, cex=cexleg)
-}
+    par('fig'=c(0, 1, 0, 1))
+    if ( outfile != '') {dev.off()}
 
-title(tittel, font.main=1)	#line=0.5,
-#Tekst som angir hvilket utvalg som er gjort
-avst <- 0.8
-utvpos <- 3+length(tittel)-1	#Startlinje for teksten
-mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))
-
-par('fig'=c(0, 1, 0, 1))
-if ( outfile != '') {dev.off()}
-
-}
+  }
 }

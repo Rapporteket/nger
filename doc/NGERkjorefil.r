@@ -311,6 +311,10 @@ NGERFigPrePost(RegData=0, valgtVar='ScoreGeneral',
                datoFra='2019-01-01', datoTil=Sys.Date(), preprosess=1, hentData=1,
                outfile='')
 
+NGERFigPrePost(RegData=0, valgtVar='AlleRANDdim',
+               datoFra='2019-01-01', datoTil=Sys.Date(), preprosess=1, hentData=1,
+               outfile='')
+
 #-----------------------------Kvalietsindikatorer------------------------------
 #valgtVar <- 'kvalInd' #RAND0, TSS0, kvalInd
 outfile <- '' #paste0(valgtVar, '_kvalInd.png')

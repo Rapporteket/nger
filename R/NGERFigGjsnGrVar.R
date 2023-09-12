@@ -207,7 +207,6 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
 
       #Definerer disse i beregningsfunksjonen?
       xmax <- max(c(AggVerdier$Hoved, AggVerdier$Rest), na.rm=T)*1.2
-      print(xmax)
       if (valgtVar %in% c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',
                          'R0ScoreEmo', 'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')) {
         xmax <- min(xmax, 100)}

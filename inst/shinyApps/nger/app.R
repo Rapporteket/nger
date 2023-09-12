@@ -40,7 +40,7 @@ sykehusNavn <- sort(unique(RegData$ShNavn), index.return=T)
 sykehusValgUts <- unique(RegData$ReshId)[sykehusNavn$ix]
 names(sykehusValgUts) <- sykehusNavn$x #c('Alle',sykehusNavn$x)
 sykehusValg <- c(0,sykehusValgUts)
-names(sykehusValg) <- c('Alle',sykehusNavn$x)
+names(sykehusValg) <- c('Ikke valgt',sykehusNavn$x)
 
 
 enhetsUtvalg <- c("Egen mot resten av landet"=1,
@@ -248,7 +248,16 @@ h3('Registerets kvalitetsindikatorer', align='center'),
                                          ),
                                        selectInput(inputId = 'enhetsUtvalgKval',
                                                    label='Egen enhet og/eller landet',
-                                                   choices = enhetsUtvalg),
+                                                   choices = enhetsUtvalg)
+                                        ),
+                      #Bare RAND, alle dimensjoner
+                      conditionalPanel(condition = "input.kvalIndark == 'RAND, alle dimensjoner'",
+                                       selectInput(inputId = 'enhetsUtvalgKvalRAND',
+                                                   label='Egen enhet / hele landet',
+                                                   choices = c("Hele landet"=0, "Egen enhet"=2))
+                                       ),
+                      conditionalPanel(condition = "input.kvalIndark == 'Figur' || input.kvalIndark == 'Tabell' ||
+                      input.kvalIndark == 'RAND, alle dimensjoner' ",
                                        selectInput(inputId = 'velgReshKval', label='Velg eget Sykehus',
                                                    choices = sykehusValg)
                                        ),
@@ -309,6 +318,11 @@ h3('Registerets kvalitetsindikatorer', align='center'),
                       br(),
                       plotOutput('kvalRAND013', height="auto"),
                       downloadButton(outputId = 'LastNedFigRAND013', label='Last ned')
+             ),
+             tabPanel('RAND, alle dimensjoner',
+                      br(),
+                      plotOutput('kvalRANDdim', height="auto"),
+                      downloadButton(outputId = 'LastNedFigRANDdim', label='Last ned')
              )
            ))
 
@@ -1025,6 +1039,22 @@ output$lastNed_dataDump <- downloadHandler(
                            session = session,
                            outfile = file)
           })
+
+        #RAND, alle dim
+        output$kvalRANDdim <- renderPlot({
+          NGERFigPrePost(RegData=RegData, preprosess = 0,
+                         valgtVar='AlleRANDdim',
+                         datoFra=input$datovalgKval[1], datoTil=input$datovalgKval[2],
+                         enhetsUtvalg=as.numeric(input$enhetsUtvalgKvalRAND),
+                         reshID = reshID,
+                         velgAvd=as.numeric(input$velgReshKval),
+                         minald=as.numeric(input$alderKval[1]), maxald=as.numeric(input$alderKval[2]),
+                         OpMetode = as.numeric(input$opMetodeKval),
+                         Hastegrad = as.numeric(input$hastegradKval),
+                         velgDiag = as.numeric(input$velgDiagKval),
+                         AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
+                         session = session)
+        }, height=800, width=800)
 
       #----------Tabelloversikter ----------------------
       observe({
