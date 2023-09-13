@@ -59,7 +59,7 @@ NGERFigPrePost  <- function(RegData, valgtVar='ScoreGeneral', datoFra='2019-01-0
 
 
   #-----------Definisjoner----------------------------
-  cexgr <- 0.9
+  cexgr <- 1
   txtretn <- 1
   grtxt <- ''
   subtxt <- ''
@@ -111,8 +111,6 @@ NGERFigPrePost  <- function(RegData, valgtVar='ScoreGeneral', datoFra='2019-01-0
       pos <- barplot(t(GjsnPP), beside=TRUE, horiz=FALSE, las=txtretn, ylab="",
                      sub='Gjennomsnittlig sumskår (høyest er best)',
                      cex.names=cexgr, col=farger[1:3], border='white', ylim=c(0, ymax))
-      legend('top', c('perop.', '1 år', '3 år', paste0('N=', N)), bty='n',
-             fill=farger[c(1:3,NA)], border=NA, ncol=4, cex=0.9)
     }
 
     if (retn == 'H') { #Benytte denne til å vise ulike variabler
@@ -121,10 +119,12 @@ NGERFigPrePost  <- function(RegData, valgtVar='ScoreGeneral', datoFra='2019-01-0
       pos <- barplot(t(GjsnPP), beside=TRUE, horiz=TRUE, main='', las=1,
                      col=farger[1:3], border='white', font.main=1,  xlim=c(0,xmax),
                      cex.names=cexgr, xlab='Gjennomsnittlig sumskår (høyest er best)')
-      legend('top', c('Før', 'Etter',paste0('N=',N)), bty='n',
-             fill=farger[c(1:3,NA)], border=NA, ncol=3, cex=0.9)
+      # legend('top', c('Før', 'Etter',paste0('N=',N)), bty='n',
+      #        fill=farger[c(1:3,NA)], border=NA, ncol=3, cex=0.9)
     }
 
+    legend('top', c('perop.', '1 år', '3 år', paste0('N=', N)), bty='n',
+           fill=farger[c(1:3,NA)], border=NA, ncol=4, cex=0.9)
     title(tittel, font.main=1)	#line=0.5,
     #Tekst som angir hvilket utvalg som er gjort
     utvpos <- 3+length(tittel)-1	#Startlinje for teksten

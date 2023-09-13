@@ -1,10 +1,9 @@
 Package: nger
 Type: Package
 Title: Resultatrapporter for NGER
-Version: 3.5.2
-Date: 2023-04-04
-Authors@R: c(person("Edvardsen", "Are", email = "are.edvardsen@helse-nord.no",
-    role = "aut"), person("Olsen", "Lena", email = "Lena.Ringstad.Olsen@unn.no",
+Version: 3.6.0
+Date: 2023-09-13
+Authors@R: c(person("Olsen", "Lena", email = "Lena.Ringstad.Olsen@unn.no",
     role = c("cre", "aut")))
 Maintainer: Lena Ringstad Olsen <lena.olsen@skde.no>
 Description: Pakke for generering av resultatrapporter for NGER.

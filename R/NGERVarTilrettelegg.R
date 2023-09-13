@@ -1068,7 +1068,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     ind1met <- cbind(indMet, RegData$LapTilgangsMetode[indMet]+1) #Verdi 1,2,3,10...#Alle ja/nei
     ind1met[ind1met[,2]==10,2] <- 4
     ind01tilg <- intersect(indMar16tilg,indTilg)
-    ind1tilg <- cbind(ind01tilg, RegData$LapTilgang[ind01tilg]) #which(RegData[ ,variable] != -1, arr.ind = T) #Alle ja/nei
+    ind1tilg <- cbind(ind01tilg, RegData$LapTilgang[ind01tilg]) #Verdi 1,2,9 #Alle ja/nei
 
     RegData[ ,variable] <- NA
     RegData[ ,variable[1:4]] <- 0

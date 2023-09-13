@@ -9,16 +9,14 @@
 #' @return RegData data frame
 #' @export
 #'
+
 NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = Sys.Date(), medPROM=1, ...) {
 
   if ("session" %in% names(list(...))) {
     rapbase::repLogger(session = list(...)[["session"]], msg = paste0('Hentet rådata'))
   }
-#  query <- paste0('SELECT ',
-#  paste0('AlleVarNum.',varUtvalg,suffix=', \n'),
-  #"Opf0UtstyrInstrumenter", "Opf0UtstyrNett" og "Opf0UtstyrSutur"
 
-query <- paste0('SELECT
+  query <- paste0('SELECT
   HysBlodning,
     HysFluidOverload,
     HysGjforingsGrad,
@@ -176,56 +174,51 @@ query <- paste0('SELECT
     ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID
  WHERE HovedDato >= \'', datoFra, '\' AND HovedDato <= \'', datoTil, '\'')
 
-# -- NB  Opf0BesvarteProm, -- -- ny jan.-2022
-#ForlopsOversikt.PasientAlder
-#Tatt ut av alleVarNum: 	AVD_RESH,
+  #FROM alleVarNum INNER JOIN ForlopsOversikt ON alleVarNum.MCEID = ForlopsOversikt.ForlopsID
+  # query <- 'select * FROM AlleVarNum
+  #     INNER JOIN ForlopsOversikt
+  #     ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID'
 
-#FROM alleVarNum INNER JOIN ForlopsOversikt ON alleVarNum.MCEID = ForlopsOversikt.ForlopsID
-# query <- 'select * FROM AlleVarNum
-#     INNER JOIN ForlopsOversikt
-#     ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID'
-
-#Data_AWN <- rapbase::loadRegData(registryName = "nger", query_AWN, dbType = "mysql")
-#Data_Forl <- rapbase::loadRegData(registryName = "nger", query_Forl, dbType = "mysql")
-RegData <- rapbase::loadRegData(registryName = "nger", query, dbType = "mysql")
+  #Data_AWN <- rapbase::loadRegData(registryName = "nger", query_AWN, dbType = "mysql")
+  #Data_Forl <- rapbase::loadRegData(registryName = "nger", query_Forl, dbType = "mysql")
+  RegData <- rapbase::loadRegData(registryName = "nger", query, dbType = "mysql")
 
 
-if (medPROM==1) {
-  #Sjekk ved å sammenligne R0 og R1-variabler fra AllevARnUM OG rand36-TABELL
-  R0var <- grep(pattern='R0', x=sort(names(RegData)), value = TRUE, fixed = TRUE)
-  R1var <- grep(pattern='R1', x=sort(names(RegData)), value = TRUE, fixed = TRUE)
-  if (length(c(R0var, R1var)) >0) {
-  AlleVarNum <- RegData[, -which(names(RegData) %in% c(R0var, R1var))]
+  if (medPROM==1) {
+    #Sjekk ved å sammenligne R0 og R1-variabler fra AllevARnUM OG rand36-TABELL
+    R0var <- grep(pattern='R0', x=sort(names(RegData)), value = TRUE, fixed = TRUE)
+    R1var <- grep(pattern='R1', x=sort(names(RegData)), value = TRUE, fixed = TRUE)
+    if (length(c(R0var, R1var)) >0) {
+      AlleVarNum <- RegData[, -which(names(RegData) %in% c(R0var, R1var))]
+    }
+
+    queryRAND36 <- 'select * FROM Rand36Report'
+    RAND36 <-  rapbase::loadRegData(registryName = "nger", queryRAND36, dbType = "mysql")
+
+    Rvar <- grep(pattern='R', x=names(RAND36), value = TRUE, fixed = TRUE)
+    #Navneendring; fjerne R..
+    Rvar_uR <- substring(Rvar, 2)
+    names(RAND36)[which(names(RAND36) %in% Rvar)] <- Rvar_uR
+
+    RAND36w <- RAND36 %>%
+      tidyr::pivot_wider(
+        id_cols = 'ForlopsID',
+        id_expand = FALSE,
+        names_from ='Aar',  #c('Aar', Rvar),
+        #names_prefix = "A",
+        names_sep = "",
+        names_glue = "{'R'}{Aar}{.value}",
+        names_sort = FALSE,
+        names_vary = "fastest",
+        names_repair = "check_unique",
+        values_from = all_of(c('Metode', Rvar_uR))
+      )
+
+    RegData <- dplyr::left_join(AlleVarNum, RAND36w, by="ForlopsID")
   }
-
-
-  queryRAND36 <- 'select * FROM Rand36Report'
-  RAND36 <-  rapbase::loadRegData(registryName = "nger", queryRAND36, dbType = "mysql")
-
-  Rvar <- grep(pattern='R', x=names(RAND36), value = TRUE, fixed = TRUE)
-  #Navneendring; fjerne R..
-  Rvar_uR <- substring(Rvar, 2)
-  names(RAND36)[which(names(RAND36) %in% Rvar)] <- Rvar_uR
-
-  RAND36w <- RAND36 %>%
-    tidyr::pivot_wider(
-      id_cols = 'ForlopsID',
-      id_expand = FALSE,
-      names_from ='Aar',  #c('Aar', Rvar),
-      #names_prefix = "A",
-      names_sep = "",
-      names_glue = "{'R'}{Aar}{.value}",
-      names_sort = FALSE,
-      names_vary = "fastest",
-      names_repair = "check_unique",
-      values_from = all_of(c('Metode', Rvar_uR))
-    )
-
-  RegData <- dplyr::left_join(AlleVarNum, RAND36w, by="ForlopsID")
-}
-#Testing
-# Rvar <- grep(pattern='R', x=sort(names(RegDataR)), value = TRUE, fixed = TRUE)
-# RegDataR <- RegDataR[,c("ForlopsID", Rvar)]
-# summary(RegDataR)
-return(invisible(RegData))
+  #Testing
+  # Rvar <- grep(pattern='R', x=sort(names(RegDataR)), value = TRUE, fixed = TRUE)
+  # RegDataR <- RegDataR[,c("ForlopsID", Rvar)]
+  # summary(RegDataR)
+  return(invisible(RegData))
 }
