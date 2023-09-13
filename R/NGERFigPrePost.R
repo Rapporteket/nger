@@ -59,7 +59,7 @@ NGERFigPrePost  <- function(RegData, valgtVar='ScoreGeneral', datoFra='2019-01-0
 
 
   #-----------Definisjoner----------------------------
-  cexgr <- 0.9
+  cexgr <- 1
   txtretn <- 1
   grtxt <- ''
   subtxt <- ''
