@@ -2,15 +2,12 @@
 % Please edit documentation in R/NGERtabeller.R
 \name{tabAntSkjema}
 \alias{tabAntSkjema}
-\title{Hvor mange skjema av hver type}
+\title{Hvor mange skjema av hver type
+ @param RegData AlleVarNum påkoblet RAND-data}
 \usage{
-tabAntSkjema(
-  SkjemaOversikt,
-  datoFra = "2019-01-01",
-  datoTil = Sys.Date(),
-  skjemastatus = 1
-)
+tabAntSkjema(RegData, datoFra = "2019-01-01", datoTil = Sys.Date())
 }
 \description{
 Hvor mange skjema av hver type
+ @param RegData AlleVarNum påkoblet RAND-data
 }

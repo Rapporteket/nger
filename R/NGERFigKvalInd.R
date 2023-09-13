@@ -44,15 +44,17 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
 
   #------- Gjøre utvalg
 #Utvalg fra variable:
+  #Metode: [1:"Oppfølging pr post/brev", 2:"Oppfølging pr telefonintervju", 3:e-prom, 9:"Oppfølging ikke mulig"]
   RegData <- switch(valgtVar,
-                    RAND0 = RegData[which(RegData$R0Metode %in% 1:2) #which(RegData$R0Status==1) %i%
+                    RAND0 = RegData[which(RegData$R0Metode %in% 1:2) #Inneholder kun verdiene 1, 2 og tomme
                                     %i% which(RegData$InnDato >= '2016-01-01'), ],
-                    RAND1 = RegData[ which(RegData$RY1metode %in% 1:3) #which(RegData$RY1Status==1) %i%
+                    RAND1 = RegData[ which(RegData$R1Metode %in% 1:3) #which(RegData$RY1Status==1) %i%
                                     %i% which(RegData$InnDato >= '2018-01-01'), ],
+                    RAND3 = RegData[ which(RegData$R3Metode %in% 1:3) #which(RegData$RY1Status==1) %i%
+                                     %i% which(RegData$InnDato >= '2018-01-01'), ],
                     TSS0 = RegData[which(RegData$Tss2Type %in% 1:3) #which(RegData$Tss2Status==1) %i%
                                    %i% which(RegData$InnDato >= '2016-01-01'), ],
                     kvalInd = RegData)
-  #NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, reshID=reshID, enhetsUtvalg=enhetsUtvalg)
   NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, reshID=reshID,  minald = minald, maxald = maxald, datoFra = datoFra,
                               datoTil = datoTil, OpMetode = OpMetode, Hastegrad=Hastegrad, velgDiag=velgDiag,
                               AlvorlighetKompl = AlvorlighetKompl,
@@ -82,25 +84,20 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
 
 
   ########RAND36
-  if (valgtVar %in% c('RAND0', 'RAND1')){
+  if (valgtVar %in% c('RAND0', 'RAND1', 'RAND3')){
 
     grtxt <- c('Fysisk funksjon',	'Fysisk \n rollebegrensning',	'Følelsesmessig \n rollebegrensning',
                'Energinivå/vitalitet',	'Mental helse', 'Sosial funksjon',
                'Smerte',	'Generell \n helsetilstand')
-    if (valgtVar =='RAND0') {
-      RANDvar <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',
-                  'R0ScoreEnergy',	'R0ScoreEmo', 'R0ScoreSosial',
-                  'R0ScorePain',	'R0ScoreGeneral')
-    tittel <- 'RAND36 ved operasjon, alle dimensjoner'
-    }
-    if (valgtVar =='RAND1')  {
-      #mangler <- c(-2, -7)
-      RANDvar <- c('R1ScorePhys',	'R1ScoreRoleLmtPhy',	'R1ScoreRoleLmtEmo',
-                      'R1ScoreEnergy',	'R1ScoreEmo', 'R1ScoreSosial',
-                      'R1ScorePain',	'R1ScoreGeneral') #[mangler]
-      #grtxt <- grtxt[mangler]
-      tittel <- 'RAND36 ett år etter, alle dimensjoner'
-                  }
+    tittel <- switch(valgtVar,
+                     'RAND0' = 'RAND36 ved operasjon, alle dimensjoner',
+                     'RAND1' = 'RAND36 ett år etter, alle dimensjoner',
+                     'RAND3' = 'RAND36 tre år etter, alle dimensjoner')
+
+      RANDvar <- paste0('R', substr(valgtVar,5,5),
+                        c('ScorePhys',	'ScoreRoleLmtPhy',	'ScoreRoleLmtEmo', 'ScoreEnergy',
+                          'ScoreEmo', 'ScoreSosial', 'ScorePain',	'ScoreGeneral'))
+
     AggVerdier <- list(Hoved = colMeans(RegData[ind$Hoved, RANDvar], na.rm = T),
                        Rest = colMeans(RegData[ind$Rest, RANDvar], na.rm=T)) #AggVerdier <- list(Hoved=Midt, Rest=0, KIned=KIned, KIopp=KIopp, KIHele=KIHele)
     xakseTxt <- 'Gjennomsnittlig skår (høyest er best)'
@@ -160,11 +157,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
     RegData$PostKomplLap <- NA
     RegData$PostKomplLap[intersect(indLap, indKompl)] <- 0
     RegData$PostKomplLap[intersect(which(RegData$Opf0AlvorlighetsGrad %in% 2:4), indLap) ] <- 1
-    #sum(RegData$PostKomplLap[ind$Hoved], na.rm = T)
-    #table(RegData$ShNavn[ind$Hoved])
-    #table(RegData$PostKomplLap)
 
-    #Postop.kompl. hysteroskopi
     indHys <- which(RegData$OpMetode==2 | RegData$OpMetode == 3)
     RegData$PostKomplHys <- NA
     RegData$PostKomplHys[intersect(indHys, indKompl)] <- 0

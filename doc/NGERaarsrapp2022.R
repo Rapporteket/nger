@@ -238,6 +238,7 @@ NGERFigKvalInd(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar, outfile=ou
               'ScoreEnergy',	'ScoreEmo', 'ScoreSosial',
               'ScorePain',	'ScoreGeneral')
  #valgtVar='ScoreRoleLmtPhy'
+ NGERData <- NGERPreprosess(NGERRegDataSQL())
  for (valgtVar in RANDvar) {
  NGERFigPrePost(RegData=NGERData, valgtVar=valgtVar,
                 datoFra='2018-01-01', datoTil=Sys.Date(),

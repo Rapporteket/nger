@@ -10,19 +10,13 @@
 #' @export
 #'
 
-NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = Sys.Date(),...) {
-#NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = '2099-01-01', medPROM=1, ...) {
-
-  medPROM <- 0
+NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = Sys.Date(), medPROM=1, ...) {
 
   if ("session" %in% names(list(...))) {
     rapbase::repLogger(session = list(...)[["session"]], msg = paste0('Hentet rådata'))
   }
-#  query <- paste0('SELECT ',
-#  paste0('AlleVarNum.',varUtvalg,suffix=', \n'),
-  #"Opf0UtstyrInstrumenter", "Opf0UtstyrNett" og "Opf0UtstyrSutur"
 
-query <- paste0('SELECT
+  query <- paste0('SELECT
   HysBlodning,
     HysFluidOverload,
     HysGjforingsGrad,
@@ -103,29 +97,29 @@ query <- paste0('SELECT
     OpTidlLapsko,
     OpTidlVagInngrep,
     OpType,
-    R0Metode,
-    R0ScorePhys,
-    R0ScoreRoleLmtPhy,
-    R0ScorePain,
-    R0ScoreGeneral,
-    R0ScoreEnergy,
-    R0ScoreSosial,
-    R0ScoreRoleLmtEmo,
-    R0ScoreEmo,
-    R0Spm2,
-    R0Status,
-    RY1metode,
+    -- R0Metode,
+    -- R0ScorePhys,
+    -- R0ScoreRoleLmtPhy,
+    -- R0ScorePain,
+    -- R0ScoreGeneral,
+    -- R0ScoreEnergy,
+    -- R0ScoreSosial,
+    -- R0ScoreRoleLmtEmo,
+    -- R0ScoreEmo,
+    -- R0Spm2,
+    -- R0Status,
+    -- RY1metode,
     R1BesvarteProm,    -- ny jan.-2022
-    R1ScorePhys,
-    R1ScoreRoleLmtPhy,
-    R1ScorePain,
-    R1ScoreGeneral,
-    R1ScoreEnergy,
-    R1ScoreSosial,
-    R1ScoreRoleLmtEmo,
-    R1ScoreEmo,
+    -- R1ScorePhys,
+    -- R1ScoreRoleLmtPhy,
+    -- R1ScorePain,
+    -- R1ScoreGeneral,
+    -- R1ScoreEnergy,
+    -- R1ScoreSosial,
+    -- R1ScoreRoleLmtEmo,
+    -- R1ScoreEmo,
     -- R1Spm2,
-    RY1Status,
+    -- RY1Status,
     Tss2Behandling,
     Tss2Behandlere,
     Tss2BesvarteProm,  -- ny jan.-2022
@@ -180,60 +174,51 @@ query <- paste0('SELECT
     ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID
  WHERE HovedDato >= \'', datoFra, '\' AND HovedDato <= \'', datoTil, '\'')
 
-# -- NB  Opf0BesvarteProm, -- -- ny jan.-2022
-#ForlopsOversikt.PasientAlder
-#Tatt ut av alleVarNum: 	AVD_RESH,
+  #FROM alleVarNum INNER JOIN ForlopsOversikt ON alleVarNum.MCEID = ForlopsOversikt.ForlopsID
+  # query <- 'select * FROM AlleVarNum
+  #     INNER JOIN ForlopsOversikt
+  #     ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID'
 
-#FROM alleVarNum INNER JOIN ForlopsOversikt ON alleVarNum.MCEID = ForlopsOversikt.ForlopsID
-# query <- 'select * FROM AlleVarNum
-#     INNER JOIN ForlopsOversikt
-#     ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID'
-
-#Data_AWN <- rapbase::loadRegData(registryName = "nger", query_AWN, dbType = "mysql")
-#Data_Forl <- rapbase::loadRegData(registryName = "nger", query_Forl, dbType = "mysql")
-RegData <- rapbase::loadRegData(registryName = "nger", query, dbType = "mysql")
-
-if (medPROM==1) {
-#Må gjøre ei ny vurdering av om nok variabler er med og om jeg kan ha filtrert bort for mye.
-R0var <- grep(pattern='R0', x=sort(names(RegData)), value = TRUE, fixed = TRUE)
-R1var <- grep(pattern='R1', x=sort(names(RegData)), value = TRUE, fixed = TRUE)
-TSS2var <- grep(pattern='Tss2', x=sort(names(RegData)), value = TRUE, fixed = TRUE)
-AlleVarNum <- RegData[, -which(names(RegData) %in% c(R0var, R1var, TSS2var))]
+  #Data_AWN <- rapbase::loadRegData(registryName = "nger", query_AWN, dbType = "mysql")
+  #Data_Forl <- rapbase::loadRegData(registryName = "nger", query_Forl, dbType = "mysql")
+  RegData <- rapbase::loadRegData(registryName = "nger", query, dbType = "mysql")
 
 
-queryPROMtab <- 'select * FROM PromPrem'
-PROM <-  rapbase::loadRegData(registryName = "nger", queryPROMtab, dbType = "mysql")
+  if (medPROM==1) {
+    #Sjekk ved å sammenligne R0 og R1-variabler fra AllevARnUM OG rand36-TABELL
+    R0var <- grep(pattern='R0', x=sort(names(RegData)), value = TRUE, fixed = TRUE)
+    R1var <- grep(pattern='R1', x=sort(names(RegData)), value = TRUE, fixed = TRUE)
+    if (length(c(R0var, R1var)) >0) {
+      AlleVarNum <- RegData[, -which(names(RegData) %in% c(R0var, R1var))]
+    }
 
-TSSvar <- c(TSS2var, "SendtDato", "Metode", 'ForlopsID')
-PROM_TSS <- PROM[ ,TSSvar] %>%
-  dplyr::filter(Tss2BesvarteProm %in% 0:1)
+    queryRAND36 <- 'select * FROM Rand36Report'
+    RAND36 <-  rapbase::loadRegData(registryName = "nger", queryRAND36, dbType = "mysql")
 
-Rvar <- grep(pattern='R', x=sort(names(PROM)), value = TRUE, fixed = TRUE)
-PROM_RAND <- PROM[ ,c(Rvar,'Aar', 'ForlopsID')] %>%
-  dplyr::filter(!is.na(Aar))  #RBesvarteProm %in% 0:1 gir bare noen få
-Rvar_uR <- substring(Rvar, 2) #gsub('R', '', Rvar)
-names(PROM_RAND)[which(names(PROM_RAND) %in% Rvar)] <- Rvar_uR
+    Rvar <- grep(pattern='R', x=names(RAND36), value = TRUE, fixed = TRUE)
+    #Navneendring; fjerne R..
+    Rvar_uR <- substring(Rvar, 2)
+    names(RAND36)[which(names(RAND36) %in% Rvar)] <- Rvar_uR
 
-PROM_RANDw <- PROM_RAND %>%
-  tidyr::pivot_wider(
-    id_cols = 'ForlopsID',
-    id_expand = FALSE,
-    names_from ='Aar',  #c('Aar', Rvar),
-    #names_prefix = "A",
-    names_sep = "",
-    names_glue = "{'R'}{Aar}{.value}",
-    names_sort = FALSE,
-    names_vary = "fastest",
-    names_repair = "check_unique",
-    values_from = all_of(Rvar_uR)
-  )
+    RAND36w <- RAND36 %>%
+      tidyr::pivot_wider(
+        id_cols = 'ForlopsID',
+        id_expand = FALSE,
+        names_from ='Aar',  #c('Aar', Rvar),
+        #names_prefix = "A",
+        names_sep = "",
+        names_glue = "{'R'}{Aar}{.value}",
+        names_sort = FALSE,
+        names_vary = "fastest",
+        names_repair = "check_unique",
+        values_from = all_of(c('Metode', Rvar_uR))
+      )
 
-RegDataR <- dplyr::left_join(AlleVarNum, PROM_RANDw, by="ForlopsID")
-RegData <- dplyr::left_join(RegDataR, PROM_TSS, by="ForlopsID")
+    RegData <- dplyr::left_join(AlleVarNum, RAND36w, by="ForlopsID")
+  }
+  #Testing
+  # Rvar <- grep(pattern='R', x=sort(names(RegDataR)), value = TRUE, fixed = TRUE)
+  # RegDataR <- RegDataR[,c("ForlopsID", Rvar)]
+  # summary(RegDataR)
+  return(invisible(RegData))
 }
-
-  return(RegData)
-}
-
-
-

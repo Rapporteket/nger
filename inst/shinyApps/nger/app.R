@@ -1,13 +1,5 @@
 #Resultattjeneste for NGER
 library(nger)
-# library(kableExtra)
-# library(knitr)
-# library(lubridate)
-# library(plyr)
-# library(rapbase)
-# library(rapFigurer)
-# library(shiny)
-# library(shinyjs)
 
 idag <- Sys.Date()
 startDato <- startDato <- paste0(as.numeric(format(idag-100, "%Y")), '-01-01') #'2019-01-01' #Sys.Date()-364
@@ -48,7 +40,7 @@ sykehusNavn <- sort(unique(RegData$ShNavn), index.return=T)
 sykehusValgUts <- unique(RegData$ReshId)[sykehusNavn$ix]
 names(sykehusValgUts) <- sykehusNavn$x #c('Alle',sykehusNavn$x)
 sykehusValg <- c(0,sykehusValgUts)
-names(sykehusValg) <- c('Alle',sykehusNavn$x)
+names(sykehusValg) <- c('Ikke valgt',sykehusNavn$x)
 
 
 enhetsUtvalg <- c("Egen mot resten av landet"=1,
@@ -114,13 +106,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                             downloadButton(outputId = 'mndRapp.pdf', label='Last ned MÅNEDSRAPPORT', class = "butt"),
                             br(),
                             br(),
-               # h3('Samledokument'),
-               # helpText('Samledokumentet er ei samling av utvalgte tabeller og figurer basert på
-               #          operasjoner i valgt tidsrom.'),
-               # dateRangeInput(inputId = 'datovalgSamleDok', start = startDato, end = Sys.Date(),
-               #              label = "Tidsperiode", separator="t.o.m.", language="nb"),
-               #
-               #  downloadButton(outputId = 'samleDok.pdf', label='Last ned samledokument', class = "butt"),
 
                helpText('Det tar noen sekunder å generere en månedsrapport.
                         I mellomtida får du ikke sett på andre resultater'),
@@ -194,14 +179,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                                             label = "Tidsperiode", separator="t.o.m.", language="nb")
 
                             ),
-                            conditionalPanel(condition = "input.ark == 'Antall registrerte skjema' ",
-                                             selectInput(inputId = 'skjemastatus', label='Velg skjemastatus',
-                                                         choices = c("Ferdigstilt"=1,
-                                                                     "Kladd"=0,
-                                                                     "Åpen"=-1)
-                                             )
-
-                            ),
                             conditionalPanel(condition = "input.ark == 'Last ned egne data' ",
                                              selectInput(inputId = 'velgReshReg', label='Velg sykehus',
                                                          selected = 0,
@@ -220,7 +197,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                              tabPanel('Antall operasjoner',
                                       h2("Antall opphold per avdeling"),
                                       uiOutput("undertittelReg"),
-                                      p("Velg tidsperiode ved å velge sluttdato/tidsenhet i menyen til venstre"),
+                                      p("Velg tidsperiode for operasjon ved å velge sluttdato/tidsenhet i menyen til venstre"),
                                       br(),
                                       fluidRow(
                                         tableOutput("tabAntOpphSh")
@@ -230,7 +207,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
                              tabPanel('Antall registrerte skjema',
                                       h4("Tabellen viser antall registrerte skjema for valgt tidsperiode"),
-                                      p("Velg tidsperiode i menyen til venstre"),
+                                      p("Velg tidsperiode for operasjon i menyen til venstre"),
                                       br(),
                                       fluidRow(
                                         tableOutput("tabAntSkjema")
@@ -259,22 +236,49 @@ tabPanel(p("Kvalitetsindikatorer", title = 'Prosessindikatorer, RAND36, TSS2'),
 h3('Registerets kvalitetsindikatorer', align='center'),
          sidebarPanel(width=3,
                       h3('Utvalg'),
-                      selectInput(
-                        inputId = "valgtVarKval", label="Velg variabel",
-                        choices = c('Prosessindikatorer' = 'kvalInd',
-                                    'TSS2, oppfølging' = 'TSS0',
-                                    'RAND36, v/operasjon' = 'RAND0',
-                                    'RAND36, ett år etter' = 'RAND1'
-                        )
-                      ),
+                      #Bare fig og tab
+                      conditionalPanel(condition = "input.kvalIndark == 'Figur' || input.kvalIndark == 'Tabell' ",
+                                       selectInput(
+                                         inputId = "valgtVarKval", label="Velg variabel",
+                                         choices = c('Prosessindikatorer' = 'kvalInd',
+                                                     'TSS2, oppfølging' = 'TSS0',
+                                                     'RAND36, v/operasjon' = 'RAND0',
+                                                     'RAND36, ett år etter' = 'RAND1',
+                                                     'RAND36, tre år etter' = 'RAND3')
+                                         ),
+                                       selectInput(inputId = 'enhetsUtvalgKval',
+                                                   label='Egen enhet og/eller landet',
+                                                   choices = enhetsUtvalg)
+                                        ),
+                      #Bare RAND, alle dimensjoner
+                      conditionalPanel(condition = "input.kvalIndark == 'RAND, alle dimensjoner'",
+                                       selectInput(inputId = 'enhetsUtvalgKvalRAND',
+                                                   label='Egen enhet / hele landet',
+                                                   choices = c("Hele landet"=0, "Egen enhet"=2))
+                                       ),
+                      conditionalPanel(condition = "input.kvalIndark == 'Figur' || input.kvalIndark == 'Tabell' ||
+                      input.kvalIndark == 'RAND, alle dimensjoner' ",
+                                       selectInput(inputId = 'velgReshKval', label='Velg eget Sykehus',
+                                                   choices = sykehusValg)
+                                       ),
+                      #Bare RAND013
+                      conditionalPanel(condition = "input.kvalIndark == 'RAND, alle år'",
+                                       selectInput(
+                                         inputId = "valgtVarRAND013", label="Velg variabel",
+                                         choices = c('Fysisk funksjon' = 'ScorePhys',
+                                                     'Fysisk rollebegrensning' = 'ScoreRoleLmtPhy',
+                                                     'Følelsesmessig rollebegrensning' = 'ScoreRoleLmtEmo',
+                                                     'Energinivå/vitalitet' = 'ScoreEnergy',
+                                                     'Mental helse' = 'ScoreEmo',
+                                                     'Sosial funksjon' = 'ScoreSosial',
+                                                     'Smerte' = 'ScorePain',
+                                                     'Generell helsetilstand' = 'ScoreGeneral'))
+                                       ),
                       dateRangeInput(inputId = 'datovalgKval', start = startDato, end = Sys.Date(),
-                                     label = "Tidsperiode", separator="t.o.m.", language="nb"),
+                                     label = "Tidsperiode", separator="t.o.m.", language="nb"
+                                     ),
                       sliderInput(inputId="alderKval", label = "Alder", min = 0,
-                                  max = 110, value = c(0, 110)
-                      ),
-                      selectInput(inputId = 'enhetsUtvalgKval', label='Egen enhet og/eller landet',
-                                  choices = enhetsUtvalg
-                      ),
+                                  max = 110, value = c(0, 110)),
                       selectInput(inputId = 'opMetodeKval', label='Operasjonstype',
                                   choices = opMetode
                       ),
@@ -292,29 +296,33 @@ h3('Registerets kvalitetsindikatorer', align='center'),
                                   multiple = T, #selected=0,
                                   choices = alvorKompl
                       ),
-                      selectInput(inputId = 'velgReshKval', label='Velg eget Sykehus',
-                                  choices = sykehusValg),
                       selectInput(inputId = "bildeformatKval",
                                   label = "Velg format for nedlasting av figur",
                                   choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg')
-                      )),
+                      )
+                      ),
          mainPanel(
-           tabsetPanel(
-             tabPanel(
-               'Figur',
-               br(),
-               em('(Høyreklikk på figuren for å laste den ned)'),
-               br(),
+           tabsetPanel(id = 'kvalIndark',
+             tabPanel('Figur',
                br(),
                plotOutput('kvalInd', height="auto"),
                downloadButton('LastNedFigKval', label='Velg format og last ned figur')
                ),
-             tabPanel(
-               'Tabell',
+             tabPanel('Tabell',
                uiOutput("tittelKvalInd"),
                br(),
                tableOutput('kvalIndTab'),
                downloadButton(outputId = 'lastNed_tabKvalInd', label='Last ned')
+             ),
+             tabPanel('RAND, alle år',
+                      br(),
+                      plotOutput('kvalRAND013', height="auto"),
+                      downloadButton(outputId = 'LastNedFigRAND013', label='Last ned')
+             ),
+             tabPanel('RAND, alle dimensjoner',
+                      br(),
+                      plotOutput('kvalRANDdim', height="auto"),
+                      downloadButton(outputId = 'LastNedFigRANDdim', label='Last ned')
              )
            ))
 
@@ -390,6 +398,8 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
                                          'Primæroperasjon eller reoperasjon' = 'OpType',
                                          'Prosedyrer, hyppigste' = 'Prosedyrer',
                                          'Prosegrupper, hyppigste' = 'ProsedyreGr',
+                                         'Prosedyrer, viktigste laparaskopi' = 'ProsViktigLap',
+                                         'Prosedyrer, viktigste hysteroskopi' =  'ProsViktigHys',
                                          'Postoperative komplikasjoner vs. utdanning' = 'KomplPostUtd',
                                          'RAND36 Fysisk funksjon' = 'R0ScorePhys',
                                          'RAND36 Begrenses av fysisk helse' = 'R0ScoreRoleLmtPhy',
@@ -596,7 +606,9 @@ tabPanel(p("Andeler: per sykehus og tid", title='Alder, antibiotika, ASA, fedme,
                                               'RAND36 Mental helse' = 'R0ScoreEmo',
                                               'RAND36 Sosial funksjon' = 'R0ScoreSosial',
                                               'RAND36 Smerte' = 'R0ScorePain',
-                                              'RAND36 Generell helsetilstand' = 'R0ScoreGeneral',
+                                              'RAND36 Generell helsetilstand ved operasjon' = 'R0ScoreGeneral',
+                                              'RAND36 Generell helsetilstand ett år etter' = 'R1ScoreGeneral',
+                                              'RAND36 Generell helsetilstand tre år setter' = 'R3ScoreGeneral',
                                               'TSS2, sumskår' = 'Tss2Sumskaar'
                                              )
                             ),
@@ -807,30 +819,6 @@ server <- function(input, output, session) {
                                   reshID = reshID)
             })
 
-      # output$samleDok.pdf <- downloadHandler(
-      #   filename = function(){ downloadFilename('Samledokument')},
-      #   content = function(file){
-      #     henteSamlerapporter(file, rnwFil="NGERSamleRapp.Rnw",
-      #                 reshID = reshID,
-      #                 datoFra = input$datovalgSamleDok[1],
-      #                 datoTil = input$datovalgSamleDok[2])
-      #   }
-      # )
-
-     # output$tabEgneReg <- renderTable({
-     #   xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg,
-     #                                  antMnd=12, reshID = reshID))},
-     #        rownames=T,
-     #        digits = 0
-     #  )
-     # output$tabEgneRegForrige <- renderTable({
-     #   xtable::xtable(tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg-365,
-     #                                  antMnd=12, reshID = reshID))},
-     #   rownames=T,
-     #   digits = 0
-     # )
-
-
       output$antRegMnd <- renderPlot({NGERFigAntReg(RegData=RegData,
                                                        reshID = reshID
                                                        # ,OpMetode = as.numeric(input$opMetodeKval)
@@ -878,10 +866,9 @@ server <- function(input, output, session) {
 
 
        #RegData som har tilknyttede skjema av ulik type
-       AntSkjemaAvHver <- tabAntSkjema(SkjemaOversikt=SkjemaOversikt,
+       AntSkjemaAvHver <- tabAntSkjema(RegData=RegData,
                                        datoFra = input$datovalgReg[1],
-                                       datoTil=input$datovalgReg[2],
-                                       skjemastatus=as.numeric(input$skjemastatus))
+                                       datoTil=input$datovalgReg[2])
        output$tabAntSkjema <- renderTable(AntSkjemaAvHver
                                           ,rownames = T, digits=0, spacing="xs" )
        output$lastNed_tabAntSkjema <- downloadHandler(
@@ -962,8 +949,8 @@ output$lastNed_dataDump <- downloadHandler(
                          enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
                          velgAvd=input$velgReshKval,
                         session = session)
-        }, height=800, width=800 #height = function() {session$clientData$output_fordelinger_width}
-        )
+        }, height=800, width=800)
+
         output$LastNedFigKval <- downloadHandler(
           filename = function(){
             paste0('FigKval_',input$valgtVarKval, Sys.time(), '.', input$bildeformatKval)
@@ -997,7 +984,6 @@ output$lastNed_dataDump <- downloadHandler(
                                      velgAvd=input$velgReshKval,
                                      session = session)
 
-              #print(UtDataKvalInd$)
               tabKvalInd <- lagTabavFig(UtDataFraFig = UtDataKvalInd) #lagTabavFigAndeler
 
         output$tittelKvalInd <- renderUI({
@@ -1024,6 +1010,51 @@ output$lastNed_dataDump <- downloadHandler(
           })
       }) #observe Kvalitetsind
 
+      #--RAND013:
+        output$kvalRAND013 <- renderPlot({
+          NGERFigPrePost(RegData=RegData, preprosess = 0,
+                                  valgtVar=input$valgtVarRAND013,
+                                  datoFra=input$datovalgKval[1], datoTil=input$datovalgKval[2],
+                                  minald=as.numeric(input$alderKval[1]), maxald=as.numeric(input$alderKval[2]),
+                                  OpMetode = as.numeric(input$opMetodeKval),
+                                  Hastegrad = as.numeric(input$hastegradKval),
+                                  velgDiag = as.numeric(input$velgDiagKval),
+                                  AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
+                                  session = session)
+          }, height=800, width=800)
+
+        output$LastNedFigRAND013 <- downloadHandler(
+          filename = function(){
+            paste0('FigRAND013_',input$valgtVarRAND013, Sys.time(), '.', input$bildeformatKval)
+          },
+          content = function(file){
+            NGERFigPrePost(RegData=RegData, preprosess = 0,
+                           valgtVar=input$valgtVarRAND013,
+                           datoFra=input$datovalgKval[1], datoTil=input$datovalgKval[2],
+                           minald=as.numeric(input$alderKval[1]), maxald=as.numeric(input$alderKval[2]),
+                           OpMetode = as.numeric(input$opMetodeKval),
+                           Hastegrad = as.numeric(input$hastegradKval),
+                           velgDiag = as.numeric(input$velgDiagKval),
+                           AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
+                           session = session,
+                           outfile = file)
+          })
+
+        #RAND, alle dim
+        output$kvalRANDdim <- renderPlot({
+          NGERFigPrePost(RegData=RegData, preprosess = 0,
+                         valgtVar='AlleRANDdim',
+                         datoFra=input$datovalgKval[1], datoTil=input$datovalgKval[2],
+                         enhetsUtvalg=as.numeric(input$enhetsUtvalgKvalRAND),
+                         reshID = reshID,
+                         velgAvd=as.numeric(input$velgReshKval),
+                         minald=as.numeric(input$alderKval[1]), maxald=as.numeric(input$alderKval[2]),
+                         OpMetode = as.numeric(input$opMetodeKval),
+                         Hastegrad = as.numeric(input$hastegradKval),
+                         velgDiag = as.numeric(input$velgDiagKval),
+                         AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
+                         session = session)
+        }, height=800, width=800)
 
       #----------Tabelloversikter ----------------------
       observe({
@@ -1437,12 +1468,6 @@ output$lastNed_dataDump <- downloadHandler(
           paramNames = c('rnwFil', 'reshID', 'brukernavn'), #"valgtRHF"),
           paramValues = c('NGERmndRapp.Rnw', reshID, brukernavn) #'Alle')
         )
-        # SamleRapp = list(
-        #   synopsis = "NGER/Rapporteket: Samlerapport, abonnement",
-        #   fun = "abonnementNGER",
-        #   paramNames = c('rnwFil','reshID', 'brukernavn'),
-        #   paramValues = c('NGERSamleRapp.Rnw', reshID, brukernavn)
-        # )
       )
       #test <- nger::abonnementNGER(rnwFil="NGERmndRapp.Rnw", brukernavn='tullebukk', reshID=105460)
       rapbase::autoReportServer(

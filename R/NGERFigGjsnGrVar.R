@@ -65,7 +65,7 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
   #grupper komme med uansett om de ikke har registreringer.
 
   if(dim(RegData)[1]>0) {Ngr <- table(RegData[ ,grVar])}	else {Ngr <- 0}
-
+  sjekkNgr <- max(Ngr, na.rm = T) < Ngrense
 
   t1 <- switch(valgtMaal,
                med = 'Median ',
@@ -112,7 +112,7 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
     Gjsn <- tapply(RegData$Variabel, RegData[ ,grVar], mean, na.rm=T)
     SE <- tapply(RegData$Variabel, RegData[ ,grVar], sd, na.rm=T)/sqrt(Ngr)
     MidtHele <- mean(RegData$Variabel, na.rm=T)	#mean(RegData$Variabel)
-    KIHele <- MidtHele + sd(RegData$Variabel)/sqrt(N)*c(-2,2)
+    KIHele <- MidtHele + sd(RegData$Variabel, na.rm = T)/sqrt(N)*c(-2,2)
     Gjsn[indGrUt] <- dummy0
     SE[indGrUt] <- 0
     sortInd <- order(Gjsn, decreasing=NGERVarSpes$sortAvtagende, na.last = FALSE)
@@ -123,12 +123,8 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
   }
 
 
-  #if (sum(which(Ngr < Ngrense))>0) {indGrUt <- as.numeric(which(Ngr<Ngrense))} else {indGrUt <- 0}
-  #AndelerGr[indGrUt] <- -0.0001
-
   GrNavnSort <- paste0(names(Ngr)[sortInd], Ngrtxt[sortInd])
   soyletxt <- sprintf(paste0('%.1f'), Midt)
-  #soyletxt <- c(sprintf(paste0('%.', AntDes,'f'), Midt[1:AntGr]), rep('',length(Ngr)-AntGr))
   indUT <- which(is.na(Midt))  #Rydd slik at bare benytter indGrUt
   soyletxt[indUT] <- ''
   KIned[indUT] <- NA
@@ -173,7 +169,7 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
     #---------------------------------------FRA FIGANDELER, FigGjsnGrVar og FigAndelGrVar--------------------------
     #Hvis for få observasjoner..
 
-    if (dim(RegData)[1] < 10 )
+    if (dim(RegData)[1] < 10 | sjekkNgr)
       #|(grVar=='' & length(enhetsUtvalg %in% c(1,3)))
     {
       #-----------Figur---------------------------------------
@@ -182,7 +178,7 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
       plot.new()
       title(tittel)	#, line=-6)
       legend('topleft',legend=utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
-      tekst <- 'For få registreringer'
+      tekst <- 'For få registreringer for hver enhet'
       text(0.5, 0.6, tekst, cex=1.2)
       if ( outfile != '') {dev.off()}
 
@@ -210,8 +206,8 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
 
 
       #Definerer disse i beregningsfunksjonen?
-      xmax <- max(c(AggVerdier$Hoved, AggVerdier$Rest),na.rm=T)*1.2
-      if(valgtVar %in% c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',
+      xmax <- max(c(AggVerdier$Hoved, AggVerdier$Rest), na.rm=T)*1.2
+      if (valgtVar %in% c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',
                          'R0ScoreEmo', 'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')) {
         xmax <- min(xmax, 100)}
       ymin <- 0.3 #0.5/cexgr^4	#0.05*antGr #Fordi avstand til x-aksen av en eller annen grunn øker når antall sykehus øker

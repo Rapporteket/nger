@@ -9,10 +9,16 @@ NGERFigPrePost(
   valgtVar = "ScoreGeneral",
   datoFra = "2019-01-01",
   datoTil = Sys.Date(),
+  enhetsUtvalg = 0,
+  reshID = 0,
+  velgAvd = 0,
   minald = 0,
   maxald = 130,
   OpMetode = 99,
   velgDiag = 0,
+  AlvorlighetKompl = 0,
+  Hastegrad = 99,
+  dagkir = 9,
   Ngrense = 10,
   outfile = "",
   preprosess = 0,
@@ -28,6 +34,17 @@ NGERFigPrePost(
 \item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}
 
 \item{datoTil}{Seneste dato i utvalget (vises alltid i figuren).}
+
+\item{enhetsUtvalg}{Lag figur for
+0: Hele landet
+1: Egen enhet mot resten av landet (Standard)
+2: Egen enhet}
+
+\item{reshID}{Parameter følger fra innlogging helseregister.no og angir
+hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
+
+\item{velgAvd}{Velge hvilke avdelinger som skal vises i figurer med avdelingsvise resultater.
+IKKE tatt høyde for sammenlikning mot "resten".}
 
 \item{minald}{Alder, fra og med (Standardverdi: 0)}
 
@@ -47,6 +64,18 @@ NGERFigPrePost(
 1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
 2: Endometriose, livmorvegg (N80.0)
 3: Endometriose, unntatt livmorvegg.}
+
+\item{AlvorlighetKompl}{Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
+Angis som en vektor av tall som tekst, f.eks. c('1','2')
+1: Lite alvorlig
+2: Middels alvorlig
+3: Alvorlig
+4: Dødelig}
+
+\item{Hastegrad}{Hastegrad av operasjon.
+1: Elektiv
+2: Akutt
+3: Ø-hjelp}
 
 \item{outfile}{Navn på fil figuren skrives til. Standard: '' (Figur skrives
 til systemets standard utdataenhet (som regel skjerm))}

@@ -522,15 +522,16 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
     grtxt <- levels(RegData$VariabelGr)
   }
-  if (valgtVar %in% c('R0ScoreGeneral','R1ScoreGeneral')) { #Andeler, #GjsnGrVar
+  if (valgtVar %in% c('R0ScoreGeneral','R1ScoreGeneral', 'R3ScoreGeneral')) { #Andeler, #GjsnGrVar
     #Verdier: 0:5:100
-    spm12 <- ifelse(valgtVar=='R0ScoreGeneral', 1, 2)
     RegData$Variabel <- RegData[ ,valgtVar]
-    # indFerdig <- switch(valgtVar,
-    #                     R0ScoreGeneral = which(RegData$R0Status==1),
-    #                     R1ScoreGeneral = which(RegData$RY1Status==1))
+    tittel <- paste0('Generell helsetilstand ',
+                     switch(valgtVar,
+                         R0ScoreGeneral = 'før operasjon',
+                         R1ScoreGeneral = 'ett år etter operasjon',
+                         R3ScoreGeneral = 'tre år etter operasjon')
+    )
     RegData <- RegData[which(RegData[,valgtVar] > -1), ] #indFerdig %i%
-    tittel <- paste0('Generell helsetilstand ', c('før operasjon', ', ett år etter')[spm12])
     subtxt <- 'sumskår (høyest er best)'
     gr <- seq(0, 100, 20)
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
@@ -835,12 +836,65 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData <- data.frame(RegData,nymatr)
   }
 
+  if (valgtVar %in% c('ProsViktigLap', 'ProsViktigHys')) {
+    #Viktigste prosedyrer
+    # Laparoskopisk salpingektomi 	LBE01
+    # Laparoskopisk hysterektomi	LCD04 LCD01 LCD97 LCD31 LCC11
+    # Laparoskopisk bilateral salpingo-ooforektomi	LAF11
+    # Laparoskopisk ekstirpasjon eller destruksjon av lesjon i peritoneum	JAL21
+    # Laparoskopisk unilateral salpingo-ooforektomi	LAF01
+    # Laparoskopisk ekstirpasjon av ovarialcyste 	LAC01
+    #
+    # Hysteroskopisk ekstirpasjon av lesjon	LCB25
+    # Hysteroskopi	LUC02
+    # Hysteroskopisk eksisjon av endometrium	LCB28
+    # Hysteroskopisk fjerning av fremmedlegeme	LCA22
+    # Hysteroskopi med biopsi 	LUC05
+    prosVar <- c('HysProsedyre1', 'HysProsedyre2', 'HysProsedyre3', 'LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3')
+
+    for (k in prosVar) {
+      RegData[RegData[,k] %in% c('LCD04', 'LCD01', 'LCD97', 'LCD31', 'LCC11'),
+              k] <- 'laphyst'}  #Laparoskopisk hysterektomi
+
+    AllePros <- unlist(apply(as.matrix(RegData[ind$Hoved, prosVar]), 1,FUN=unique)) #toupper()
+    #Må fjerne tomme. Tomme behandles som tomme lokalt, men NA på server.
+    #AlleProsSort <- sort(table(AllePros[which(AllePros != '')]), decreasing = TRUE)
+
+    if (valgtVar == 'ProsViktigLap'){
+      tittel <- 'Viktigste prosedyrer, laparaskopi '
+      variable <- c('LBE01', 'laphyst',
+                    'LAF11', 'JAL21',
+                    'LAF01', 'LAC01')
+      grtxt <- c('Salpingektomi', 'Lap. hysterektomi',
+                 'Bilateral\n salpingo-ooforektomi', 'Ekstirpasjon eller destr.\n  av lesjon i peritoneum',
+                 'Unilateral\n salpingo-ooforektomi', 'Ekstirpasjon av\n ovarialcyste')
+    }
+
+    if (valgtVar == 'ProsViktigHys'){
+      tittel <- 'Viktigste prosedyrer, hysteroskopi '
+      variable <- c('LCB25', 'LUC02', 'LCB28', 'LCA22', 'LUC05')
+      grtxt <- c('Ekstirpasjon av lesjon',
+                 'Hysteroskopi',
+                 'Eksisjon av endometrium',
+                 'Fjerning av\n fremmedlegeme',
+                 'Hyst. med biopsi')
+    }
+    # if (valgtVar == 'ProsedyreGr') {
+    #   grtxt <- dplyr::recode(variable, 'laphyst' = 'Lapar. hysterektomi')}
+    nymatr <- as.data.frame(matrix(0,dim(RegData)[1], length(variable)))
+    names(nymatr) <- variable
+    for (k in variable) {
+      nymatr[rowSums(RegData[ ,prosVar]== k, na.rm = T)>0, k] <- 1
+    }
+    RegData <- data.frame(RegData,nymatr)
+  }
 
   #FIGURER SATT SAMMEN AV FLERE VARIABLE, ULIKT TOTALUTVALG
   if (valgtVar %in% c('Diagnoser', 'DiagnoseGr', 'KomplPostopType', 'KomplAlvorPostopType',
                       'HysKomplikasjoner', 'LapKomplikasjoner',
                       'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr',
-                      'LapIntraabdominell', 'LapTeknikk', 'Prosedyrer', 'ProsedyreGr')){
+                      'LapIntraabdominell', 'LapTeknikk', 'Prosedyrer', 'ProsedyreGr',
+                      'ProsViktigLap', 'ProsViktigHys')){
     flerevar <- 1
     retn <- 'H'}
 

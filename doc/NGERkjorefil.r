@@ -5,6 +5,7 @@ kodebok_kategorier = klokebok %>% filter(type == 'Listevariabel')
 
 #"Opf0UtstyrInstrumenter", "Opf0UtstyrNett" og "Opf0UtstyrSutur"
 
+
 #--------------------------------------SamleRAPPORTER-----------------------------------
 TEST
 rm(list=ls())
@@ -276,10 +277,11 @@ valgtVar <- 'Tss2Sumskaar'	#Må velge... Alder, R0ScorePhys,	R0ScoreRoleLmtPhy,	
 
 outfile <- ''
 #outfile <- paste0(valgtVar, '_sh.png')
-
-testGjsn <- NGERFigGjsnGrVar(RegData=RegData,valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-                 OpMetode=OpMetode, valgtMaal='gjsn', hentData=0,  grVar=grVar, Ngrense=10,
-                 medKI=1, outfile=outfile, velgAvd = '')#AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
+testGjsn <- NGERFigGjsnGrVar(RegData=NGERRegDataSQL(),valgtVar=valgtVar, datoFra='2023-05-01'
+                             #datoTil=datoTil, minald=minald, maxald=maxald
+                             ,OpMetode=5
+                             #,valgtMaal='gjsn', hentData=0,  grVar=grVar, Ngrense=10, medKI=1, outfile=outfile, velgAvd = ''
+                             )
 
 testGjsnTid <- NGERFigGjsnTid(RegData=RegData,valgtVar=valgtVar, datoFra='2017-01-01', datoTil=datoTil, minald=minald, maxald=maxald,
                  valgtMaal='gjsn', hentData=0, tidsenhet = 'Kvartal', enhetsUtvalg = enhetsUtvalg, #OpMetode=OpMetode, medKI=1, , velgAvd = ''
@@ -306,6 +308,10 @@ RANDvar <- c('ScorePhys',	'ScoreRoleLmtPhy',	'ScoreRoleLmtEmo',
              'ScoreEnergy',	'ScoreEmo', 'ScoreSosial',
              'ScorePain',	'ScoreGeneral')
 NGERFigPrePost(RegData=0, valgtVar='ScoreGeneral',
+               datoFra='2019-01-01', datoTil=Sys.Date(), preprosess=1, hentData=1,
+               outfile='')
+
+NGERFigPrePost(RegData=0, valgtVar='AlleRANDdim',
                datoFra='2019-01-01', datoTil=Sys.Date(), preprosess=1, hentData=1,
                outfile='')
 
