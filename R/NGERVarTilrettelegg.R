@@ -866,7 +866,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
                     'LAF11', 'JAL21',
                     'LAF01', 'LAC01')
       grtxt <- c('Salpingektomi', 'Lap. hysterektomi',
-                 'Bilateral\n salpingo-ooforektomi', 'Ekstirpasjon eller destruksjon\n  av lesjon i peritoneum',
+                 'Bilateral\n salpingo-ooforektomi', 'Ekstirpasjon eller destr.\n  av lesjon i peritoneum',
                  'Unilateral\n salpingo-ooforektomi', 'Ekstirpasjon av\n ovarialcyste')
     }
 
