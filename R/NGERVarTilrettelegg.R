@@ -876,7 +876,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
       grtxt <- c('Ekstirpasjon av lesjon',
                  'Hysteroskopi',
                  'Eksisjon av endometrium',
-                 'Fjerning av fremmedlegeme',
+                 'Fjerning av\n fremmedlegeme',
                  'Hyst. med biopsi')
     }
     # if (valgtVar == 'ProsedyreGr') {
