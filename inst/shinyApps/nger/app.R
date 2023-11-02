@@ -1,5 +1,12 @@
 #Resultattjeneste for NGER
 library(nger)
+# gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
+addResourcePath('rap', system.file('www', package='rapbase'))
+
+# context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
+# paaServer <- (context %in% c("DEV", "TEST", "QA", "PRODUCTION")) #rapbase::isRapContext()
+# regTitle = ifelse(paaServer,'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER',
+#                   'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER med FIKTIVE data')
 
 regTitle = 'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER'
 
@@ -8,7 +15,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
   id = 'hovedark',
 
   # lag logo og tittel som en del av navbar
-#  title = div(a(includeHTML(system.file('www/logo.svg', package='rapbase'))), regTitle),
+  #title = div(img(src="rap/logo.svg", alt="Rapporteket", height="26px"), regTitle),
+  title = div(a(includeHTML(system.file('www/logo.svg', package='rapbase'))),
+              regTitle),
   # sett inn tittel også i browser-vindu
   windowTitle = regTitle,
   theme = "rap/bootstrap.css",
@@ -47,11 +56,15 @@ server <- function(input, output, session) {
   if (rolle=='SC') {
 
     #----------- Eksport ----------------
-    registryName <-
-    ## brukerkontroller
-    rapbase::exportUCServer("ngerExport", registryName)
-    ## veileding
-    rapbase::exportGuideServer("ngerExportGuide", registryName)
+    tabPanel(
+      h4("Eksport av krypterte data"),
+      sidebarPanel(
+        rapbase::exportUCInput("ngerExport")
+      ),
+      mainPanel(
+        rapbase::exportGuideUI("ngerExportGuide")
+      )
+    ) #Eksport-tab
   }
 
 } #server
