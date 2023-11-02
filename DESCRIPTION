@@ -19,6 +19,7 @@ Imports:
     DT,
     kableExtra,
     knitr,
+    magrittr,
     lubridate,
     dplyr,
     rapbase,
@@ -28,7 +29,6 @@ Imports:
     shiny,
     shinyjs,
     testthat, 
-    tidyverse,
     xtable,
     zoo
 VignetteBuilder: knitr
