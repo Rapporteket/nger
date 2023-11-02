@@ -805,9 +805,7 @@ server <- function(input, output, session) {
     })
 
   #--------------Startside------------------------------
-  #-------Samlerapporter--------------------
-
-  # filename function for re-use - i dette tilfellet vil det funke fint å hardkode det samme..
+    # filename function for re-use - i dette tilfellet vil det funke fint å hardkode det samme..
   downloadFilename <- function(fileBaseName, type='') {
     paste0(fileBaseName, as.character(as.integer(as.POSIXct(Sys.time()))), '.pdf')
     }
@@ -1477,7 +1475,6 @@ output$lastNed_dataDump <- downloadHandler(
       )
 
 #-----------Registeradministrasjon-----------
-  #-----Utsendinger
 
       if (rolle=='SC') {
 
