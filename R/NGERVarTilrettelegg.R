@@ -673,7 +673,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData$VariabelGr <- cut(RegData$Variabel, breaks=gr, include.lowest=F, right=T)
     grtxt <- c('0', levels(RegData$VariabelGr)[2:(length(gr)-1)])
     sortAvtagende <- T
-    KvalIndGrenser <- c(0, 2.4, 2.7, 3)
+    KvalIndGrenser <- c(0, 2.2, 2.6, 3)
     xAkseTxt <- 'sumskår'
     tittel <- 'TSS2, gjennomsnittlig sumskår'
   }
@@ -861,7 +861,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     #AlleProsSort <- sort(table(AllePros[which(AllePros != '')]), decreasing = TRUE)
 
     if (valgtVar == 'ProsViktigLap'){
-      tittel <- 'Viktigste prosedyrer, laparaskopi '
+      tittel <- 'Viktigste laparaskopiprosedyrer'
       variable <- c('LBE01', 'laphyst',
                     'LAF11', 'JAL21',
                     'LAF01', 'LAC01')
@@ -871,7 +871,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     }
 
     if (valgtVar == 'ProsViktigHys'){
-      tittel <- 'Viktigste prosedyrer, hysteroskopi '
+      tittel <- 'Viktigste hysteroskopiprosedyrer'
       variable <- c('LCB25', 'LUC02', 'LCB28', 'LCA22', 'LUC05')
       grtxt <- c('Ekstirpasjon av lesjon',
                  'Hysteroskopi',

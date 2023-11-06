@@ -113,7 +113,7 @@ NGERFigPrePost  <- function(RegData, valgtVar='ScoreGeneral', datoFra='2019-01-0
                      cex.names=cexgr, col=farger[1:3], border='white', ylim=c(0, ymax))
     }
 
-    if (retn == 'H') { #Benytte denne til å vise ulike variabler
+    if (retn == 'H') { #Benytte denne til å flere variabler samtidig
       #Horisontale søyler
       xmax <- min(max(GjsnPP,na.rm=T)*1.25, 100)
       pos <- barplot(t(GjsnPP), beside=TRUE, horiz=TRUE, main='', las=1,
@@ -123,8 +123,10 @@ NGERFigPrePost  <- function(RegData, valgtVar='ScoreGeneral', datoFra='2019-01-0
       #        fill=farger[c(1:3,NA)], border=NA, ncol=3, cex=0.9)
     }
 
-    legend('top', c('perop.', '1 år', '3 år', paste0('N=', N)), bty='n',
+    legend('top', y.intersp=0, bty='n',
+           c('perop.', '1 år', '3 år', paste0('N=', N)),
            fill=farger[c(1:3,NA)], border=NA, ncol=4, cex=0.9)
+
     title(tittel, font.main=1)	#line=0.5,
     #Tekst som angir hvilket utvalg som er gjort
     utvpos <- 3+length(tittel)-1	#Startlinje for teksten

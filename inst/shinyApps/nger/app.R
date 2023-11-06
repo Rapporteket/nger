@@ -2,7 +2,7 @@
 library(nger)
 
 idag <- Sys.Date()
-startDato <- startDato <- paste0(as.numeric(format(idag-100, "%Y")), '-01-01') #'2019-01-01' #Sys.Date()-364
+startDato <- paste0(as.numeric(format(idag-100, "%Y")), '-01-01') #'2019-01-01' #Sys.Date()-364
 # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
 addResourcePath('rap', system.file('www', package='rapbase'))
 
@@ -25,7 +25,6 @@ if (paaServer) {
 tulledata <- 0
 if (!exists('RegData')) {
   data('NGERtulledata.Rdata', package = 'nger')
-  #SkjemaOversikt <- plyr::rename(SkjemaOversikt, replace=c('SykehusNavn'='ShNavn'))
   load('./data/NGERtulledata.Rdata')
   tulledata <- 1 #Må få med denne i tulledatafila..
   }
@@ -805,9 +804,7 @@ server <- function(input, output, session) {
     })
 
   #--------------Startside------------------------------
-  #-------Samlerapporter--------------------
-
-  # filename function for re-use - i dette tilfellet vil det funke fint å hardkode det samme..
+    # filename function for re-use - i dette tilfellet vil det funke fint å hardkode det samme..
   downloadFilename <- function(fileBaseName, type='') {
     paste0(fileBaseName, as.character(as.integer(as.POSIXct(Sys.time()))), '.pdf')
     }
@@ -1055,6 +1052,26 @@ output$lastNed_dataDump <- downloadHandler(
                          AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
                          session = session)
         }, height=800, width=800)
+
+        output$LastNedFigRANDdim <- downloadHandler(
+          filename = function(){
+            paste0('FigRANDdim_', Sys.time(), '.', input$bildeformatKval)
+          },
+          content = function(file){
+            NGERFigPrePost(RegData=RegData, preprosess = 0,
+                           valgtVar='AlleRANDdim',
+                           datoFra=input$datovalgKval[1], datoTil=input$datovalgKval[2],
+                           enhetsUtvalg=as.numeric(input$enhetsUtvalgKvalRAND),
+                           reshID = reshID,
+                           velgAvd=as.numeric(input$velgReshKval),
+                           minald=as.numeric(input$alderKval[1]), maxald=as.numeric(input$alderKval[2]),
+                           OpMetode = as.numeric(input$opMetodeKval),
+                           Hastegrad = as.numeric(input$hastegradKval),
+                           velgDiag = as.numeric(input$velgDiagKval),
+                           AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
+                           session = session,
+                           outfile = file)
+          })
 
       #----------Tabelloversikter ----------------------
       observe({
@@ -1477,7 +1494,6 @@ output$lastNed_dataDump <- downloadHandler(
       )
 
 #-----------Registeradministrasjon-----------
-  #-----Utsendinger
 
       if (rolle=='SC') {
 
