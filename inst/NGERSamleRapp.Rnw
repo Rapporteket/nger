@@ -379,42 +379,6 @@ for (met in 1:2) {
 \end{figure}
 
 
-<<'Instrumenter', results='asis', echo=FALSE, eval=T>>=
-#!!!!!!!!!!!Fra mars 2016 er morcellator med og uten pose.Velger å ikke ta høyde for dette siden
-#det nå er gamle tall
-#LapSingelPort = portioadapter??
-#LapIntKombo = Thunderbeat
-
-# if (datoTil == '2015-12-31'){
-#   Instr <- c('LapMorcellatorUtenPose', 'LapHarmonicS',
-#              'LapSingelPort', 'LapIntKombo', 'LapRobotKirurgi')
-#   NavnInstr <- c('Morc.', 'Harm. Scalp.', 'Portioad.', 'IntKombo', 'Robotkir.')
-# } else {
-  Instr <- c('LapMorcellatorUtenPose', 'LapMorcellatorMedPose', 'LapHarmonicS',
-             'LapSingelPort', 'LapIntKombo', 'LapRobotKirurgi')
-  NavnInstr <- c('Morc.u/pose', 'Morc. m/pose', 'Harm. Scalp.', 'Portioad.', 'IntKombo', 'Robotkir.') #}
-
-RegDataUtvalg <- RegData[which(RegData$OpMetode==1), c('ShNavn', Instr)]
-
-#InstrTab <- plyr::daply(.data=RegDataUtvalg[ ,Instr], .(RegDataUtvalg$ShNavn), .fun=colwise(sum), na.rm=T)  #Liste m/6dim
-#Får trøbbel med at InstrTab blir liste
-
-InstrTabDum <- plyr::ddply(.data =  RegDataUtvalg[ ,Instr], .variables = .(RegDataUtvalg$ShNavn), .drop=F, .fun= plyr::colwise(sum), na.rm=T)  #Dataramme m/7dim
-Tot <- colSums(InstrTabDum[,2:(length(Instr)+1)])
-ShNavn <- InstrTabDum[,1]
-
-InstrTab <- rbind(InstrTabDum[,2:(length(Instr)+1)],
-                  Sum = Tot)
-
-colnames(InstrTab) <- NavnInstr
-rownames(InstrTab) <- c(ShNavn, 'Hele landet')
-
-print(xtable(InstrTab, digits=0, align=c('l', rep('r', max(c(1,ncol(InstrTab)), na.rm=T))),
-       caption=paste('Antall ganger ulike instrumenter er benyttet.', tidsperiodeTxt),
-       label='tab:Instr'), include.rownames=TRUE, include.colnames=TRUE)
-
-@
-
 
 \begin{figure}[ht]
 \centering \includegraphics[width= \Sexpr{figKrymp1}\textwidth]{LapEkstrautstyr.pdf}

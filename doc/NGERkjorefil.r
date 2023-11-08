@@ -5,6 +5,10 @@ kodebok_kategorier = klokebok %>% filter(type == 'Listevariabel')
 
 #"Opf0UtstyrInstrumenter", "Opf0UtstyrNett" og "Opf0UtstyrSutur"
 
+#---------Teste ny versjon av registeret, nov. 2023
+
+RegData <- NGERRegDataSQL()
+
 
 #--------------------------------------SamleRAPPORTER-----------------------------------
 TEST

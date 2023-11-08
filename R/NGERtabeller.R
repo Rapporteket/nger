@@ -222,14 +222,12 @@ instrumentbruk <- function(RegData, datoFra='2019-01-01', datoTil=Sys.Date()){
   #LapSingelPort = portioadapter??
   #LapIntKombo = Thunderbeat
 RegData <- NGERUtvalgEnh(RegData, datoFra = datoFra, datoTil = datoTil)$RegData
-  Instr <- c('LapMorcellatorUtenPose', 'LapMorcellatorMedPose', 'LapHarmonicS',
-             'LapSingelPort', 'LapIntKombo', 'LapRobotKirurgi', 'LapUterusmanipulator')
-NavnInstr <- c('Morc.u/pose', 'Morc. m/pose', 'Ultralyd Scalp.', 'Portioad.', 'IntKombo', 'Robotkir.', 'Uterusmanip.') #}
+  Instr <- c('LapVevforsegl', 'LapMorcellatorUtenPose', # 'LapMorcellatorMedPose', # 'LapHarmonicS', 'LapIntKombo',
+             'LapSingelPort',  'LapRobotKirurgi', 'LapUterusman', 'LapOptTro', 'LapPrepOppdel')
+NavnInstr <- c('Vevsforsegling', 'Morc.u/pose', 'Portioad.', 'Robotkir.', 'Uterusmanip.', 'LapOptTro', 'LapPrepOppdel') # 'Ultralyd Scalp.', 'IntKombo', 'Morc. m/pose',
 
 RegDataUtvalg <- RegData[which(RegData$OpMetode==1), c('ShNavn', Instr)]
 
-
-#InstrTabDum <- plyr::ddply(RegDataUtvalg[ ,Instr], .(RegDataUtvalg$ShNavn), .drop=F, colwise(sum), na.rm=T)  #Dataramme m/7dim
 InstrTabDum <- plyr::ddply(RegDataUtvalg, .variables='ShNavn', .drop=F, plyr::colwise(sum), na.rm=T)  #Dataramme m/7dim
 Tot <- colSums(InstrTabDum[,2:(length(Instr)+1)])
 ShNavn <- InstrTabDum[,1]

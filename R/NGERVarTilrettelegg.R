@@ -70,12 +70,12 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
   }
 
 
-  if (valgtVar=='Blodfortynnende') { #andelGrVar, andelTid
-    RegData <- RegData[which(RegData$Blodfortynnende %in% 0:1), ]
-    RegData$Variabel <- RegData$Blodfortynnende
-    varTxt <- 'blodfortynnende'
-    tittel <- 'Blodfortynnende medisin før operasjon'
-  }
+  # if (valgtVar=='Blodfortynnende') { #andelGrVar, andelTid
+  #   RegData <- RegData[which(RegData$Blodfortynnende %in% 0:1), ]
+  #   RegData$Variabel <- RegData$Blodfortynnende
+  #   varTxt <- 'blodfortynnende'
+  #   tittel <- 'Blodfortynnende medisin før operasjon'
+  # }
 
   if (valgtVar=='HysGjforingsGrad') {   #Andeler
     #Gjennomføringsgrad av hysteroskopi
@@ -227,20 +227,20 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
     RegData <- RegData[which(RegData$Norsktalende %in% koder), ]
     RegData$VariabelGr <- factor(RegData$Norsktalende, levels=koder, labels = grtxt) #levels=c(nivaa,9)
   }
-  if (valgtVar == 'OpAnestesi') {   #Andeler, andelGrVar, andelTid
-    # 1-Ingen, 2-Lokal, 3-Generell, 4-Spinal, 5-Annet
-    tittel <- 'Anestesitype ved endoskopiske inngrep'
-    grtxt <- c('Ingen', 'Lokal', 'Generell', 'Spinal', 'Annet')
-    koder <- 1:5
-    retn <- 'H'
-    RegData <- RegData[RegData$OpAnestesi %in% koder, ]
-    RegData$VariabelGr <- factor(RegData$OpAnestesi, levels=koder, labels = grtxt) #levels=c(nivaa,9)
-    if (figurtype %in% c('andelGrVar', 'andelTid')) {
-      tittel <- 'Lokalbedøvelse'
-      varTxt <- 'som har fått lokalbedøvelse'
-      RegData$Variabel[RegData$OpAnestesi == 2] <- 1
-    }
-  }
+  # if (valgtVar == 'OpAnestesi') {   #Andeler, andelGrVar, andelTid
+  #   # 1-Ingen, 2-Lokal, 3-Generell, 4-Spinal, 5-Annet
+  #   tittel <- 'Anestesitype ved endoskopiske inngrep'
+  #   grtxt <- c('Ingen', 'Lokal', 'Generell', 'Spinal', 'Annet')
+  #   koder <- 1:5
+  #   retn <- 'H'
+  #   RegData <- RegData[RegData$OpAnestesi %in% koder, ]
+  #   RegData$VariabelGr <- factor(RegData$OpAnestesi, levels=koder, labels = grtxt) #levels=c(nivaa,9)
+  #   if (figurtype %in% c('andelGrVar', 'andelTid')) {
+  #     tittel <- 'Lokalbedøvelse'
+  #     varTxt <- 'som har fått lokalbedøvelse'
+  #     RegData$Variabel[RegData$OpAnestesi == 2] <- 1
+  #   }
+  # }
   if (valgtVar=='OpAntibProfylakse') { #andelGrVar #andelTid
     #Andel som får antibiotika
     #Kode 0,1: Nei, Ja (ingen tomme per 22.feb.2016)
@@ -265,15 +265,16 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
     RegData$Variabel[which(RegData[ ,valgtVar] > 2)] <- 1
   }
 
-  if (valgtVar == 'OpDagkirurgi') {   #Andeler, AndelGrVar, AndelTid
-    #0: Nei, 1: Ja Manglende:Ukjent
-    tittel <- 'Dagkirurgiske Inngrep'
-    grtxt <- c('Nei', 'Ja')
-    koder <- 0:1
-    RegData <- RegData[which(RegData$OpDagkirurgi %in% koder), ]
-    RegData$VariabelGr <- factor(RegData$OpDagkirurgi, levels=koder, labels = grtxt) #levels=c(nivaa,9)
+  if (valgtVar == 'OpBehNivaa') {   #Andeler, AndelGrVar, AndelTid
+#  if (valgtVar == 'OpDagkirurgi') {   #Andeler, AndelGrVar, AndelTid #0: Nei, 1: Ja Manglende:Ukjent
+   #1-Poliklinisk, 2-Dagkirurgi, 3-Inneliggende
+    tittel <- 'Behandlingsnivå' # 'Dagkirurgiske Inngrep'
+    grtxt <-c('Poliklinisk', 'Dagkirurgi', 'Innlagt')  # c('Nei', 'Ja')
+    koder <- 1:3
+    RegData <- RegData[which(RegData$OpBehNivaa %in% koder), ]
+    RegData$VariabelGr <- factor(RegData$OpBehNivaa, levels=koder, labels = grtxt) #levels=c(nivaa,9)
     varTxt <- 'dagkirurgiske inngrep'
-    RegData$Variabel <- RegData$OpDagkirurgi
+    RegData$Variabel[RegData$OpBehNivaa ==2] <- 1
   }
   if (valgtVar == 'OpIVaktTid') {   #Andeler
     #0: Nei, 1: Ja Manglende:Ukjent
@@ -893,7 +894,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
   if (valgtVar %in% c('Diagnoser', 'DiagnoseGr', 'KomplPostopType', 'KomplAlvorPostopType',
                       'HysKomplikasjoner', 'LapKomplikasjoner',
                       'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr',
-                      'LapIntraabdominell', 'LapTeknikk', 'Prosedyrer', 'ProsedyreGr',
+                      'LapKomplIntra', 'LapTeknikk', 'Prosedyrer', 'ProsedyreGr', #'LapIntraabdominell'
                       'ProsViktigLap', 'ProsViktigHys')){
     flerevar <- 1
     retn <- 'H'}
@@ -901,13 +902,14 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
 
   if (valgtVar=='HysKomplikasjoner') {
     #Hysteroskopi intrapoerative komplikasjoner:
-    variable <- c('HysTilgang',
-                  'HysPerforasjon',
-                  'HysTeknisk',
-                  'HysFluidOverload',
-                  'HysBlodning')
-    grtxt <- c('Ved tilgang', 'Perforasjon', 'Teknisk/utstyr',
-               'Fluid overload', 'Blødning')
+    variable <- c('HysKomplAnnet', # 'HysTilgang',
+                  'HysKomplPerf', # 'HysPerforasjon',
+                #  'HysSkadeaarsakTeknUtst', # 'HysTeknisk',
+                  'HysKomplVaeske', # 'HysFluidOverload'
+                  'HysKomplBlodn', # 'HysBlodning',
+                  )
+    grtxt <- c('Annet', 'Perforasjon', # 'Teknisk/utstyr',
+               'Væske', 'Blødning')
     tittel <- 'Intraoperative komplikasjoner ved hysteroskopi'
     RegData <- RegData[RegData$HysKomplikasjoner %in% 0:1,]	#Velger ikke ut på OpMetode=2 siden ønsker også de som har begge
   }
@@ -988,31 +990,32 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     variable <- c('LapAdherProfylakse',
                   'LapBipolarDiatermi',
                   'LapClips',
-                  'LapHarmonicS',
+                  # 'LapHarmonicS', fjernet nov23
                   'LapMorcellatorUtenPose',
-                  'LapMorcellatorMedPose',
+                  # 'LapMorcellatorMedPose', fjernet nov23
                   'LapNett',
                   'LapPreparatopose',
-                  'LapUterusmanipulator',
+                  'LapUterusman',
                   'LapRobotKirurgi',
                   'LapSingelPort',
                   'LapStaplerEndogia',
                   'LapSutur',
-                  'LapIntKombo',
-                  'LapIntKoagOgKlipp',
-                  'LapUnipolarDiatermi')
-    grtxt <- c('Hemostasemiddel', 'Bipolar Diatermi', 'Clips', 'Ultralyd skalpell',
-               'Morc. u/pose [1/3-16]', 'Morc. m/pose [1/3-16]', #Slås sammen
+                  # 'LapIntKombo', fjernet nov23
+                  # 'LapIntKoagOgKlipp', fjernet nov23
+                  'LapUnipolarDiatermi',
+                  'LapVevforsegl', 'LapOptTro', 'LapPrepOppdel')
+    grtxt <- c('Hemostasemiddel', 'Bipolar Diatermi', 'Clips', # 'Ultralyd skalpell',
+               # 'Morc. u/pose [1/3-16]',  'Morc. m/pose [1/3-16]' - fjernet, #Slås sammen
+               'Morcellator',
                'Nett', 'Preparatpose', 'Uterusmanipulator', 'Robot', 'Singel port',
-               'Stapler', 'Sutur', 'Bipolar og ultralyd', 'Bipolar koag. og klipping',
-               'Unipolar Diatermi')
+               'Stapler', 'Sutur', # 'Bipolar og ultralyd', 'Bipolar koag. og klipping',
+               'Unipolar Diatermi', 'Vevforsegling', 'LapOptTro', 'LapPrepOppdel')
     cexgr <- 0.8
     tittel <- 'Laparaskopisk ekstrautstyr'
     RegData <- RegData[RegData$OpMetode %in% c(1,3), ]
-    #AntVar <- colSums(RegData[indMed ,variable], na.rm=T)
-    indInnfDato <- which(as.Date(RegData$HovedDato) >= as.Date('2016-03-01'))
-    varInnfind <- which(variable %in% c('LapMorcellatorUtenPose', 'LapMorcellatorMedPose'))
-    RegData[which(as.Date(RegData$HovedDato) < as.Date('2016-03-01')), variable[varInnfind]] <- NA
+    #indInnfDato <- which(as.Date(RegData$HovedDato) >= as.Date('2016-03-01'))
+    #varInnfind <- which(variable %in% c('LapMorcellatorUtenPose', 'LapMorcellatorMedPose'))
+    #RegData[which(as.Date(RegData$HovedDato) < as.Date('2016-03-01')), variable[varInnfind]] <- NA
 
     #AntVar[varBytt] <- colSums(RegData[indInnfDato,varBytt], na.rm=T)
     #N <- length(indMed)
@@ -1022,40 +1025,32 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
   if (valgtVar=='LapKomplikasjoner') {
     #Laparoskopiske intrapoerative komplikasjoner:
     #Andel komplikasjoner ved bruk av de ulike utstyrstypene? OK. Variablene angir komplikasjonsårsak.
-    variable <- c('LapUterusmanipulator', #0,1
-                  'LapKompTilgang',	#
-                  'LapHjelpeinnstikk', #0,1
-                  'LapIntraabdominell',  #0,1
-                  'LapTekniskUtstyr', #0,1
-                  'LapPostoperativ') #0,1 Hører denne med?
-    grtxt <- c('Uterusmanipulator', 'Tilgangsmetode', 'Hjelpeinnstikk',
-               'Intraabdominal', 'Utstyr', 'Postoperativ')
+    variable <- c('LapUterusman', #0,1
+                  'LapSkadeTilgang', # 'LapKompTilgang',	'LapHjelpeinnstikk', 'LapIntraabdominell',  #0,1
+                  'LapSkadeaarsakTekniskUtstyr', # 'LapTekniskUtstyr' #0,1
+                  'LapSkadeUthent', 'LapSkadeDissek', 'LapSkadeForsegl', 'LapSkadeAnnet')
+    grtxt <- c('Uterusmanipulator', 'LapSkadeTilgang', # 'Tilgangsmetode', 'Hjelpeinnstikk', # 'Intraabdominal',
+               'Utstyr', 'Uthenting', 'Disseksjon', 'Forsegling', 'Annet')
     cexgr <- 0.85
-    tittel <- 'Intraoperative komplikasjoner ved laparoskopi'
+    tittel <- 'Intraoperative skader ved laparoskopi, oppstått ved: '
     RegData <- RegData[(RegData$LapKomplikasjoner %in% 0:1), ]
   }
-  if (valgtVar=='LapIntraabdominell') {
+  if (valgtVar=='LapIntraKomplSkade') { #LapIntraab
     #Laparoskopiske intraabdominale komplikasjoner:
-    variable <- c('LapNerv',
-                  'LapUreter',
-                  'LapTarm',
-                  'LapBlare',
-                  'LapKarBlodning')
-    grtxt <- c('Nerve', 'Ureter', 'Tarm', 'Blære', 'Kar')
-    tittel <- 'Intraabdominelle komplikasjoner ved laparoskopi'
-    RegData <- RegData[RegData$LapIntraabdominell %in% 0:1, ]	#
-    #AntVar <- colSums(RegData[indMed ,variable], na.rm=T)
-    #NVar <- length(indMed)
-    #N <- NVar
+    #variableGML <- c('LapNerv', 'LapUreter', 'LapTarm', 'LapBlare', 'LapKarBlodning')
+    #grtxt <- c('Nerve', 'Ureter', 'Tarm', 'Blære', 'Kar')
+    variable <- c('LapKomplAnnet', 'LapKomplUreter', 'LapKomplTarm', 'LapKomplBlaere', 'LapKomplKar')
+    grtxt <- c('Annet', 'Ureter', 'Tarm', 'Blære', 'Kar')
+    tittel <- 'Laparaskopiske intraoperative organskader' # 'Intraabdominelle komplikasjoner ved laparoskopi'
+    RegData <- RegData[RegData$LapKomplikasjoner %in% 0:1, ]	#
   }
   if (valgtVar == 'LapTeknikk') { #Tidl: LapTilgangsMetode
-    #		LapTilgangsMetode: LAPAROSCOPY_ACCESS_METHOD_TEXT: 1,2,NA
-    #		LapTilgang: LAPAROSCOPY_ACCESS_TEXT
     #LapTilgangsMetode 0: Åpent, 1: Veress-nål, 2: Annet
     #LapTilgangsMetode, fra 1/1? 2020: 0: Åpent, 1: Veress-nål, 2: Visiport, 9: Annet
     #LapTilgang, fra 1/3-16: 1-Venstre Palmers point
     #Bare laparoskopi og begge
     #Ny kategori, dvs. ny variabel: Palmers point, neste prod.setting, etterreg. fra 1.3.2016. Mangler noen og disse filtreres bort.
+    #Fra nov-23:
     RegData <- RegData[which(RegData$OpMetode %in% c(1,3)), ] #Laparoskopi
     tittel <- 'Laparoskopisk tilgang, teknikk og metode' #  'Teknikk for laparaskopisk tilgang'
     grtxt <- c(paste0('Metode: \n', c('Åpent', 'Veress-nål', 'Visiport [1/1-20]','Annet')),
@@ -1065,10 +1060,10 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     indTilg <- which(RegData$LapTilgang %in% 1:2,9)
 
     variable <- c(paste0('met',0:3), paste0('tilg', 1:3))
-    ind1met <- cbind(indMet, RegData$LapTilgangsMetode[indMet]+1) #Verdi 1,2,3,10...#Alle ja/nei
+    ind1met <- cbind(indMet, RegData$LapTilgangsMetode[indMet]+1) #Verdi 1,2,3,10...
     ind1met[ind1met[,2]==10,2] <- 4
     ind01tilg <- intersect(indMar16tilg,indTilg)
-    ind1tilg <- cbind(ind01tilg, RegData$LapTilgang[ind01tilg]) #Verdi 1,2,9 #Alle ja/nei
+    ind1tilg <- cbind(ind01tilg, RegData$LapTilgang[ind01tilg]) #Verdi 1,2,9
 
     RegData[ ,variable] <- NA
     RegData[ ,variable[1:4]] <- 0
