@@ -335,7 +335,7 @@ table(RegData$Opf0Status[ind], useNA = 'a')
 table(RegData$Opf0metode[ind], useNA = 'a')
 
 
-#--------Data til Resultatportalen-----------------
+#--------Data til Resultatportalen/RapPortalen-----------------
 rm(list=ls())
 library(nger)
 setwd('P:/Registerinfo og historie/NGER/Resultatportalen')
