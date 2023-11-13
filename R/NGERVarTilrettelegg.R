@@ -80,21 +80,29 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
   if (valgtVar=='HysGjforingsGrad') {   #Andeler
     #Gjennomføringsgrad av hysteroskopi
     #Kode •	1-Fullstendig, 2-Ufullstendig, 3-Mislykket
-    RegData <- RegData[which(RegData$OpMetode == 2), ]
+    RegData <- RegData[which(RegData$OpMetode %in% 2:3), ] #== 2
     grtxt <- c('Fullstendig', 'Ufullstendig') #, 'Mislykket') #Slår sm 2 og 3 i 2022
     tittel <- 'Gjennomføringsgrad av hysteroskopi'
     koder <- 1:2 #1:3
     RegData <- RegData[which(RegData$HysGjforingsGrad %in% koder), ]
     RegData$VariabelGr <- factor(RegData$HysGjforingsGrad, levels=koder, labels = grtxt) #levels=c(nivaa,9)
   }
+  if (valgtVar == 'HysUfullAarsak') {   #Andeler, andelGrVar, andelTid
+    RegData <- RegData[which(RegData$OpMetode %in% 2:3), ]
+    variable <- c('HysUfullSmerte', 'HysUfullMisGass', 'HysUfullKompl', 'HysUfullHoyVaeske')
+    flerevar <- 1
+    tittel <- 'Årsak til ufullstendig hysteroskopi'
+    grtxt <- c('Smerte', 'Gass', 'Komplikasjon', 'Væske')
+    retn <- 'H'
+  }
 
-    if (valgtVar=='HysKonvertert') { #andelGrVar, andelTid
+    if (valgtVar=='HysKonvertert') { #andeler
     RegData <- RegData[intersect(which(RegData$HysKonvertert %in% 0:1), which(RegData$HysStatus == 1)), ]
     RegData$Variabel <- RegData$HysKonvertert
     mean(RegData$Variabel, na.rm = T)*100
     varTxt <- 'konverterte'
     tittel <- 'Konvertert hysteroskopi til laparotomi/-skopi'
-  }
+    }
 
   if (valgtVar=='KomplIntra') { #andelGrVar, andelTid
     # Komplikasjoner ved operasjon. Må kombinere HysKomplikasjoner og LapKomplikasjoner
@@ -916,6 +924,28 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     tittel <- 'Intraoperative komplikasjoner ved hysteroskopi'
     RegData <- RegData[RegData$HysKomplikasjoner %in% 0:1,]	#Velger ikke ut på OpMetode=2 siden ønsker også de som har begge
   }
+
+  if (valgtVar=='HysSkadeaarsakIntra') {
+    #Hysteroskopi intrapoerative komplikasjoner:
+    flerevar <- 1
+    variable <- c('HysSkadeaarsakStenose', 'HysSkadeaarsakAd', 'HysSkadeaarsakTeknUtst',
+                  'HysSkadeaarsakAnatomi', 'HysSkadeaarsakAnnet')
+    grtxt <- c('Stenose', 'Ad',  'Teknisk/utstyr',
+               'Anatomi', 'Annet')
+    tittel <- 'Medvirkende årsak til komplikasjon, hysteroskopi'
+    RegData <- RegData[RegData$HysKomplikasjoner == 1,]
+    #RegData <- RegData[RegData$HysKomplikasjoner %in% 0:1,]
+  }
+  :
+  if (valgtVar=='HysKomplTiltak') { #andeler
+    flerevar <- 1
+    variable <- c('HysKomplTiltakTamp, HysKomplTiltakAvbr, HysKomplTiltakAnnet, HysKomplTiltakIngen')
+
+    grtxt <- c('Tamp', 'Avbrudd',  'Annet', 'Ingen')
+    tittel <- 'Tiltak ved komplikasjon, hysteroskopi'
+    RegData <- RegData[RegData$HysKomplikasjoner == 1,]
+    #RegData <- RegData[RegData$HysKomplikasjoner %in% 0:1,]
+  }
   if (valgtVar=='KomplPostopType') { #fordeling, andelTid, andelGrVar
     #Postoperative komplikasjoner. Bare registreringer hvor Opf0Komplikasjoner er 0 el. 1
     tittel <- 'Postoperative komplikasjoner'
@@ -1032,12 +1062,21 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
                   'LapSkadeTilgang', # 'LapKompTilgang',	'LapHjelpeinnstikk', 'LapIntraabdominell',  #0,1
                   'LapSkadeaarsakTekniskUtstyr', # 'LapTekniskUtstyr' #0,1
                   'LapSkadeUthent', 'LapSkadeDissek', 'LapSkadeForsegl', 'LapSkadeAnnet')
-    grtxt <- c('Uterusmanipulator', 'LapSkadeTilgang', # 'Tilgangsmetode', 'Hjelpeinnstikk', # 'Intraabdominal',
+    grtxt <- c('Uterusmanipulator - fjerne?', 'LapSkadeTilgang', # 'Tilgangsmetode', 'Hjelpeinnstikk', # 'Intraabdominal',
                'Utstyr', 'Uthenting', 'Disseksjon', 'Forsegling', 'Annet')
     cexgr <- 0.85
     tittel <- 'Intraoperative skader ved laparoskopi, oppstått ved: '
-    RegData <- RegData[(RegData$LapKomplikasjoner %in% 0:1), ]
+    RegData <- RegData[(RegData$LapKomplikasjoner == 1), ]
   }
+  if (valgtVar=='LapSkadeIntra') {
+    flerevar <- 1
+    variable <- c('LapSkadeTilgang', 'LapSkadeUthent', 'LapSkadeDissek',
+                  'LapSkadeForsegl', 'LapSkadeAnnet')
+    grtxt <- c('Tilgang', 'Uthenting','Dissek', 'Forsegling', 'Annet')
+    tittel <- 'Hvordan laparaskopisk skade oppsto'
+    RegData <- RegData[RegData$LapKomplikasjoner == 1,]
+  }
+
   if (valgtVar=='LapIntraKomplSkade') { #LapIntraab
     #Laparoskopiske intraabdominale komplikasjoner:
     #variableGML <- c('LapNerv', 'LapUreter', 'LapTarm', 'LapBlare', 'LapKarBlodning')
@@ -1047,6 +1086,15 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     tittel <- 'Laparaskopiske intraoperative organskader' # 'Intraabdominelle komplikasjoner ved laparoskopi'
     RegData <- RegData[RegData$LapKomplikasjoner %in% 0:1, ]	#
   }
+  if (valgtVar=='LapSkadeaarsakIntra') {
+    flerevar <- 1
+    variable <- c('LapSkadeaarsakTeknUtst', 'LapSkadeaarsakAdher', 'LapSkadeaarsakTidlKir',
+                  'LapSkadeaarsakAnnet')
+    grtxt <- c('Teknisk/utstyr', 'Adher','Tidl.kir.', 'Annet')
+    tittel <- 'Medvirkende årsak til komplikasjon, laparoskopi'
+    RegData <- RegData[RegData$LapKomplikasjoner == 1,]
+  }
+
   if (valgtVar == 'LapTeknikk') { #Tidl: LapTilgangsMetode
     #LapTilgangsMetode 0: Åpent, 1: Veress-nål, 2: Annet
     #LapTilgangsMetode, fra 1/1? 2020: 0: Åpent, 1: Veress-nål, 2: Visiport, 9: Annet

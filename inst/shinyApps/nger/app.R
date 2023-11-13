@@ -370,8 +370,13 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
                       selectInput(
                         inputId = "valgtVar", label="Velg variabel",
                         choices = c('Alder' = 'Alder',
+                                    'Anestesitype' = 'OpAnestesi', #endret nov23
+                                    'Årsak til ufullstendig hysteroskopi' = 'HysUfullAarsak',
+                                    'Medvirkende årsak til komplikasjon, hysteroskopi' = 'HysSkadeaarsakIntra',
+                                    'Tiltak ved komplikasjon, hysteroskopi' = 'HysKomplTiltak',
+                                    'Medvirkende årsak til komplikasjon, laparoskopi' = 'LapSkadeaarsakIntra',
+                                    'Hvordan laparaskopisk skade oppsto' = 'LapSkadeIntra',
                                          'Alvorlighetsgrad, postop. kompl.' = 'Opf0AlvorlighetsGrad',
-                                        # 'Anestesitype' = 'OpAnestesi', fjernet nov23
                                          'ASA-grad' = 'OpASA',
                                          'BMI-kategori' = 'OpBMI',
                                          'Behandlingsnivå' = 'OpBehNivaa',
@@ -386,9 +391,9 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
                                          'Komplikasjoner, postoperativt' = 'KomplPostopType',
                                          'Komplikasjoner, postop. alvorlig/middels' = 'KomplAlvorPostopType',
                                          'Laparaskopisk ekstrautstyr' = 'LapEkstrautstyr',
-                                         'Laparaskopisk tilgang, teknikk og metode' = 'LapTeknikk',
+                                         'Laparaskopiske intraoperative komplikasjoner' = 'LapKomplikasjoner',
                                          'Laparaskopiske intraoperative organskader' = 'LapIntraKomplSkade',
-                                         'Laparoskopiske intraoperative komplikasjoner' = 'LapKomplikasjoner',
+                                         'Laparaskopisk tilgang, teknikk og metode' = 'LapTeknikk',
                                          'Norskkunnskaper' = 'Norsktalende',
                                          'Oppfølgingsmetode' = 'Opf0metode',
                                          'Operasjon i legens vakttid' = 'OpIVaktTid',
