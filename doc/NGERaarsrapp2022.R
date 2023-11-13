@@ -1,4 +1,3 @@
-
 #--------------------------------Data og parametrekobling--------------------------
 # Inndata til funksjon:
 library(nger)
