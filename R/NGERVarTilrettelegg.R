@@ -229,16 +229,19 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
   }
   if (valgtVar == 'OpAnestesi') {   #Andeler, andelGrVar, andelTid
     # 1-Ingen, 2-Lokal, 3-Generell, 4-Spinal, 5-Annet
+    # Nov23: Endret til avkrysningsbokser:
+    variable <- c('OpAnestesiIngen', 'OpAnestesiLok', 'OpAnestesiGen', 'OpAnestesiSpinEDA', 'OpAnestesiSed')
+    flerevar <- 1
     tittel <- 'Anestesitype ved endoskopiske inngrep'
-    grtxt <- c('Ingen', 'Lokal', 'Generell', 'Spinal', 'Annet')
-    koder <- 1:5
+    grtxt <- c('Ingen', 'Lokal', 'Generell', 'Spinal', 'Sedasjon')
+    #koder <- 1:5
     retn <- 'H'
-    RegData <- RegData[RegData$OpAnestesi %in% koder, ]
-    RegData$VariabelGr <- factor(RegData$OpAnestesi, levels=koder, labels = grtxt) #levels=c(nivaa,9)
+    #RegData <- RegData[RegData$OpAnestesi %in% koder, ]
+    #RegData$VariabelGr <- factor(RegData$OpAnestesi, levels=koder, labels = grtxt) #levels=c(nivaa,9)
     if (figurtype %in% c('andelGrVar', 'andelTid')) {
       tittel <- 'Lokalbedøvelse'
       varTxt <- 'som har fått lokalbedøvelse'
-      RegData$Variabel[RegData$OpAnestesi == 2] <- 1
+      RegData$Variabel[RegData$OpAnestesiLok == 2] <- 1
     }
   }
   if (valgtVar=='OpAntibProfylakse') { #andelGrVar #andelTid
