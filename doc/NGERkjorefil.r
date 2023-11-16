@@ -176,11 +176,14 @@ tapply(RegDatatest$R0Spm9d, RegDatatest$Aar, FUN = function(x){sum(!is.na(x))})
 tapply(RegDatatest$RY1Spm4c, RegDatatest$Aar, FUN = function(x){sum(!is.na(x))})
 
 #------------------------------ Andeler flere var (tilsvarer Fordelinger)--------------------------
-
-valgtVar <- 'Alder'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid, Tss2Sumskaar
+RegData <- NGERRegDataSQL(datoFra = '2020-01-01')
+NGERFigAndeler(RegData=RegData, datoFra = '2023-01-01', valgtVar = 'LapSkadeIntra')
+valgtVar <- 'LapSkadeIntra'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid, Tss2Sumskaar
 
 outfile <- '' #paste0(valgtVar, '_ford.png')
 enhetsUtvalg <- 1
+test <- RegData[,c("OpAnestesiIngen")]
+#,   "OpAnestesiLok" ,    "OpAnestesiGen"  ,   "OpAnestesiSpinEDA", "OpAnestesiSed"
 
 
 UtDataFraFig <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,

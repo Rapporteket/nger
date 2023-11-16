@@ -939,7 +939,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
 
   if (valgtVar=='HysKomplTiltak') { #andeler
     flerevar <- 1
-    variable <- c('HysKomplTiltakTamp, HysKomplTiltakAvbr, HysKomplTiltakAnnet, HysKomplTiltakIngen')
+    variable <- c('HysKomplTiltakTamp', 'HysKomplTiltakAvbr', 'HysKomplTiltakAnnet', 'HysKomplTiltakIngen')
 
     grtxt <- c('Tamp', 'Avbrudd',  'Annet', 'Ingen')
     tittel <- 'Tiltak ved komplikasjon, hysteroskopi'

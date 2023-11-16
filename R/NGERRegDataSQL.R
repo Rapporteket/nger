@@ -23,7 +23,6 @@ NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = Sys.Date(), medPROM
     -- HysBlodning, erstattet nov23
     -- HysFluidOverload, erstattet nov23
     HysGjforingsGrad,
-    HysKomplikasjoner,
     -- HysPerforasjon, erstattet nov23
     HysDiagnose1,
     HysDiagnose2,
@@ -121,6 +120,11 @@ NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = Sys.Date(), medPROM
     Leveringsdato,
     -- Blodfortynnende, fjernet nov 23
     -- OpAnestesi, fjernet nov 23
+    OpAnestesiIngen, #ny nov23
+    OpAnestesiLok, #ny nov23
+    OpAnestesiGen, #ny nov23
+    OpAnestesiSpinEDA, #ny nov23
+    OpAnestesiSed, #ny nov23
     OpAntibProfylakse,
     OpASA,
     OpBMI,
