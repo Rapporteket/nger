@@ -917,7 +917,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
                   'HysKomplPerf', # 'HysPerforasjon',
                 #  'HysSkadeaarsakTeknUtst', # 'HysTeknisk',
                   'HysKomplVaeske', # 'HysFluidOverload'
-                  'HysKomplBlodn', # 'HysBlodning',
+                  'HysKomplBlodn' # 'HysBlodning',
                   )
     grtxt <- c('Annet', 'Perforasjon', # 'Teknisk/utstyr',
                'Væske', 'Blødning')
@@ -930,7 +930,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     flerevar <- 1
     variable <- c('HysSkadeaarsakStenose', 'HysSkadeaarsakAd', 'HysSkadeaarsakTeknUtst',
                   'HysSkadeaarsakAnatomi', 'HysSkadeaarsakAnnet')
-    grtxt <- c('Stenose', 'Ad',  'Teknisk/utstyr',
+    grtxt <- c('Cervixstenose', 'Adheranser',  'Teknisk/utstyr',
                'Anatomi', 'Annet')
     tittel <- 'Medvirkende årsak til komplikasjon, hysteroskopi'
     RegData <- RegData[RegData$HysKomplikasjoner == 1,]
@@ -1060,7 +1060,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     #Andel komplikasjoner ved bruk av de ulike utstyrstypene? OK. Variablene angir komplikasjonsårsak.
     variable <- c('LapUterusman', #0,1
                   'LapSkadeTilgang', # 'LapKompTilgang',	'LapHjelpeinnstikk', 'LapIntraabdominell',  #0,1
-                  'LapSkadeaarsakTekniskUtstyr', # 'LapTekniskUtstyr' #0,1
+                  'LapSkadeaarsakTeknUtst', # 'LapTekniskUtstyr' #0,1
                   'LapSkadeUthent', 'LapSkadeDissek', 'LapSkadeForsegl', 'LapSkadeAnnet')
     grtxt <- c('Uterusmanipulator - fjerne?', 'LapSkadeTilgang', # 'Tilgangsmetode', 'Hjelpeinnstikk', # 'Intraabdominal',
                'Utstyr', 'Uthenting', 'Disseksjon', 'Forsegling', 'Annet')
@@ -1072,8 +1072,8 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     flerevar <- 1
     variable <- c('LapSkadeTilgang', 'LapSkadeUthent', 'LapSkadeDissek',
                   'LapSkadeForsegl', 'LapSkadeAnnet')
-    grtxt <- c('Tilgang', 'Uthenting','Dissek', 'Forsegling', 'Annet')
-    tittel <- 'Hvordan laparaskopisk skade oppsto'
+    grtxt <- c('Tilgang', 'Uthenting','Disseksjon', 'Forsegl. av kar', 'Annet')
+    tittel <- 'Laparaskopisk skade oppsto ved:'
     RegData <- RegData[RegData$LapKomplikasjoner == 1,]
   }
 
@@ -1082,7 +1082,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     #variableGML <- c('LapNerv', 'LapUreter', 'LapTarm', 'LapBlare', 'LapKarBlodning')
     #grtxt <- c('Nerve', 'Ureter', 'Tarm', 'Blære', 'Kar')
     variable <- c('LapKomplAnnet', 'LapKomplUreter', 'LapKomplTarm', 'LapKomplBlaere', 'LapKomplKar')
-    grtxt <- c('Annet', 'Ureter', 'Tarm', 'Blære', 'Kar')
+    grtxt <- c('Annet', 'Ureter', 'Tarm', 'Blære', 'Forsegl. av kar')
     tittel <- 'Laparaskopiske intraoperative organskader' # 'Intraabdominelle komplikasjoner ved laparoskopi'
     RegData <- RegData[RegData$LapKomplikasjoner %in% 0:1, ]	#
   }
@@ -1090,7 +1090,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     flerevar <- 1
     variable <- c('LapSkadeaarsakTeknUtst', 'LapSkadeaarsakAdher', 'LapSkadeaarsakTidlKir',
                   'LapSkadeaarsakAnnet')
-    grtxt <- c('Teknisk/utstyr', 'Adher','Tidl.kir.', 'Annet')
+    grtxt <- c('Teknisk/utstyr', 'Adheranser','Tidl.kir.', 'Annet')
     tittel <- 'Medvirkende årsak til komplikasjon, laparoskopi'
     RegData <- RegData[RegData$LapKomplikasjoner == 1,]
   }
