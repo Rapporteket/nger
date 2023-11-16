@@ -1042,7 +1042,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
                'Morcellator',
                'Nett', 'Preparatpose', 'Uterusmanipulator', 'Robot', 'Singel port',
                'Stapler', 'Sutur', # 'Bipolar og ultralyd', 'Bipolar koag. og klipping',
-               'Unipolar Diatermi', 'Vevforsegling', 'LapOptTro', 'LapPrepOppdel')
+               'Unipolar Diatermi', 'Intl.vevsforsegler', 'Optisk trokar', 'Oppd. av preparat')
     cexgr <- 0.8
     tittel <- 'Laparaskopisk ekstrautstyr'
     RegData <- RegData[RegData$OpMetode %in% c(1,3), ]
@@ -1055,19 +1055,19 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     #NVar <- rep(N, length(variable))
     #NVar[varByttind] <- length(indInnfDato)
   }
-  if (valgtVar=='LapKomplikasjoner') {
-    #Laparoskopiske intrapoerative komplikasjoner:
-    #Andel komplikasjoner ved bruk av de ulike utstyrstypene? OK. Variablene angir komplikasjonsårsak.
-    variable <- c('LapUterusman', #0,1
-                  'LapSkadeTilgang', # 'LapKompTilgang',	'LapHjelpeinnstikk', 'LapIntraabdominell',  #0,1
-                  'LapSkadeaarsakTeknUtst', # 'LapTekniskUtstyr' #0,1
-                  'LapSkadeUthent', 'LapSkadeDissek', 'LapSkadeForsegl', 'LapSkadeAnnet')
-    grtxt <- c('Uterusmanipulator - fjerne?', 'LapSkadeTilgang', # 'Tilgangsmetode', 'Hjelpeinnstikk', # 'Intraabdominal',
-               'Utstyr', 'Uthenting', 'Disseksjon', 'Forsegling', 'Annet')
-    cexgr <- 0.85
-    tittel <- 'Intraoperative skader ved laparoskopi, oppstått ved: '
-    RegData <- RegData[(RegData$LapKomplikasjoner == 1), ]
-  }
+  # if (valgtVar=='LapKomplikasjoner') {
+  #   #Laparoskopiske intrapoerative komplikasjoner:
+  #   #Andel komplikasjoner ved bruk av de ulike utstyrstypene? OK. Variablene angir komplikasjonsårsak.
+  #   variable <- c( # 'LapUterusman', #0,1
+  #                 'LapSkadeTilgang', # 'LapKompTilgang',	'LapHjelpeinnstikk', 'LapIntraabdominell',  #0,1
+  #                 'LapSkadeaarsakTeknUtst', # 'LapTekniskUtstyr' #0,1
+  #                 'LapSkadeUthent', 'LapSkadeDissek', 'LapSkadeForsegl', 'LapSkadeAnnet')
+  #   grtxt <- c('LapSkadeTilgang', # 'Uterusmanipulator - fjerne?', 'Tilgangsmetode', 'Hjelpeinnstikk', # 'Intraabdominal',
+  #              'Utstyr', 'Uthenting', 'Disseksjon', 'Forsegling', 'Annet')
+  #   cexgr <- 0.85
+  #   tittel <- 'Intraoperative skader ved laparoskopi, oppstått ved: '
+  #   RegData <- RegData[(RegData$LapKomplikasjoner == 1), ]
+  # }
   if (valgtVar=='LapSkadeIntra') {
     flerevar <- 1
     variable <- c('LapSkadeTilgang', 'LapSkadeUthent', 'LapSkadeDissek',
@@ -1103,24 +1103,43 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     #Ny kategori, dvs. ny variabel: Palmers point, neste prod.setting, etterreg. fra 1.3.2016. Mangler noen og disse filtreres bort.
     #Fra nov-23:
     RegData <- RegData[which(RegData$OpMetode %in% c(1,3)), ] #Laparoskopi
-    tittel <- 'Laparoskopisk tilgang, teknikk og metode' #  'Teknikk for laparaskopisk tilgang'
-    grtxt <- c(paste0('Metode: \n', c('Åpent', 'Veress-nål', 'Visiport [1/1-20]','Annet')),
-               paste0('Tilgang: \n', c('Palmers point[1/3-16]', 'Navlen[1/3-16]', 'Annet[1/2-22]'))) #LapTilgangsMetode
+    tittel <- 'Etablering av pneumoperitoneum' # 'Laparoskopisk tilgang, teknikk og metode', 'Teknikk for laparaskopisk tilgang'
+    # grtxt <- c(paste0('Metode: \n', c('Åpent', 'Veress-nål', 'Visiport [1/1-20]','Annet')),
+    #            paste0('Tilgang: \n', c('Palmers point[1/3-16]', 'Navlen[1/3-16]', 'Annet[1/2-22]'))) #LapTilgangsMetode
+    grtxt <- c(paste0('Metode: \n', c('Åpent', 'Veress-nål', 'Direkte',  'Visiport [1/1-20]')),
+              paste0('Tilgang: \n', c('Palmers point[1/3-16]', 'Navlen[1/3-16]','Vaginalt[14/11-23]', 'Annet[1/2-22]'))) #LapTilgangsMetode
     indMar16tilg <- which(as.Date(RegData$HovedDato)>='2016-03-01')
-    indMet <- which(RegData$LapTilgangsMetode %in% c(0:2,9))
-    indTilg <- which(RegData$LapTilgang %in% 1:2,9)
+    indMet <- which(RegData$LapTilgangsMetode %in% 0:2) #c(0:2,9)
+    indTilg <- which(RegData$LapTilgang %in% c(1:3,9)) # 1:2,9
 
-    variable <- c(paste0('met',0:3), paste0('tilg', 1:3))
-    ind1met <- cbind(indMet, RegData$LapTilgangsMetode[indMet]+1) #Verdi 1,2,3,10...
-    ind1met[ind1met[,2]==10,2] <- 4
-    ind01tilg <- intersect(indMar16tilg,indTilg)
-    ind1tilg <- cbind(ind01tilg, RegData$LapTilgang[ind01tilg]) #Verdi 1,2,9
+    # LapTilgangsMetode	Ikke endret	0	Åpent
+    # LapTilgangsMetode	Ikke endret	1	Veress-nål
+    # LapTilgangsMetode	Gamle 9 Annet er gjort om til 2 Direkte (alle gamle "Annet" er undersøkt, og er Direkte,
+    #                                                            så "gammel" data er lagt hit)	2	Direkte
+    # LapOptTro	Dette er den gamle LapTilgangsMetode 2 Visiport som nå er satt til 1 Ja i datasettet og heter Optisk trokar	0	Nei
+    # LapOptTro		1	Ja
+    # LapTilgang	Ikke endret	1	Palmers point
+    # LapTilgang	Ikke endret	2	Navlen
+    # LapTilgang	Lagt til	3	Vaginalt
+    # LapTilgang	Lagt til	9	Annet
+
+    variable <- c(paste0('met',0:2), 'LapOptTro', paste0('tilg', 1:4))
+    ind1met <- cbind(indMet, RegData$LapTilgangsMetode[indMet]+1) #Verdi 1,2,3 (,10... utgår)
+    #ind1met[ind1met[,2]==10,2] <- 4 utgår
+    ind01tilg <- intersect(indMar16tilg, indTilg)
+    ind1tilg <- cbind(ind01tilg, RegData$LapTilgang[ind01tilg]) #Verdi 1,2,9 endret til 1,2,3,9
+    ind1tilg[ind1tilg[,2]==9,2] <- 4
 
     RegData[ ,variable] <- NA
-    RegData[ ,variable[1:4]] <- 0
-    RegData[ ,variable[1:4]][ind1met] <- 1
-    RegData[ind01tilg ,variable[5:7]] <- 0
-    RegData[ ,variable[5:7]][ind1tilg] <- 1
+    RegData[ ,variable[1:3]] <- 0
+    RegData[ ,variable[1:3]][ind1met] <- 1 #OK
+    RegData[ind01tilg ,variable[5:8]] <- 0
+    RegData[ ,variable[5:8]][ind1tilg] <- 1
+    # RegData[ ,variable] <- NA
+    # RegData[ ,variable[1:4]] <- 0
+    # RegData[ ,variable[1:4]][ind1met] <- 1
+    # RegData[ind01tilg ,variable[5:7]] <- 0
+    # RegData[ ,variable[5:7]][ind1tilg] <- 1
   }
 
     if (valgtVar == 'Opf0KomplInfeksjon') {   #Andeler, andelGrVar, andelTid
