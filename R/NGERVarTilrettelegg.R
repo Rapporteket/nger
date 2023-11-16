@@ -936,7 +936,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData <- RegData[RegData$HysKomplikasjoner == 1,]
     #RegData <- RegData[RegData$HysKomplikasjoner %in% 0:1,]
   }
-  :
+
   if (valgtVar=='HysKomplTiltak') { #andeler
     flerevar <- 1
     variable <- c('HysKomplTiltakTamp, HysKomplTiltakAvbr, HysKomplTiltakAnnet, HysKomplTiltakIngen')
