@@ -1078,9 +1078,9 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
   }
 
   if (valgtVar=='LapIntraKomplSkade') { #LapIntraab
-    #Laparoskopiske intraabdominale komplikasjoner:
     #variableGML <- c('LapNerv', 'LapUreter', 'LapTarm', 'LapBlare', 'LapKarBlodning')
     #grtxt <- c('Nerve', 'Ureter', 'Tarm', 'Blære', 'Kar')
+    flerevar <- 1
     variable <- c('LapKomplAnnet', 'LapKomplUreter', 'LapKomplTarm', 'LapKomplBlaere', 'LapKomplKar')
     grtxt <- c('Annet', 'Ureter', 'Tarm', 'Blære', 'Forsegl. av kar')
     tittel <- 'Laparaskopiske intraoperative organskader' # 'Intraabdominelle komplikasjoner ved laparoskopi'
