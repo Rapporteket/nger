@@ -193,7 +193,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
   if (valgtVar=='Opf0KomplOrgan') { #andelGrVar, andelTid
     #Kode 0: Nei, 1:Ja
     RegData <- RegData[which(RegData$Opf0Komplikasjoner %in% 0:1), ]
-    RegData$Variabel <- RegData$Opf0KomplOrgan
+    RegData$Variabel[RegData$Opf0KomplOrgan==1] <- 1 #RegData$Opf0KomplOrgan
 	varTxt <- 'organskader'
     tittel <- 'Postop. komplikasjon: Organskade'
   }
@@ -280,13 +280,15 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
   if (valgtVar == 'OpBehNivaa') {   #Andeler, AndelGrVar, AndelTid
 #  if (valgtVar == 'OpDagkirurgi') {   #Andeler, AndelGrVar, AndelTid #0: Nei, 1: Ja Manglende:Ukjent
    #1-Poliklinisk, 2-Dagkirurgi, 3-Inneliggende
-    tittel <- 'Behandlingsnivå' # 'Dagkirurgiske Inngrep'
+    tittel <-  'Behandlingsnivå' # 'Dagkirurgiske Inngrep'
+    if (figurtype %in% c('andelGrVar','andelTid')) {tittel <- 'Dagkirurgiske Inngrep'}
     grtxt <-c('Poliklinisk', 'Dagkirurgi', 'Innlagt')  # c('Nei', 'Ja')
     koder <- 1:3
     RegData <- RegData[which(RegData$OpBehNivaa %in% koder), ]
     RegData$VariabelGr <- factor(RegData$OpBehNivaa, levels=koder, labels = grtxt) #levels=c(nivaa,9)
     varTxt <- 'dagkirurgiske inngrep'
     RegData$Variabel[RegData$OpBehNivaa ==2] <- 1
+
   }
   if (valgtVar == 'OpIVaktTid') {   #Andeler
     #0: Nei, 1: Ja Manglende:Ukjent
