@@ -131,6 +131,7 @@ NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = Sys.Date(), medPROM
     -- OpBMIKategori,  ikke i bruk
     -- OpDagkirurgi,
     OpDato,
+    OpForstLukket,
     Opf0BesvarteProm,   -- ny jan.-2022
     Opf0metode,
     OpIVaktTid,

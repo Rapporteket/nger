@@ -432,9 +432,9 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
     }
   }
   if (valgtVar == 'RegForsinkelse') {  #Andeler, GjsnGrVar
-    #Leveringsdato vil oppdateres ved reåpning og kan derfor ikke brukes. mars19: Toril mener den er pålitelig nok
-    #Verdier: 0-3402
-    RegData$Diff <- as.numeric(as.Date(RegData$Leveringsdato) - as.Date(RegData$InnDato)) #difftime(RegData$InnDato, RegData$Leveringsdato) #
+    #Leveringsdato vil oppdateres ved reåpning og kan derfor ikke brukes. mars19: Toril mener den er pålitelig nok.
+    #17.nov-23: Endrer til OpForstLukket
+    RegData$Diff <- as.numeric(as.Date(RegData$OpForstLukket) - as.Date(RegData$InnDato)) #difftime(RegData$InnDato, RegData$Leveringsdato) #
     RegData <- RegData[which(RegData$Diff > -1), ]
     tittel <- switch(figurtype,
                      andeler='Tid fra operasjon til ferdigstilt registrering',
@@ -918,10 +918,12 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
                   'HysKomplPerf', # 'HysPerforasjon',
                 #  'HysSkadeaarsakTeknUtst', # 'HysTeknisk',
                   'HysKomplVaeske', # 'HysFluidOverload'
-                  'HysKomplBlodn' # 'HysBlodning',
+                  'HysKomplBlodn',  # 'HysBlodning',
+                'HysKomplViaFalsa',
+                'HysKomplGass'
                   )
     grtxt <- c('Annet', 'Perforasjon', # 'Teknisk/utstyr',
-               'Væske', 'Blødning')
+               'Væske', 'Blødning', 'Via falsa[14/11-23]', 'Gassemboli[14/11-23]')
     tittel <- 'Intraoperative komplikasjoner ved hysteroskopi'
     RegData <- RegData[RegData$HysKomplikasjoner %in% 0:1,]	#Velger ikke ut på OpMetode=2 siden ønsker også de som har begge
   }
@@ -929,7 +931,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
   if (valgtVar=='HysSkadeaarsakIntra') {
     #Hysteroskopi intrapoerative komplikasjoner:
     # Innført 14.nov 2023
-    RegData <- RegData[which(as.Date(RegData$Leveringsdato) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
+    RegData <- RegData[which(as.Date(RegData$OpForstLukket) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
     flerevar <- 1
     variable <- c('HysSkadeaarsakStenose', 'HysSkadeaarsakAd', 'HysSkadeaarsakTeknUtst',
                   'HysSkadeaarsakAnatomi', 'HysSkadeaarsakAnnet')
@@ -1024,6 +1026,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
 
     retn <- 'H'
     variable <- c('LapAdherProfylakse',
+                  'LapHemastase',
                   'LapBipolarDiatermi',
                   'LapClips',
                   # 'LapHarmonicS', fjernet nov23
@@ -1040,14 +1043,14 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
                   # 'LapIntKoagOgKlipp', fjernet nov23
                   'LapUnipolarDiatermi',
                   'LapVevforsegl', 'LapOptTro', 'LapPrepOppdel')
-    grtxt <- c('Hemostasemiddel', 'Bipolar Diatermi', 'Clips', # 'Ultralyd skalpell',
+    grtxt <- c('Adh.profylakse', 'Hemostasemiddel\n[14/11-23]', 'Bipolar Diatermi', 'Clips', # 'Ultralyd skalpell',
                # 'Morc. u/pose [1/3-16]',  'Morc. m/pose [1/3-16]' - fjernet, #Slås sammen
                'Morcellator',
                'Nett', 'Preparatpose', 'Uterusmanipulator', 'Robot', 'Singel port',
                'Stapler', 'Sutur', # 'Bipolar og ultralyd', 'Bipolar koag. og klipping',
-               'Unipolar Diatermi', 'Intl.vevsforsegler', 'Optisk trokar', 'Oppd. av preparat')
+               'Unipolar Diatermi', 'Intl.vevsforsegler', 'Optisk trokar', 'Oppd. av preparat\n[14/11-23]')
     cexgr <- 0.8
-    tittel <- 'Laparaskopisk ekstrautstyr'
+    tittel <- 'Laparaskopisk utstyr benyttet'
     RegData <- RegData[RegData$OpMetode %in% c(1,3), ]
     #indInnfDato <- which(as.Date(RegData$HovedDato) >= as.Date('2016-03-01'))
     #varInnfind <- which(variable %in% c('LapMorcellatorUtenPose', 'LapMorcellatorMedPose'))
@@ -1068,7 +1071,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData <- RegData[RegData$LapKomplikasjoner %in% 0:1, ]	#
   }
   if (valgtVar== 'LapSkadeIntra') { #
-    RegData <- RegData[which(as.Date(RegData$Leveringsdato) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
+    RegData <- RegData[which(as.Date(RegData$OpForstLukket) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
     flerevar <- 1
     variable <- c('LapSkadeTilgang', 'LapSkadeUthent', 'LapSkadeDissek',
                   'LapSkadeForsegl', 'LapSkadeAnnet')
@@ -1078,7 +1081,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
   }
 
   if (valgtVar=='LapSkadeaarsakIntra') {
-    RegData <- RegData[which(as.Date(RegData$Leveringsdato) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
+    RegData <- RegData[which(as.Date(RegData$OpForstLukket) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
     flerevar <- 1
     variable <- c('LapSkadeaarsakTeknUtst', 'LapSkadeaarsakAdher', 'LapSkadeaarsakTidlKir',
                   'LapSkadeaarsakAnnet')
@@ -1099,7 +1102,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     # grtxt <- c(paste0('Metode: \n', c('Åpent', 'Veress-nål', 'Visiport [1/1-20]','Annet')),
     #            paste0('Tilgang: \n', c('Palmers point[1/3-16]', 'Navlen[1/3-16]', 'Annet[1/2-22]'))) #LapTilgangsMetode
     grtxt <- c(paste0('Metode: \n', c('Åpent', 'Veress-nål', 'Direkte',  'Optisk trokar [1/1-20]')),
-              paste0('Tilgang: \n', c('Palmers point[1/3-16]', 'Navlen[1/3-16]','Vaginalt[14/11-23]', 'Annet[1/2-22]'))) #LapTilgangsMetode
+              paste0('Tilgang: \n', c('Palmers point[1/3-16]', 'Navlen[1/3-16]','Vaginalt[14/11-23]', 'Annet[14/11-23]'))) #LapTilgangsMetode
     indMar16tilg <- which(as.Date(RegData$HovedDato)>='2016-03-01')
     indMet <- which(RegData$LapTilgangsMetode %in% 0:2) #c(0:2,9)
     indTilg <- which(RegData$LapTilgang %in% c(1:3,9)) # 1:2,9
@@ -1122,7 +1125,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     ind1tilg <- cbind(ind01tilg, RegData$LapTilgang[ind01tilg]) #Verdi 1,2,9 endret til 1,2,3,9
     ind1tilg[ind1tilg[,2]==9,2] <- 4
 
-    RegData[ ,variable] <- NA
+    RegData[ ,variable[-4]] <- NA
     RegData[ ,variable[1:3]] <- 0
     RegData[ ,variable[1:3]][ind1met] <- 1 #OK
     RegData[ind01tilg ,variable[5:8]] <- 0
