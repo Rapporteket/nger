@@ -1,4 +1,3 @@
-
 #--------------------------------Data og parametrekobling--------------------------
 # Inndata til funksjon:
 library(nger)
@@ -299,7 +298,7 @@ write.table(tab, file="TabPasienkarakteristika.csv", row.names=F, sep=';')
 #KomplIntra, KomplPostop, KomplPostopAlvor
 #OpMetode  1: Laparoskopi #2: Hysteroskopi, 2019: 5954 3146
 library(nger)
-setwd('/home/rstudio/Aarsrappresultater/NETTsider' )
+setwd('/home/rstudio/speil/aarsrapp/NGER' )
 RegData <- NGERPreprosess(RegData = NGERRegDataSQL(datoFra = '2016-01-01'))
                                                    #,datoTil = '2022-12-31'))
 lastNedFil <- 0
@@ -341,7 +340,6 @@ dataTilSKDE <- dataTilOffVisning(RegData=RegData,
 dataTilSKDE_Flere <- rbind(dataTilSKDE_Flere, dataTilSKDE)
 
 sum(is.na(dataTilSKDE_Flere$orgnr))
-write.table(dataTilSKDE_Flere, file = 'NGERdataTilSKDE_Flere.csv', sep = ';', row.names = F)
+write.table(dataTilSKDE_Flere, file = 'dataTilSKDE_Flere.csv', sep = ';', row.names = F)
 
-#table(dataTilSKDE_Flere[dataTilSKDE_Flere$ind_id == 'nger_pasient_tilfredshet', c('year', "orgnr")])
 #tapply(dataTilSKDE$var, dataTilSKDE$year, FUN='mean')*100

@@ -146,7 +146,10 @@ if (velgDiag !=0) {
   indHastegrad <- if (Hastegrad[1] %in% 1:3) {which(RegData$OpKategori %in% as.numeric(Hastegrad))
                   } else {indHastegrad <- 1:Ninn}
   #Dagkirurgi 0-nei, 1-ja
-  indDagkir <- if (dagkir %in% 0:1) {which(RegData$OpDagkirurgi == as.numeric(dagkir))
+  indDagkir <- if (dagkir %in% 0:1) {
+    if (dagkir==0) {which(RegData$OpBehNivaa != 2)}
+      if (dagkir==1) {which(RegData$OpBehNivaa == 2)}
+    #indDagkir <- if (dagkir %in% 0:1) {which(RegData$OpDagkirurgi == as.numeric(dagkir))
   } else {indDagkir <- 1:Ninn}
 
 

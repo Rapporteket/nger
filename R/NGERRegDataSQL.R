@@ -16,12 +16,14 @@ NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = Sys.Date(), medPROM
     rapbase::repLogger(session = list(...)[["session"]], msg = paste0('Hentet rådata'))
   }
 
+  #Flyttet til PROM-tabell? R1BesvarteProm,    -- ny jan.-2022
+  # Hvor har denne blitt av?? Tss2BesvarteProm -- ny jan.-2022
+
   query <- paste0('SELECT
-  HysBlodning,
-    HysFluidOverload,
+    -- HysBlodning, erstattet nov23
+    -- HysFluidOverload, erstattet nov23
     HysGjforingsGrad,
-    HysKomplikasjoner,
-    HysPerforasjon,
+    -- HysPerforasjon, erstattet nov23
     HysDiagnose1,
     HysDiagnose2,
     HysDiagnose3,
@@ -31,24 +33,44 @@ NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = Sys.Date(), medPROM
     HysProsedyre2,
     HysProsedyre3,
     HysStatus,
-    HysTeknisk,
-    HysTilgang,
+    -- HysTeknisk,
+    -- HysTilgang, fjernet nov23
+    OpBehNivaa, #Ny nov 23
+  HysUfullSmerte, #Ny nov 23
+  HysUfullMisGass, #Ny nov 23
+  HysUfullKompl, #Ny nov 23
+  HysUfullHoyVaeske, #Ny nov 23
+  HysKomplViaFalsa, #Ny nov 23
+  HysKomplVaeske, #Ny nov 23
+  HysKomplPerf, #Ny nov 23
+  HysKomplGass, #Ny nov 23
+  HysKomplBlodn, #Ny nov 23
+  HysKomplAnnet, #Ny nov 23
+  HysSkadeaarsakStenose, #Ny nov 23
+  HysSkadeaarsakAd, #Ny nov 23
+  HysSkadeaarsakTeknUtst, #Ny nov 23
+  HysSkadeaarsakAnatomi, #Ny nov 23
+  HysSkadeaarsakAnnet, #Ny nov 23
+  HysKomplTiltakTamp, #Ny nov 23
+  HysKomplTiltakAvbr, #Ny nov 23
+  HysKomplTiltakAnnet, #Ny nov 23
+  HysKomplTiltakIngen, #Ny nov 23
     Konverteringsstatus,
     LapAdherProfylakse,
     LapBipolarDiatermi,
     LapBlare,
     LapClips,
-    LapHarmonicS,
+    -- LapHarmonicS, fjernet nov 23
     LapHjelpeinnstikk,
-    LapIntKoagOgKlipp,
-    LapIntKombo,
-    LapIntraabdominell,
+    -- LapIntKoagOgKlipp, fjernet nov 23
+    -- LapIntKombo, fjernet nov 23
+    -- LapIntraabdominell, fjernet nov23
     LapKarBlodning,
     LapKomplikasjoner,
     LapKompTilgang,
     LapKonvertert,
-    -- LapMorcellator ERSTATTET
-    LapMorcellatorMedPose,
+    -- LapMorcellator ERSTATTET når?
+    -- LapMorcellatorMedPose, fjeret nov 23
     LapMorcellatorUtenPose,
     LapNerv,
     LapNett,
@@ -57,11 +79,25 @@ NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = Sys.Date(), medPROM
     LapDiagnose2,
     LapDiagnose3,
     LapKonvertert,
-    -- LapPlasmajet, Fjernet
+    LapKomplKar, #Ny nov 23
+  LapKomplTarm, #Ny nov 23
+  LapKomplBlaere, #Ny nov 23
+  LapKomplUreter, #Ny nov 23
+  LapKomplAnnet, #Ny nov 23
+  LapSkadeTilgang, #Ny nov 23
+  LapSkadeUthent, #Ny nov 23
+  LapSkadeDissek, #Ny nov 23
+  LapSkadeForsegl, #Ny nov 23
+  LapSkadeAnnet, #Ny nov 23
+  LapSkadeaarsakTeknUtst, #Ny nov 23
+  LapSkadeaarsakAdher, #Ny nov 23
+  LapSkadeaarsakTidlKir, #Ny nov 23
+  LapSkadeaarsakAnnet, #Ny nov 23
+    -- LapPlasmajet, Fjernet 2022
     LapProsedyre1,
     LapProsedyre2,
     LapProsedyre3,
-    LapPostoperativ,
+    -- LapPostoperativ, # Fjernet nov 23
     LapPreparatopose,
     LapRobotKirurgi,
     LapSingelPort,
@@ -74,16 +110,28 @@ NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = Sys.Date(), medPROM
     LapTilgangsMetode,
     LapUnipolarDiatermi,
     LapUreter,
-    LapUterusmanipulator,
+    -- LapUterusmanipulator, # Fjernet nov 23
+    LapVevforsegl,  # = LapHarmonicS+LapIntKombo+LapIntKoagOgKlipp, Ny nov23
+    LapAndre, #Ny nov 23
+    LapHemastase, #Ny nov 23
+    LapOptTro, #Ny nov 23
+    LapPrepOppdel, #Ny nov 23
+    LapUterusman, #Ny nov 23
     Leveringsdato,
-    Blodfortynnende,
-    OpAnestesi,
+    -- Blodfortynnende, fjernet nov 23
+    -- OpAnestesi, fjernet nov 23
+    OpAnestesiIngen, #ny nov23
+    OpAnestesiLok, #ny nov23
+    OpAnestesiGen, #ny nov23
+    OpAnestesiSpinEDA, #ny nov23
+    OpAnestesiSed, #ny nov23
     OpAntibProfylakse,
     OpASA,
     OpBMI,
-    OpBMIKategori,
-    OpDagkirurgi,
+    -- OpBMIKategori,  ikke i bruk
+    -- OpDagkirurgi,
     OpDato,
+    OpForstLukket,
     Opf0BesvarteProm,   -- ny jan.-2022
     Opf0metode,
     OpIVaktTid,
@@ -97,32 +145,9 @@ NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = Sys.Date(), medPROM
     OpTidlLapsko,
     OpTidlVagInngrep,
     OpType,
-    -- R0Metode,
-    -- R0ScorePhys,
-    -- R0ScoreRoleLmtPhy,
-    -- R0ScorePain,
-    -- R0ScoreGeneral,
-    -- R0ScoreEnergy,
-    -- R0ScoreSosial,
-    -- R0ScoreRoleLmtEmo,
-    -- R0ScoreEmo,
-    -- R0Spm2,
-    -- R0Status,
-    -- RY1metode,
-    R1BesvarteProm,    -- ny jan.-2022
-    -- R1ScorePhys,
-    -- R1ScoreRoleLmtPhy,
-    -- R1ScorePain,
-    -- R1ScoreGeneral,
-    -- R1ScoreEnergy,
-    -- R1ScoreSosial,
-    -- R1ScoreRoleLmtEmo,
-    -- R1ScoreEmo,
-    -- R1Spm2,
-    -- RY1Status,
     Tss2Behandling,
     Tss2Behandlere,
-    Tss2BesvarteProm,  -- ny jan.-2022
+    -- Tss2BesvarteProm,  -- ny jan.-2022
     Tss2Enighet,
     Tss2Generelt,
     Tss2Lytte,
@@ -179,18 +204,20 @@ NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = Sys.Date(), medPROM
   #     INNER JOIN ForlopsOversikt
   #     ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID'
 
-  #Data_AWN <- rapbase::loadRegData(registryName = "nger", query_AWN, dbType = "mysql")
-  #Data_Forl <- rapbase::loadRegData(registryName = "nger", query_Forl, dbType = "mysql")
-  RegData <- rapbase::loadRegData(registryName = "nger", query, dbType = "mysql")
+  #Data_AWN <- rapbase::loadRegData(registryName = "nger", query='select * FROM AlleVarNum', dbType = "mysql")
+  #Data_Forl <- rapbase::loadRegData(registryName = "nger", query='select * FROM ForlopsOversikt', dbType = "mysql")
+  RegData <- rapbase::loadRegData(registryName = "nger", query=query, dbType = "mysql")
 
 
   if (medPROM==1) {
+
     #Sjekk ved å sammenligne R0 og R1-variabler fra AllevARnUM OG rand36-TABELL
-    R0var <- grep(pattern='R0', x=sort(names(RegData)), value = TRUE, fixed = TRUE)
-    R1var <- grep(pattern='R1', x=sort(names(RegData)), value = TRUE, fixed = TRUE)
-    if (length(c(R0var, R1var)) >0) {
-      AlleVarNum <- RegData[, -which(names(RegData) %in% c(R0var, R1var))]
-    }
+    #UTGÅR siden RAND-variabler nå er fjernet fra AlleVarNum
+    # R0var <- grep(pattern='R0', x=sort(names(RegData)), value = TRUE, fixed = TRUE)
+    # R1var <- grep(pattern='R1', x=sort(names(RegData)), value = TRUE, fixed = TRUE)
+    # if (length(c(R0var, R1var)) >0) {
+    #   RegDataUrand <- RegData[, -which(names(RegData) %in% c(R0var, R1var))]
+    # }
 
     queryRAND36 <- 'select * FROM Rand36Report'
     RAND36 <-  rapbase::loadRegData(registryName = "nger", queryRAND36, dbType = "mysql")
@@ -214,11 +241,36 @@ NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = Sys.Date(), medPROM
         values_from = all_of(c('Metode', Rvar_uR))
       )
 
-    RegData <- dplyr::left_join(AlleVarNum, RAND36w, by="ForlopsID")
+    RegData <- dplyr::left_join(RegData, RAND36w, by="ForlopsID")
   }
   #Testing
   # Rvar <- grep(pattern='R', x=sort(names(RegDataR)), value = TRUE, fixed = TRUE)
   # RegDataR <- RegDataR[,c("ForlopsID", Rvar)]
   # summary(RegDataR)
+# Flyttet fra AlleVarNum til Rand36Report i mai23
+#
+#   -- R0Metode,
+#   -- R0ScorePhys,
+#   -- R0ScoreRoleLmtPhy,
+#   -- R0ScorePain,
+#   -- R0ScoreGeneral,
+#   -- R0ScoreEnergy,
+#   -- R0ScoreSosial,
+#   -- R0ScoreRoleLmtEmo,
+#   -- R0ScoreEmo,
+#   -- R0Spm2,
+#   -- R0Status,
+#   -- RY1metode,
+#   -- R1ScorePhys,
+#   -- R1ScoreRoleLmtPhy,
+#   -- R1ScorePain,
+#   -- R1ScoreGeneral,
+#   -- R1ScoreEnergy,
+#   -- R1ScoreSosial,
+#   -- R1ScoreRoleLmtEmo,
+#   -- R1ScoreEmo,
+#   -- R1Spm2,
+#   -- RY1Status,
+
   return(invisible(RegData))
 }

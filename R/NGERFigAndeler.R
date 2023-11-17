@@ -26,7 +26,7 @@
 #'			  Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
 #'		 \item Opf0KomplInfeksjon: Type infeksjoner
 #'		 \item Opf0metode: Opfølgingsmetode
-#'     \item OpDagkirurgi: Dagkirurgiske inngrep
+#'     \item OpBehNivaa: Behandlingsnivå
 #'     \item OpIVaktTid: Operasjon i legens vakttid
 #'     \item OpKategori: Hastegrad av operasjon
 #'     \item OpMetode: Operasjonsmetode
@@ -73,7 +73,7 @@
 #'
 #' @export
 #'
-NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='2050-12-31', minald=0, maxald=130,
+NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil=Sys.Date(), minald=0, maxald=130,
                             outfile='', reshID=0, enhetsUtvalg=0, OpMetode=99, Hastegrad='', AlvorlighetKompl='',
                             velgAvd=0, velgDiag=0, hentData=0, preprosess=1,...)
 {
@@ -97,7 +97,7 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil='
   grtxt2 <- ''	#Spesifiseres evt. for hver enkelt variabel
   subtxt <- ''	#Benevning
   flerevar <- 0
-  antDes <- ifelse(valgtVar %in% c('HysKomplikasjoner', 'LapIntraabdominell', 'LapKomplikasjoner'),2, 1)
+  antDes <- ifelse(valgtVar %in% c('HysKomplikasjoner', 'LapKomplIntra', 'LapKomplikasjoner'),2, 1)
   '%i%' <- intersect
 
   if (!(valgtVar %in% c('Diagnoser', 'DiagnoseGr', 'Prosedyrer', 'ProsedyreGr','ProsViktigLap', 'ProsViktigHys'))) {

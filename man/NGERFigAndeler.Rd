@@ -8,7 +8,7 @@ NGERFigAndeler(
   RegData = 0,
   valgtVar,
   datoFra = "2013-01-01",
-  datoTil = "2050-12-31",
+  datoTil = Sys.Date(),
   minald = 0,
   maxald = 130,
   outfile = "",
@@ -117,7 +117,7 @@ Argumentet \emph{valgtVar} har følgende valgmuligheter:
 		  Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
 	 \item Opf0KomplInfeksjon: Type infeksjoner
 	 \item Opf0metode: Opfølgingsmetode
-    \item OpDagkirurgi: Dagkirurgiske inngrep
+    \item OpBehNivaa: Behandlingsnivå
     \item OpIVaktTid: Operasjon i legens vakttid
     \item OpKategori: Hastegrad av operasjon
     \item OpMetode: Operasjonsmetode

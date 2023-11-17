@@ -5,6 +5,10 @@ kodebok_kategorier = klokebok %>% filter(type == 'Listevariabel')
 
 #"Opf0UtstyrInstrumenter", "Opf0UtstyrNett" og "Opf0UtstyrSutur"
 
+#---------Teste ny versjon av registeret, nov. 2023
+
+RegData <- NGERRegDataSQL()
+
 
 #--------------------------------------SamleRAPPORTER-----------------------------------
 TEST
@@ -172,11 +176,15 @@ tapply(RegDatatest$R0Spm9d, RegDatatest$Aar, FUN = function(x){sum(!is.na(x))})
 tapply(RegDatatest$RY1Spm4c, RegDatatest$Aar, FUN = function(x){sum(!is.na(x))})
 
 #------------------------------ Andeler flere var (tilsvarer Fordelinger)--------------------------
-
-valgtVar <- 'Alder'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid, Tss2Sumskaar
+library(nger)
+RegData <- NGERPreprosess(NGERRegDataSQL()) #datoFra = '2020-01-01')
+NGERFigAndeler(RegData=RegData, preprosess = 0, valgtVar = 'LapSkadeaarsakIntra', Ngrense=0, enhetsUtvalg = 0) #datoFra = '2020-01-01',
+valgtVar <- 'LapSkadeIntra'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid, Tss2Sumskaar
 
 outfile <- '' #paste0(valgtVar, '_ford.png')
 enhetsUtvalg <- 1
+test <- RegData[,c("OpAnestesiIngen")]
+#,   "OpAnestesiLok" ,    "OpAnestesiGen"  ,   "OpAnestesiSpinEDA", "OpAnestesiSed"
 
 
 UtDataFraFig <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
@@ -331,7 +339,7 @@ table(RegData$Opf0Status[ind], useNA = 'a')
 table(RegData$Opf0metode[ind], useNA = 'a')
 
 
-#--------Data til Resultatportalen-----------------
+#--------Data til Resultatportalen/RapPortalen-----------------
 rm(list=ls())
 library(nger)
 setwd('P:/Registerinfo og historie/NGER/Resultatportalen')
