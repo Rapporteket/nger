@@ -906,7 +906,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
   if (valgtVar %in% c('Diagnoser', 'DiagnoseGr', 'KomplPostopType', 'KomplAlvorPostopType',
                       'HysKomplikasjoner', 'LapKomplikasjoner',
                       'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr',
-                      'LapKomplIntra', 'LapTeknikk', 'Prosedyrer', 'ProsedyreGr', #'LapIntraabdominell'
+                      'LapKomplIntra', 'LapTeknikk', 'Prosedyrer', 'ProsedyreGr',
                       'ProsViktigLap', 'ProsViktigHys')){
     flerevar <- 1
     retn <- 'H'}
@@ -1058,20 +1058,16 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     #NVar <- rep(N, length(variable))
     #NVar[varByttind] <- length(indInnfDato)
   }
-  # if (valgtVar=='LapKomplikasjoner') {
-  #   #Laparoskopiske intrapoerative komplikasjoner:
-  #   #Andel komplikasjoner ved bruk av de ulike utstyrstypene? OK. Variablene angir komplikasjonsårsak.
-  #   variable <- c( # 'LapUterusman', #0,1
-  #                 'LapSkadeTilgang', # 'LapKompTilgang',	'LapHjelpeinnstikk', 'LapIntraabdominell',  #0,1
-  #                 'LapSkadeaarsakTeknUtst', # 'LapTekniskUtstyr' #0,1
-  #                 'LapSkadeUthent', 'LapSkadeDissek', 'LapSkadeForsegl', 'LapSkadeAnnet')
-  #   grtxt <- c('LapSkadeTilgang', # 'Uterusmanipulator - fjerne?', 'Tilgangsmetode', 'Hjelpeinnstikk', # 'Intraabdominal',
-  #              'Utstyr', 'Uthenting', 'Disseksjon', 'Forsegling', 'Annet')
-  #   cexgr <- 0.85
-  #   tittel <- 'Intraoperative skader ved laparoskopi, oppstått ved: '
-  #   RegData <- RegData[(RegData$LapKomplikasjoner == 1), ]
-  # }
-  if (valgtVar=='LapSkadeIntra') {
+  if (valgtVar=='LapKomplIntra') { #LapIntraab, LapIntraKomplSkade
+    #variableGML <- c('LapNerv', 'LapUreter', 'LapTarm', 'LapBlare', 'LapKarBlodning')
+    #grtxt <- c('Nerve', 'Ureter', 'Tarm', 'Blære', 'Kar')
+    flerevar <- 1
+    variable <- c('LapKomplAnnet', 'LapKomplUreter', 'LapKomplTarm', 'LapKomplBlaere', 'LapKomplKar')
+    grtxt <- c('Annet', 'Ureter', 'Tarm', 'Blære', 'Kar')
+    tittel <- 'Laparaskopiske intraoperative komplikasjoner' # 'Intraabdominelle komplikasjoner ved laparoskopi'
+    RegData <- RegData[RegData$LapKomplikasjoner %in% 0:1, ]	#
+  }
+  if (valgtVar== 'LapSkadeIntra') { #
     RegData <- RegData[which(as.Date(RegData$Leveringsdato) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
     flerevar <- 1
     variable <- c('LapSkadeTilgang', 'LapSkadeUthent', 'LapSkadeDissek',
@@ -1081,15 +1077,6 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData <- RegData[RegData$LapKomplikasjoner == 1,]
   }
 
-  if (valgtVar=='LapIntraKomplSkade') { #LapIntraab
-    #variableGML <- c('LapNerv', 'LapUreter', 'LapTarm', 'LapBlare', 'LapKarBlodning')
-    #grtxt <- c('Nerve', 'Ureter', 'Tarm', 'Blære', 'Kar')
-    flerevar <- 1
-    variable <- c('LapKomplAnnet', 'LapKomplUreter', 'LapKomplTarm', 'LapKomplBlaere', 'LapKomplKar')
-    grtxt <- c('Annet', 'Ureter', 'Tarm', 'Blære', 'Kar')
-    tittel <- 'Laparaskopiske intraoperative komplikasjoner' # 'Intraabdominelle komplikasjoner ved laparoskopi'
-    RegData <- RegData[RegData$LapKomplikasjoner %in% 0:1, ]	#
-  }
   if (valgtVar=='LapSkadeaarsakIntra') {
     RegData <- RegData[which(as.Date(RegData$Leveringsdato) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
     flerevar <- 1
