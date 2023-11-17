@@ -8,7 +8,7 @@ NGERFigAndeler(
   RegData = 0,
   valgtVar,
   datoFra = "2013-01-01",
-  datoTil = "2050-12-31",
+  datoTil = Sys.Date(),
   minald = 0,
   maxald = 130,
   outfile = "",
