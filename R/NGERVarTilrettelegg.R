@@ -89,6 +89,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
   }
   if (valgtVar == 'HysUfullAarsak') {   #Andeler, andelGrVar, andelTid
     RegData <- RegData[which(RegData$OpMetode %in% 2:3), ]
+    RegData <- RegData[which(RegData$HysGjforingsGrad ==2), ]
     variable <- c('HysUfullSmerte', 'HysUfullMisGass', 'HysUfullKompl', 'HysUfullHoyVaeske')
     flerevar <- 1
     tittel <- 'Årsak til ufullstendig hysteroskopi'
@@ -927,6 +928,8 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
 
   if (valgtVar=='HysSkadeaarsakIntra') {
     #Hysteroskopi intrapoerative komplikasjoner:
+    # Innført 14.nov 2023
+    RegData <- RegData[which(as.Date(RegData$Leveringsdato) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
     flerevar <- 1
     variable <- c('HysSkadeaarsakStenose', 'HysSkadeaarsakAd', 'HysSkadeaarsakTeknUtst',
                   'HysSkadeaarsakAnatomi', 'HysSkadeaarsakAnnet')
@@ -1069,6 +1072,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
   #   RegData <- RegData[(RegData$LapKomplikasjoner == 1), ]
   # }
   if (valgtVar=='LapSkadeIntra') {
+    RegData <- RegData[which(as.Date(RegData$Leveringsdato) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
     flerevar <- 1
     variable <- c('LapSkadeTilgang', 'LapSkadeUthent', 'LapSkadeDissek',
                   'LapSkadeForsegl', 'LapSkadeAnnet')
@@ -1082,17 +1086,18 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     #grtxt <- c('Nerve', 'Ureter', 'Tarm', 'Blære', 'Kar')
     flerevar <- 1
     variable <- c('LapKomplAnnet', 'LapKomplUreter', 'LapKomplTarm', 'LapKomplBlaere', 'LapKomplKar')
-    grtxt <- c('Annet', 'Ureter', 'Tarm', 'Blære', 'Forsegl. av kar')
-    tittel <- 'Laparaskopiske intraoperative organskader' # 'Intraabdominelle komplikasjoner ved laparoskopi'
+    grtxt <- c('Annet', 'Ureter', 'Tarm', 'Blære', 'Kar')
+    tittel <- 'Laparaskopiske intraoperative komplikasjoner' # 'Intraabdominelle komplikasjoner ved laparoskopi'
     RegData <- RegData[RegData$LapKomplikasjoner %in% 0:1, ]	#
   }
   if (valgtVar=='LapSkadeaarsakIntra') {
+    RegData <- RegData[which(as.Date(RegData$Leveringsdato) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
     flerevar <- 1
     variable <- c('LapSkadeaarsakTeknUtst', 'LapSkadeaarsakAdher', 'LapSkadeaarsakTidlKir',
                   'LapSkadeaarsakAnnet')
     grtxt <- c('Teknisk/utstyr', 'Adheranser','Tidl.kir.', 'Annet')
     tittel <- 'Medvirkende årsak til komplikasjon, laparoskopi'
-    RegData <- RegData[RegData$LapKomplikasjoner == 1,]
+    RegData <- RegData[RegData$LapKomplikasjoner == 1, ]
   }
 
   if (valgtVar == 'LapTeknikk') { #Tidl: LapTilgangsMetode
@@ -1106,7 +1111,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     tittel <- 'Etablering av pneumoperitoneum' # 'Laparoskopisk tilgang, teknikk og metode', 'Teknikk for laparaskopisk tilgang'
     # grtxt <- c(paste0('Metode: \n', c('Åpent', 'Veress-nål', 'Visiport [1/1-20]','Annet')),
     #            paste0('Tilgang: \n', c('Palmers point[1/3-16]', 'Navlen[1/3-16]', 'Annet[1/2-22]'))) #LapTilgangsMetode
-    grtxt <- c(paste0('Metode: \n', c('Åpent', 'Veress-nål', 'Direkte',  'Visiport [1/1-20]')),
+    grtxt <- c(paste0('Metode: \n', c('Åpent', 'Veress-nål', 'Direkte',  'Optisk trokar [1/1-20]')),
               paste0('Tilgang: \n', c('Palmers point[1/3-16]', 'Navlen[1/3-16]','Vaginalt[14/11-23]', 'Annet[1/2-22]'))) #LapTilgangsMetode
     indMar16tilg <- which(as.Date(RegData$HovedDato)>='2016-03-01')
     indMet <- which(RegData$LapTilgangsMetode %in% 0:2) #c(0:2,9)
