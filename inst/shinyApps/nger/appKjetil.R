@@ -21,6 +21,7 @@ if (paaServer) {
   SkjemaOversikt <- rapbase::loadRegData(registryName='nger',
                                          query=qSkjemaOversikt, dbType='mysql')
 }
+Sys.setenv(R_RAP_CONFIG_PATH='./data')
 
 tulledata <- 0
 if (!exists('RegData')) {
@@ -188,16 +189,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                              ),
                                              selectInput(inputId = 'diagnoseRegDump', label='Diagnose (kun datadump)',
                                                          choices = diag
-                                             ),
-                                             selectInput(inputId = 'alvorlighetKomplDump',
-                                                         label='Alvorlighetsgrad, postoperative komplikasjoner',
-                                                         multiple = T, #selected=0,
-                                                         choices = alvorKompl
-                                             ),
-
-                                             checkboxInput(inputId = 'IntraKomplDump',
-                                                           label = 'Intraoperativ komplikasjon?',
-                                                           value = FALSE)
+                                             )
                             )
                ),
 
@@ -214,15 +206,15 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                       )
                              ),
 
-                             tabPanel('Antall registrerte skjema',
-                                      h4("Tabellen viser antall registrerte skjema for valgt tidsperiode"),
-                                      p("Velg tidsperiode for operasjon i menyen til venstre"),
-                                      br(),
-                                      fluidRow(
-                                        tableOutput("tabAntSkjema")
-                                        ,downloadButton(outputId = 'lastNed_tabAntSkjema', label='Last ned')
-                                      )
-                             ),
+                             # tabPanel('Antall registrerte skjema',
+                             #          h4("Tabellen viser antall registrerte skjema for valgt tidsperiode"),
+                             #          p("Velg tidsperiode for operasjon i menyen til venstre"),
+                             #          br(),
+                             #          fluidRow(
+                             #            tableOutput("tabAntSkjema")
+                             #            ,downloadButton(outputId = 'lastNed_tabAntSkjema', label='Last ned')
+                             #          )
+                             # ),
                              tabPanel('Last ned egne data',
                                       h4("Gjør utvalg og last ned egne data"),
                                       p("Velg tidsperiode  og evt. operasjonsmetode i menyen til venstre"),
@@ -435,7 +427,7 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
                                     'TSS2, sp.5 Enighet om målsetning' = 'Tss2Enighet',
                                     'TSS2, sp.6 Generell oppfatning av avdelinga' = 'Tss2Generelt',
                                     'Utdanning' = 'Utdanning'
-                        ), selected = c('Registreringsforsinkelse' =  'RegForsinkelse'),
+                        ), selected = c('Registreringsforsinkelse' =  'RegForsinkelse')
                       ),
 
 
@@ -768,7 +760,7 @@ tabPanel(p("Abonnement",
              rapbase::autoReportUI("ngerAbb")
            )
          )
-), #tab abonnement
+) #tab abonnement
 
 
 #--------slutt tab'er----------
@@ -877,15 +869,15 @@ server <- function(input, output, session) {
 
 
        #RegData som har tilknyttede skjema av ulik type
-       AntSkjemaAvHver <- tabAntSkjema(RegData=RegData,
-                                       datoFra = input$datovalgReg[1],
-                                       datoTil=input$datovalgReg[2])
-       output$tabAntSkjema <- renderTable(AntSkjemaAvHver
-                                          ,rownames = T, digits=0, spacing="xs" )
-       output$lastNed_tabAntSkjema <- downloadHandler(
-         filename = function(){'tabAntSkjema.csv'},
-         content = function(file, filename){write.csv2(AntSkjemaAvHver, file, row.names = T, na = '')
-         })
+       # AntSkjemaAvHver <- tabAntSkjema(RegData=RegData,
+       #                                 datoFra = input$datovalgReg[1],
+       #                                 datoTil=input$datovalgReg[2])
+       # output$tabAntSkjema <- renderTable(AntSkjemaAvHver
+       #                                    ,rownames = T, digits=0, spacing="xs" )
+       # output$lastNed_tabAntSkjema <- downloadHandler(
+       #   filename = function(){'tabAntSkjema.csv'},
+       #   content = function(file, filename){write.csv2(AntSkjemaAvHver, file, row.names = T, na = '')
+       #   })
      })
 
       # Hente oversikt over hvilke registrereinger som er gjort (opdato og fødselsdato)
@@ -914,22 +906,17 @@ server <- function(input, output, session) {
       #                  "R0ScorePhys", "R0ScoreRoleLmtEmo", "R0ScoreRoleLmtPhy", "R0ScoreSosial",
       #                  "R0Spm2", "R0Status", "Tss2Behandlere", "Tss2Behandling", "Tss2Enighet",
       #                  "Tss2Generelt", "Tss2Lytte", "Tss2Mott", "Tss2Status", "Tss2Type")
-      qAlle <- 'SELECT * FROM AlleVarNum
-               INNER JOIN ForlopsOversikt
-               ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID'
-      RegDataAlle <- rapbase::loadRegData(registryName = "nger", query=qAlle, dbType = "mysql")
-      RegDataAlle <- NGERPreprosess(RegDataAlle)
+      # qAlle <- 'SELECT * FROM AlleVarNum
+      #          INNER JOIN ForlopsOversikt
+      #          ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID'
+      # RegDataAlle <- rapbase::loadRegData(registryName = "nger", query=qAlle, dbType = "mysql")
+      # RegDataAlle <- NGERPreprosess(RegDataAlle)
       observe({
-        DataDump <- NGERUtvalgEnh(RegData = RegDataAlle,
-                                  datoFra = input$datovalgReg[1],
-                                  datoTil = input$datovalgReg[2],
-                                  OpMetode = as.numeric(input$opMetodeRegDump),
-                                  velgDiag = as.numeric(input$diagnoseRegDump),
-                                  AlvorlighetKompl = as.numeric(input$alvorlighetKomplDump))$RegData
-        if (input$IntraKomplDump == TRUE) {
-          indIntraKompl <- which((DataDump$LapKomplikasjoner==1) | (DataDump$HysKomplikasjoner==1))
-          DataDump <- DataDump[indIntraKompl, ]}
-
+        DataDump <- NGERUtvalgEnh(RegData = RegData,
+                                   datoFra = input$datovalgReg[1],
+                                   datoTil = input$datovalgReg[2],
+                                   OpMetode = as.numeric(input$opMetodeRegDump),
+                                  velgDiag = as.numeric(input$diagnoseRegDump))$RegData
          if (rolle =='SC') {
           valgtResh <- as.numeric(input$velgReshReg)
           ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
@@ -1382,7 +1369,7 @@ output$lastNed_dataDump <- downloadHandler(
                   )}) #, align='center'
 
             tabGjsnGrVar <- cbind(Antall = UtDataGjsnGrVar$Ngr$Hoved,
-                                  Sentralmål = UtDataGjsnGrVar$AggVerdier$Hoved)
+                                  Sentralmaal = UtDataGjsnGrVar$AggVerdier$Hoved)
             colnames(tabGjsnGrVar)[2] <- ifelse(input$sentralmaal == 'Med', 'Median', 'Gjennomsnitt')
 
             output$gjsnGrVarTab <- function() {

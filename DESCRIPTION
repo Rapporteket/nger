@@ -8,7 +8,7 @@ Authors@R: c(person("Olsen", "Lena", email = "Lena.Ringstad.Olsen@unn.no",
 Maintainer: Lena Ringstad Olsen <lena.olsen@skde.no>
 Description: Pakke for generering av resultatrapporter for NGER.
 Encoding: UTF-8
-LazyData: false
+LazyData: TRUE
 Depends:
     R (>= 3.5.0)
 Remotes: 
