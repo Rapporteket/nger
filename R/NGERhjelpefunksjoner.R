@@ -162,12 +162,13 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, aggData=0,
   #ReshId	orgnr	RapporteketNavn	SKDEnavn
   nyID <- c('108172' = '974706490',		#Ahus	AHUS NORDBYHAGEN SOMATIKK	Ahus
             '107511' = '943545634',		#Aleris Frogner
-            '4212372' = '981541499',  #Aleris Majorstuen - MANGLER, må legges inn. Foreløpig lagt inn som bare Aleris
+            '4212372' = '981541499',  #Aleris Majorstuen - MANGLER, må legges inn. Foreløpig lagt inn som bare Aleris - sjekk
+            '4211880' = '974518821', #Aleris Nesttun
             '103719' = '974631091',		#Arendal	SØRLANDET SYKEHUS HF SOMATIKK ARENDAL	Arendal
             '106843' = '922748144',		#Betanien	BETANIEN SYKEHUS AS	Betanien
             '706220' = '974795361',		#Bodø	NORDLANDSSYKEHUSET HF SOMATIKK - BODØ	Bodø
             '104736' = '974705788',		#Bærum	VESTRE VIKEN HF BÆRUM SYKEHUS - SOMATIKK	Bærum
-            '4211286' = '812794922',  #C-Medical Colloseum - C-MEDICAL AS
+            '4211285' = '812794922',  #C-Medical Colloseum - C-MEDICAL AS, tidl. resh 4211286
             '700404' = '974707152',		#DNR	OSLO UNIVERSITETSSYKEHUS HF RADIUMHOSPITALET - SOMATIKK	Radiumhospitalet
             '103298' = 	'974631326',		#Drammen	VESTRE VIKEN HF DRAMMEN SYKEHUS - SOMATIKK	Drammen
             '108768' = 	'974631768',		#Elverum	SYKEHUSET INNLANDET HF ELVERUM - SOMATIKK	Elverum
