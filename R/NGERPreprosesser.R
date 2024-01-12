@@ -48,12 +48,17 @@ NGERPreprosess <- function(RegData=RegData)
   names(RegData)[which(names(RegData)=='AvdRESH')] <- 'ReshId' #Change var name
   names(RegData)[which(names(RegData)=='PasientAlder')] <- 'Alder' #Change var name
   RegData$SykehusNavn <- trimws(as.character(RegData$SykehusNavn)) #Fjerner mellomrom (før) og etter navn
+  RegData$ShNavn <- trimws(as.character(RegData$SykehusNavn)) #Fjerner mellomrom (før) og etter navn
   names(RegData)[which(names(RegData)=='SykehusNavn')] <- 'ShNavn' #Change var name
 
   #108698 (Kongsvinger Innland) endres til Kongsvinger 4215373
   ind <- which(RegData$ReshId == 108698)
   RegData$ShNavn[ind] <- RegData$ShNavn[match(4215373, RegData$ReshId)] #which(RegData$ReshId==4215373)][1]
   RegData$ReshId[ind] <- 4215373
+
+  #Tomme sykehusnavn får resh som navn:
+  indTom <- which(is.na(RegData$ShNavn) | RegData$ShNavn == '')
+  RegData$ShNavn[indTom] <- RegData$ReshId[indTom]
 
 
 
