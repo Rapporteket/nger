@@ -161,9 +161,10 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, aggData=0,
   #Legge på orgID
   #ReshId	orgnr	RapporteketNavn	SKDEnavn
   nyID <- c('108172' = '974706490',		#Ahus	AHUS NORDBYHAGEN SOMATIKK	Ahus
-            '107511' = '943545634',		#Aleris Frogner
+            '107511' = '975787419',		#Aleris Frogner 975 787 419
             '4212372' = '981541499',  #Aleris Majorstuen - MANGLER, må legges inn. Foreløpig lagt inn som bare Aleris - sjekk
             '4211880' = '974518821', #Aleris Nesttun
+            '4209824' = '983896383', #Aleris Sykehus Stavanger 983 896 383
             '103719' = '974631091',		#Arendal	SØRLANDET SYKEHUS HF SOMATIKK ARENDAL	Arendal
             '106843' = '922748144',		#Betanien	BETANIEN SYKEHUS AS	Betanien
             '706220' = '974795361',		#Bodø	NORDLANDSSYKEHUSET HF SOMATIKK - BODØ	Bodø
