@@ -35,8 +35,9 @@ setwd('~/Aarsrappresultater/NGER' ) #"P:/Registerinfo og historie/NGER/aarsrapp/
 
 #Fjernet, 2021: 'Diagnoser','KomplPostopType', 'LapEkstrautstyr', 'Prosedyrer',
 variabler <- c('OpBMI', 'HysGjforingsGrad','HysKomplikasjoner',
-              'LapIntraabdominell', 'LapKomplikasjoner', 'LapTeknikk',
+              'LapIntraabdominell','LapKomplIntra', 'LapTeknikk',
               'Opf0AlvorlighetsGrad', 'RegForsinkelse', 'Tss2Generelt')
+#'LapKomplikasjoner'->'LapKomplIntra',
 
 for (valgtVar in variabler) {
 	outfile <- paste0(valgtVar, '_ford.pdf')
@@ -248,27 +249,6 @@ xtable::xtable(tab, align=c('l', rep('r',ncol(tab))), digits=0)
 #   geom_histogram(bins = 3) +
 #   facet_wrap(~ShNavn, ncol=5) +
 #   ggtitle("Eksempel")
-
-
-# Karakteristikker
-RegData <- NGERData
-NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra1aar,
-                         datoTil = datoTil, OpMetode = OpMetode, Hastegrad=Hastegrad)
-RegData <- NGERUtvalg$RegData
-
-
-TabPasKar <- NGERtabVI(RegData)
-cap <- "Gjennomsnittlig BMI, fødsler, graviditeter og knivtid for pasienter operert i 2018. Verdiene
-er gitt samlet for alle typer inngrep og splittet for laparoskopi,
-hysteroskopi og der begge prosedyrer er brukt. ."
-
-tab <- xtable::xtable(TabPasKar, align=c("l", "l", rep("r", ncol(TabPasKar)-1)),
-                      digits=c(0,0,rep(1, ncol(TabPasKar)-1)),
-                      caption=cap, label="tab:pasKarakteristika")
-
-
-print(tab, include.rownames=FALSE, sanitize.text.function = function(x){x})
-write.table(tab, file="TabPasienkarakteristika.csv", row.names=F, sep=';')
 
 
 
