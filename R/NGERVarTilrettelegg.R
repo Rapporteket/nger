@@ -55,7 +55,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
                      andelGrVar = 'Pasienter over 70 år',
                      andelTid = 'Pasienter over 70 år',
                      gjsnGrVar = 'alder ved operasjon',
-                     gjsnTid = 'alder ved operasjon')
+                     gjsnTid = 'Alder ved operasjon')
     gr <- c(0, seq(15, 80, 5), 120)
     RegData$VariabelGr <- cut(RegData$Alder, breaks=gr, include.lowest=TRUE, right=FALSE)
     grtxt <- c('<15', levels(RegData$VariabelGr)[2:(length(gr)-2)], '80+')
@@ -63,7 +63,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
     xAkseTxt <- ' alder'
 	varTxt <- 'pasienter >=70år'
     RegData$Variabel[which(RegData$Alder >= 70)] <- 1
-    if (figurtype == 'gjsnGrVar') {
+    if (figurtype %in% c('gjsnGrVar', 'gjsnTid')) {
       RegData$Variabel <- RegData$Alder}
     retn <- 'V'
     sortAvtagende <- FALSE

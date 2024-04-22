@@ -39,7 +39,7 @@ NGERFigGjsnTid <- function(RegData, valgtVar='alder', datoFra='2011-01-01', dato
 
   #--------------- Definere variable ------------------------------
 
-  NGERVarSpes <- NGERVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype='gjsnGrVar')
+  NGERVarSpes <- NGERVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype='gjsnTid')
   RegData <- NGERVarSpes$RegData
 
 

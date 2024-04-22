@@ -6,8 +6,8 @@ datoFra <- '2019-01-01'
 rappAar <- 2023
 datoFra1aar <- paste0(rappAar, '-01-01')
 datoTil <- paste0(rappAar, '-12-31')
-datoFra1Yoppf <- paste0(rappAar-1, '-01-01')#'2020-01-01'
-datoTil1Yoppf <- paste0(rappAar-1, '-12-31') #'2020-12-31'
+datoFra1Yoppf <- paste0(rappAar-1, '-01-01')
+datoTil1Yoppf <- paste0(rappAar-1, '-12-31')
 
 NGERData <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil))
 NGERData1aar <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra1aar, datoTil = datoTil))
@@ -36,8 +36,10 @@ setwd('~/Aarsrappresultater/NGER' ) #"P:/Registerinfo og historie/NGER/aarsrapp/
 #Fjernet, 2021: 'Diagnoser','KomplPostopType', 'LapEkstrautstyr', 'Prosedyrer',
 variabler <- c('OpBMI', 'HysGjforingsGrad','HysKomplikasjoner',
               'LapIntraabdominell','LapKomplIntra', 'LapTeknikk',
-              'Opf0AlvorlighetsGrad', 'RegForsinkelse', 'Tss2Generelt')
-#'LapKomplikasjoner'->'LapKomplIntra',
+              'Opf0AlvorlighetsGrad', 'ProsViktigLap', 'ProsViktigHys',
+              'RegForsinkelse', 'Tss2Generelt')
+# 'LapKomplikasjoner'->'LapKomplIntra',
+variabler <-c('ProsViktigLap', 'ProsViktigHys')
 
 for (valgtVar in variabler) {
 	outfile <- paste0(valgtVar, '_ford.pdf')
@@ -197,11 +199,12 @@ for (valgtVar in variabler) {
 #------------------------------ Sentralmål per sykehus --------------------------
 
 #'TSS2, sumskår' = 'Tss2Sumskaar'
-for (valgtVar in c('Tss2Sumskaar')) {
-  outfile <- paste0(valgtVar, '_' ,'ShGjsn.pdf')
-  NGERFigGjsnGrVar(RegData=NGERData, preprosess = 0, valgtVar=valgtVar, datoFra=datoFra1aar,
+for (valgtVar in c('Alder', 'OpBMI', 'Tss2Sumskaar')) {
+  outfile <- paste0(valgtVar, '_GjsnSh.pdf')
+  NGERFigGjsnGrVar(RegData=NGERData1aar, preprosess = 0, valgtVar=valgtVar,
                       outfile=outfile)
 }
+
 
 for (OpMetode in c(1,2,4)) {
   outfile <- paste0('OpTid_', c('Lap','Hyst','', 'TLH')[OpMetode] ,'ShGjsn.pdf')
@@ -225,19 +228,28 @@ NGERFigKvalInd(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar, outfile=ou
               'ScoreEnergy',	'ScoreEmo', 'ScoreSosial',
               'ScorePain',	'ScoreGeneral')
  #valgtVar='ScoreRoleLmtPhy'
- NGERData <- NGERPreprosess(NGERRegDataSQL())
+
  for (valgtVar in RANDvar) {
  NGERFigPrePost(RegData=NGERData, valgtVar=valgtVar,
-                datoFra='2018-01-01', datoTil=Sys.Date(),
+                datoFra='2019-01-01', datoTil='2020-12-31',
                 outfile=paste0(valgtVar,'_0_1_3.pdf'))
  }
 
 
  NGERFigPrePost(RegData=NGERData, valgtVar='AlleRANDdim',
-                datoFra='2018-01-01', datoTil=Sys.Date(),
+                datoFra='2019-01-01', datoTil='2020-12-31',
                 outfile='RANDdim_0_1_3.pdf')
 
-#------------------------------Tabeller-----------------------------------
+ #------------------------------ Sentralmål / år --------------------------
+
+ for (valgtVar in c('Alder', 'OpBMI')) {
+   outfile <- paste0(valgtVar, '_GjsnAar.pdf')
+   NGERFigGjsnTid(RegData = NGERData, preprosess=0, valgtVar=valgtVar,
+                            tidsenhet='Aar', outfile=outfile)
+   }
+
+
+#------------------------------ TABELLER -----------------------------------
 library(xtable)
 library(nger)
 RegData <- NGERData
