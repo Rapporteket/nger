@@ -60,6 +60,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
     RegData$VariabelGr <- cut(RegData$Alder, breaks=gr, include.lowest=TRUE, right=FALSE)
     grtxt <- c('<15', levels(RegData$VariabelGr)[2:(length(gr)-2)], '80+')
     subtxt <- 'Aldersgrupper (år)'
+    xAkseTxt <- ' alder'
 	varTxt <- 'pasienter >=70år'
     RegData$Variabel[which(RegData$Alder >= 70)] <- 1
     if (figurtype == 'gjsnGrVar') {
@@ -356,13 +357,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
   ### Numeriske variable:
 
   if (valgtVar == 'OpBMI') {   #Andeler, #andelGrVar, andelTid
-    # 1:Alvorlig undervekt,2:moderat undervekt, 3:mild undervekt, 4:normal vekt, 5:overvekt,
-    # 6:fedme kl.I, 7:fedme kl.II, 8:fedme kl.III
     tittel <- 'BMI-kategorier' #, Slå sammen undervekt, fedme 2 og 3.
-    #grtxtAlle <- c('Undervekt','Undervekt','Undervekt','Normal vekt', 'Overvekt', 'Fedme kl.I',
-    #	'Fedme kl.II&III', 'Fedme kl.II&III' 'Ukjent')
-    #mapvalues(RegData$OpBMIKategori, from = 1:8, to = grtxtAlle)
-    #       RegData$OpBMIKategori <- plyr::revalue(as.character(RegData$OpBMIKategori), c('1'='1', '2'='1', '3'='1', '4'='2', '5'='3', '6'='4', '7'='5', '8'='5'))
     gr <- c(-1, 0, 18.5, 25, 30, 35, 1000)
     ind <- which(RegData$OpBMI>0)
     RegData$Dummy <- -1
@@ -377,6 +372,11 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
 		  tittel <- 'Pasienter med fedme (BMI > 30)'
 		}
     retn <- 'V'
+
+    if (figurtype %in% c('gjsnGrVar','gjsnTid')) {
+    tittel <- 'BMI'
+    xAkseTxt <- ' BMI'
+    RegData$Variabel <- RegData$OpBMI}
   }
 
   if (valgtVar == 'Opf0metode') {   #Andeler, andelGrVar - fjernet
@@ -424,6 +424,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
     }
     sortAvtagende <- F
     subtxt <- 'minutter'
+    xAkseTxt <- ' ant. minutter'
     cexgr <- 0.9
     retn <- 'V'
     if (figurtype %in% c('andelGrVar','andelTid')) {

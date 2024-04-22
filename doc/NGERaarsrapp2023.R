@@ -2,7 +2,7 @@
 #--------------------------------Data og parametrekobling--------------------------
 # Inndata til funksjon:
 library(nger)
-datoFra <- '2016-01-01'
+datoFra <- '2019-01-01'
 rappAar <- 2023
 datoFra1aar <- paste0(rappAar, '-01-01')
 datoTil <- paste0(rappAar, '-12-31')
@@ -99,7 +99,7 @@ NGERFigKvalInd(RegData=NGERData1aar, preprosess=0, valgtVar='TSS0',
 
 
 #------------------------------ Andeler per år (AndelTid)--------------------------
-# 'Dagkirurgiske inngrep' = 'OpDagkirurgi', (lapraroskopi, elektiv)
+# 'Dagkirurgiske inngrep' = 'OpBehNivaa', (lapraroskopi, elektiv)
 # Lokalbedøvelse = OpAnestesi (hysteroskopi, elektiv)
 # 'ASA-grad > II' = 'OpASA', (Alle / tot.lap hysrektomi)
 # 'Konvertert til laparoromi?' = 'LapKonvertert',
@@ -110,7 +110,7 @@ NGERFigKvalInd(RegData=NGERData1aar, preprosess=0, valgtVar='TSS0',
 NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='LapKonvertert',
               outfile='LapKonvertert_Aar.pdf', tidsenhet='Aar')
 
-NGERFigAndelTid(RegData=NGERData, valgtVar='OpDagkirurgi', preprosess = 0,
+NGERFigAndelTid(RegData=NGERData, valgtVar='OpBehNivaa', preprosess = 0,
                 OpMetode=1, Hastegrad=1, tidsenhet='Aar', outfile='OpDagkirLapEl_aar.pdf')
 
 
@@ -135,6 +135,10 @@ for (valgtVar in variabler) {
   NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar=valgtVar,
                   OpMetode=2, outfile=outfile, tidsenhet='Aar')
 }
+
+#TLH
+NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf0KomplAlvorInfeksjon',
+                OpMetode=4, outfile='Opf0KomplAlvorInfeksjon_TLHaar.pdf', tidsenhet='Aar')
 NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf0AlvorlighetsGrad1',
                 OpMetode=4, outfile='KomplPostop_TLHaar.pdf', tidsenhet='Aar')
 
@@ -142,7 +146,7 @@ NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf0AlvorlighetsGrad
 #------------------------------ Andeler per sykehus --------------------------
 #------------------------------ (AndelGrVar) --------------------------
 # 'Fedme (BMI>30)' = 'OpBMI',
-# 'Dagkirurgiske inngrep' = 'OpDagkirurgi',
+# 'Dagkirurgiske inngrep' = 'OpBehNivaa',
 # 'Komplikasjoner under operasjon' = 'KomplIntra', (Laparoskopi, valgte sykehus..)
 # 'Postop. komplikasjon: Alle' = 'KomplPostop', (Alle, valgte sykehus)
 # 'TSS2: Møtet med gyn. avd. var svært godt' = 'Tss2Mott',
@@ -163,13 +167,15 @@ for (valgtVar in variabler) {
 
 #Laparoskopi
 variabler <- c( 'KomplIntra', 'Opf0AlvorlighetsGrad', 'Opf0AlvorlighetsGrad1', 'KomplPostopAlvor',
-                'Opf0Reoperasjon','LapKonvertert', 'LapKonvertertUventet', 'OpDagkirurgi')
+                'Opf0Reoperasjon','LapKonvertert', 'LapKonvertertUventet')
 for (valgtVar in variabler) {
   outfile <- paste0(valgtVar, '_LapShus.pdf')
   NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar,
                       OpMetode=1, outfile=outfile)
 }
 
+NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='OpBehNivaa',
+                    OpMetode=1, outfile='OpDagkirurgi_LapShus.pdf')
 
 #--Hysteroskopi
 variabler <- c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad', 'Opf0AlvorlighetsGrad1', 'KomplPostopAlvor',
@@ -184,6 +190,9 @@ for (valgtVar in variabler) {
 #Fjernet 2021: 'Alder',
   NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='OpBMI',
                       OpMetode=4, outfile='OpBMI_TLHShus.pdf')
+
+  NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='Opf0KomplAlvorInfeksjon',
+                      OpMetode=4, outfile='Opf0KomplAlvorInfeksjon_TLHShus.pdf')
 
 #------------------------------ Sentralmål per sykehus --------------------------
 
@@ -221,7 +230,12 @@ NGERFigKvalInd(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar, outfile=ou
  NGERFigPrePost(RegData=NGERData, valgtVar=valgtVar,
                 datoFra='2018-01-01', datoTil=Sys.Date(),
                 outfile=paste0(valgtVar,'_0_1_3.pdf'))
-}
+ }
+
+
+ NGERFigPrePost(RegData=NGERData, valgtVar='AlleRANDdim',
+                datoFra='2018-01-01', datoTil=Sys.Date(),
+                outfile='RANDdim_0_1_3.pdf')
 
 #------------------------------Tabeller-----------------------------------
 library(xtable)
