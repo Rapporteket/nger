@@ -196,7 +196,7 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, aggData=0,
             '4212080' = '974745569',    #Nordmøre og Romsdal
             '103575' = 	'974631407',		#Ringerike	VESTRE VIKEN HF RINGERIKE SYKESHUS - SOMATIKK	Ringerike
             '103162' = 	'974795477',		#Sandessjøen	HELGELANDSSYKEHUSET HF SANDNESSJØEN - SOMATIKK	Sandnessjøen
-            '4205296' = 	'974633191',		#Skien	SYKEHUSET TELEMARK HF SKIEN - SOMATIKK	Skien
+            '4205296' = '974633191',		#Skien	SYKEHUSET TELEMARK HF SKIEN - SOMATIKK	Skien
             '105460' = 	'974703300',		#Stavanger	STAVANGER UNIVERSITETSSJUKEHUS SOMATIKK VÅLAND	Stavanger
             '100460' = 	'974795574',		#Stokmarknes	NORDLANDSSYKEHUSET HF SOMATIKK - STOKMARKNES	Vesterålen
             '701482' = 	'974742985',		#Stord	HELSE FONNA HF STORD SJUKEHUS	Stord
@@ -207,7 +207,9 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, aggData=0,
             '700399' = 	'974589095',		#Ullevål	OSLO UNIVERSITETSSYKEHUS HF ULLEVÅL - SOMATIKK	Ullevål
             '102583' = 	'974747545',		#Volda	HELSE MØRE OG ROMSDAL HF VOLDA SJUKEHUS - SOMATIKK	Volda
             '4205477' = '991811869', #Volvat Forus
-            '4215139' = '973129856',    #Volvat Majorstuen
+            '4215139' = '973129856',    #Volvat Majorstuen -> Flyttet til Storo?
+            '4219487' = '928089428',     #Volvat Storo
+            '4218851' = '990240116',     #Volvat Ulriksdal
             '106026' = 	'974743272',		#Voss	HELSE BERGEN HF VOSS SJUKEHUS	Voss
             '102582' = 	'974747138',		#Ålesund	HELSE MØRE OG ROMSDAL HF ÅLESUND SJUKEHUS - SOMATIKK	Ålesund
             '1' = '1'              #Hele landet
