@@ -224,7 +224,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
   if (valgtVar == 'LapNumHjelpeinnstikk') {   #Andeler
     # Velge antall fra 0 til 6
     #IKKE gjort noen utvalg. (StatusLap==1?, LapHjelpeinnstikk==1?)
-    tittel <- 'Antall hjelpeinnstikk, laparaskopi'
+    tittel <- 'Antall hjelpeinnstikk, laparoskopi'
     grtxt <- 0:6
     RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = grtxt)
   }
@@ -324,7 +324,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
     tittel <- sprintf('Tidligere %s', switch(as.character(valgtVar),
                                              'OpTidlVagInngrep' = 'vaginale inngrep',
                                              'OpTidlLapsko' = 'laparoskopiske inngrep',
-                                             'OpTidlLaparotomi' = 'laparatomi'))
+                                             'OpTidlLaparotomi' = 'laparotomi'))
     grtxt <- c('Nei', 'Ja', 'Vet ikke/Ukjent')
     koder <- 0:1
     indVar <- which(RegData[ ,valgtVar] %in% koder)	#Må definere koder eks <- 1:5 i variabeldef.
@@ -877,7 +877,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     #AlleProsSort <- sort(table(AllePros[which(AllePros != '')]), decreasing = TRUE)
 
     if (valgtVar == 'ProsViktigLap'){
-      tittel <- 'Viktigste laparaskopiprosedyrer'
+      tittel <- 'Viktigste laparoskopiprosedyrer'
       variable <- c('LBE01', 'laphyst',
                     'LAF11', 'JAL21',
                     'LAF01', 'LAC01')
@@ -1021,7 +1021,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     retn <- 'H'
   }
   if (valgtVar=='LapEkstrautstyr') {
-    #Laparaskopisk ekstrautstyr
+    #Laparoskopisk ekstrautstyr
     #OpMetode=1 el 3 (Laparoskopi eller begge)
     #29.08.2016: Thunderbeat -> To nye variable: Kob.bipolar og ultralys. Legg til «Bipolar koagulasjon og klipping»
     #LapThunderbeat -> LapIntKombo
@@ -1053,7 +1053,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
                'Stapler', 'Sutur', # 'Bipolar og ultralyd', 'Bipolar koag. og klipping',
                'Unipolar Diatermi', 'Intl.vevsforsegler', 'Optisk trokar', 'Oppd. av preparat\n[14/11-23]')
     cexgr <- 0.8
-    tittel <- 'Laparaskopisk utstyr benyttet'
+    tittel <- 'Laparoskopisk utstyr benyttet'
     RegData <- RegData[RegData$OpMetode %in% c(1,3), ]
     #indInnfDato <- which(as.Date(RegData$HovedDato) >= as.Date('2016-03-01'))
     #varInnfind <- which(variable %in% c('LapMorcellatorUtenPose', 'LapMorcellatorMedPose'))
@@ -1070,7 +1070,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     flerevar <- 1
     variable <- c('LapKomplAnnet', 'LapKomplUreter', 'LapKomplTarm', 'LapKomplBlaere', 'LapKomplKar')
     grtxt <- c('Annet', 'Ureter', 'Tarm', 'Blære', 'Kar')
-    tittel <- 'Laparaskopiske intraoperative komplikasjoner' # 'Intraabdominelle komplikasjoner ved laparoskopi'
+    tittel <- 'Laparoskopiske intraoperative komplikasjoner' # 'Intraabdominelle komplikasjoner ved laparoskopi'
     RegData <- RegData[RegData$LapKomplikasjoner %in% 0:1, ]	#
   }
   if (valgtVar== 'LapSkadeIntra') { #
@@ -1079,7 +1079,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     variable <- c('LapSkadeTilgang', 'LapSkadeUthent', 'LapSkadeDissek',
                   'LapSkadeForsegl', 'LapSkadeAnnet')
     grtxt <- c('Tilgang', 'Uthenting','Disseksjon', 'Forsegl. av kar', 'Annet')
-    tittel <- 'Laparaskopisk skade oppsto ved:'
+    tittel <- 'Laparoskopisk skade oppsto ved:'
     RegData <- RegData[RegData$LapKomplikasjoner == 1,]
   }
 
@@ -1101,7 +1101,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     #Ny kategori, dvs. ny variabel: Palmers point, neste prod.setting, etterreg. fra 1.3.2016. Mangler noen og disse filtreres bort.
     #Fra nov-23:
     RegData <- RegData[which(RegData$OpMetode %in% c(1,3)), ] #Laparoskopi
-    tittel <- 'Etablering av pneumoperitoneum' # 'Laparoskopisk tilgang, teknikk og metode', 'Teknikk for laparaskopisk tilgang'
+    tittel <- 'Etablering av pneumoperitoneum' # 'Laparoskopisk tilgang, teknikk og metode', 'Teknikk for laparoskopisk tilgang'
     # grtxt <- c(paste0('Metode: \n', c('Åpent', 'Veress-nål', 'Visiport [1/1-20]','Annet')),
     #            paste0('Tilgang: \n', c('Palmers point[1/3-16]', 'Navlen[1/3-16]', 'Annet[1/2-22]'))) #LapTilgangsMetode
     grtxt <- c(paste0('Metode: \n', c('Åpent', 'Veress-nål', 'Direkte',  'Optisk trokar [1/1-20]')),
