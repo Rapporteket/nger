@@ -50,7 +50,7 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 
 \item{OpMetode}{1: Laparoskopi
 2: Hysteroskopi
-3: Begge # 21.okt. 2022: Fjernes som eget valg. Blir med i både laparaskopi og hysteroskopi
+3: Begge # 21.okt. 2022: Fjernes som eget valg. Blir med i både laparoskopi og hysteroskopi
 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
 5: LCC11 (laparoskopisk subtotal hysterektomi)
 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
@@ -105,10 +105,10 @@ Argumentet \emph{valgtVar} har følgende valgmuligheter:
     \item KomplPostUtd: Postoperative komplikasjoner for ulike utdanningsgrupper
     \item KomplReopUtd: Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper
     \item LapKomplikasjoner: Laparoskopiske intrapoerative komplikasjoner
-    \item LapEkstrautstyr: Laparaskopisk ekstrautstyr - Kommer, NY variabel: koagulasjon og klipping
+    \item LapEkstrautstyr: Laparoskopisk ekstrautstyr - Kommer, NY variabel: koagulasjon og klipping
     \item LapIntraabdominell: Laparoskopiske intraabdominale komplikasjoner
     \item LapNumHjelpeinnstikk: Antall hjelpeinnstikk
-    \item LapTeknikk: Laparaskopisk tilgang, teknikk og metode (Tidl LapTilgangsMetode)
+    \item LapTeknikk: Laparoskopisk tilgang, teknikk og metode (Tidl LapTilgangsMetode)
     \item Norsktalende: Pasientens norskkunnskaper
     \item OpAnestesi: Anestesitype
     \item OpASA: ASA-grad
@@ -124,7 +124,7 @@ Argumentet \emph{valgtVar} har følgende valgmuligheter:
     \item OpTid: Operasjonstid (minutter)
     \item OpTidlVagInngrep: Tidligere vaginale inngrep
     \item OpTidlLapsko: Tidligere laparoskopi
-    \item OpTidlLaparotomi: Tidligere laparatomi
+    \item OpTidlLaparotomi: Tidligere laparotomi
     \item OpType: Primæroperasjon eller reoperasjon
     \item R0ScoreEmo:
     \item R0ScoreEnergy:

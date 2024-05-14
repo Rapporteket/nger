@@ -391,12 +391,12 @@ for (met in 1:2) {
 
 
 <<'LapKompl', results='asis', echo=FALSE, eval=T>>=
-#??? Ett forløp har reoperasjon til både laparoskopi og laparatomi. Er det mulig? [Fdato: 08.06.1975	ForlopsID=9252]
+#??? Ett forløp har reoperasjon til både laparoskopi og laparotomi. Er det mulig? [Fdato: 08.06.1975	ForlopsID=9252]
 LapKomplData <- tabKomplLap(RegData, reshID=reshID, datoFra='2019-01-01', datoTil=Sys.Date())
 print(xtable::xtable(LapKomplData$AndelLapKomplTab, digits=c(0,1,1),
                      align=c('l', 'l', rep('r', max(c(1,ncol(LapKomplData$AndelLapKomplTab)-1), na.rm=T))),
              caption=paste0('Hyppighet av laparoskopiske komplikasjoner. ', tidsperiodeTxt,
-                            ' Totalt ble det utført ', LapKomplData$AntLap, ' laparaskopier i tidsperioden.'),
+                            ' Totalt ble det utført ', LapKomplData$AntLap, ' laparoskopier i tidsperioden.'),
              label='tab:LapKompl'), include.rownames=TRUE, include.colnames=TRUE)
 
 @

@@ -398,11 +398,11 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
                                     'Infeksjoner, type (alvorlig/middels)' = 'Opf0KomplAlvorInfeksjon',
                                     'Komplikasjoner, postoperativt' = 'KomplPostopType',
                                     'Komplikasjoner, postop. alvorlig/middels' = 'KomplAlvorPostopType',
-                                    'Laparaskopisk utstyr benyttet' = 'LapEkstrautstyr',
-                                    'Laparaskopiske intraop. komplikasjoner' = 'LapKomplIntra',
-                                    'Laparaskopisk skadeårsak' = 'LapSkadeIntra',
+                                    'Laparoskopisk utstyr benyttet' = 'LapEkstrautstyr',
+                                    'Laparoskopiske intraop. komplikasjoner' = 'LapKomplIntra',
+                                    'Laparoskopisk skadeårsak' = 'LapSkadeIntra',
                                     'Laparoskopi: Medvirkende årsak til komplikasjon' = 'LapSkadeaarsakIntra',
-                                    'Laparaskopisk etablering av pneumoperitoneum' = 'LapTeknikk',
+                                    'Laparoskopisk etablering av pneumoperitoneum' = 'LapTeknikk',
                                     'Norskkunnskaper' = 'Norsktalende',
                                     'Oppfølgingsmetode' = 'Opf0metode',
                                     'Operasjon i legens vakttid' = 'OpIVaktTid',
@@ -411,7 +411,7 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
                                     'Primæroperasjon eller reoperasjon' = 'OpType',
                                     'Prosedyrer, hyppigste' = 'Prosedyrer',
                                     'Prosegrupper, hyppigste' = 'ProsedyreGr',
-                                    'Prosedyrer, viktigste laparaskopi' = 'ProsViktigLap',
+                                    'Prosedyrer, viktigste laparoskopi' = 'ProsViktigLap',
                                     'Prosedyrer, viktigste hysteroskopi' =  'ProsViktigHys',
                                     'Postoperative komplikasjoner vs. utdanning' = 'KomplPostUtd',
                                     'RAND36 Fysisk funksjon' = 'R0ScorePhys',
@@ -427,7 +427,7 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
                                     'Sivilstatus' = 'SivilStatus',
                                     'Tidligere vaginale inngrep' = 'OpTidlVagInngrep',
                                     'Tidligere laparoskopi' = 'OpTidlLapsko',
-                                    'Tidligere laparatomi' = 'OpTidlLaparotomi',
+                                    'Tidligere laparotomi' = 'OpTidlLaparotomi',
                                     'TSS2, sp.1 Mottak på avdelinga' = 'Tss2Mott',
                                     'TSS2, sp.2 Behandlingsopplegg' = 'Tss2Behandling',
                                     'TSS2, sp.3 Lyttet behandleren' = 'Tss2Lytte',
@@ -1105,7 +1105,7 @@ output$lastNed_dataDump <- downloadHandler(
                                   datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2])
          output$tittelLapKompl <- renderUI(tagList(
            h4('Hyppighet (%) av laparoskopiske komplikasjoner. '),
-           h4(paste0('Totalt ble det utført ', LapKomplData$AntLap, ' laparaskopier i tidsperioden.'))))
+           h4(paste0('Totalt ble det utført ', LapKomplData$AntLap, ' laparoskopier i tidsperioden.'))))
          output$LapKompl <- renderTable(LapKomplData$AndelLapKomplTab, rownames = T, digits=1, spacing="xs") #,caption = tabtxtLapKompl)
          output$lastNed_tabLapKompl <-  downloadHandler(
            filename = function(){paste0('tabLapKompl.csv')},

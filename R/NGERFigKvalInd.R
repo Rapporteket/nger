@@ -144,7 +144,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
                'Intraop. komplikasjon ved \n laparoskopi',
                'Intraop. komplikasjon ved \n hysteroskopi',
                'Konvertert lap. til laparotomi \n ', #"LapKonvertert":
-               'Konvertert hysteroskopi til \n laparaskopi/-tomi') #"HysKonvertert":
+               'Konvertert hysteroskopi til \n laparoskopi/-tomi') #"HysKonvertert":
                # 'Ikke utført oppfølging \n etter 4 uker')
                # 'Ikke ferdistilt registrering \n innen 6 uker')
     variable <- c('PostOpKomplReop', 'PostKomplLap', 'PostKomplHys', 'LapKomplikasjoner', 'HysKomplikasjoner',

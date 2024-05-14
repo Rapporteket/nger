@@ -215,7 +215,7 @@ colnames(myTab) <- tidtxt
 
 
 
-#'  instrumentbruk, Laparaskopi
+#'  instrumentbruk, Laparoskopi
 #' @export
 instrumentbruk <- function(RegData, datoFra='2019-01-01', datoTil=Sys.Date()){
   #Fra mars 2016 er morcellator med og uten pose.Velger å ikke ta høyde for dette siden det nå er gamle tall
@@ -247,7 +247,7 @@ return(invisible(InstrTab))
 
 
 
-#'  komplikasjoner, Laparaskopi
+#'  komplikasjoner, Laparoskopi
 #' @export
 tabKomplLap <- function(RegData, reshID=0, datoFra='2019-01-01', datoTil=Sys.Date()){
 
@@ -256,7 +256,7 @@ tabKomplLap <- function(RegData, reshID=0, datoFra='2019-01-01', datoTil=Sys.Dat
 Blod <- c('Opf0KomplBlodning', 'Opf0BlodningAbdom', 'Opf0BlodningIntraabdominal', 'Opf0BlodningVaginal')
 
 #Utstyr
-#UtstyrTxt <- c('Problemer m/Instrumenter', '...Nett', '...Laparaskopisk sutur') #m/utstyr','...
+#UtstyrTxt <- c('Problemer m/Instrumenter', '...Nett', '...Laparoskopisk sutur') #m/utstyr','...
 #Utstyr <- c('Opf0UtstyrInstrumenter', 'Opf0UtstyrNett', 'Opf0UtstyrSutur') #'Opf0KomplUtstyr',
 #"Opf0UtstyrInstrumenter", "Opf0UtstyrNett" og "Opf0UtstyrSutur"
 
@@ -296,7 +296,7 @@ if (reshID != 0) {
 row.names(AndelLapKomplTab) <- c(LapKomplTxt, 'Totalt')
 # print(xtable(AndelLapKomplTab, digits=c(0,1,1), align=c('l', 'l', rep('r', max(c(1,ncol(AndelLapKomplTab)-1), na.rm=T))),
 #              caption=paste0('Hyppighet av laparoskopiske komplikasjoner. ', tidsperiodeTxt,
-#                             ' Totalt ble det utført ', AntLap, 'laparaskopier i tidsperioden.'),
+#                             ' Totalt ble det utført ', AntLap, 'laparoskopier i tidsperioden.'),
 #              label='tab:LapKompl'), include.rownames=TRUE, include.colnames=TRUE)
 UtData <- list(AndelLapKomplTab=AndelLapKomplTab, AntLap=AntLap)
 return(UtData)
@@ -304,7 +304,7 @@ return(UtData)
 
 
 
-#'  Konvertert laparoskopi til laparatomi
+#'  Konvertert laparoskopi til laparotomi
 #'
 #' @param RegData dataramme
 #' @param reshID reshID
