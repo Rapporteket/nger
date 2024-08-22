@@ -23,7 +23,7 @@ datoFra <- as.Date(paste0(1900+dato$year-1,'-', dato$mon+1, '-', '01'))
 if (!exists('RegData')){
       RegData <- nger::NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil)
       RegData <- nger::NGERPreprosess(RegData=RegData)
-      RegData2aar <- nger::NGERPreprosess(RegData = NGERRegDataSQL(datoFra=datoFra-365, datoTil = datoTil))
+      RegData2aar <- nger::NGERPreprosess(RegData = nger::NGERRegDataSQL(datoFra=datoFra-365, datoTil = datoTil))
 }
 @
 
