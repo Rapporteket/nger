@@ -56,8 +56,9 @@ NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Prosedyrer', OpMeto
 NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Prosedyrer', OpMetode = 2,
                outfile='Prosedyrer_fordHys.pdf')
 
-NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='LapIntraabdominell', OpMetode = 4,
-               outfile='LapIntraabdominell_fordTotLapHys.pdf')
+# NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='LapIntraabdominell', OpMetode = 4,
+#                outfile='LapIntraabdominell_fordTotLapHys.pdf')
+# -> Finnes ikke. Bytte til: LapKomplIntra?
 
 NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Opf0AlvorlighetsGrad', OpMetode = 1,
                outfile='Opf0AlvorlighetsGrad_fordLap.pdf')
@@ -110,7 +111,8 @@ NGERFigKvalInd(RegData=NGERData1aar, preprosess=0, valgtVar='TSS0',
 # 'Postop. komplikasjon: Reoperasjon' = 'Opf0Reoperasjon', (Alle/laparoskopi/tot.lap.hysrektomi)
 
 NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='LapKonvertert',
-              outfile='LapKonvertert_Aar.pdf', tidsenhet='Aar')
+                OpMetode = 1,
+              outfile='LapKonvertert_LapAar.pdf', tidsenhet='Aar')
 
 NGERFigAndelTid(RegData=NGERData, valgtVar='OpBehNivaa', preprosess = 0,
                 OpMetode=1, Hastegrad=1, tidsenhet='Aar', outfile='OpDagkirLapEl_aar.pdf')
@@ -176,6 +178,9 @@ for (valgtVar in variabler) {
                       OpMetode=1, outfile=outfile)
 }
 
+# NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='LapKonvertertUventet',
+#                     OpMetode=1, outfile='LapKonvertertUventet_LapShus.pdf')
+
 NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='OpBehNivaa',
                     OpMetode=1, outfile='OpDagkirurgi_LapShus.pdf')
 
@@ -213,14 +218,14 @@ for (OpMetode in c(1,2,4)) {
 }
 
 #KvalInd
-for (valgtVar in c('kvalInd', 'RAND0')) {
+for (valgtVar in c('kvalInd')) {
 outfile <- paste0(valgtVar, '_' ,'KI.pdf')
 NGERFigKvalInd(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar, outfile=outfile)
 }
 
 #Ønsker også Rand etter 1 år
- NGERFigKvalInd(RegData=NGERData, preprosess=0, datoFra=datoFra1Yoppf, datoTil=datoTil1Yoppf,
-                valgtVar='RAND1', outfile='RAND1_KI.pdf')
+ # NGERFigKvalInd(RegData=NGERData, preprosess=0, datoFra=datoFra1Yoppf, datoTil=datoTil1Yoppf,
+ #                valgtVar='RAND1', outfile='RAND1_KI.pdf')
 
 
 #Oppfølging 1 og 3 år
@@ -278,14 +283,17 @@ xtable::xtable(tab, align=c('l', rep('r',ncol(tab))), digits=0)
 
 
 
-#--------------------Data til SKDE interaktive nettsider------------------
+#--------------------Data til interaktive nettsider (behandlingskvalitet) ------------------
 #KomplIntra, KomplPostop, KomplPostopAlvor
 #OpMetode  1: Laparoskopi #2: Hysteroskopi,
 library(nger)
 setwd('/home/rstudio/Aarsrappresultater' )
-RegData <- NGERPreprosess(RegData = NGERRegDataSQL(datoFra = '2016-01-01'))
-                                                   #,datoTil = '2022-12-31'))
-lastNedFil <-
+RegData <- NGERPreprosess(RegData = NGERRegDataSQL(datoFra = '2019-01-01'))
+
+# nyResh <- setdiff(sort(unique(RegData$ReshId)), names(nyID))
+# RegData$ShNavn[match(nyResh, RegData$ReshId)]
+# table(RegData$ShNavn)
+lastNedFil <- 0
 
 dataTilSKDE_Flere <- dataTilOffVisning(RegData=RegData,
                                  valgtVar = 'KomplIntra',
@@ -324,6 +332,23 @@ dataTilSKDE <- dataTilOffVisning(RegData=RegData,
 dataTilSKDE_Flere <- rbind(dataTilSKDE_Flere, dataTilSKDE)
 
 sum(is.na(dataTilSKDE_Flere$orgnr))
-write.table(dataTilSKDE_Flere, file = 'dataTilSKDE_Flere.csv', sep = ';', row.names = F)
+write.table(dataTilSKDE_Flere, file = 'NGERdataTilSKDE_FlereInd.csv', sep = ';', row.names = F)
 
-#tapply(dataTilSKDE$var, dataTilSKDE$year, FUN='mean')*100
+#tapply(dataTilSKDE$var, dataTilSKDE$year, FUN='mean')*10
+
+#----------------Dekningsgrad
+setwd('../Aarsrapp/NETTsider/')
+AllePublInd <- read.csv(file = 'NGERallePubl.csv')
+DGpubl <- AllePublInd[which(AllePublInd$ind_id == 'nger_dg'), ]
+DeknGrad <- read.table(file = "clipboard",
+                      sep = "\t", header=TRUE)
+names(DeknGrad)
+DG <- dplyr::rename(DeknGrad[, c(2,4,5)], 'orgnr' = "Organisasjonsnr" , 'var' = "Teller", 'denominator' = "Nevner")
+#(new = old)
+DG$context <- 'caregiver'
+DG$year <- 2023
+DG$ind_id <- 'nger_dg'
+
+DGalleAar <- rbind(DGpubl,
+                   DG[,names(DGpubl)])
+write.table(DGalleAar, file = 'NGER_DGalleAar.csv', sep = ';', row.names = F)

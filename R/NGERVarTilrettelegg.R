@@ -211,13 +211,13 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, grVar='', OpMetode=0, ind=0,
     RegData <- RegData[intersect(which(RegData$LapKonvertert %in% 0:1), which(RegData$LapStatus == 1)), ] #RegData$LapKonvertert %in% 0:1
     RegData$Variabel <- RegData$LapKonvertert
     varTxt <- 'konverterte'
-    tittel <- 'Konvertering, lapraskopi til laparotomi'
+    tittel <- 'Konvertering, laparoskopi til laparotomi'
   }
   if (valgtVar=='LapKonvertertUventet') { #andelTid
     RegData <- RegData[intersect(which(RegData$LapKonvertert %in% 0:1), which(RegData$LapStatus == 1)), ] #RegData$LapKonvertert %in% 0:1
     RegData$Variabel[RegData$Konverteringsstatus ==2] <- 1
     varTxt <- 'ikke forventede'
-    tittel <- 'Uventet konvertering, lapraskopi til laparotomi
+    tittel <- 'Uventet konvertering, laparoskopi til laparotomi
     '
   }
 
@@ -1095,7 +1095,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
 
   if (valgtVar == 'LapTeknikk') { #Tidl: LapTilgangsMetode
     #LapTilgangsMetode 0: Åpent, 1: Veress-nål, 2: Annet
-    #LapTilgangsMetode, fra 1/1? 2020: 0: Åpent, 1: Veress-nål, 2: Visiport, 9: Annet
+    #Endret: LapTilgangsMetode, fra 1/1? 2020: 0: Åpent, 1: Veress-nål, 2: Visiport, 9: Annet
     #LapTilgang, fra 1/3-16: 1-Venstre Palmers point
     #Bare laparoskopi og begge
     #Ny kategori, dvs. ny variabel: Palmers point, neste prod.setting, etterreg. fra 1.3.2016. Mangler noen og disse filtreres bort.
@@ -1104,7 +1104,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     tittel <- 'Etablering av pneumoperitoneum' # 'Laparoskopisk tilgang, teknikk og metode', 'Teknikk for laparoskopisk tilgang'
     # grtxt <- c(paste0('Metode: \n', c('Åpent', 'Veress-nål', 'Visiport [1/1-20]','Annet')),
     #            paste0('Tilgang: \n', c('Palmers point[1/3-16]', 'Navlen[1/3-16]', 'Annet[1/2-22]'))) #LapTilgangsMetode
-    grtxt <- c(paste0('Metode: \n', c('Åpent', 'Veress-nål', 'Direkte',  'Optisk trokar [1/1-20]')),
+    grtxt <- c(paste0('Metode: \n', c('Åpent', 'Veress-nål', 'Direkte')), #,  'Optisk trokar [1/1-20]'
               paste0('Tilgang: \n', c('Palmers point[1/3-16]', 'Navlen[1/3-16]','Vaginalt[14/11-23]', 'Annet[14/11-23]'))) #LapTilgangsMetode
     indMar16tilg <- which(as.Date(RegData$HovedDato)>='2016-03-01')
     indMet <- which(RegData$LapTilgangsMetode %in% 0:2) #c(0:2,9)
@@ -1121,23 +1121,19 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     # LapTilgang	Lagt til	3	Vaginalt
     # LapTilgang	Lagt til	9	Annet
 
-    variable <- c(paste0('met',0:2), 'LapOptTro', paste0('tilg', 1:4))
+    #Tar bort Optisk trokar fra plass 4
+    variable <- c(paste0('met',0:2), paste0('tilg', 1:4)) #'LapOptTro',
     ind1met <- cbind(indMet, RegData$LapTilgangsMetode[indMet]+1) #Verdi 1,2,3 (,10... utgår)
     #ind1met[ind1met[,2]==10,2] <- 4 utgår
     ind01tilg <- intersect(indMar16tilg, indTilg)
     ind1tilg <- cbind(ind01tilg, RegData$LapTilgang[ind01tilg]) #Verdi 1,2,9 endret til 1,2,3,9
     ind1tilg[ind1tilg[,2]==9,2] <- 4
 
-    RegData[ ,variable[-4]] <- NA
+    RegData[ ,variable] <- NA #[-4]
     RegData[ ,variable[1:3]] <- 0
     RegData[ ,variable[1:3]][ind1met] <- 1 #OK
-    RegData[ind01tilg ,variable[5:8]] <- 0
-    RegData[ ,variable[5:8]][ind1tilg] <- 1
-    # RegData[ ,variable] <- NA
-    # RegData[ ,variable[1:4]] <- 0
-    # RegData[ ,variable[1:4]][ind1met] <- 1
-    # RegData[ind01tilg ,variable[5:7]] <- 0
-    # RegData[ ,variable[5:7]][ind1tilg] <- 1
+    RegData[ind01tilg ,variable[4:7]] <- 0
+    RegData[ ,variable[4:7]][ind1tilg] <- 1
   }
 
     if (valgtVar == 'Opf0KomplInfeksjon') {   #Andeler, andelGrVar, andelTid
