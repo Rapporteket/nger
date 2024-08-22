@@ -2,7 +2,7 @@
 % Please edit documentation in R/NGERtabeller.R
 \name{tabKonvertertLap}
 \alias{tabKonvertertLap}
-\title{Konvertert laparoskopi til laparatomi}
+\title{Konvertert laparoskopi til laparotomi}
 \usage{
 tabKonvertertLap(
   RegData,
@@ -21,5 +21,5 @@ tabKonvertertLap(
 \item{datoTil}{sluttdato}
 }
 \description{
-Konvertert laparoskopi til laparatomi
+Konvertert laparoskopi til laparotomi
 }

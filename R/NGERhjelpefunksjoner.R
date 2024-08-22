@@ -161,13 +161,16 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, aggData=0,
   #Legge på orgID
   #ReshId	orgnr	RapporteketNavn	SKDEnavn
   nyID <- c('108172' = '974706490',		#Ahus	AHUS NORDBYHAGEN SOMATIKK	Ahus
-            '107511' = '943545634',		#Aleris Frogner
-            '4212372' = '981541499',  #Aleris Majorstuen - MANGLER, må legges inn. Foreløpig lagt inn som bare Aleris
+            '107511' = '975787419',		#Aleris Frogner 975 787 419
+            '4212372' = '981541499',  #Aleris Majorstuen / Aleris Colosseum Nobel
+            '4211880' = '974518821', #Aleris Nesttun
+            '4209817' = '974504863', #Aleris Trondheim (Solsiden)
+            '4209824' = '983896383', #Aleris Sykehus Stavanger 983 896 383
             '103719' = '974631091',		#Arendal	SØRLANDET SYKEHUS HF SOMATIKK ARENDAL	Arendal
             '106843' = '922748144',		#Betanien	BETANIEN SYKEHUS AS	Betanien
             '706220' = '974795361',		#Bodø	NORDLANDSSYKEHUSET HF SOMATIKK - BODØ	Bodø
             '104736' = '974705788',		#Bærum	VESTRE VIKEN HF BÆRUM SYKEHUS - SOMATIKK	Bærum
-            '4211286' = '812794922',  #C-Medical Colloseum - C-MEDICAL AS
+            '4211285' = '812794922',  #C-Medical Colloseum - C-MEDICAL AS, tidl. resh 4211286
             '700404' = '974707152',		#DNR	OSLO UNIVERSITETSSYKEHUS HF RADIUMHOSPITALET - SOMATIKK	Radiumhospitalet
             '103298' = 	'974631326',		#Drammen	VESTRE VIKEN HF DRAMMEN SYKEHUS - SOMATIKK	Drammen
             '108768' = 	'974631768',		#Elverum	SYKEHUSET INNLANDET HF ELVERUM - SOMATIKK	Elverum
@@ -179,6 +182,7 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, aggData=0,
             '706129' = 	'974795639',		#Harstad	UNIVERSITETSSYKEHUSET NORD-NORGE HF HARSTAD - SOMATIKK	Harstad
             '701437' = 	'974724774',		#Haugesund	HELSE FONNA HF HAUGESUND SJUKEHUS	Haugesund
             '102954' = 	'974557746',		#Haukeland	HELSE BERGEN HF HAUKELAND UNIVERSITETSSJUKEHUS	Haukeland
+            '108048' = 	'974633752',		#Kalnes Østfold	SYKEHUSET ØSTFOLD
             '101828' = 	'974795930',		#Kirkenes	FINNMARKSSYKEHUSET HF KIRKENES SYKEHUS	Kirkenes
             '104174' = 	'974631385',		#Kongsberg	VESTRE VIKEN HF KONGSBERG SYKEHUS - SOMATIKK	Kongsberg
             '4215373' = 	'974631776',		#Kongsvinger	AHUS KONGSVINGER SOMATIKK	Kongsvinger
@@ -187,13 +191,13 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, aggData=0,
             '105863' = 	'974754118',		#Levanger	HELSE NORD-TRØNDELAG HF SOMATIKK - LEVANGER	Levanger
             '111180' = 	'874632562',		#Lillehammer	SYKEHUSET INNLANDET HF LILLEHAMMER - SOMATIK
             '700789' = 	'974795515',		#Mo i Rana	HELGELANDSSYKEHUSET HF MO I RANA - SOMATIKK	Mo i Rana
-            '103188' = 	'974745569',		#Molde	HELSE MØRE OG ROMSDAL HF MOLDE SJUKEHUS - SOMATIKK	Molde
-            '108048' = 	'974633752',		#Kalnes Østfold	SYKEHUSET ØSTFOLD
             '105874' = 	'974753898',		#Namsos	HELSE NORD-TRØNDELAG HF SOMATIKK - NAMSOS	Namsos
             '706130' = 	'974795396',		#Narvik	UNIVERSITETSSYKEHUSET NORD-NORGE HF NARVIK - SOMATIKK	Narvik
+            '103188' = 	'974745569',		#Molde	HELSE MØRE OG ROMSDAL HF MOLDE SJUKEHUS - SOMATIKK	Molde
+            '4212080' = '974745569',    #Nordmøre og Romsdal
             '103575' = 	'974631407',		#Ringerike	VESTRE VIKEN HF RINGERIKE SYKESHUS - SOMATIKK	Ringerike
             '103162' = 	'974795477',		#Sandessjøen	HELGELANDSSYKEHUSET HF SANDNESSJØEN - SOMATIKK	Sandnessjøen
-            '4205296' = 	'974633191',		#Skien	SYKEHUSET TELEMARK HF SKIEN - SOMATIKK	Skien
+            '4205296' = '974633191',		#Skien	SYKEHUSET TELEMARK HF SKIEN - SOMATIKK	Skien
             '105460' = 	'974703300',		#Stavanger	STAVANGER UNIVERSITETSSJUKEHUS SOMATIKK VÅLAND	Stavanger
             '100460' = 	'974795574',		#Stokmarknes	NORDLANDSSYKEHUSET HF SOMATIKK - STOKMARKNES	Vesterålen
             '701482' = 	'974742985',		#Stord	HELSE FONNA HF STORD SJUKEHUS	Stord
@@ -203,7 +207,10 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, aggData=0,
             '110734' = 	'974633574',		#Tønsberg	SYKEHUSET I VESTFOLD HF, SOMATIKK, TØNSBERG	Tønsberg
             '700399' = 	'974589095',		#Ullevål	OSLO UNIVERSITETSSYKEHUS HF ULLEVÅL - SOMATIKK	Ullevål
             '102583' = 	'974747545',		#Volda	HELSE MØRE OG ROMSDAL HF VOLDA SJUKEHUS - SOMATIKK	Volda
-            '4215139' = '973129856',    #Volvat Majorstuen
+            '4205477' = '991811869', #Volvat Forus
+            '4215139' = '973129856',    #Volvat Majorstuen -> Flyttet til Storo?
+            '4219487' = '928089428',     #Volvat Storo
+            '4218851' = '990240116',     #Volvat Ulriksdal
             '106026' = 	'974743272',		#Voss	HELSE BERGEN HF VOSS SJUKEHUS	Voss
             '102582' = 	'974747138',		#Ålesund	HELSE MØRE OG ROMSDAL HF ÅLESUND SJUKEHUS - SOMATIKK	Ålesund
             '1' = '1'              #Hele landet

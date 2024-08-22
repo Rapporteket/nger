@@ -86,9 +86,9 @@ tapply(dataTilSKDE$var, dataTilSKDE$year, FUN='mean')*100
 # 'Diagnoser, hyppigste' = 'Diagnoser', hys/lap/tot
 # 'Gjennomføringsgrad av hysteroskopi' = 'HysGjforingsGrad',
 # 'Prosedyrer, hyppigste' = 'Prosedyrer', hys/lap/tot
-# 'Laparaskopisk tilgang, teknikk og metode' = 'LapTeknikk',
+# 'Laparoskopisk tilgang, teknikk og metode' = 'LapTeknikk',
 # 'Operasjonstid (minutter)' = 'OpTid', (lap/tot. lap. hysrektomi/hysteroskopi)
-# 'Laparaskopisk ekstrautstyr' = 'LapEkstrautstyr',
+# 'Laparoskopisk ekstrautstyr' = 'LapEkstrautstyr',
 # 'Laparoskopiske intrapoerative komplikasjoner' = 'LapKomplikasjoner',
 # 'Laparoskopiske intraabdominale komplikasjoner' = 'LapIntraabdominell', (Alle / Tot. lap. hysrektomi)
 # 'Hysteroskopi intrapoerative komplikasjoner' = 'HysKomplikasjoner'
@@ -152,7 +152,7 @@ NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='KomplPostopType'
 NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='KomplPostopType', datoTil=datoTil, OpMetode = 4,
                outfile='KomplPostopType_fordTotLapHys.pdf')
 
-#Fordelingsfigurer: alder  og BMI på Laparoskopi, og på Hysteroskopi og på TLH (total laparaskopisk hysrektomi).
+#Fordelingsfigurer: alder  og BMI på Laparoskopi, og på Hysteroskopi og på TLH (total laparoskopisk hysrektomi).
 
 NGERFigAndeler(RegData=NGERData, datoFra=datoFra1aar, valgtVar='Alder', datoTil=datoTil, OpMetode = 1,
                outfile='Alder_fordLap.pdf')

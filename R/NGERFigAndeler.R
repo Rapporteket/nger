@@ -14,10 +14,10 @@
 #'     \item KomplPostUtd: Postoperative komplikasjoner for ulike utdanningsgrupper
 #'     \item KomplReopUtd: Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper
 #'     \item LapKomplikasjoner: Laparoskopiske intrapoerative komplikasjoner
-#'     \item LapEkstrautstyr: Laparaskopisk ekstrautstyr - Kommer, NY variabel: koagulasjon og klipping
+#'     \item LapEkstrautstyr: Laparoskopisk ekstrautstyr - Kommer, NY variabel: koagulasjon og klipping
 #'     \item LapIntraabdominell: Laparoskopiske intraabdominale komplikasjoner
 #'     \item LapNumHjelpeinnstikk: Antall hjelpeinnstikk
-#'     \item LapTeknikk: Laparaskopisk tilgang, teknikk og metode (Tidl LapTilgangsMetode)
+#'     \item LapTeknikk: Laparoskopisk tilgang, teknikk og metode (Tidl LapTilgangsMetode)
 #'     \item Norsktalende: Pasientens norskkunnskaper
 #'     \item OpAnestesi: Anestesitype
 #'     \item OpASA: ASA-grad
@@ -33,7 +33,7 @@
 #'     \item OpTid: Operasjonstid (minutter)
 #'     \item OpTidlVagInngrep: Tidligere vaginale inngrep
 #'     \item OpTidlLapsko: Tidligere laparoskopi
-#'     \item OpTidlLaparotomi: Tidligere laparatomi
+#'     \item OpTidlLaparotomi: Tidligere laparotomi
 #'     \item OpType: Primæroperasjon eller reoperasjon
 #'     \item R0ScoreEmo:
 #'     \item R0ScoreEnergy:

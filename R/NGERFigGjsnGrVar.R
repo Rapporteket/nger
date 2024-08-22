@@ -237,7 +237,7 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
         if (antMaalNivaa==3) {maalOppTxt[2] <- 'Moderat' }
         rect(xleft=KvalIndGrenser[1:antMaalNivaa], ybottom=0, xright=KvalIndGrenser[2:(antMaalNivaa+1)],
              ytop=max(pos)+0.4, col = fargerMaalNiva[1:antMaalNivaa], border = NA) #add = TRUE, #pos[AntGrNgr+1],
-        legPos <- ifelse(AntGr < 31, ifelse(AntGr < 15, -1, -2.5), -3.5)
+        legPos <- ifelse(AntGr < 31, ifelse(AntGr < 15, -1, -2.5), -4.2)#-3.5)
         legend(x=0, y=legPos, pch=c(NA,rep(15, antMaalNivaa)), col=c(NA, fargerMaalNiva[1:antMaalNivaa]),
                ncol=antMaalNivaa+1,
                xpd=TRUE, border=NA, box.col='white',cex=0.8, pt.cex=1.5,

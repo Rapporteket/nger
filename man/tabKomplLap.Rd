@@ -2,10 +2,10 @@
 % Please edit documentation in R/NGERtabeller.R
 \name{tabKomplLap}
 \alias{tabKomplLap}
-\title{komplikasjoner, Laparaskopi}
+\title{komplikasjoner, Laparoskopi}
 \usage{
 tabKomplLap(RegData, reshID = 0, datoFra = "2019-01-01", datoTil = Sys.Date())
 }
 \description{
-komplikasjoner, Laparaskopi
+komplikasjoner, Laparoskopi
 }

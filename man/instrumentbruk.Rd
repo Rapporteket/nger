@@ -2,10 +2,10 @@
 % Please edit documentation in R/NGERtabeller.R
 \name{instrumentbruk}
 \alias{instrumentbruk}
-\title{instrumentbruk, Laparaskopi}
+\title{instrumentbruk, Laparoskopi}
 \usage{
 instrumentbruk(RegData, datoFra = "2019-01-01", datoTil = Sys.Date())
 }
 \description{
-instrumentbruk, Laparaskopi
+instrumentbruk, Laparoskopi
 }

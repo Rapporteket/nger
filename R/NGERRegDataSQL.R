@@ -78,7 +78,6 @@ NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = Sys.Date(), medPROM
     LapDiagnose1,
     LapDiagnose2,
     LapDiagnose3,
-    LapKonvertert,
     LapKomplKar, #Ny nov 23
   LapKomplTarm, #Ny nov 23
   LapKomplBlaere, #Ny nov 23

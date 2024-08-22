@@ -369,10 +369,10 @@ dataTilResPort(RegData=NGERData, valgtKI='KomplPostop', OpMetode = 2, aar=aar)
 dataTilResPort(RegData=NGERData, valgtKI='Opf0AlvorlighetsGrad', OpMetode = 1, aar=aar)
 dataTilResPort(RegData=NGERData, valgtKI='Opf0AlvorlighetsGrad', OpMetode = 2, aar=aar)
 
-# Konvertering hysteroskopi-> lapraskopi/lapratomi,
+# Konvertering hysteroskopi-> laparoskopi/laparotomi,
 dataTilResPort(RegData=NGERData, valgtKI='HysKonvertert', aar=aar)
 
-# lapraskopi -> lapratomi,
+# laparoskopi -> laparotomi,
 dataTilResPort(RegData=NGERData, valgtKI='LapKonvertert', aar=aar)
 
 # TSS2 - sumskår, gj.sn.
