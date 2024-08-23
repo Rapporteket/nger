@@ -34,11 +34,13 @@ tidsenhet <- 'Mnd'
 shtxt <- as.character(RegData$ShNavn[match(reshID, RegData$ReshId)])
 RegDataEget <- RegData[which(RegData$ReshId==reshID), ]
 maxDatoEget <- format.Date(max(RegDataEget$InnDato), format='%d.%m.%Y', tz='UTC')
-
+print(paste('reshID: ', reshID))
 nger::NGERFigKvalInd(RegData=RegData, reshID=reshID, datoFra=datoFra, datoTil=datoTil,
                              valgtVar='kvalInd', enhetsUtvalg=1,
                              preprosess=0, outfile='KvalIndPros.pdf')
+@
 
+<<'LageFig', include=FALSE>>=
 
 variable <- c('KomplIntra', 'KomplPostop', 'Opf0Status')
 for (valgtVar in variable) {
