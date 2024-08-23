@@ -64,8 +64,9 @@ variabler <- c('Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Op
               'OpASA', 'OpBMI', 'Opf0Status')
 for (valgtVar in variabler) {
 	outfile <- paste0(valgtVar, '_', tidsenhet, '.pdf')
-	nger::NGERFigAndelTid(RegData=RegData, # datoFra=datoFra, valgtVar=valgtVar,
-	                datoTil=datoTil, reshID=reshID, enhetsUtvalg=1,
+	nger::NGERFigAndelTid(RegData=RegData, # datoFra=datoFra, datoTil=datoTil,
+	                      valgtVar=valgtVar,
+	                reshID=reshID, enhetsUtvalg=1,
               tidsenhet=tidsenhet, preprosess=0, outfile=outfile)
 }
 
