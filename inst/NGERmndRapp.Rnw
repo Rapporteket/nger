@@ -55,9 +55,10 @@ for (valgtVar in variable) {
 
 <<'LageFig', include=FALSE>>=
 
-variabler <- c('Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan', 'Opf0Reoperasjon',
-              'KomplPostopAlvor', 'KomplIntra', 'KomplPostop', 'OpAntibProfylakse',
-              'OpASA', 'OpBMI', 'Opf0Status')
+variabler <- c('Opf0KomplBlodning')
+              #  , 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan', 'Opf0Reoperasjon',
+              # 'KomplPostopAlvor', 'KomplIntra', 'KomplPostop', 'OpAntibProfylakse',
+              # 'OpASA', 'OpBMI', 'Opf0Status')
 for (valgtVar in variabler) {
 	outfile <- paste0(valgtVar, '_', tidsenhet, '.pdf')
 	nger::NGERFigAndelTid(RegData=RegData, # datoFra=datoFra, datoTil=datoTil,
