@@ -60,13 +60,16 @@ maxDatoEget <- format.Date(max(RegDataEget$InnDato), format='%d.%m.%Y', tz='UTC'
 @
 
 <<'Testing2', include=FALSE>>=
-nger::NGERFigKvalInd(RegData=RegData, preprosess=0, reshID=reshID, outfile='KvalIndPros.pdf')
+nger::NGERFigKvalInd(RegData=RegData, preprosess=0, reshID=reshID,
+                     valgtVar='kvalInd', enhetsUtvalg=1,
+                     outfile='KvalIndPros.pdf')
 @
 
 <<'LageFig', include=FALSE>>=
-# nger::NGERFigKvalInd(RegData=RegData, reshID=reshID, datoFra=datoFra, datoTil=datoTil,
+# nger::NGERFigKvalInd(RegData=RegData, preprosess=0, reshID=reshID,
 #                              valgtVar='kvalInd', enhetsUtvalg=1,
-#                              preprosess=0, outfile='KvalIndPros.pdf')
+#                              datoFra=datoFra, datoTil=datoTil,
+#                              outfile='KvalIndPros.pdf')
 
 variable <- c('KomplIntra', 'KomplPostop', 'Opf0Status')
 for (valgtVar in variable) {
