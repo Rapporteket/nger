@@ -43,13 +43,6 @@ maxDatoEget <- format.Date(max(RegDataEget$InnDato), format='%d.%m.%Y', tz='UTC'
 nger::NGERFigKvalInd(RegData=RegData, preprosess=0, reshID=0,
                      valgtVar='kvalInd',
                      outfile='KvalIndPros.pdf')
-@
-
-<<'LageFig', include=FALSE>>=
-# nger::NGERFigKvalInd(RegData=RegData, preprosess=0, reshID=reshID,
-#                              valgtVar='kvalInd', enhetsUtvalg=1,
-#                              datoFra=datoFra, datoTil=datoTil,
-#                              outfile='KvalIndPros.pdf')
 
 variable <- c('KomplIntra', 'KomplPostop', 'Opf0Status')
 for (valgtVar in variable) {
@@ -58,6 +51,9 @@ for (valgtVar in variable) {
 	                          # datoFra=datoFra, datoTil=datoTil,
 	                          outfile=outfile, reshID=reshID)
 }
+@
+
+<<'LageFig', include=FALSE>>=
 
 variabler <- c('Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan', 'Opf0Reoperasjon',
               'KomplPostopAlvor', 'KomplIntra', 'KomplPostop', 'OpAntibProfylakse',
