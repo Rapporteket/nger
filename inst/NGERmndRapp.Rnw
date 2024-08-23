@@ -50,19 +50,19 @@ maxDatoEget <- format.Date(max(RegDataEget$InnDato), format='%d.%m.%Y', tz='UTC'
 #                                    %i% which(RegData$InnDato >= '2016-01-01'), ],
 #                     kvalInd = RegData)
    NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, reshID=reshID, datoFra = datoFra,
-                               datoTil = datoTil, enhetsUtvalg=1)
+                               enhetsUtvalg=1)
   # smltxt <- NGERUtvalg$smltxt
   # medSml <- NGERUtvalg$medSml
   # utvalgTxt <- NGERUtvalg$utvalgTxt
   # hovedgrTxt <- NGERUtvalg$hovedgrTxt
-  # RegData <- NGERUtvalg$RegData
+   RegData <- NGERUtvalg$RegData
 
 @
 
 <<'Testing2', include=FALSE>>=
-nger::NGERFigKvalInd(RegData=RegData, preprosess=0, reshID=reshID,
+nger::NGERFigKvalInd(RegData=RegData, preprosess=0, reshID=0,
                      datoFra = datoFra,
-                     valgtVar='kvalInd', enhetsUtvalg=1,
+                     valgtVar='kvalInd',
                      outfile='KvalIndPros.pdf')
 @
 
