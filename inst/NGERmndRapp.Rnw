@@ -38,31 +38,48 @@ maxDatoEget <- format.Date(max(RegDataEget$InnDato), format='%d.%m.%Y', tz='UTC'
 
 <<'Testing1', include=FALSE>>=
 
-# valgtVar='kvalInd'
-# RegData <- switch(valgtVar,
-#                     RAND0 = RegData[which(RegData$R0Metode %in% 1:2) #Inneholder kun verdiene 1, 2 og tomme
-#                                     %i% which(RegData$InnDato >= '2016-01-01'), ],
-#                     RAND1 = RegData[ which(RegData$R1Metode %in% 1:3) #which(RegData$RY1Status==1) %i%
-#                                     %i% which(RegData$InnDato >= '2018-01-01'), ],
-#                     RAND3 = RegData[ which(RegData$R3Metode %in% 1:3) #which(RegData$RY1Status==1) %i%
-#                                      %i% which(RegData$InnDato >= '2018-01-01'), ],
-#                     TSS0 = RegData[which(RegData$Tss2Type %in% 1:3) #which(RegData$Tss2Status==1) %i%
-#                                    %i% which(RegData$InnDato >= '2016-01-01'), ],
-#                     kvalInd = RegData)
+valgtVar='kvalInd'
+RegData <- switch(valgtVar,
+                    RAND0 = RegData[which(RegData$R0Metode %in% 1:2) #Inneholder kun verdiene 1, 2 og tomme
+                                    %i% which(RegData$InnDato >= '2016-01-01'), ],
+                    RAND1 = RegData[ which(RegData$R1Metode %in% 1:3) #which(RegData$RY1Status==1) %i%
+                                    %i% which(RegData$InnDato >= '2018-01-01'), ],
+                    RAND3 = RegData[ which(RegData$R3Metode %in% 1:3) #which(RegData$RY1Status==1) %i%
+                                     %i% which(RegData$InnDato >= '2018-01-01'), ],
+                    TSS0 = RegData[which(RegData$Tss2Type %in% 1:3) #which(RegData$Tss2Status==1) %i%
+                                   %i% which(RegData$InnDato >= '2016-01-01'), ],
+                    kvalInd = RegData)
    NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, reshID=reshID, datoFra = datoFra,
                                enhetsUtvalg=1)
-  # smltxt <- NGERUtvalg$smltxt
-  # medSml <- NGERUtvalg$medSml
-  # utvalgTxt <- NGERUtvalg$utvalgTxt
-  # hovedgrTxt <- NGERUtvalg$hovedgrTxt
+  smltxt <- NGERUtvalg$smltxt
+  medSml <- NGERUtvalg$medSml
+  utvalgTxt <- NGERUtvalg$utvalgTxt
+  hovedgrTxt <- NGERUtvalg$hovedgrTxt
    RegData <- NGERUtvalg$RegData
+
+       KImaal <- switch(valgtVar,
+                   RAND0 = 80,
+                   TSS0 = 80,
+                   kvalInd = 1:4)
+
+  ind <- NGERUtvalg$ind
+  if (medSml == 0) {ind$Rest <- 0}
+  N <- list(Hoved = length(ind$Hoved), Rest = length(ind$Rest))
+  Nfig <- N
+  Ngr <- N
+  AggVerdier <- list(Hoved = 0, Rest = 0)
+  xakseTxt <- 'Andel (%)'
+  xmax <- 100
+  indUtHoved <- NULL
+  indUtRest <- NULL
+
 
 @
 
 <<'Testing2', include=FALSE>>=
 nger::NGERFigKvalInd(RegData=RegData, preprosess=0, reshID=0,
                      datoFra = datoFra,
-                     valgtVar='kvalInd',
+                     valgtVar='Alder',
                      outfile='KvalIndPros.pdf')
 @
 
