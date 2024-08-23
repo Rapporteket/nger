@@ -36,38 +36,13 @@ RegDataEget <- RegData[which(RegData$ReshId==reshID), ]
 maxDatoEget <- format.Date(max(RegDataEget$InnDato), format='%d.%m.%Y', tz='UTC')
 @
 
-<<'Testing1', include=FALSE>>=
-
-   # NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, reshID=reshID, datoFra = datoFra,
-   #                             enhetsUtvalg=1)
-  # smltxt <- NGERUtvalg$smltxt
-  # medSml <- NGERUtvalg$medSml
-  # utvalgTxt <- NGERUtvalg$utvalgTxt
-  # hovedgrTxt <- NGERUtvalg$hovedgrTxt
-  #  RegData <- NGERUtvalg$RegData
-  #
-  #      KImaal <- switch(valgtVar,
-  #                  RAND0 = 80,
-  #                  TSS0 = 80,
-  #                  kvalInd = 1:4)
-  #
-  # ind <- NGERUtvalg$ind
-  # if (medSml == 0) {ind$Rest <- 0}
-  # N <- list(Hoved = length(ind$Hoved), Rest = length(ind$Rest))
-  # Nfig <- N
-  # Ngr <- N
-  # AggVerdier <- list(Hoved = 0, Rest = 0)
-  # xakseTxt <- 'Andel (%)'
-  # xmax <- 100
-@
 
 <<'Testing2', include=FALSE>>=
-nger::NGERFigAndelerGrVar(RegData=RegData, valgtVar='Alder', preprosess=0, datoFra=datoFra,
-                datoTil=datoTil, outfile='Test.pdf', reshID=reshID)
- # nger::NGERFigKvalInd(RegData=RegData, preprosess=0, reshID=0,
- #                      datoFra = datoFra,
- #                      valgtVar='kvalInd',
-#                      outfile='KvalIndPros.pdf')
+# nger::NGERFigAndelerGrVar(RegData=RegData, valgtVar='Alder', preprosess=0, datoFra=datoFra,
+#                 datoTil=datoTil, outfile='Test.pdf', reshID=reshID)
+nger::NGERFigKvalInd(RegData=RegData, preprosess=0, reshID=0,
+                     valgtVar='kvalInd',
+                     outfile='KvalIndPros.pdf')
 @
 
 <<'LageFig', include=FALSE>>=
@@ -79,8 +54,9 @@ nger::NGERFigAndelerGrVar(RegData=RegData, valgtVar='Alder', preprosess=0, datoF
 variable <- c('KomplIntra', 'KomplPostop', 'Opf0Status')
 for (valgtVar in variable) {
 	outfile <- paste0(valgtVar, '_Alle', tidsenhet, '.pdf')
-	nger::NGERFigAndelerGrVar(RegData=RegData, valgtVar=valgtVar, preprosess=0, datoFra=datoFra,
-                datoTil=datoTil, outfile=outfile, reshID=reshID)
+	nger::NGERFigAndelerGrVar(RegData=RegData, valgtVar=valgtVar, preprosess=0,
+	                          # datoFra=datoFra, datoTil=datoTil,
+	                          outfile=outfile, reshID=reshID)
 }
 
 variabler <- c('Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan', 'Opf0Reoperasjon',
@@ -88,7 +64,7 @@ variabler <- c('Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Op
               'OpASA', 'OpBMI', 'Opf0Status')
 for (valgtVar in variabler) {
 	outfile <- paste0(valgtVar, '_', tidsenhet, '.pdf')
-	nger::NGERFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
+	nger::NGERFigAndelTid(RegData=RegData, # datoFra=datoFra, valgtVar=valgtVar,
 	                datoTil=datoTil, reshID=reshID, enhetsUtvalg=1,
               tidsenhet=tidsenhet, preprosess=0, outfile=outfile)
 }
