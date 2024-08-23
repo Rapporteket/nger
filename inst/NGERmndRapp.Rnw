@@ -61,7 +61,7 @@ maxDatoEget <- format.Date(max(RegDataEget$InnDato), format='%d.%m.%Y', tz='UTC'
 
 <<'Testing2', include=FALSE>>=
 nger::NGERFigKvalInd(RegData=RegData, preprosess=0, reshID=reshID,
-                     datoTil=datoTil,
+                     datoFra = datoFra,
                      valgtVar='kvalInd', enhetsUtvalg=1,
                      outfile='KvalIndPros.pdf')
 @
