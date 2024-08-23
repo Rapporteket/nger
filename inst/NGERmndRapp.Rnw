@@ -25,22 +25,21 @@ if (!exists('RegData')){
       RegData <- nger::NGERPreprosess(RegData=RegData)
       RegData2aar <- nger::NGERPreprosess(RegData = nger::NGERRegDataSQL(datoFra=datoFra-365, datoTil = datoTil))
 }
+
+tidsenhet <- 'Mnd'
+shtxt <- as.character(RegData$ShNavn[match(reshID, RegData$ReshId)])
 @
 
 
-<<'SetteParametreOgLageFig', include=FALSE>>=
-tidsenhet <- 'Mnd'
-
-shtxt <- as.character(RegData$ShNavn[match(reshID, RegData$ReshId)])
+<<'SetteParametre', include=FALSE>>=
 RegDataEget <- RegData[which(RegData$ReshId==reshID), ]
-maxDatoEget <- format.Date(max(RegDataEget$InnDato), format='%d.%m.%Y', tz='UTC')
-print(paste('reshID: ', reshID))
-nger::NGERFigKvalInd(RegData=RegData, reshID=reshID, datoFra=datoFra, datoTil=datoTil,
-                             valgtVar='kvalInd', enhetsUtvalg=1,
-                             preprosess=0, outfile='KvalIndPros.pdf')
 @
 
 <<'LageFig', include=FALSE>>=
+maxDatoEget <- format.Date(max(RegDataEget$InnDato), format='%d.%m.%Y', tz='UTC')
+nger::NGERFigKvalInd(RegData=RegData, reshID=reshID, datoFra=datoFra, datoTil=datoTil,
+                             valgtVar='kvalInd', enhetsUtvalg=1,
+                             preprosess=0, outfile='KvalIndPros.pdf')
 
 variable <- c('KomplIntra', 'KomplPostop', 'Opf0Status')
 for (valgtVar in variable) {
