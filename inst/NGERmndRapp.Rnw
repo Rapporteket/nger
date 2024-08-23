@@ -41,8 +41,9 @@ maxDatoEget <- format.Date(max(RegDataEget$InnDato), format='%d.%m.%Y', tz='UTC'
 
 
 <<'LageFig', include=FALSE>>=
-nger::NGERFigKvalInd(RegData=NGERData, preprosess=0, reshID=0,
+nger::NGERFigKvalInd(RegData=NGERData, preprosess=0, reshID=reshID,
                      valgtVar='kvalInd',
+                     enhetsUtvalg = 1,
                      outfile='KvalIndPros.pdf')
 
 variable <- c('KomplIntra', 'KomplPostop', 'Opf0Status')
@@ -51,9 +52,6 @@ for (valgtVar in variable) {
 	nger::NGERFigAndelerGrVar(RegData=NGERData, valgtVar=valgtVar, preprosess=0,
 	                          outfile=outfile, reshID=reshID)
 }
-@
-
-<<'Test', include=FALSE>>=
 
 variabler <- c('Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan', 'Opf0Reoperasjon',
               'KomplPostopAlvor', 'KomplIntra', 'KomplPostop', 'OpAntibProfylakse',
@@ -65,10 +63,6 @@ for (valgtVar in variabler) {
 	                reshID=reshID, enhetsUtvalg=1,
               tidsenhet=tidsenhet, preprosess=0, outfile=outfile)
 }
-
-# 	nger::NGERFigAndelTid(RegData=RegData2aar, valgtVar='Alder',
-# 	                reshID=reshID, enhetsUtvalg=1,
-#               tidsenhet='Kvartal', preprosess=0, outfile='Test.pdf')
 
 @
 
