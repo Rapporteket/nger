@@ -58,17 +58,17 @@ for (valgtVar in variable) {
 variabler <- c('Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan', 'Opf0Reoperasjon',
               'KomplPostopAlvor', 'KomplIntra', 'KomplPostop', 'OpAntibProfylakse',
               'OpASA', 'OpBMI', 'Opf0Status')
-# for (valgtVar in variabler) {
-# 	outfile <- paste0(valgtVar, '_', tidsenhet, '.pdf')
-# 	nger::NGERFigAndelTid(RegData=NGERData, # datoFra=datoFra, datoTil=datoTil,
-# 	                      valgtVar=valgtVar,
-# 	                reshID=reshID, enhetsUtvalg=1,
-#               tidsenhet=tidsenhet, preprosess=0, outfile=outfile)
-# }
-
-	nger::NGERFigAndelTid(RegData=RegData2aar, valgtVar='Alder',
+for (valgtVar in variabler) {
+	outfile <- paste0(valgtVar, '_', tidsenhet, '.pdf')
+	nger::NGERFigAndelTid(RegData=NGERData, # datoFra=datoFra, datoTil=datoTil,
+	                      valgtVar=valgtVar,
 	                reshID=reshID, enhetsUtvalg=1,
-              tidsenhet='Kvartal', preprosess=0, outfile='Test.pdf')
+              tidsenhet=tidsenhet, preprosess=0, outfile=outfile)
+}
+
+# 	nger::NGERFigAndelTid(RegData=RegData2aar, valgtVar='Alder',
+# 	                reshID=reshID, enhetsUtvalg=1,
+#               tidsenhet='Kvartal', preprosess=0, outfile='Test.pdf')
 
 @
 
