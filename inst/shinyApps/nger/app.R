@@ -819,14 +819,16 @@ server <- function(input, output, session) {
     })
 
   #--------------Startside------------------------------
-    # filename function for re-use - i dette tilfellet vil det funke fint å hardkode det samme..
-  downloadFilename <- function(fileBaseName, type='') {
-    paste0(fileBaseName, as.character(as.integer(as.POSIXct(Sys.time()))), '.pdf')
-    }
+  #FJERNES:
+      # filename function for re-use - i dette tilfellet vil det funke fint å hardkode det samme..
+  # downloadFilename <- function(fileBaseName, type='') {
+  #   paste0(fileBaseName, as.character(as.integer(as.POSIXct(Sys.time()))), '.pdf')
+  #   }
 
        output$mndRapp.pdf <- downloadHandler(
-            filename = function(){ downloadFilename('NGERmaanedsrapport')},
-            content = function(file){
+            #filename = function(){ downloadFilename('NGERmaanedsrapport')},
+         filename = function(){ paste0('NGERmndRapp', Sys.time(), '.pdf')},
+         content = function(file){
               henteSamlerapporter(file, rnwFil="NGERmndRapp.Rnw",
                                   reshID = reshID)
             })
