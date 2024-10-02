@@ -410,3 +410,79 @@ tabUt <- xtable(tab, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(tab)), 
 
 return(tabUt)
 }
+
+
+#HYSTEROSKOPI:
+library(nger)
+NGERdata <- nger::NGERRegDataSQL(datoFra = '2020-01-01')
+RegData <- NGERPreprosess(RegData=NGERdata)
+#tabNokkelHys
+RegData <- NGERUtvalgEnh(RegData, OpMetode=2)$RegData
+# Andel ufulstendige - HysGjforingsGrad, peroperative komplikasjoner, postoperative komplikasjoner
+# og pasienttilfredshet (generell oppfatning, fornøyd+svært fornøyd) ut i fra:
+
+rader <- function(var, met = 'median', verdi=1){
+
+  indUfull <- which(RegData$HysGjforingsGrad==2)
+  indPerKomp <- which(RegData$HysKomplikasjoner==1)
+  indPostKomp <- which(RegData$Opf0Komplikasjoner==1)
+  indTss2Gen <- which(RegData$Tss2Generelt %in% 2:3)
+
+  pst <- function(var, verdi) {100*sum(var==verdi)/length(var)}
+
+  if (met=='median') {
+    rad <- c(median(var, na.rm = T),
+             median(var[indUfull], na.rm = T), #Ufullstendige
+             median(var[indPerKomp], na.rm = T), # Perop./Intraop kompl
+             median(var[indPostKomp], na.rm = T), # Postop kompl
+             median(var[indTss2Gen], na.rm = T) # Fornøyd + svært fornøyd
+    )
+    rad <- round(rad, 1)
+    }
+  if (met == 'pst'){
+    var <- var[!is.na(var)]
+    rad <-c(pst(var, verdi = verdi),
+            pst(var[indUfull], verdi = verdi), #Ufullstendige
+            pst(var[indPerKomp], verdi = verdi), # Perop./Intraop kompl
+            pst(var[indPostKomp], verdi = verdi), # Postop kompl
+            pst(var[indTss2Gen], verdi = verdi) # Fornøyd + svært fornøyd
+    )
+    #formater til en desimal (og %-tegn?)
+    }
+
+  names(rad) <- c('Alle', 'Ufullstendig', 'Perop. kompl', 'Postop. kompl', 'Generelt fornøyd')
+
+   return(invisible(rad))
+}
+
+tabHys <- rbind(
+  'Alder (median)' = rader(var=RegData$Alder, met = 'median'),
+  'BMI (median)' = rader(var=RegData$OpBMI, met = 'median'),
+  'Operasjonstid (median)'  = rader(var=RegData$OpTid, met = 'median'),
+#  'Blodfortynnende (%)' = rader(var=RegData$Blodfortynnende, met = 'pst', verdi=), #Variabel fjernet nov23...
+ 'Poliklinkk (%)' = rader(var = RegData$OpBehNivaa, met = 'pst', verdi = 1),
+   'Dagkirurgi (%)' = rader(var = RegData$OpBehNivaa, met = 'pst', verdi = 2),
+   'Innlagt (%)'  = rader(var = RegData$OpBehNivaa, met = 'pst', verdi = 3),
+   'Konvertert (%)' =  rader(var = RegData$HysKonvertert, met = 'pst', verdi = 1),
+  'Perop. kompl. (%)' = rader(var = RegData$HysKomplikasjoner, met = 'pst', verdi = 1)
+  )
+
+
+
+
+#Laparoskopi
+# Ønsker tabeller på andel peroperative komplikasjoner, postoperative komplikasjoner og
+# pasienttilfredshet (andel fornøyd/svært fornøyd variabel) ut ifra
+# Alder (median)
+# BMI (median)
+# Behandlingsnivå (tre)
+# AB profylakse
+# Operasjonstid (median)
+# Robotkirurgi (andel)
+# Tidligere laparotomi (andel)
+# Tidligere laparoskopi (andel)
+# Metode (åpen, veress-nål eller Direkte)
+# Optisk trokar (andel)
+# Hjelpeinnstikk (gj.sn)
+# Konvertert (andel)
+# Peroperative komplikasjoner (andel)
