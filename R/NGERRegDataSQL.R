@@ -1,14 +1,14 @@
 #' Henter global dataramme for NGER
 #'
 #' Henter NGER-data fra staging.
-#' Klargjort (delvis) for å kunne  sende inn en vektor med hvilke variable det skal spørres etter.
 #'
 #' @inheritParams NGERFigAndeler
 #' @param medPROM: koble på RAND og TSS2-variabler
 #'
 #' @return RegData data frame
-#' @export
 #'
+#' @export
+
 
 NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = Sys.Date(), medPROM=1, ...) {
 
@@ -117,7 +117,6 @@ NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = Sys.Date(), medPROM
     LapPrepOppdel, #Ny nov 23
     LapUterusman, #Ny nov 23
     Leveringsdato,
-    -- Blodfortynnende, fjernet nov 23
     -- OpAnestesi, fjernet nov 23
     OpAnestesiIngen, #ny nov23
     OpAnestesiLok, #ny nov23
@@ -127,6 +126,7 @@ NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = Sys.Date(), medPROM
     OpAntibProfylakse,
     OpASA,
     OpBMI,
+    -- OpBlodfortynnende, # endret navn fra Blodfortynnende nov 23
     -- OpBMIKategori,  ikke i bruk
     -- OpDagkirurgi,
     OpDato,

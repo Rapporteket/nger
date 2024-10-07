@@ -18,7 +18,6 @@ NGERFigAndelerGrVar(
   Ngrense = 10,
   reshID = 0,
   outfile = "",
-  enhetsUtvalg = 0,
   velgDiag = 0,
   preprosess = 1,
   hentData = 0,
@@ -68,11 +67,6 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 
 \item{outfile}{Navn på fil figuren skrives til. Standard: '' (Figur skrives
 til systemets standard utdataenhet (som regel skjerm))}
-
-\item{enhetsUtvalg}{Lag figur for
-0: Hele landet
-1: Egen enhet mot resten av landet (Standard)
-2: Egen enhet}
 
 \item{velgDiag}{0: Alle
 1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)

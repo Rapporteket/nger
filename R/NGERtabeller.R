@@ -413,15 +413,15 @@ return(tabUt)
 
 
 #HYSTEROSKOPI:
-library(nger)
-NGERdata <- nger::NGERRegDataSQL(datoFra = '2020-01-01')
-RegData <- NGERPreprosess(RegData=NGERdata)
+#library(nger)
+#NGERdata <- NGERRegDataSQL(datoFra = '2020-01-01')
+#RegData <- NGERPreprosess(RegData=NGERdata)
 #tabNokkelHys
-RegData <- NGERUtvalgEnh(RegData, OpMetode=2)$RegData
+#RegData <- NGERUtvalgEnh(RegData, OpMetode=2)$RegData
 # Andel ufulstendige - HysGjforingsGrad, peroperative komplikasjoner, postoperative komplikasjoner
 # og pasienttilfredshet (generell oppfatning, fornøyd+svært fornøyd) ut i fra:
 
-rader <- function(var, met = 'median', verdi=1){
+rader <- function(RegData, var, met = 'median', verdi=1){
 
   indUfull <- which(RegData$HysGjforingsGrad==2)
   indPerKomp <- which(RegData$HysKomplikasjoner==1)
@@ -455,17 +455,17 @@ rader <- function(var, met = 'median', verdi=1){
    return(invisible(rad))
 }
 
-tabHys <- rbind(
-  'Alder (median)' = rader(var=RegData$Alder, met = 'median'),
-  'BMI (median)' = rader(var=RegData$OpBMI, met = 'median'),
-  'Operasjonstid (median)'  = rader(var=RegData$OpTid, met = 'median'),
-#  'Blodfortynnende (%)' = rader(var=RegData$Blodfortynnende, met = 'pst', verdi=), #Variabel fjernet nov23...
- 'Poliklinkk (%)' = rader(var = RegData$OpBehNivaa, met = 'pst', verdi = 1),
-   'Dagkirurgi (%)' = rader(var = RegData$OpBehNivaa, met = 'pst', verdi = 2),
-   'Innlagt (%)'  = rader(var = RegData$OpBehNivaa, met = 'pst', verdi = 3),
-   'Konvertert (%)' =  rader(var = RegData$HysKonvertert, met = 'pst', verdi = 1),
-  'Perop. kompl. (%)' = rader(var = RegData$HysKomplikasjoner, met = 'pst', verdi = 1)
-  )
+# tabHys <- rbind(
+#   'Alder (median)' = rader(RegData=RegData, var=RegData$Alder, met = 'median'),
+#   'BMI (median)' = rader(var=RegData$OpBMI, met = 'median'),
+#   'Operasjonstid (median)'  = rader(var=RegData$OpTid, met = 'median'),
+#   'Blodfortynnende (%)' = rader(var=RegData$OpBlodfortynnende, met = 'pst', verdi=1),
+#  'Poliklinkk (%)' = rader(var = RegData$OpBehNivaa, met = 'pst', verdi = 1),
+#    'Dagkirurgi (%)' = rader(var = RegData$OpBehNivaa, met = 'pst', verdi = 2),
+#    'Innlagt (%)'  = rader(var = RegData$OpBehNivaa, met = 'pst', verdi = 3),
+#    'Konvertert (%)' =  rader(var = RegData$HysKonvertert, met = 'pst', verdi = 1),
+#   'Perop. kompl. (%)' = rader(var = RegData$HysKomplikasjoner, met = 'pst', verdi = 1)
+#   )
 
 
 
