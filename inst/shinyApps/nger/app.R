@@ -345,10 +345,9 @@ tabPanel(p("Tabelloversikter", title = 'Instrumentbruk, komplikasjoner'),
                       dateRangeInput(inputId = 'datovalgTab', start = startDato, end = Sys.Date(),
                                      label = "Tidsperiode", separator="t.o.m.", language="nb"),
                       conditionalPanel(
-                        condition = "input.tab == 'Pasientegenskaper'"  ,
-                       selectInput(inputId = "tidsenhetTab", label="Velg tidsenhet",
-                                  choices = tidsenheter))
-         ),
+                        condition = "input.tab == 'Nøkkeltall, Hys'"  ,
+                       br('Tabellen viser hele landet. Her bør vi vel legge til valg mellom eget og hele landet'))
+          ),
          mainPanel(
            tabsetPanel(id='tab',
              tabPanel('Instrumentbruk, Lap',
@@ -364,6 +363,13 @@ tabPanel(p("Tabelloversikter", title = 'Instrumentbruk, komplikasjoner'),
                       br(),
                       tableOutput('LapKompl'),
                       downloadButton(outputId = 'lastNed_tabLapKompl', label='Last ned tabell')
+             ),
+             tabPanel('Nøkkeltall, Hys',
+                      br(),
+                      #uiOutput("tittelLapKompl"),
+                      br(),
+                      tableOutput('tabNokkelHys')
+                      #downloadButton(outputId = 'lastNed_tabLapKompl', label='Last ned tabell')
              )
            ))
 ), #Tab tabelloversikter
@@ -1105,6 +1111,7 @@ output$lastNed_dataDump <- downloadHandler(
            content = function(file, filename){write.csv2(tabInstrumentbruk, file, row.names = T, na = '')})
          LapKomplData <- tabKomplLap(RegData=RegData, reshID=reshID,
                                   datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2])
+
          output$tittelLapKompl <- renderUI(tagList(
            h4('Hyppighet (%) av laparoskopiske komplikasjoner. '),
            h4(paste0('Totalt ble det utført ', LapKomplData$AntLap, ' laparoskopier i tidsperioden.'))))
@@ -1113,6 +1120,11 @@ output$lastNed_dataDump <- downloadHandler(
            filename = function(){paste0('tabLapKompl.csv')},
            content = function(file, filename){write.csv2(LapKomplData$AntLap, file, row.names = T, na = '')})
           #,caption = tabtxtLapKompl)
+
+         tabNokkelHys <- tabNokkelHys(RegData = RegData,
+                                            datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2])
+         output$tabNokkelHys <- renderTable(tabNokkelHys, rownames = T, align = 'r', #c('l', 'r', 'r', 'r', 'r', 'r'),
+                                            spacing="xs")
 
       })
 

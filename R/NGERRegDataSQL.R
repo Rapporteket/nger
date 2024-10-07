@@ -126,7 +126,7 @@ NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = Sys.Date(), medPROM
     OpAntibProfylakse,
     OpASA,
     OpBMI,
-    -- OpBlodfortynnende, # endret navn fra Blodfortynnende nov 23
+    OpBlodfortynnende, # endret navn fra Blodfortynnende nov 23
     -- OpBMIKategori,  ikke i bruk
     -- OpDagkirurgi,
     OpDato,
