@@ -1,4 +1,12 @@
 #Resultattjeneste for NGER
+
+
+#' Brukergrensesnitt (ui) til nordscir-appen
+#'
+#' @return Brukergrensesnittet (ui) til nger-appen
+#' @export
+ui_nger <- function() {
+
 library(nger)
 
 idag <- Sys.Date()
@@ -6,42 +14,39 @@ startDato <- paste0(as.numeric(format(idag-100, "%Y")), '-01-01') #'2019-01-01' 
 # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
 addResourcePath('rap', system.file('www', package='rapbase'))
 
-context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-paaServer <- (context %in% c("DEV", "TEST", "QA", "PRODUCTION")) #rapbase::isRapContext()
-regTitle = ifelse(paaServer,'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER',
-							'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER med FIKTIVE data')
+regTitle = 'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER'
 
 
-#----------Hente data og evt. parametre som er statiske i appen----------
-if (paaServer) {
-  RegData <- NGERRegDataSQL() #datoFra = datoFra, datoTil = datoTil)
-  #stopifnot(dim(RegData)[1]>0)
-  errorCondition(dim(RegData)[1]==0, 'ingen data')
-  qSkjemaOversikt <- 'SELECT * FROM SkjemaOversikt'
-  SkjemaOversikt <- rapbase::loadRegData(registryName='nger',
-                                         query=qSkjemaOversikt, dbType='mysql')
-}
-
-tulledata <- 0
-if (!exists('RegData')) {
-  #data("NGERtulledata.Rdata", package = "nger")
-  load('./data/NGERtulledata.Rdata')
-  tulledata <- 1 #Må få med denne i tulledatafila..
-  }
-
-if (paaServer) {
- RegData <- NGERPreprosess(RegData)
- SkjemaOversikt <- NGERPreprosess(RegData = SkjemaOversikt)
-}
+# #----------Hente data og evt. parametre som er statiske i appen----------
+# if (paaServer) {
+#   RegData <- NGERRegDataSQL() #datoFra = datoFra, datoTil = datoTil)
+#   #stopifnot(dim(RegData)[1]>0)
+#   errorCondition(dim(RegData)[1]==0, 'ingen data')
+#   qSkjemaOversikt <- 'SELECT * FROM SkjemaOversikt'
+#   SkjemaOversikt <- rapbase::loadRegData(registryName='nger',
+#                                          query=qSkjemaOversikt, dbType='mysql')
+# }
+#
+# #tulledata <- 0
+# if (!exists('RegData')) {
+#   #data("NGERtulledata.Rdata", package = "nger")
+#   load('./data/NGERtulledata.Rdata')
+#   tulledata <- 1 #Må få med denne i tulledatafila..
+#   }
+#
+# if (paaServer) {
+#  RegData <- NGERPreprosess(RegData)
+#  SkjemaOversikt <- NGERPreprosess(RegData = SkjemaOversikt)
+# }
 
 #-----Definere utvalgsinnhold
-#Definere utvalgsinnhold
-sykehusNavn <- sort(unique(RegData$ShNavn), index.return=T)
-sykehusValgUts <- unique(RegData$ReshId)[sykehusNavn$ix]
-names(sykehusValgUts) <- sykehusNavn$x #c('Alle',sykehusNavn$x)
-sykehusValg <- c(0,sykehusValgUts)
-names(sykehusValg) <- c('Ikke valgt',sykehusNavn$x)
-
+# #Definere utvalgsinnhold
+# sykehusNavn <- sort(unique(RegData$ShNavn), index.return=T)
+# sykehusValgUts <- unique(RegData$ReshId)[sykehusNavn$ix]
+# names(sykehusValgUts) <- sykehusNavn$x #c('Alle',sykehusNavn$x)
+# sykehusValg <- c(0,sykehusValgUts)
+# names(sykehusValg) <- c('Ikke valgt',sykehusNavn$x)
+#
 
 enhetsUtvalg <- c("Egen mot resten av landet"=1,
                         "Hele landet"=0,
@@ -53,7 +58,7 @@ enhetsUtvalg <- c("Egen mot resten av landet"=1,
  opMetode <- c('Alle'=0,
                'Laparoskopi'=1,
                'Hysteroskopi'=2,
-               #'Begge'=3,
+               # 'Begge'=3,
                'Tot. lap. hysterektomi (LCD01/LCD04)'=4,
                'Lap. subtotal hysterektomi (LCC11)'=5,
                'Lap. ass. vag. hysterektomi (LCD11)'=6,
@@ -180,9 +185,10 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
                             ),
                             conditionalPanel(condition = "input.ark == 'Last ned egne data' ",
-                                             selectInput(inputId = 'velgReshReg', label='Velg sykehus',
-                                                         selected = 0,
-                                                         choices = sykehusValg),
+                                             uiOutput('velgReshReg'),
+                                             # selectInput(inputId = 'velgReshReg', label='Velg sykehus',
+                                             #             selected = 0,
+                                             #             choices = uiOutput("sykehusValg")), #sykehusValg),
                                              selectInput(inputId = 'opMetodeRegDump', label='Operasjonstype (kun datadump)',
                                                          choices = opMetode
                                              ),
@@ -268,7 +274,7 @@ h3('Registerets kvalitetsindikatorer', align='center'),
                       conditionalPanel(condition = "input.kvalIndark == 'Figur' || input.kvalIndark == 'Tabell' ||
                       input.kvalIndark == 'RAND, alle dimensjoner' ",
                                        selectInput(inputId = 'velgReshKval', label='Velg eget Sykehus',
-                                                   choices = sykehusValg)
+                                                   choices = uiOutput("sykehusValg")) #sykehusValg)
                                        ),
                       #Bare RAND013
                       conditionalPanel(condition = "input.kvalIndark == 'RAND, alle år'",
@@ -468,7 +474,7 @@ tabPanel(p("Fordelinger", title= 'Alder, anestesi, ASA, BMI, diagnoser, komplika
                                   choices = alvorKompl
                       ),
                       selectInput(inputId = 'velgResh', label='Velg eget Sykehus',
-                                  choices = sykehusValg),
+                                  choices = uiOutput("sykehusValg")), #sykehusValg),
                       selectInput(inputId = "bildeformatFord",
                                   label = "Velg format for nedlasting av figur",
                                   choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg')
@@ -709,38 +715,8 @@ tabPanel(p("Registeradministrasjon", title='Registeradministrasjonens side for r
          #uiOutput('rolle'),
 
          tabsetPanel(
-           #tabPanel(
-             # sidebarPanel(
-             #   h4('Nedlasting av data til interaktive nettsider'), MÅ ENDRES TIL SYKEHUSVISER.. SJEKK INDIKATORER
-             #
-             #   selectInput(inputId = "valgtVarRes", label="Velg variabel",
-             #               choices = c('Komplikasjoner under operasjon' = 'KomplIntra',
-             #                           'Komplikasjoner, postoperativt' = 'KomplPostop',
-             #                           'Alvorlige, postop.kompl.' = 'KomplPostopAlvor',
-             #                           'Konvertert, hys-lap' = 'HysKonvertert',
-             #                           'Konvertert, lap-lap, ikke forventet' = 'LapKonvertert',
-             #                           'TSS2-generelt, positiv oppfatning avd.' = 'Tss2Generelt',
-             #                           'TSS2-sumskår' = 'Tss2Sumskaar'
-             #               )
-             #   ),
-             #   selectInput(inputId = 'opMetodeRes', label='Operasjonstype',
-             #               choices = opMetode
-             #   ),
-             #
-             #   # dateRangeInput(inputId = 'aarRes', start = startDato, end = Sys.Date(),
-             #   #                label = "Operasjonaår", separator="t.o.m.", language="nb", format = 'yyyy'
-             #   #                ),
-             #   sliderInput(inputId="aarRes", label = "Operasjonsår", min = as.numeric(2016),
-             #               max = as.numeric(year(idag)), value = c(2016, year(idag)), step=1, sep=""
-             #   ),
-             #   br(),
-             #   #downloadButton(outputId = 'lastNed_dataTilResPort', label='Last ned data')
-             # ),
-           #),
            tabPanel(
              h4("Utsending av rapporter"),
-                   # title = "Utsending av rapporter",
-                    #sidebarLayout(
                       sidebarPanel(
                         rapbase::autoReportOrgInput("NGERutsending"),
                         rapbase::autoReportInput("NGERutsending")
@@ -748,7 +724,6 @@ tabPanel(p("Registeradministrasjon", title='Registeradministrasjonens side for r
                       mainPanel(
                         rapbase::autoReportUI("NGERutsending")
                       )
-                    #)
            ), #Utsending-tab
            tabPanel(
              h4("Eksport av krypterte data"),
@@ -781,28 +756,62 @@ tabPanel(p("Abonnement",
 #--------slutt tab'er----------
 
 ) #ui-del
+} #ui-funksjon
 
 
-
-
-#----- Define server logic required to draw a histogram-------
-server <- function(input, output, session) {
+#' Server-del til appen
+#'
+#' @param input shiny input object
+#' @param output shiny output object
+#' @param session shiny session object
+#'
+#' @return Server-delen til NGER-appen
+#' @export
+server_nger <- function(input, output, session) {
 
   #-- Div serveroppstart----
+  context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
+  paaServer <- (context %in% c("DEV", "TEST", "QA","CQA", "PRODUCTION", "CPRODUCTION")) #rapbase::isRapContext()
   if (paaServer) {
   rapbase::appLogger(session, msg = 'Starter Rapporteket-NGER')}
 
-    #hospitalName <-getHospitalName(rapbase::getUserReshId(session))
+  #----------Hente data ----------
+  if (paaServer) {
+    RegData <- NGERRegDataSQL() #datoFra = datoFra, datoTil = datoTil)
+    #stopifnot(dim(RegData)[1]>0)
+    errorCondition(dim(RegData)[1]==0, 'ingen data')
+    qSkjemaOversikt <- 'SELECT * FROM SkjemaOversikt'
+    SkjemaOversikt <- rapbase::loadRegData(registryName='nger',
+                                           query=qSkjemaOversikt, dbType='mysql')
+  }
+
+  #tulledata <- 0
+  if (!exists('RegData')) {
+    #data("NGERtulledata.Rdata", package = "nger")
+    load('./data/NGERtulledata.Rdata')
+    tulledata <- 1 #Må få med denne i tulledatafila..
+  }
+
+  if (paaServer) {
+    RegData <- NGERPreprosess(RegData)
+    SkjemaOversikt <- NGERPreprosess(RegData = SkjemaOversikt)
+  }
+
+  #Definere utvalgsinnhold
+  sykehusNavn <- sort(unique(RegData$ShNavn), index.return=T)
+  sykehusValgUts <- unique(RegData$ReshId)[sykehusNavn$ix]
+  names(sykehusValgUts) <- sykehusNavn$x #c('Alle',sykehusNavn$x)
+  sykehusValg <- c(0,sykehusValgUts)
+  names(sykehusValg) <- c('Ikke valgt',sykehusNavn$x)
+
+
+
     reshID <- ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)
     #rolle <- reactive({ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')})
     rolle <- ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')
     brukernavn <- reactive({ifelse(paaServer, rapbase::getUserName(session), 'inkognito')})
 
      observe({
-       #vise <- rolle =='SC'
-       #shinyjs::toggle(id = 'velgResh', condition = vise)
-       #shinyjs::toggle(id = 'velgReshReg', condition = vise)
-       #shinyjs::toggle(id = 'velgReshKval', condition = vise)
         if (rolle != 'SC') { #
        shinyjs::hide(id = 'velgResh')
        shinyjs::hide(id = 'velgReshReg')
@@ -810,6 +819,7 @@ server <- function(input, output, session) {
       hideTab(inputId = "hovedark", target = "Registeradministrasjon")
        }
     })
+
  # widget
     if (paaServer) {
       output$appUserName <- renderText(rapbase::getUserFullName(session))
@@ -825,11 +835,6 @@ server <- function(input, output, session) {
     })
 
   #--------------Startside------------------------------
-  #FJERNES:
-      # filename function for re-use - i dette tilfellet vil det funke fint å hardkode det samme..
-  # downloadFilename <- function(fileBaseName, type='') {
-  #   paste0(fileBaseName, as.character(as.integer(as.POSIXct(Sys.time()))), '.pdf')
-  #   }
 
        output$mndRapp.pdf <- downloadHandler(
             #filename = function(){ downloadFilename('NGERmaanedsrapport')},
@@ -839,13 +844,8 @@ server <- function(input, output, session) {
                                   reshID = reshID)
             })
 
-      output$antRegMnd <- renderPlot({NGERFigAntReg(RegData=RegData,
-                                                       reshID = reshID
-                                                       # ,OpMetode = as.numeric(input$opMetodeKval)
-                                                       # ,Hastegrad = as.numeric(input$hastegradKval)
-                                                       # ,velgDiag = as.numeric(input$velgDiagKval)
-           )
-         }, height=500, width=900
+      output$antRegMnd <- renderPlot({NGERFigAntReg(RegData=RegData, reshID = reshID)
+        }, height=500, width=900
          )
 
 
@@ -865,9 +865,6 @@ server <- function(input, output, session) {
                     if(as.numeric(input$velgDiagReg)!=0){
                       paste0('Diagnose: ', names(diag[diag==as.numeric(input$velgDiagReg)]))}) #, '<br />'
                   )
-                  #names(diag[diag==as.numeric(2)])
-                  # h4(HTML(paste0(names(opMetode[opMetode==as.numeric(input$opMetodeReg)]), '<br />'),
-                   #       names(velgDiag[velgDiag==as.numeric(input$velgDiag)]), '<br />'))
                   })
      observe({
        tabAntOpphShMndAar <- switch(input$tidsenhetReg,
@@ -903,27 +900,34 @@ server <- function(input, output, session) {
         RegOversikt <- dplyr::filter(RegOversikt,
                         as.Date(OpDato) >= input$datovalgReg[1],
                         as.Date(OpDato) <= input$datovalgReg[2])
+      })
 
+      output$velgReshReg <- renderUI({
+        selectInput(inputId = 'velgReshReg', label='Velg sykehus',
+                    selected = 0,
+                    choices = sykehusValg)
+      })
+
+      reactive({
         if (rolle == 'SC') {
-          valgtResh <- as.numeric(input$velgReshReg)
+            valgtResh <- as.numeric(input$velgReshReg)
           ind <- if (valgtResh == 0) {1:dim(RegOversikt)[1]
           } else {which(as.numeric(RegOversikt$ReshId) %in% as.numeric(valgtResh))}
           tabDataRegKtr <- RegOversikt[ind,]
 
          }  else {
            tabDataRegKtr <- RegOversikt[which(RegOversikt$ReshId == reshID), ]}
-        #tabDataRegKtr <-RegOversikt[which(RegOversikt$ReshId == reshID), ]
+        })
+
+        #observe({print(paste0('Du har valgt: ', input$velgReshReg))})
+
          output$lastNed_dataTilRegKtr <- downloadHandler(
            filename = function(){'dataTilKtr.csv'},
            content = function(file, filename){write.csv2(tabDataRegKtr, file, row.names = F, na = '')})
-       })
+
 
       # Egen datadump
-      # variablePRM <- c("R0Metode", "R0ScoreEmo", "R0ScoreEnergy", "R0ScoreGeneral", "R0ScorePain",
-      #                  "R0ScorePhys", "R0ScoreRoleLmtEmo", "R0ScoreRoleLmtPhy", "R0ScoreSosial",
-      #                  "R0Spm2", "R0Status", "Tss2Behandlere", "Tss2Behandling", "Tss2Enighet",
-      #                  "Tss2Generelt", "Tss2Lytte", "Tss2Mott", "Tss2Status", "Tss2Type")
-      qAlle <- 'SELECT * FROM AlleVarNum
+       qAlle <- 'SELECT * FROM AlleVarNum
                INNER JOIN ForlopsOversikt
                ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID'
       RegDataAlle <- rapbase::loadRegData(registryName = "nger", query=qAlle, dbType = "mysql")
@@ -942,18 +946,15 @@ server <- function(input, output, session) {
          if (rolle =='SC') {
           valgtResh <- as.numeric(input$velgReshReg)
           ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
-          } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
+            } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
           tabDataDump <- DataDump[ind,]
-        #output$test <- renderText(valgtResh)
         } else {
           navn <- names(DataDump)
           fjernVarInd <- c(grep('Opf0', navn), grep('Opf1', navn),grep('R0', navn), grep('R1', navn), grep('RY1', navn), grep('Tss', navn))
           tabDataDump <-
-            DataDump[which(DataDump$ReshId == reshID), -fjernVarInd] #which(names(DataDump) %in% variablePRM)]
+            DataDump[which(DataDump$ReshId == reshID), -fjernVarInd]
 
-          #output$test <- renderText(dim(tabDataDump)[1])
           } #Tar bort PROM/PREM til egen avdeling
-        #tabDataDump <- DataDump[which(DataDump$ReshId == reshID), -which(names(DataDump) %in% variablePRM)]
 
 output$lastNed_dataDump <- downloadHandler(
         filename = function(){'dataDumpNGER.csv'},
@@ -1123,7 +1124,7 @@ output$lastNed_dataDump <- downloadHandler(
 
          tabNokkelHys <- tabNokkelHys(RegData = RegData,
                                             datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2])
-         output$tabNokkelHys <- renderTable(tabNokkelHys, rownames = T, align = 'r', #c('l', 'r', 'r', 'r', 'r', 'r'),
+         output$tabNokkelHys <- renderTable(tabNokkelHys, rownames = T, #align = 'r', #c('l', 'r', 'r', 'r', 'r', 'r'),
                                             spacing="xs")
 
       })
@@ -1188,9 +1189,8 @@ output$lastNed_dataDump <- downloadHandler(
                         h3(UtDataFord$tittel),
                         h5(HTML(paste0(UtDataFord$utvalgTxt, '<br />')))
                   )}) #, align='center'
-            #output$fordelingTab <- renderTable(tabFord, rownames = T)
 
-            output$fordelingTab <- function() { #gr1=UtDataFord$hovedgrTxt, gr2=UtDataFord$smltxt renderTable(
+            output$fordelingTab <- function() {
                   antKol <- ncol(tabFord)
                   kableExtra::kable(tabFord, format = 'html'
                                     , full_width=F
@@ -1571,5 +1571,5 @@ output$lastNed_dataDump <- downloadHandler(
 
 } #server
 # Run the application
-shinyApp(ui = ui, server = server)
+#shinyApp(ui = ui, server = server)
 

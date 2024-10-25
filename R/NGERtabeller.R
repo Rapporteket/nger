@@ -399,6 +399,8 @@ rader <- function(RegData, var, stat = 'median', verdi=1, met='hys'){
   indPerKomp <- which(RegData$HysKomplikasjoner==1)
   indPostKomp <- which(RegData$Opf0Komplikasjoner==1)
   indTss2Gen <- which(RegData$Tss2Generelt %in% 2:3)
+
+  Nhys <- c(dim(RegData)[1], length(indUfull), length(indPerKomp), length(indPostKomp), length(indTss2Gen))
   }
 
   pst <- function(var, verdi) {100*sum(var==verdi)/length(var)}
@@ -426,7 +428,8 @@ rader <- function(RegData, var, stat = 'median', verdi=1, met='hys'){
 
   names(rad) <- c('Alle', 'Ufullstendig', 'Perop. kompl', 'Postop. kompl', 'Generelt fornøyd')
 
-   return(invisible(rad))
+  UtData <- list(Rad = rad, N = Nhys)
+   return(invisible(UtData))
 }
 
 
@@ -461,7 +464,7 @@ tabNokkelHys <- function(RegData= RegData, datoFra=Sys.Date()-365, datoTil = Sys
   )
 
 xtable::xtable(tabHys,
-                     align=c('l', rep('r', 5)),
+                     align=c('l', rep('r', dim(tabHys)[2])),
                      caption='Nøkkeltall, hysteroskopi.',
                     include.rownames=TRUE, include.colnames=TRUE)
 }

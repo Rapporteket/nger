@@ -2,6 +2,18 @@
 #---------------------------------------------
 
 
+#' Kjør Shiny Application
+#' @return Et objekt som representerer den NGERapp'en
+#' @export
+
+kjor_NGERapp <- function() {
+
+  app <- shiny::shinyApp(ui = nger::ui_nger, server = nger::server_nger)
+
+  return(app)
+}
+
+
 #' Tilrettelegge tidsenhetvariabel:
 #' Probably better if all sections come first, uless have one section per function. Makes it easier to
 #' see the information flow.

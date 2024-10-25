@@ -4,7 +4,11 @@
 \alias{tabNokkelHys}
 \title{Nøkkeltallstabell for hysteroskopi}
 \usage{
-tabNokkelHys(RegData = RegData)
+tabNokkelHys(
+  RegData = RegData,
+  datoFra = Sys.Date() - 365,
+  datoTil = Sys.Date()
+)
 }
 \arguments{
 \item{RegData}{NGER-data, dataramme}

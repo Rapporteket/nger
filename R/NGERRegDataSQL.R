@@ -10,7 +10,7 @@
 #' @export
 
 
-NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = Sys.Date(), medPROM=1, ...) {
+NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM=1, ...) {
 
   if ("session" %in% names(list(...))) {
     rapbase::repLogger(session = list(...)[["session"]], msg = paste0('Hentet rådata'))
@@ -131,8 +131,6 @@ NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = Sys.Date(), medPROM
     -- OpDagkirurgi,
     OpDato,
     OpForstLukket,
-    Opf0BesvarteProm,   -- ny jan.-2022
-    Opf0metode,
     OpIVaktTid,
     -- OpGraviditeter,
     OpKategori,
@@ -144,18 +142,37 @@ NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = Sys.Date(), medPROM
     OpTidlLapsko,
     OpTidlVagInngrep,
     OpType,
-    Tss2Behandling,
-    Tss2Behandlere,
-    -- Tss2BesvarteProm,  -- ny jan.-2022
-    Tss2Enighet,
-    Tss2Generelt,
-    Tss2Lytte,
-    Tss2Mott,
-    Tss2Score,
-    Tss2Status,
-    Tss2Type,
     AlleVarNum.SivilStatus,
     Utdanning,
+    AlleVarNum.AvdRESH,
+    AlleVarNum.Norsktalende,
+    AlleVarNum.PasientID,
+    AlleVarNum.ForlopsID
+    ,ForlopsOversikt.BasisRegStatus
+    ,ForlopsOversikt.FodselsDato AS Fodselsdato
+    ,ForlopsOversikt.HovedDato
+    ,ForlopsOversikt.OppflgRegStatus
+    ,ForlopsOversikt.OppflgStatus
+    ,ForlopsOversikt.PasientAlder
+    ,ForlopsOversikt.SykehusNavn
+    FROM AlleVarNum
+    INNER JOIN ForlopsOversikt
+    ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID
+ WHERE HovedDato >= \'', datoFra, '\' AND HovedDato <= \'', datoTil, '\'')
+
+  #FROM alleVarNum INNER JOIN ForlopsOversikt ON alleVarNum.MCEID = ForlopsOversikt.ForlopsID
+  # query <- 'select * FROM AlleVarNum
+  #     INNER JOIN ForlopsOversikt
+  #     ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID'
+
+  #Data_AWN <- rapbase::loadRegData(registryName = "nger", query='select * FROM allevarnum', dbType = "mysql")
+  #Data_Forl <- rapbase::loadRegData(registryName = "nger", query='select * FROM ForlopsOversikt', dbType = "mysql")
+  RegData <- rapbase::loadRegData(registryName = "nger", query=query, dbType = "mysql")
+
+  qOppfolging <- 'SELECT
+  ForlopsID,
+      Opf0BesvarteProm,   -- ny jan.-2022
+    Opf0metode,
     Opf0AlvorlighetsGrad,
     Opf0KomplBlodning,
     Opf0BlodningAbdom,
@@ -182,31 +199,22 @@ NGERRegDataSQL <- function(datoFra = '2014-01-01', datoTil = Sys.Date(), medPROM
     Opf0ReopLaparotomi,
     Opf0Status,
     -- Opf0UtstyrSutur,
-    AlleVarNum.AvdRESH,
-    AlleVarNum.Norsktalende,
-    AlleVarNum.PasientID,
-    AlleVarNum.ForlopsID
-    ,ForlopsOversikt.BasisRegStatus
-    ,ForlopsOversikt.FodselsDato AS Fodselsdato
-    ,ForlopsOversikt.HovedDato
-    ,ForlopsOversikt.OppflgRegStatus
-    ,ForlopsOversikt.OppflgStatus
-    ,ForlopsOversikt.PasientAlder
-    ,ForlopsOversikt.SykehusNavn
-    FROM AlleVarNum
-    INNER JOIN ForlopsOversikt
-    ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID
- WHERE HovedDato >= \'', datoFra, '\' AND HovedDato <= \'', datoTil, '\'')
+    Tss2Behandling,
+    Tss2Behandlere,
+    -- Tss2BesvarteProm,  -- ny jan.-2022
+    Tss2Enighet,
+    Tss2Generelt,
+    Tss2Lytte,
+    Tss2Mott,
+    Tss2Score,
+    Tss2Status,
+    Tss2Type
+  FROM followupsnum'
 
-  #FROM alleVarNum INNER JOIN ForlopsOversikt ON alleVarNum.MCEID = ForlopsOversikt.ForlopsID
-  # query <- 'select * FROM AlleVarNum
-  #     INNER JOIN ForlopsOversikt
-  #     ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID'
+  FollowupsNum <- rapbase::loadRegData(registryName = "nger", query=qOppfolging)
+# setdiff(sort(FollowupsNum$ForlopsID), RegData$ForlopsID)
 
-  #Data_AWN <- rapbase::loadRegData(registryName = "nger", query='select * FROM AlleVarNum', dbType = "mysql")
-  #Data_Forl <- rapbase::loadRegData(registryName = "nger", query='select * FROM ForlopsOversikt', dbType = "mysql")
-  RegData <- rapbase::loadRegData(registryName = "nger", query=query, dbType = "mysql")
-
+  RegData <- dplyr::left_join(RegData, FollowupsNum, by="ForlopsID")
 
   if (medPROM==1) {
 
