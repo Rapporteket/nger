@@ -103,23 +103,6 @@ tabAntSkjema <- function(RegData, datoFra = '2019-01-01', datoTil=Sys.Date()){
 }
 
 
-#'  Vise figurdata som tabell
-#' @export
-# lagTabavFig <- function(UtDataFraFig){
-#       tab <-cbind(UtDataFraFig$Ngr$Hoved,
-#                   UtDataFraFig$AggVerdier$Hoved,
-#                   UtDataFraFig$Ngr$Rest,
-#                   UtDataFraFig$AggVerdier$Rest)
-#       grtxt <- UtDataFraFig$grtxt
-#       if ((min(nchar(grtxt)) == 5) & (max(nchar(grtxt)) == 5)) {
-#             grtxt <- paste(substr(grtxt, 1,3), substr(grtxt, 4,5))}
-#       rownames(tab) <- grtxt
-#       kolnavn <- c('Antall' , 'Andel (%)')
-#       colnames(tab) <- c(kolnavn, if(!is.null(UtDataFraFig$Ngr$Rest)){kolnavn})
-#
-# return(tab)
-# }
-
 lagTabavFig <- function(UtDataFraFig, figurtype='andeler'){ #lagTabavFigAndeler
 
   attach(UtDataFraFig, warn.conflicts = F)
@@ -171,7 +154,6 @@ lagTabavFigGjsnGrVar <- function(UtDataFraFig){
 
 #'  Generere tabell med nøkkeltall
 #' @export
-
 tabNGERpasientegenskaper <- function(RegData, datoFra='2022-01-01', datoTil=Sys.Date(), tidsenhet='Kvartal') {
   # make dummy column for all MCEs
   RegData <- NGERUtvalgEnh(RegData=RegData, datoFra = datoFra, datoTil = datoTil)$RegData
@@ -413,7 +395,7 @@ rader <- function(RegData, var, stat = 'median', verdi=1, met='hys'){
              median(var[indTss2Gen], na.rm = T) # Fornøyd + svært fornøyd
     )
     rad <- sprintf("%.1f", rad)
-    }
+  }
   if (stat == 'pst'){
     var <- var[!is.na(var)]
     rad <-c(pst(var, verdi = verdi),
@@ -423,8 +405,7 @@ rader <- function(RegData, var, stat = 'median', verdi=1, met='hys'){
             pst(var[indTss2Gen], verdi = verdi) # Fornøyd + svært fornøyd
     )
     rad <- paste0(sprintf("%.1f", rad),'%')
-
-    }
+  }
 
   names(rad) <- c('Alle', 'Ufullstendig', 'Perop. kompl', 'Postop. kompl', 'Generelt fornøyd')
 
@@ -450,23 +431,25 @@ tabNokkelHys <- function(RegData= RegData, datoFra=Sys.Date()-365, datoTil = Sys
                            datoFra = datoFra,
                            datoTil = datoTil,
                            OpMetode=2)$RegData
+  ald = rader(RegData=RegData, var=RegData$Alder, stat = 'median')
 
   tabHys <- rbind(
-  'Alder (median)' = rader(RegData=RegData, var=RegData$Alder, stat = 'median'),
-  'BMI (median)' = rader(RegData=RegData, var=RegData$OpBMI, stat = 'median'),
-  'Operasjonstid (median)'  = rader(RegData=RegData, var=RegData$OpTid, stat = 'median'),
-  'Blodfortynnende (%)' = rader(RegData=RegData, var=RegData$OpBlodfortynnende, stat = 'pst', verdi=1),
- 'Poliklinkk (%)' = rader(RegData=RegData, var = RegData$OpBehNivaa, stat = 'pst', verdi = 1),
-   'Dagkirurgi (%)' = rader(RegData=RegData, var = RegData$OpBehNivaa, stat = 'pst', verdi = 2),
-   'Innlagt (%)'  = rader(RegData=RegData, var = RegData$OpBehNivaa, stat = 'pst', verdi = 3),
-   'Konvertert (%)' =  rader(RegData=RegData, var = RegData$HysKonvertert, stat = 'pst', verdi = 1),
-  'Perop. kompl. (%)' = rader(RegData=RegData, var = RegData$HysKomplikasjoner, stat = 'pst', verdi = 1)
+    'Antall forløp (N)' = ald$N,
+    'Alder (median)' = ald$Rad,
+    'BMI (median)' = rader(RegData=RegData, var=RegData$OpBMI, stat = 'median')$Rad,
+    'Operasjonstid (median)'  = rader(RegData=RegData, var=RegData$OpTid, stat = 'median')$Rad,
+    'Blodfortynnende (%)' = rader(RegData=RegData, var=RegData$OpBlodfortynnende, stat = 'pst', verdi=1)$Rad,
+    'Poliklinkk (%)' = rader(RegData=RegData, var = RegData$OpBehNivaa, stat = 'pst', verdi = 1)$Rad,
+    'Dagkirurgi (%)' = rader(RegData=RegData, var = RegData$OpBehNivaa, stat = 'pst', verdi = 2)$Rad,
+    'Innlagt (%)'  = rader(RegData=RegData, var = RegData$OpBehNivaa, stat = 'pst', verdi = 3)$Rad,
+    'Konvertert (%)' =  rader(RegData=RegData, var = RegData$HysKonvertert, stat = 'pst', verdi = 1)$Rad,
+    'Perop. kompl. (%)' = rader(RegData=RegData, var = RegData$HysKomplikasjoner, stat = 'pst', verdi = 1)$Rad
   )
 
-xtable::xtable(tabHys,
-                     align=c('l', rep('r', dim(tabHys)[2])),
-                     caption='Nøkkeltall, hysteroskopi.',
-                    include.rownames=TRUE, include.colnames=TRUE)
+  # xtable::xtable(tabHys,
+  #                align=c('l', rep('r', dim(tabHys)[2])),
+  #                caption='Nøkkeltall, hysteroskopi.',
+  #                include.rownames=TRUE, include.colnames=TRUE)
 }
 
 
