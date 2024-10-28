@@ -117,10 +117,6 @@ ui_nger <- function() {
                        br(),
                        h4('Antall registreringer ved eget sykehus siste år:'),
                        plotOutput('antRegMnd', height="auto"),
-                       # uiOutput("tabEgneReg"),
-                       # br(),
-                       # h4('Antall registreringer ved eget sykehus forrige år:'),
-                       # uiOutput("tabEgneRegForrige"),
                        br(),
                        h4('Oversikt over registerets kvalitetsindikatorer og resultater med offentlig tilgjengelige tall
                             finner du på www.kvalitetsregistre.no:', #helpText
@@ -156,7 +152,7 @@ ui_nger <- function() {
 
                ),
                conditionalPanel(
-                 condition = "input.ark == 'Last ned egne data' ",
+                 condition = "input.ark == 'Last ned egne data' | 'Nøkkeltall, Hys' ",
                  uiOutput('velgReshReg'),
                  selectInput(inputId = 'opMetodeRegDump', label='Operasjonstype (kun datadump)',
                              choices = opMetode
@@ -322,7 +318,11 @@ ui_nger <- function() {
                                          label = "Tidsperiode", separator="t.o.m.", language="nb"),
                           conditionalPanel(
                             condition = "input.tab == 'Nøkkeltall, Hys'"  ,
-                            br('Tabellen viser hele landet. På sikt kommer valg mellom eget og hele landet'))
+                            selectInput(inputId = 'enhetsUtvalgTab', label='Egen enhet eller hele landet',
+                                        choices = enhetsUtvalg[2:3]
+                            ),
+                            uiOutput("velgSykehusTab")
+                            )
              ),
              mainPanel(
                tabsetPanel(id='tab',
@@ -790,6 +790,7 @@ server_nger <- function(input, output, session) {
       shinyjs::hide(id = 'velgReshReg')
       shinyjs::hide(id = 'velgReshKval')
       shinyjs::hide(id = 'velgSykehusFord')
+      shinyjs::hide(id = 'velgSykehusTab')
       hideTab(inputId = "hovedark", target = "Registeradministrasjon")
     }
   })
@@ -1120,13 +1121,22 @@ server_nger <- function(input, output, session) {
       filename = function(){paste0('tabLapKompl.csv')},
       content = function(file, filename){write.csv2(LapKomplData$AntLap, file, row.names = T, na = '')})
     #,caption = tabtxtLapKompl)
-
-    tabNokkelHys <- tabNokkelHys(RegData = RegData,
-                                 datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2])
-    output$tabNokkelHys <- renderTable(tabNokkelHys, rownames = T, align = 'r', #c('l', 'r', 'r', 'r', 'r', 'r'),
-                                       spacing="xs")
-
   })
+
+    output$velgSykehusTab <- renderUI({
+      selectInput(inputId = 'velgSykehusTab', label='Velg sykehus',
+                  selected = 0,
+                  choices = sykehusValg)
+    })
+
+    observe({
+      tabNokkelHys <- tabNokkelHys(RegData = RegData,
+                                   datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2],
+                                   reshID = ifelse(is.null(input$velgSykehusTab), reshID, as.numeric(input$velgSykehusTab)),
+                                   enhetsUtvalg = input$enhetsUtvalgTab)
+      output$tabNokkelHys <- renderTable(tabNokkelHys, rownames = T, align = 'r', #c('l', 'r', 'r', 'r', 'r', 'r'),
+                                         spacing="xs")
+    })
 
 
 

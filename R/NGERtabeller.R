@@ -423,13 +423,16 @@ rader <- function(RegData, var, stat = 'median', verdi=1, met='hys'){
 #' @export
 #'
 
-tabNokkelHys <- function(RegData= RegData, datoFra=Sys.Date()-365, datoTil = Sys.Date()) {
+tabNokkelHys <- function(RegData= RegData, datoFra=Sys.Date()-365, datoTil = Sys.Date(),
+                         reshID = 0, enhetsUtvalg = 0) {
   # Andel ufulstendige - HysGjforingsGrad, peroperative komplikasjoner, postoperative komplikasjoner
   # og pasienttilfredshet (generell oppfatning, fornøyd+svært fornøyd) ut i fra:
 
   RegData <- NGERUtvalgEnh(RegData,
                            datoFra = datoFra,
                            datoTil = datoTil,
+                           reshID = reshID,
+                           enhetsUtvalg = enhetsUtvalg,
                            OpMetode=2)$RegData
   ald = rader(RegData=RegData, var=RegData$Alder, stat = 'median')
 
