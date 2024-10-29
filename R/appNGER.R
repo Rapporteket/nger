@@ -342,7 +342,9 @@ ui_nger <- function() {
                            ),
                            tabPanel('Nøkkeltall, Hys',
                                     br(),
-                                    h4('Tabellen viser utvalgte nøkkeltall for hysteroskopi'),
+                                    h3('Hysteoroskopi, nøkkeltall'),
+                                    h4('Tabellen viser resultat for et utvalg variabler (rad) med ulike
+                                       filtreringer (kolonner)'),
                                     br(),
                                     tableOutput('tabNokkelHys')
                                     #downloadButton(outputId = 'lastNed_tabLapKompl', label='Last ned tabell')
@@ -744,13 +746,13 @@ server_nger <- function(input, output, session) {
 
   #-- Div serveroppstart----
   context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-  paaServer <- (context %in% c("DEV", "TEST", "QA","CQA", "PRODUCTION", "CPRODUCTION")) #rapbase::isRapContext()
+  paaServer <- (context %in% c("DEV", "TEST", "QA","QAC", "PRODUCTION", "PRODUCTIONC")) #rapbase::isRapContext()
   if (paaServer) {
     rapbase::appLogger(session, msg = 'Starter Rapporteket-NGER')}
 
   #----------Hente data ----------
   if (paaServer) {
-    RegData <- NGERRegDataSQL() #datoFra = datoFra, datoTil = datoTil)
+    RegData <- NGERRegDataSQL()
     #stopifnot(dim(RegData)[1]>0)
     errorCondition(dim(RegData)[1]==0, 'ingen data')
     qSkjemaOversikt <- 'SELECT * FROM SkjemaOversikt'
@@ -895,19 +897,13 @@ server_nger <- function(input, output, session) {
       tabDataRegKtr <- RegOversikt[which(RegOversikt$ReshId == reshID), ]}
   })
 
-  #observe({print(paste0('Du har valgt: ', input$velgReshReg))})
-
   output$lastNed_dataTilRegKtr <- downloadHandler(
     filename = function(){'dataTilKtr.csv'},
     content = function(file, filename){write.csv2(tabDataRegKtr, file, row.names = F, na = '')})
 
 
-  # Egen datadump uten PROM
-  qAlle <- 'SELECT * FROM AlleVarNum
-               INNER JOIN ForlopsOversikt
-               ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID'
-  RegDataAlle <- rapbase::loadRegData(registryName = "nger", query=qAlle, dbType = "mysql")
-  RegDataAlle <- NGERPreprosess(RegDataAlle)
+  # Egen datadump, LU uten PROM
+  RegDataAlle <- RegData
   observe({
     DataDump <-
       NGERUtvalgEnh(RegData = RegDataAlle,
@@ -929,7 +925,9 @@ server_nger <- function(input, output, session) {
       tabDataDump <- DataDump[ind,]
     } else {
       navn <- names(DataDump)
-      fjernVarInd <- c(grep('Opf0', navn), grep('Opf1', navn),grep('R0', navn), grep('R1', navn), grep('RY1', navn), grep('Tss', navn))
+      fjernVarInd <- c(grep('Opf0', navn), grep('Opf1', navn),
+                       grep('R0', navn), grep('R1', navn), grep('R3', navn),
+                       grep('RY1', navn), grep('Tss', navn))
       tabDataDump <-
         DataDump[which(DataDump$ReshId == reshID), -fjernVarInd]
 
