@@ -146,7 +146,7 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', datoFra='2013-01-01
       antMaalNivaa <- length(KvalIndGrenser)-1
       rekkef <- 1:antMaalNivaa
       if (sortAvtagende == TRUE) {rekkef <- rev(rekkef)}
-      fargerMaalNiva <-  c('#3baa34', '#fd9c00', '#e30713')[rekkef] #Grønn, gul, rød
+        fargerMaalNiva <- adjustcolor(c('#3baa34', '#fd9c00', '#e30713'), alpha.f = 0.2)[rekkef] #Grønn, gul, rød  c('#58A55C', '#FD9C00', '#D85140')
       maalOppTxt <- c('Høy', 'Moderat til lav', 'Lav')[rekkef]
       if (antMaalNivaa==3) {maalOppTxt[2] <- 'Moderat' }
       rect(xleft=KvalIndGrenser[1:antMaalNivaa], ybottom=0, xright=KvalIndGrenser[2:(antMaalNivaa+1)],

@@ -18,5 +18,4 @@ RegData data frame
 }
 \description{
 Henter NGER-data fra staging.
-Klargjort (delvis) for å kunne  sende inn en vektor med hvilke variable det skal spørres etter.
 }

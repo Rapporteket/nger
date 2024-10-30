@@ -1,8 +1,8 @@
 Package: nger
 Type: Package
 Title: Resultatrapporter for NGER
-Version: 3.7.1
-Date: 2024-08-22
+Version: 3.8.0
+Date: 2024-11-30
 Authors@R: c(person("Olsen", "Lena", email = "Lena.Ringstad.Olsen@unn.no",
     role = c("cre", "aut")))
 Maintainer: Lena Ringstad Olsen <lena.olsen@skde.no>
@@ -14,7 +14,6 @@ Depends:
 Remotes: 
       Rapporteket/rapFigurer,
        Rapporteket/rapbase@*release,
-      Rapporteket/raplog
 Imports:
     DT,
     kableExtra,

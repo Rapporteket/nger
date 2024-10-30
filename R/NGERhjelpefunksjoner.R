@@ -2,6 +2,18 @@
 #---------------------------------------------
 
 
+#' Kjør Shiny Application
+#' @return Et objekt som representerer den NGERapp'en
+#' @export
+
+kjor_NGERapp <- function() {
+
+  app <- shiny::shinyApp(ui = nger::ui_nger, server = nger::server_nger)
+
+  return(app)
+}
+
+
 #' Tilrettelegge tidsenhetvariabel:
 #' Probably better if all sections come first, uless have one section per function. Makes it easier to
 #' see the information flow.
@@ -266,39 +278,4 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, aggData=0,
 }
 
 
-
-
-#' ARE: Provide registration delay for NGER
-#'
-#' Provide registration delay in median number of days grouped by years
-#'
-#' @param years integer vector with years for results and grouping
-#' @return data frame with registry name and values for each year
-#' @export
-
-NGERregDealy <- function(years) {
-
-    query <- paste0(
-      'select
-  year(HovedDato) as year,
-  DATEDIFF(SistLagretDato, HovedDato) as daysDiff
-from
-  SkjemaOversikt
-where
-  SkjemaStatus=1 and SkjemaNavn="Operasjon";'
-    )
-
-    NGERdelayData <- rapbase::LoadRegData(registryName="nger", query, dbType="mysql")
-
-  # make data frame
-  medianDelay <- data.frame(regName = "NGER", stringsAsFactors = FALSE)
-  for (i in years) {
-    ind <- which(NGERdelayData$year == i)
-    medianDelay[[as.character(i)]] = median(NGERdelayData$daysDiff[ind])
-    medianDelay[[paste0("N", as.character(i))]] = length(ind)
-
-  }
-
-  return(medianDelay)
-}
 

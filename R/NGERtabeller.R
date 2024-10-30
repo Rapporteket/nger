@@ -103,23 +103,6 @@ tabAntSkjema <- function(RegData, datoFra = '2019-01-01', datoTil=Sys.Date()){
 }
 
 
-#'  Vise figurdata som tabell
-#' @export
-# lagTabavFig <- function(UtDataFraFig){
-#       tab <-cbind(UtDataFraFig$Ngr$Hoved,
-#                   UtDataFraFig$AggVerdier$Hoved,
-#                   UtDataFraFig$Ngr$Rest,
-#                   UtDataFraFig$AggVerdier$Rest)
-#       grtxt <- UtDataFraFig$grtxt
-#       if ((min(nchar(grtxt)) == 5) & (max(nchar(grtxt)) == 5)) {
-#             grtxt <- paste(substr(grtxt, 1,3), substr(grtxt, 4,5))}
-#       rownames(tab) <- grtxt
-#       kolnavn <- c('Antall' , 'Andel (%)')
-#       colnames(tab) <- c(kolnavn, if(!is.null(UtDataFraFig$Ngr$Rest)){kolnavn})
-#
-# return(tab)
-# }
-
 lagTabavFig <- function(UtDataFraFig, figurtype='andeler'){ #lagTabavFigAndeler
 
   attach(UtDataFraFig, warn.conflicts = F)
@@ -171,7 +154,6 @@ lagTabavFigGjsnGrVar <- function(UtDataFraFig){
 
 #'  Generere tabell med nøkkeltall
 #' @export
-
 tabNGERpasientegenskaper <- function(RegData, datoFra='2022-01-01', datoTil=Sys.Date(), tidsenhet='Kvartal') {
   # make dummy column for all MCEs
   RegData <- NGERUtvalgEnh(RegData=RegData, datoFra = datoFra, datoTil = datoTil)$RegData
@@ -355,30 +337,10 @@ ant <- 20
 AlleProsDiag <- as.vector(as.matrix(RegData[ , variable]))
 AllePDsort <- sort(table(AlleProsDiag[which(AlleProsDiag != '')]), decreasing = TRUE)
 
-#AlleProsEget <- as.vector(as.matrix(RegData[indEget, c(ProsHys, ProsLap)]))
-#AlleProsEgetSort <- sort(table(AlleProsEget[which(AlleProsEget != '')]), decreasing = TRUE)
 
 tab <- cbind( #Må fjerne tomme
   Andel = (AllePDsort[1:ant])/dim(RegData)[1]*100 ,
   Antall = AllePDsort[1:ant] )
-
-# ProcEget <- cbind( #Må fjerne tomme
-#   Andel = (AlleProsEgetSort[1:ant])/Neget*100 ,
-#   Antall = AlleProsEgetSort[1:ant] )
-
-# AlleDiag <- as.vector(as.matrix(RegData[ , c(DiagHys,DiagLap)]))
-# AlleDiagSort <- sort(table(AlleDiag[which(AlleDiag != '')]), decreasing = TRUE)
-# AlleDiagEget <- as.vector(as.matrix(RegData[indEget , c(DiagHys,DiagLap)]))
-# AlleDiagEgetSort <- sort(table(AlleDiagEget[which(AlleDiagEget != '')]), decreasing = TRUE)
-
-
-# Diag <- cbind( #Må fjerne tomme
-#   Andel = (AlleDiagSort[1:ant])/N*100 ,
-#   Antall = AlleDiagSort[1:ant] )
-
-# DiagEget <- cbind( #Må fjerne tomme
-#   Andel = (AlleDiagEgetSort[1:ant])/Neget*100 ,
-#   Antall = AlleDiagEgetSort[1:ant] )
 
 type <- switch(prosdiag, pros='prosedyr', diag='diagnos')
 tittel <- paste0('Vanligste ', type,'er. Andel angir prosent av utførte
@@ -393,20 +355,120 @@ tabUt <- xtable(tab, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(tab)), 
 #        operasjoner hvor prosedyra er benyttet.',
 #        label='tab:Proc', include.rownames=TRUE, include.colnames=TRUE)
 #
-# xtable(ProcEget, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(ProcEget)), na.rm=T))),
-#        caption='Vanligste prosedyrer, eget sykehus. Andel angir andel av antall utførte
-#        operasjoner hvor prosedyra er benyttet.',
-#        label='tab:ProcEget', include.rownames=TRUE, include.colnames=TRUE)
-#
-# xtable(Diag, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(Diag)), na.rm=T))),
-#        caption='Vanligste diagnoser. Andel angir andel av antall utførte
-#        operasjoner hvor diagnosen er benyttet.',
-#        label='tab:Diag', include.rownames=TRUE, include.colnames=TRUE)
-#
-# xtable(DiagEget, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(DiagEget)), na.rm=T))),
-#        caption='Vanligste diagnoser, eget sykehus. Andel angir andel av antall utførte
-#        operasjoner hvor diagnosen er benyttet.',
-#        label='tab:DiagEget', include.rownames=TRUE, include.colnames=TRUE)
 
 return(tabUt)
 }
+
+
+#Nøkkeltall
+#HYSTEROSKOPI:
+
+#' Definerer rader i en nøkkeltallstabell
+#'
+#' @param RegData - dataramme, NGER-data
+#' @param var - hvilken variabel en ønsker resultat for
+#' @param stat - 'median' eller 'pst' (prosent)
+#' @param verdi - hvilken verdi/kode som skal telles når en beregner prosent
+#' @param met - 'hys' (hysteroskopi) eller 'lap' (laparoskopi)
+#'
+#' @return Leverer beregnede tall til rad i nøkkeltallstabell
+#' @export
+#'
+rader <- function(RegData, var, stat = 'median', verdi=1, met='hys'){
+
+  if (met == 'hys'){
+  indUfull <- which(RegData$HysGjforingsGrad==2)
+  indPerKomp <- which(RegData$HysKomplikasjoner==1)
+  indPostKomp <- which(RegData$Opf0Komplikasjoner==1)
+  indTss2Gen <- which(RegData$Tss2Generelt %in% 2:3)
+
+  Nhys <- c(dim(RegData)[1], length(indUfull), length(indPerKomp), length(indPostKomp), length(indTss2Gen))
+  }
+
+  pst <- function(var, verdi) {100*sum(var==verdi)/length(var)}
+
+  if (stat=='median') {
+    rad <- c(median(var, na.rm = T),
+             median(var[indUfull], na.rm = T), #Ufullstendige
+             median(var[indPerKomp], na.rm = T), # Perop./Intraop kompl
+             median(var[indPostKomp], na.rm = T), # Postop kompl
+             median(var[indTss2Gen], na.rm = T) # Fornøyd + svært fornøyd
+    )
+    rad <- sprintf("%.1f", rad)
+  }
+  if (stat == 'pst'){
+    var <- var[!is.na(var)]
+    rad <-c(pst(var, verdi = verdi),
+            pst(var[indUfull], verdi = verdi), #Ufullstendige
+            pst(var[indPerKomp], verdi = verdi), # Perop./Intraop kompl
+            pst(var[indPostKomp], verdi = verdi), # Postop kompl
+            pst(var[indTss2Gen], verdi = verdi) # Fornøyd + svært fornøyd
+    )
+    rad <- paste0(sprintf("%.1f", rad),'%')
+  }
+
+  names(rad) <- c('Alle', 'Ufullstendig', 'Perop. kompl', 'Postop. kompl', 'Generelt fornøyd')
+
+  UtData <- list(Rad = rad, N = Nhys)
+   return(invisible(UtData))
+}
+
+
+
+#' Nøkkeltallstabell for hysteroskopi
+#'
+#' @param RegData NGER-data, dataramme
+#'
+#' @return Leverer formattert tabell for nøkkeltall
+#' @export
+#'
+
+tabNokkelHys <- function(RegData= RegData, datoFra=Sys.Date()-365, datoTil = Sys.Date(),
+                         reshID = 0, enhetsUtvalg = 0) {
+  # Andel ufulstendige - HysGjforingsGrad, peroperative komplikasjoner, postoperative komplikasjoner
+  # og pasienttilfredshet (generell oppfatning, fornøyd+svært fornøyd) ut i fra:
+
+  RegData <- NGERUtvalgEnh(RegData,
+                           datoFra = datoFra,
+                           datoTil = datoTil,
+                           reshID = reshID,
+                           enhetsUtvalg = enhetsUtvalg,
+                           OpMetode=2)$RegData
+  ald = rader(RegData=RegData, var=RegData$Alder, stat = 'median')
+
+  tabHys <- rbind(
+    'Antall forløp (N)' = ald$N,
+    'Alder (median)' = ald$Rad,
+    'BMI (median)' = rader(RegData=RegData, var=RegData$OpBMI, stat = 'median')$Rad,
+    'Operasjonstid (median)'  = rader(RegData=RegData, var=RegData$OpTid, stat = 'median')$Rad,
+    'Blodfortynnende (%)' = rader(RegData=RegData, var=RegData$OpBlodfortynnende, stat = 'pst', verdi=1)$Rad,
+    'Poliklinkk (%)' = rader(RegData=RegData, var = RegData$OpBehNivaa, stat = 'pst', verdi = 1)$Rad,
+    'Dagkirurgi (%)' = rader(RegData=RegData, var = RegData$OpBehNivaa, stat = 'pst', verdi = 2)$Rad,
+    'Innlagt (%)'  = rader(RegData=RegData, var = RegData$OpBehNivaa, stat = 'pst', verdi = 3)$Rad,
+    'Konvertert (%)' =  rader(RegData=RegData, var = RegData$HysKonvertert, stat = 'pst', verdi = 1)$Rad,
+    'Perop. kompl. (%)' = rader(RegData=RegData, var = RegData$HysKomplikasjoner, stat = 'pst', verdi = 1)$Rad
+  )
+
+  # xtable::xtable(tabHys,
+  #                align=c('l', rep('r', dim(tabHys)[2])),
+  #                caption='Nøkkeltall, hysteroskopi.',
+  #                include.rownames=TRUE, include.colnames=TRUE)
+}
+
+
+#Laparoskopi
+# Ønsker tabeller på andel peroperative komplikasjoner, postoperative komplikasjoner og
+# pasienttilfredshet (andel fornøyd/svært fornøyd variabel) ut ifra
+# Alder (median)
+# BMI (median)
+# Behandlingsnivå (tre)
+# AB profylakse
+# Operasjonstid (median)
+# Robotkirurgi (andel)
+# Tidligere laparotomi (andel)
+# Tidligere laparoskopi (andel)
+# Metode (åpen, veress-nål eller Direkte)
+# Optisk trokar (andel)
+# Hjelpeinnstikk (gj.sn)
+# Konvertert (andel)
+# Peroperative komplikasjoner (andel)
