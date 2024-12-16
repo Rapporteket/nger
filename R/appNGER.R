@@ -1,7 +1,7 @@
 #Resultattjeneste for NGER
 
 
-#' Brukergrensesnitt (ui) til nordscir-appen
+#' Brukergrensesnitt (ui) til nger-appen
 #'
 #' @return Brukergrensesnittet (ui) til nger-appen
 #' @export
@@ -778,8 +778,6 @@ server_nger <- function(input, output, session) {
   names(sykehusValgUts) <- sykehusNavn$x #c('Alle',sykehusNavn$x)
   sykehusValg <- c(0,sykehusValgUts)
   names(sykehusValg) <- c('Ikke valgt',sykehusNavn$x)
-
-
 
   reshID <- ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)
   #rolle <- reactive({ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')})

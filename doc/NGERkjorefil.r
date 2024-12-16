@@ -9,6 +9,24 @@ kodebok_kategorier = klokebok %>% filter(type == 'Listevariabel')
 
 RegData <- NGERRegDataSQL()
 
+#------Feilsøking, tull med utvalg
+which(RegData[,ProsLap] == 'LCD01', arr.ind = TRUE)[,1]
+which(RegData$LapProsedyre1)
+a <- grep('LCD01', RegData[,ProsLap])
+RegData$LapProsedyre1[a[1]]
+
+indMCE <- switch(as.character(OpMetode),
+                 '4' = unique(c(which(RegData[,ProsLap] == 'LCD01', arr.ind = TRUE)[,1],
+                                which(RegData[,ProsLap] == 'LCD04', arr.ind = TRUE)[,1])), #LCD01 + LCD04: total laparoskopisk hysterektomi
+                 '5' = which(RegData[,ProsLap] == 'LCC11', arr.ind = TRUE)[,1], #LCC11: laparoskopisk subtotal hysterektomi)
+
+                 '6' = which(RegData[,ProsLap] == 'LCD11', arr.ind = TRUE)[,1], #LCD11: laparoskopisk assistert vaginal hysterektomi).
+                 '7' = which(RegData$LapRobotKirurgi == 1), #ROBOT_KIRURGI==TRUE
+                 '8' = which(RegData[,ProsLap] == 'LEF51', arr.ind = TRUE)[,1], #LCC11: Kolpopeksiene)
+                 '9' = unique(c(which(RegData$LapProsedyre1 %in% hysterektomikoder),
+                                which(RegData$LapProsedyre2 %in% hysterektomikoder), #Egentlig ikke nødvendig å sjekke pros2 og 3
+                                which(RegData$LapProsedyre3 %in% hysterektomikoder)))
+)
 
 #--------------------------------------SamleRAPPORTER-----------------------------------
 TEST
