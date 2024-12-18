@@ -20,7 +20,20 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
   # Hvor har denne blitt av?? Tss2BesvarteProm -- ny jan.-2022
 
   query <- paste0('SELECT
-    -- HysBlodning, erstattet nov23
+    AlleVarNum.PasientID,
+    AlleVarNum.ForlopsID,
+    AlleVarNum.AvdRESH,
+    ForlopsOversikt.BasisRegStatus,
+    ForlopsOversikt.FodselsDato AS Fodselsdato,
+    ForlopsOversikt.HovedDato,
+    ForlopsOversikt.OppflgRegStatus,
+    ForlopsOversikt.OppflgStatus,
+    ForlopsOversikt.PasientAlder,
+    ForlopsOversikt.SykehusNavn,
+    AlleVarNum.SivilStatus,
+    Utdanning,
+    AlleVarNum.Norsktalende,
+-- HysBlodning, erstattet nov23
     -- HysFluidOverload, erstattet nov23
     HysGjforingsGrad,
     -- HysPerforasjon, erstattet nov23
@@ -141,20 +154,7 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
     OpTidlLaparotomi,
     OpTidlLapsko,
     OpTidlVagInngrep,
-    OpType,
-    AlleVarNum.SivilStatus,
-    Utdanning,
-    AlleVarNum.AvdRESH,
-    AlleVarNum.Norsktalende,
-    AlleVarNum.PasientID,
-    AlleVarNum.ForlopsID
-    ,ForlopsOversikt.BasisRegStatus
-    ,ForlopsOversikt.FodselsDato AS Fodselsdato
-    ,ForlopsOversikt.HovedDato
-    ,ForlopsOversikt.OppflgRegStatus
-    ,ForlopsOversikt.OppflgStatus
-    ,ForlopsOversikt.PasientAlder
-    ,ForlopsOversikt.SykehusNavn
+    OpType
     FROM AlleVarNum
     INNER JOIN ForlopsOversikt
     ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID

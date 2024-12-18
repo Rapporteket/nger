@@ -884,7 +884,7 @@ server_nger <- function(input, output, session) {
                 choices = sykehusValg)
   })
 
-  reactive({
+  observe({
     if (rolle == 'SC') {
       valgtResh <- ifelse(is.null(input$velgReshReg), 0, as.numeric(input$velgReshReg))
       ind <- if (valgtResh == 0) {1:dim(RegOversikt)[1]
@@ -893,12 +893,12 @@ server_nger <- function(input, output, session) {
 
     }  else {
       tabDataRegKtr <- RegOversikt[which(RegOversikt$ReshId == reshID), ]}
-  })
+
 
   output$lastNed_dataTilRegKtr <- downloadHandler(
     filename = function(){'dataTilKtr.csv'},
     content = function(file, filename){write.csv2(tabDataRegKtr, file, row.names = F, na = '')})
-
+  })
 
   # Egen datadump, LU uten PROM
   RegDataAlle <- RegData
