@@ -18,11 +18,12 @@
 #'                 1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
 #'                 2: Endometriose, livmorvegg (N80.0)
 #'                 3: Endometriose, unntatt livmorvegg.
-#' @param Hastegrad Hastegrad av operasjon.
+#' @param Hastegrad Hastegrad av operasjon - fjernes jan-25
 #'                1: Elektiv
 #'                2: Akutt
 #'                3: Ø-hjelp
-#' @param dagkir Dagkirurgi? 0-nei, 1-ja
+#' @param dagkir Dagkirurgi? 0-nei, 1-ja - fases ut jan -25
+#' @param behNivaa Behandlingsvivå: 1-Poliklinisk, 2-Dagkirurgi, 3-Inneliggende
 #' @param AlvorlighetKompl  Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
 #'                          Angis som en vektor av tall som tekst, f.eks. c('1','2')
 #'                          1: Lite alvorlig
@@ -43,7 +44,8 @@
 #' @export
 #'
 NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', fargepalett='BlaaOff',
-                          minald=0, maxald=110, OpMetode=0, AlvorlighetKompl=0, Hastegrad=0, dagkir=9,
+                          minald=0, maxald=110, OpMetode=0, AlvorlighetKompl=0, #dagkir=9, # Hastegrad=0,
+                          behNivaa = 0,
                           enhetsUtvalg=0, velgAvd=0, velgDiag=0, reshID=0)
 {
   # Definer intersect-operator
@@ -55,7 +57,6 @@ NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', f
 
   #Velge hvilke sykehus som skal være med:
   if (velgAvd[1] != 0 & reshID==0) {
-    #if (enhetsUtvalg !=0) {stop("enhetsUtvalg må være 0 (alle)")}
     #Utvalg på avdelinger:
     RegData <- RegData[which(as.numeric(RegData$ReshId) %in% as.numeric(velgAvd)),]
     RegData$ShNavn <- as.factor(RegData$ShNavn)
@@ -80,7 +81,6 @@ NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', f
   #Operasjonstype:
   indMCE <- if (OpMetode %in% c(1:3)){which(RegData$OpMetode %in% c(OpMetode,3))
     } else {indMCE <- 1:Ninn}
-  #if (OpMetode == 7) {indMCE <- which(RegData$LapRobotKirurgi == 1)} #ROBOT_KIRURGI==TRUE
   if (OpMetode %in% c(4:9)) {
       ProsLap <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3')
       hysterektomikoder <- c('LCD00', 'LCD01','LCD04','LCD11', 'LCC11', 'LCD97')
@@ -142,19 +142,27 @@ if (velgDiag !=0) {
   indAlvor <- if (AlvorlighetKompl[1] %in% 1:4) {
     which(RegData$Opf0AlvorlighetsGrad %in% as.numeric(AlvorlighetKompl)) %i%
       which(RegData$Opf0Status == 1)} else {indAlvor <- 1:Ninn}
+
+  # OpBehNivaa      #1-Poliklinisk, 2-Dagkirurgi, 3-Inneliggende
+    # tittel <-  'Behandlingsnivå'
+  if (behNivaa %in% 1:3) {
+    indBehNivaa <- which(RegData$OpBehNivaa == behNivaa)
+  } else {indBehNivaa <- 1:Ninn}
+
   #Hastegrad  1:3 'Elektiv', 'Akutt', 'Ø-hjelp'
-  indHastegrad <- if (Hastegrad[1] %in% 1:3) {which(RegData$OpKategori %in% as.numeric(Hastegrad))
-                  } else {indHastegrad <- 1:Ninn}
+  # indHastegrad <- if (Hastegrad[1] %in% 1:3) {which(RegData$OpKategori %in% as.numeric(Hastegrad))
+  #                 } else {indHastegrad <- 1:Ninn}
   #Dagkirurgi 0-nei, 1-ja
-  indDagkir <- if (dagkir %in% 0:1) {
-    if (dagkir==0) {which(RegData$OpBehNivaa != 2)}
-      if (dagkir==1) {which(RegData$OpBehNivaa == 2)}
-    #indDagkir <- if (dagkir %in% 0:1) {which(RegData$OpDagkirurgi == as.numeric(dagkir))
-  } else {indDagkir <- 1:Ninn}
+  # indDagkir <- if (dagkir %in% 0:1) {
+  #   if (dagkir==0) {which(RegData$OpBehNivaa != 2)}
+  #     if (dagkir==1) {which(RegData$OpBehNivaa == 2)}
+  #   #indDagkir <- if (dagkir %in% 0:1) {which(RegData$OpDagkirurgi == as.numeric(dagkir))
+  # } else {indDagkir <- 1:Ninn}
 
 
   #utvalg:
-  indMed <- indAld %i% indDato %i% indMCE %i% indAlvor %i% indHastegrad %i% indDiag %i% indDagkir
+  indMed <- indAld %i% indDato %i% indMCE %i% indAlvor %i% indDiag  %i% indBehNivaa
+  # %i% indHastegrad %i% indDagkir
 
   RegData <- RegData[indMed,]
 
@@ -174,10 +182,11 @@ if (velgDiag !=0) {
                                                   'Robotassisert inngrep',
                                                   'Kolpopeksiene',
                                                   'Hysterektomier')[OpMetode])},
-                 if (Hastegrad[1] %in% 1:3){
-                   paste0('Hastegrad: ',
-                          paste0(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','))},
-                 if (dagkir %in% 0:1){c('Ikke dagkirurgi', 'Dagkirurgi')[as.numeric(dagkir)+1]},
+                 # if (Hastegrad[1] %in% 1:3){
+                 #   paste0('Hastegrad: ',
+                 #          paste0(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','))},
+                 if (behNivaa %in% 1:3){paste0('Behandlingsnivå: ',
+                                               c('Poliklinisk', 'Dagkirurgi', 'Innlagt')[as.numeric(behNivaa)])},
                  if (AlvorlighetKompl[1] %in% 1:4){
                    paste0('Alvorlighetsgrad: ', paste(c('Liten', 'Middels', 'Alvorlig', 'Dødelig')
                                                          [as.numeric(AlvorlighetKompl)], collapse=','))},

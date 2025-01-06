@@ -848,10 +848,7 @@ server <- function(input, output, session) {
                     if(as.numeric(input$velgDiagReg)!=0){
                       paste0('Diagnose: ', names(diag[diag==as.numeric(input$velgDiagReg)]))}) #, '<br />'
                   )
-                  #names(diag[diag==as.numeric(2)])
-                  # h4(HTML(paste0(names(opMetode[opMetode==as.numeric(input$opMetodeReg)]), '<br />'),
-                   #       names(velgDiag[velgDiag==as.numeric(input$velgDiag)]), '<br />'))
-                  })
+                   })
      observe({
        tabAntOpphShMndAar <- switch(input$tidsenhetReg,
                                     Mnd=tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12,
@@ -860,10 +857,10 @@ server <- function(input, output, session) {
                                     Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg,
                                                          OpMetode=as.numeric(input$opMetodeReg),
                                                          velgDiag=as.numeric(input$velgDiagReg)))
-       output$tabAntOpphSh <- renderTable(tabAntOpphShMndAar, rownames = T, digits=0, spacing="xs")
+       output$tabAntOpphSh <- renderTable(tabAntOpphShMndAar$tabAntAvd, rownames = T, digits=0, spacing="xs")
        output$lastNed_tabAntOpph <- downloadHandler(
          filename = function(){paste0('tabAntOpph.csv')},
-         content = function(file, filename){write.csv2(tabAntOpphShMndAar, file, row.names = T, na = '')
+         content = function(file, filename){write.csv2(tabAntOpphShMndAar$tabAntAvd, file, row.names = T, na = '')
          })
 
 

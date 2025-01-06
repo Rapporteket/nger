@@ -13,8 +13,7 @@ NGERUtvalgEnh(
   maxald = 110,
   OpMetode = 0,
   AlvorlighetKompl = 0,
-  Hastegrad = 0,
-  dagkir = 9,
+  behNivaa = 0,
   enhetsUtvalg = 0,
   velgAvd = 0,
   velgDiag = 0,
@@ -51,12 +50,7 @@ Angis som en vektor av tall som tekst, f.eks. c('1','2')
 3: Alvorlig
 4: Dødelig}
 
-\item{Hastegrad}{Hastegrad av operasjon.
-1: Elektiv
-2: Akutt
-3: Ø-hjelp}
-
-\item{dagkir}{Dagkirurgi? 0-nei, 1-ja}
+\item{behNivaa}{Behandlingsvivå: 1-Poliklinisk, 2-Dagkirurgi, 3-Inneliggende}
 
 \item{enhetsUtvalg}{Lag figur for
 0: Hele landet
@@ -73,6 +67,13 @@ IKKE tatt høyde for sammenlikning mot "resten".}
 
 \item{reshID}{Parameter følger fra innlogging helseregister.no og angir
 hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
+
+\item{Hastegrad}{Hastegrad av operasjon - fjernes jan-25
+1: Elektiv
+2: Akutt
+3: Ø-hjelp}
+
+\item{dagkir}{Dagkirurgi? 0-nei, 1-ja - fases ut jan -25}
 }
 \value{
 UtData En liste bestående av det filtrerte datasettet, utvalgstekst for figur og

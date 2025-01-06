@@ -74,7 +74,8 @@
 #' @export
 #'
 NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil=Sys.Date(), minald=0, maxald=130,
-                            outfile='', reshID=0, enhetsUtvalg=0, OpMetode=99, Hastegrad='', AlvorlighetKompl='',
+                            outfile='', reshID=0, enhetsUtvalg=0, OpMetode=99, AlvorlighetKompl='', #Hastegrad='',
+                            behNivaa = 0,
                             velgAvd=0, velgDiag=0, hentData=0, preprosess=1,...)
 {
   if ("session" %in% names(list(...))) {
@@ -107,9 +108,11 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil=S
   ###Gjør utvalg (NGERUtvalg)
   ###Kjører denne etter variabeldefinisjon for at utvalgTxt skal bli riktig
   #if (enhetsUtvalg=0) {reshID <- 0}
-  NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, minald = minald, maxald = maxald, datoFra = datoFra,
-                           datoTil = datoTil, OpMetode = OpMetode, AlvorlighetKompl=AlvorlighetKompl,
-                           Hastegrad=Hastegrad, velgDiag=velgDiag, enhetsUtvalg = enhetsUtvalg,
+  NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, minald = minald, maxald = maxald,
+                              datoFra = datoFra, datoTil = datoTil,
+                              OpMetode = OpMetode, AlvorlighetKompl=AlvorlighetKompl,
+                           velgDiag=velgDiag, behNivaa = behNivaa,
+                           enhetsUtvalg = enhetsUtvalg, #Hastegrad=Hastegrad,
                            velgAvd = velgAvd, reshID=reshID )
   RegData <- NGERUtvalg$RegData
   utvalgTxt <- NGERUtvalg$utvalgTxt

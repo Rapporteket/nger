@@ -27,8 +27,8 @@ tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0,
       if (reshID==0){
         tabAvdMnd1 <- addmargins((tabAvdMnd1))}
       tabAvdMnd1 <- xtable::xtable(tabAvdMnd1, digits=0)
-      return(tabAvdMnd1)
-	#return(list(tabAvdMnd1=tabAvdMnd1, utvalgTxt <- Utvalg$utvalgTxt))
+      #return(tabAvdMnd1)
+	return(list(tabAntAvd=tabAvdMnd1, utvalgTxt = Utvalg$utvalgTxt))
 }
 #tabAntOpphShMnd(RegData, datoTil=Sys.Date(), antMnd=3)
 
@@ -45,8 +45,8 @@ tabAntOpphSh5Aar <- function(RegData, datoTil=Sys.Date(),
       rownames(tabAvdAarN)[dim(tabAvdAarN)[1] ]<- 'TOTALT, alle enheter:'
       colnames(tabAvdAarN)[dim(tabAvdAarN)[2] ]<- 'Siste 5 år'
       tabAvdAarN <- xtable::xtable(tabAvdAarN)
-      #return(list(tabAvdAarN=tabAvdAarN, utvalgTxt <- Utvalg$utvalgTxt))
-      return(tabAvdAarN)
+      return(list(tabAntAvd=tabAvdAarN, utvalgTxt = Utvalg$utvalgTxt))
+      #return(tabAvdAarN)
 }
 
 

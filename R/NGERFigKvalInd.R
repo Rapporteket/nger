@@ -22,8 +22,8 @@
 
 NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', datoTil=Sys.Date(),
                            valgtVar='kvalInd', enhetsUtvalg=0, minald=0, maxald=130, OpMetode=99,
-                           AlvorlighetKompl = 0,
-                           Hastegrad=99, dagkir=9, hentData=0, preprosess=1, velgDiag=0, Ngrense=10,
+                           AlvorlighetKompl = 0, behNivaa = 0, # Hastegrad=99,
+                           hentData=0, preprosess=1, velgDiag=0, Ngrense=10,
                            outfile='', ...) {
 
   if ("session" %in% names(list(...))) {
@@ -56,9 +56,9 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
                                    %i% which(RegData$InnDato >= '2016-01-01'), ],
                     kvalInd = RegData)
   NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, reshID=reshID,  minald = minald, maxald = maxald, datoFra = datoFra,
-                              datoTil = datoTil, OpMetode = OpMetode, Hastegrad=Hastegrad, velgDiag=velgDiag,
+                              datoTil = datoTil, OpMetode = OpMetode, velgDiag=velgDiag, #Hastegrad=Hastegrad,
                               AlvorlighetKompl = AlvorlighetKompl,
-                              dagkir = dagkir, enhetsUtvalg=enhetsUtvalg, velgAvd=velgAvd)
+                              behNivaa = behNivaa, enhetsUtvalg=enhetsUtvalg, velgAvd=velgAvd)
   smltxt <- NGERUtvalg$smltxt
   medSml <- NGERUtvalg$medSml
   utvalgTxt <- NGERUtvalg$utvalgTxt

@@ -14,7 +14,7 @@
 NGERFigPrePost  <- function(RegData, valgtVar='ScoreGeneral', datoFra='2019-01-01', datoTil=Sys.Date(),
                             enhetsUtvalg = 0, reshID = 0, velgAvd=0,
                             minald=0, maxald=130, OpMetode=99, velgDiag=0,
-                            AlvorlighetKompl = 0, Hastegrad=99, dagkir=9,
+                            AlvorlighetKompl = 0, behNivaa = 0, #Hastegrad=99,
                             Ngrense=10, outfile='', preprosess=0, hentData=0,...)
 {
 
@@ -52,8 +52,9 @@ NGERFigPrePost  <- function(RegData, valgtVar='ScoreGeneral', datoFra='2019-01-0
 
   NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil,
                               enhetsUtvalg = enhetsUtvalg, reshID = reshID, velgAvd=velgAvd,
-                              minald=minald, maxald=maxald, OpMetode=OpMetode, velgDiag=velgDiag,
-                              Hastegrad = Hastegrad, dagkir = dagkir, AlvorlighetKompl = AlvorlighetKompl)
+                              minald=minald, maxald=maxald,
+                              OpMetode=OpMetode, velgDiag=velgDiag, #Hastegrad = Hastegrad,
+                              behNivaa = behNivaa, AlvorlighetKompl = AlvorlighetKompl)
   RegData <- NGERUtvalg$RegData
   utvalgTxt <- NGERUtvalg$utvalgTxt
 

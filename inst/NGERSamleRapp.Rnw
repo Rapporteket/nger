@@ -205,7 +205,7 @@ dum <- NGERFigAndelTid(RegData=RegData, preprosess=0, datoFra=datoFra, valgtVar=
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='StatusOppf0Tid.pdf',
                        tidsenhet = tidsenhet)
 
-tabAvdN <- tabAntOpphSh5Aar(RegDataHele, datoTil=datoTil)
+tabAvdN <- tabAntOpphSh5Aar(RegDataHele, datoTil=datoTil)$tabAntAvd
 
 print(xtable::xtable(tabAvdN, digits=0, align=c('l', rep('r', max(c(1,ncol(tabAvdN)), na.rm=T))),
                      caption='Antall registrerte operasjoner siste 5 år.',

@@ -13,10 +13,10 @@ NGERFigGjsnGrVar(
   maxald = 130,
   OpMetode = 99,
   AlvorlighetKompl = 99,
-  Hastegrad = 99,
   valgtMaal = "gjsn",
   hentData = 0,
   preprosess = 1,
+  behNivaa = 0,
   grVar = "ShNavn",
   velgAvd = 0,
   velgDiag = 0,
@@ -57,11 +57,6 @@ Angis som en vektor av tall som tekst, f.eks. c('1','2')
 3: Alvorlig
 4: Dødelig}
 
-\item{Hastegrad}{Hastegrad av operasjon.
-1: Elektiv
-2: Akutt
-3: Ø-hjelp}
-
 \item{valgtMaal}{'med' = median. Alt annet gir gjennomsnitt
 
 Argumentet \emph{valgtVar} har følgende valgmuligheter:
@@ -79,6 +74,8 @@ Argumentet \emph{valgtVar} har følgende valgmuligheter:
 \item{preprosess}{Preprosesser data
 0: Nei (Standard)
 1: Ja}
+
+\item{behNivaa}{Behandlingsvivå: 1-Poliklinisk, 2-Dagkirurgi, 3-Inneliggende}
 
 \item{velgAvd}{Velge hvilke avdelinger som skal vises i figurer med avdelingsvise resultater.
 IKKE tatt høyde for sammenlikning mot "resten".}

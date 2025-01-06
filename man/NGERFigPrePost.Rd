@@ -17,8 +17,7 @@ NGERFigPrePost(
   OpMetode = 99,
   velgDiag = 0,
   AlvorlighetKompl = 0,
-  Hastegrad = 99,
-  dagkir = 9,
+  behNivaa = 0,
   Ngrense = 10,
   outfile = "",
   preprosess = 0,
@@ -72,10 +71,7 @@ Angis som en vektor av tall som tekst, f.eks. c('1','2')
 3: Alvorlig
 4: Dødelig}
 
-\item{Hastegrad}{Hastegrad av operasjon.
-1: Elektiv
-2: Akutt
-3: Ø-hjelp}
+\item{behNivaa}{Behandlingsvivå: 1-Poliklinisk, 2-Dagkirurgi, 3-Inneliggende}
 
 \item{outfile}{Navn på fil figuren skrives til. Standard: '' (Figur skrives
 til systemets standard utdataenhet (som regel skjerm))}

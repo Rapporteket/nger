@@ -28,9 +28,11 @@
 #'
 #' @export
 
-NGERFigAndelTid <- function(RegData=0, valgtVar, datoFra='2015-01-01', datoTil=Sys.Date(),
-                            minald=0, maxald=130, OpMetode=99, Hastegrad='', AlvorlighetKompl='', reshID=0, outfile='',
-                            enhetsUtvalg=0, velgDiag=0, preprosess=1, hentData=0, tidsenhet='Aar',
+NGERFigAndelTid <- function(RegData=0, valgtVar, preprosess=1, hentData=0, reshID=0,
+                            datoFra='2015-01-01', datoTil=Sys.Date(), #Hastegrad='',
+                            minald=0, maxald=130,
+                            OpMetode=99, AlvorlighetKompl='', velgDiag=0, behNivaa = 0,
+                            enhetsUtvalg=0, tidsenhet='Aar', outfile='',
                             ...) {
 
   if ("session" %in% names(list(...))) {
@@ -62,35 +64,13 @@ NGERFigAndelTid <- function(RegData=0, valgtVar, datoFra='2015-01-01', datoTil=S
 
   NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, enhetsUtvalg=enhetsUtvalg, reshID = reshID,
                               datoFra=datoFra, datoTil=datoTil,
-                               minald=minald, maxald=maxald, velgDiag=velgDiag,
-                              OpMetode=OpMetode, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad)
+                               minald=minald, maxald=maxald,
+                              velgDiag=velgDiag, behNivaa = behNivaa,
+                              OpMetode=OpMetode, AlvorlighetKompl=AlvorlighetKompl) #Hastegrad=Hastegrad)
   RegData <- NGERUtvalg$RegData
   utvalgTxt <- NGERUtvalg$utvalgTxt
 
 
-  #------------------------Klargjøre tidsenhet--------------
-
-  #Brukes til sortering
-  # RegData$TidsEnhet <- switch(tidsenhet,
-  #                             Aar = RegData$Aar-min(RegData$Aar)+1,
-  #                             Mnd = RegData$Mnd-min(RegData$Mnd[RegData$Aar==min(RegData$Aar)])+1
-  #                             +(RegData$Aar-min(RegData$Aar))*12,
-  #                             Kvartal = RegData$Kvartal-min(RegData$Kvartal[RegData$Aar==min(RegData$Aar)])+1+
-  #                               (RegData$Aar-min(RegData$Aar))*4,
-  #                             Halvaar = RegData$Halvaar-min(RegData$Halvaar[RegData$Aar==min(RegData$Aar)])+1+
-  #                               (RegData$Aar-min(RegData$Aar))*2
-  # )
-  #
-  # tidtxt <- switch(tidsenhet,
-  #                  Mnd = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)], 3,4),
-  #                              sprintf('%02.0f', RegData$Mnd[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)]), sep='.'),
-  #                  Kvartal = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)], 3,4),
-  #                                  sprintf('%01.0f', RegData$Kvartal[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)]), sep='-'),
-  #                  Halvaar = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)], 3,4),
-  #                                  sprintf('%01.0f', RegData$Halvaar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)]), sep='-'),
-  #                  Aar = as.character(RegData$Aar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)]))
-  #
-  # RegData$TidsEnhet <- factor(RegData$TidsEnhet, levels=1:max(RegData$TidsEnhet)) #evt. levels=tidtxt
   #------------------------Klargjøre tidsenhet--------------
   #if (dim(RegData)[1]>9) {
     RegDataFunk <- SorterOgNavngiTidsEnhet(RegData=RegData, tidsenhet = tidsenhet)

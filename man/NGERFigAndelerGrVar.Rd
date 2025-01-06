@@ -13,8 +13,8 @@ NGERFigAndelerGrVar(
   minald = 0,
   maxald = 130,
   OpMetode = 99,
-  Hastegrad = "",
   AlvorlighetKompl = "",
+  behNivaa = 0,
   Ngrense = 10,
   reshID = 0,
   outfile = "",
@@ -50,17 +50,14 @@ IKKE tatt høyde for sammenlikning mot "resten".}
 8: Kolpopeksiene
 9: Hysterectomier (alle)}
 
-\item{Hastegrad}{Hastegrad av operasjon.
-1: Elektiv
-2: Akutt
-3: Ø-hjelp}
-
 \item{AlvorlighetKompl}{Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
 Angis som en vektor av tall som tekst, f.eks. c('1','2')
 1: Lite alvorlig
 2: Middels alvorlig
 3: Alvorlig
 4: Dødelig}
+
+\item{behNivaa}{Behandlingsvivå: 1-Poliklinisk, 2-Dagkirurgi, 3-Inneliggende}
 
 \item{reshID}{Parameter følger fra innlogging helseregister.no og angir
 hvilken enhet i spesialisthelsetjenesten brukeren tilhører}

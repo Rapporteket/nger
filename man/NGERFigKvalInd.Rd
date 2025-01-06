@@ -16,8 +16,7 @@ NGERFigKvalInd(
   maxald = 130,
   OpMetode = 99,
   AlvorlighetKompl = 0,
-  Hastegrad = 99,
-  dagkir = 9,
+  behNivaa = 0,
   hentData = 0,
   preprosess = 1,
   velgDiag = 0,
@@ -67,12 +66,7 @@ Angis som en vektor av tall som tekst, f.eks. c('1','2')
 3: Alvorlig
 4: Dødelig}
 
-\item{Hastegrad}{Hastegrad av operasjon.
-1: Elektiv
-2: Akutt
-3: Ø-hjelp}
-
-\item{dagkir}{Dagkirurgi? 0-nei, 1-ja}
+\item{behNivaa}{Behandlingsvivå: 1-Poliklinisk, 2-Dagkirurgi, 3-Inneliggende}
 
 \item{hentData}{Gjør spørring mot database
 0: Nei, RegData gis som input til funksjonen (Standard)

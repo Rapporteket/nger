@@ -115,7 +115,7 @@ NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='LapKonvertert',
               outfile='LapKonvertert_LapAar.pdf', tidsenhet='Aar')
 
 NGERFigAndelTid(RegData=NGERData, valgtVar='OpBehNivaa', preprosess = 0,
-                OpMetode=1, Hastegrad=1, tidsenhet='Aar', outfile='OpDagkirLapEl_aar.pdf')
+                OpMetode=1, tidsenhet='Aar', outfile='OpDagkirLapEl_aar.pdf') #Hastegrad=1, FJERNET jan25
 
 
 #--Laparoskopi
@@ -260,7 +260,7 @@ library(nger)
 RegData <- NGERData
 
 #Antall registreringer siste 5 år
-tabOpph <- tabAntOpphSh5Aar(RegData=RegData, datoTil=datoTil)
+tabOpph <- tabAntOpphSh5Aar(RegData=RegData, datoTil=datoTil)$tabAntAvd
 AarNaa <- as.numeric(format.Date(datoTil, "%Y"))
 tabAvdAarN <- addmargins(table(RegData[which(RegData$Aar %in% (AarNaa-4):AarNaa), c('ShNavn','Aar')]), margin = 1)
 xtable::xtable(tabAvdAarN, digits=0, align=c('l', rep('r',ncol(tabAvdAarN))),

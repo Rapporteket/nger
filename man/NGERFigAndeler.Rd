@@ -15,8 +15,8 @@ NGERFigAndeler(
   reshID = 0,
   enhetsUtvalg = 0,
   OpMetode = 99,
-  Hastegrad = "",
   AlvorlighetKompl = "",
+  behNivaa = 0,
   velgAvd = 0,
   velgDiag = 0,
   hentData = 0,
@@ -58,17 +58,14 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 8: Kolpopeksiene
 9: Hysterectomier (alle)}
 
-\item{Hastegrad}{Hastegrad av operasjon.
-1: Elektiv
-2: Akutt
-3: Ø-hjelp}
-
 \item{AlvorlighetKompl}{Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
 Angis som en vektor av tall som tekst, f.eks. c('1','2')
 1: Lite alvorlig
 2: Middels alvorlig
 3: Alvorlig
 4: Dødelig}
+
+\item{behNivaa}{Behandlingsvivå: 1-Poliklinisk, 2-Dagkirurgi, 3-Inneliggende}
 
 \item{velgAvd}{Velge hvilke avdelinger som skal vises i figurer med avdelingsvise resultater.
 IKKE tatt høyde for sammenlikning mot "resten".}
