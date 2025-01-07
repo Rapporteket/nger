@@ -33,6 +33,8 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
     AlleVarNum.SivilStatus,
     Utdanning,
     AlleVarNum.Norsktalende,
+    AlleVarNum.Morsmaal,
+    AlleVarNum.MorsmaalAnnet,
 -- HysBlodning, erstattet nov23
     -- HysFluidOverload, erstattet nov23
     HysGjforingsGrad,
@@ -139,6 +141,8 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
     OpAntibProfylakse,
     OpASA,
     OpBMI,
+    OpHoyde,
+    OpVekt,
     OpBlodfortynnende, # endret navn fra Blodfortynnende nov 23
     -- OpBMIKategori,  ikke i bruk
     -- OpDagkirurgi,

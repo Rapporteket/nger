@@ -37,7 +37,8 @@
 #' @inheritParams NGERUtvalgEnh
 #' @export
 
-NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', datoFra='2013-01-01', datoTil='3000-12-31',
+NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
+                                datoFra='2013-01-01', datoTil='3000-12-31',
                                 velgAvd=0, minald=0, maxald=130,
                                 OpMetode=99, # Hastegrad='',
                                 AlvorlighetKompl='', behNivaa = 0,
@@ -60,7 +61,8 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', datoFra='2013-01-01
   '%i%' <- intersect
   cexShNavn <- 0.85
 
-  NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, grVar='', OpMetode=OpMetode , figurtype='andelGrVar')
+  NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, #grVar='',
+                                     OpMetode=OpMetode , figurtype='andelGrVar')
   RegData <- NGERVarSpes$RegData
   #flerevar <- NGERVarSpes$flerevar
   #subtxt <- NGERVarSpes$subtxt
