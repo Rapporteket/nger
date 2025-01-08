@@ -664,7 +664,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
                      andelGrVar = 'Positiv el svært positiv oppfatning om gyn. avd.',
                      andelTid = 'Positiv el svært positiv oppfatning om gyn. avd.')
     grtxt <- c("Svært negativ","Negativ","Nøytral","Positiv","Svært positiv")
-    varTxt <- grtxt[5]
+    varTxt <- 'positive/svært positive'
     koder <- 0:4
     retn <- 'H'
     RegData <- RegData[which(RegData[ ,valgtVar] %in% koder), ]
@@ -690,7 +690,6 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData$VariabelGr <- cut(RegData$Variabel, breaks=gr, include.lowest=F, right=T)
     grtxt <- c('0', levels(RegData$VariabelGr)[2:(length(gr)-1)])
     sortAvtagende <- T
-    KvalIndGrenser <- c(0, 2.2, 2.6, 3)
     xAkseTxt <- 'sumskår'
     tittel <- 'TSS2, gjennomsnittlig sumskår'
   }
@@ -1056,14 +1055,6 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     cexgr <- 0.8
     tittel <- 'Laparoskopisk utstyr benyttet'
     RegData <- RegData[RegData$OpMetode %in% c(1,3), ]
-    #indInnfDato <- which(as.Date(RegData$HovedDato) >= as.Date('2016-03-01'))
-    #varInnfind <- which(variable %in% c('LapMorcellatorUtenPose', 'LapMorcellatorMedPose'))
-    #RegData[which(as.Date(RegData$HovedDato) < as.Date('2016-03-01')), variable[varInnfind]] <- NA
-
-    #AntVar[varBytt] <- colSums(RegData[indInnfDato,varBytt], na.rm=T)
-    #N <- length(indMed)
-    #NVar <- rep(N, length(variable))
-    #NVar[varByttind] <- length(indInnfDato)
   }
   if (valgtVar=='LapKomplIntra') { #LapIntraab, LapIntraKomplSkade
     #variableGML <- c('LapNerv', 'LapUreter', 'LapTarm', 'LapBlare', 'LapKarBlodning')

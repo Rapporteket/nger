@@ -371,45 +371,66 @@ return(tabUt)
 #' @param verdi - hvilken verdi/kode som skal telles når en beregner prosent
 #' @param met - 'hys' (hysteroskopi) eller 'lap' (laparoskopi)
 #'
-#' @return Leverer beregnede tall til rad i nøkkeltallstabell
+#' @return Leverer beregnede tall til rad i nøkkeltallstabell.
+#' NB, NB: Rad 2 og 3 gjelder kun hysteroskopi, rad 4 kun laparoskopi
 #' @export
 #'
-rader <- function(RegData, var, stat = 'median', verdi=1, met='hys'){
+rader <- function(RegData, var, stat = 'median', verdi=1){ #, met='hys'
 
-  if (met == 'hys'){
-  indUfull <- which(RegData$HysGjforingsGrad==2)
-  indPerKomp <- which(RegData$HysKomplikasjoner==1)
   indPostKomp <- which(RegData$Opf0Komplikasjoner==1)
   indTss2Gen <- which(RegData$Tss2Generelt %in% 2:3)
 
-  Nhys <- c(dim(RegData)[1], length(indUfull), length(indPerKomp), length(indPostKomp), length(indTss2Gen))
-  }
+#  Kun hysteroskopi
+    indUfull <- which(RegData$HysGjforingsGrad==2)
+    indPerKompHys <- which(RegData$HysKomplikasjoner==1)
+#  Nhys <- c(dim(RegData)[1], length(indUfull), length(indPerKompHys), length(indPostKomp), length(indTss2Gen))
+
+    # Kun lap
+    indPerKompLap <- which(RegData$LapKomplikasjoner==1)
+
+    N_hys_lap <- c(dim(RegData)[1], length(indUfull), length(indPerKompHys),
+                   length(indPerKompLap), length(indPostKomp), length(indTss2Gen))
+
 
   pst <- function(var, verdi) {100*sum(var==verdi)/length(var)}
 
   if (stat=='median') {
     rad <- c(median(var, na.rm = T),
-             median(var[indUfull], na.rm = T), #Ufullstendige
-             median(var[indPerKomp], na.rm = T), # Perop./Intraop kompl
+             median(var[indUfull], na.rm = T), #Ufullstendige, hys
+             median(var[indPerKompHys], na.rm = T), # Perop./Intraop kompl, hys
+             median(var[indPerKompLap], na.rm = T), # Postop kompl, lap
              median(var[indPostKomp], na.rm = T), # Postop kompl
              median(var[indTss2Gen], na.rm = T) # Fornøyd + svært fornøyd
     )
     rad <- sprintf("%.1f", rad)
   }
+  if (stat=='gjsn') {
+    rad <- c(mean(var, na.rm = T),
+             mean(var[indUfull], na.rm = T), #Ufullstendige, hys
+             mean(var[indPerKompHys], na.rm = T), # Perop./Intraop kompl, hys
+             mean(var[indPerKompLap], na.rm = T), # Postop kompl, lap
+             mean(var[indPostKomp], na.rm = T), # Postop kompl
+             mean(var[indTss2Gen], na.rm = T) # Fornøyd + svært fornøyd
+    )
+    rad <- sprintf("%.2f", rad)
+  }
+
   if (stat == 'pst'){
     var <- var[!is.na(var)]
     rad <-c(pst(var, verdi = verdi),
             pst(var[indUfull], verdi = verdi), #Ufullstendige
-            pst(var[indPerKomp], verdi = verdi), # Perop./Intraop kompl
+            pst(var[indPerKompHys], verdi = verdi), # Perop./Intraop kompl, hys
+            pst(var[indPerKompLap], verdi = verdi), # Perop./Intraop kompl, lap
             pst(var[indPostKomp], verdi = verdi), # Postop kompl
             pst(var[indTss2Gen], verdi = verdi) # Fornøyd + svært fornøyd
     )
     rad <- paste0(sprintf("%.1f", rad),'%')
   }
 
-  names(rad) <- c('Alle', 'Ufullstendig', 'Perop. kompl', 'Postop. kompl', 'Generelt fornøyd')
+  names(rad) <- c('Alle', 'Ufullst. inngrep', 'Perop. kompl', 'Perop. kompl',
+                  'Postop. kompl', 'Fornøyde pasienter')
 
-  UtData <- list(Rad = rad, N = Nhys)
+  UtData <- list(Rad = rad, N = N_hys_lap)
    return(invisible(UtData))
 }
 
@@ -424,7 +445,7 @@ rader <- function(RegData, var, stat = 'median', verdi=1, met='hys'){
 #'
 
 tabNokkelHys <- function(RegData= RegData, datoFra=Sys.Date()-365, datoTil = Sys.Date(),
-                         reshID = 0, enhetsUtvalg = 0) {
+                         reshID = 0, velgAvd=0, enhetsUtvalg = 0) {
   # Andel ufulstendige - HysGjforingsGrad, peroperative komplikasjoner, postoperative komplikasjoner
   # og pasienttilfredshet (generell oppfatning, fornøyd+svært fornøyd) ut i fra:
 
@@ -432,11 +453,12 @@ tabNokkelHys <- function(RegData= RegData, datoFra=Sys.Date()-365, datoTil = Sys
                            datoFra = datoFra,
                            datoTil = datoTil,
                            reshID = reshID,
+                           velgAvd = velgAvd,
                            enhetsUtvalg = enhetsUtvalg,
                            OpMetode=2)$RegData
   ald = rader(RegData=RegData, var=RegData$Alder, stat = 'median')
 
-  tabHys <- rbind(
+  tab <- rbind(
     'Antall forløp (N)' = ald$N,
     'Alder (median)' = ald$Rad,
     'BMI (median)' = rader(RegData=RegData, var=RegData$OpBMI, stat = 'median')$Rad,
@@ -449,26 +471,68 @@ tabNokkelHys <- function(RegData= RegData, datoFra=Sys.Date()-365, datoTil = Sys
     'Perop. kompl. (%)' = rader(RegData=RegData, var = RegData$HysKomplikasjoner, stat = 'pst', verdi = 1)$Rad
   )
 
-  # xtable::xtable(tabHys,
-  #                align=c('l', rep('r', dim(tabHys)[2])),
-  #                caption='Nøkkeltall, hysteroskopi.',
-  #                include.rownames=TRUE, include.colnames=TRUE)
+  tabHys <- tab[ ,-4]
+}
+
+#' Nøkkeltallstabell for laparoskopi
+#'
+#' @param RegData NGER-data, dataramme
+#'
+#' @return Leverer formatert tabell for nøkkeltall
+#' @export
+#'
+
+tabNokkelLap <- function(RegData= RegData, datoFra=Sys.Date()-365, datoTil = Sys.Date(),
+                         reshID = 0, velgAvd=0, enhetsUtvalg = 0) {
+  # Andel ufulstendige - HysGjforingsGrad, peroperative komplikasjoner, postoperative komplikasjoner
+  # og pasienttilfredshet (generell oppfatning, fornøyd+svært fornøyd) ut i fra:
+
+  RegData <- NGERUtvalgEnh(RegData,
+                           datoFra = datoFra,
+                           datoTil = datoTil,
+                           reshID = reshID,
+                           velgAvd = velgAvd,
+                           enhetsUtvalg = enhetsUtvalg,
+                           OpMetode=1)$RegData
+  ald = rader(RegData=RegData, var=RegData$Alder, stat = 'median')
+
+  tab <- rbind(
+    'Antall forløp (N)' = ald$N,
+    'Alder (median)' = ald$Rad,
+    'BMI (median)' = rader(RegData=RegData, var=RegData$OpBMI, stat = 'median')$Rad,
+    'Operasjonstid (median)'  = rader(RegData=RegData, var=RegData$OpTid, stat = 'median')$Rad,
+    'Hjelpeinnstikk (gj.sn.)'  =  rader(RegData=RegData, var = RegData$LapOptTro, stat = 'gjsn')$Rad, # (gj.sn)
+    #    'Blodfortynnende (%)' = rader(RegData=RegData, var=RegData$OpBlodfortynnende, stat = 'pst', verdi=1)$Rad,
+    'Poliklinkk (%)' = rader(RegData=RegData, var = RegData$OpBehNivaa, stat = 'pst', verdi = 1)$Rad,
+    'Dagkirurgi (%)' = rader(RegData=RegData, var = RegData$OpBehNivaa, stat = 'pst', verdi = 2)$Rad,
+    'Innlagt (%)'  = rader(RegData=RegData, var = RegData$OpBehNivaa, stat = 'pst', verdi = 3)$Rad,
+    'Antibiotikaprofylakse (%)' =  rader(RegData=RegData, var = RegData$OpAntibProfylakse, stat = 'pst', verdi = 1)$Rad,
+    'Robotkirurgi (%)' =  rader(RegData=RegData, var = RegData$LapRobotKirurgi, stat = 'pst', verdi = 1)$Rad,
+    'Tidligere laparotomi (%)' =  rader(RegData=RegData, var = RegData$OpTidlLaparotomi, stat = 'pst', verdi = 1)$Rad,
+    'Tidligere laparoskopi (%)' =  rader(RegData=RegData, var = RegData$OpTidlLapsko, stat = 'pst', verdi = 1)$Rad,
+    'Metode: Åpen (%)' = rader(RegData=RegData, var = RegData$LapTilgangsMetode, stat = 'pst', verdi = 0)$Rad,
+    'Metode: Veress-nål (%)' = rader(RegData=RegData, var = RegData$LapTilgangsMetode, stat = 'pst', verdi = 1)$Rad,
+    'Metode: Direkte (%)' = rader(RegData=RegData, var = RegData$LapTilgangsMetode, stat = 'pst', verdi = 2)$Rad,
+    'Optisk trokar (%)' =  rader(RegData=RegData, var = RegData$LapOptTro, stat = 'pst', verdi = 1)$Rad,
+    'Perop. kompl. (%)' = rader(RegData=RegData, var = RegData$LapKomplikasjoner, stat = 'pst', verdi = 1)$Rad
+  )
+  tabLap <- tab[ ,c(-2,-3)]
 }
 
 
 #Laparoskopi
 # Ønsker tabeller på andel peroperative komplikasjoner, postoperative komplikasjoner og
 # pasienttilfredshet (andel fornøyd/svært fornøyd variabel) ut ifra
-# Alder (median)
-# BMI (median)
-# Behandlingsnivå (tre)
-# AB profylakse
-# Operasjonstid (median)
-# Robotkirurgi (andel)
+#ok Alder (median)
+#ok BMI (median)
+#ok Operasjonstid (median)
+#ok Behandlingsnivå (tre)
+#ok Konvertert (andel)
+#ok AB profylakse
+#ok Robotkirurgi (andel)
 # Tidligere laparotomi (andel)
 # Tidligere laparoskopi (andel)
 # Metode (åpen, veress-nål eller Direkte)
 # Optisk trokar (andel)
 # Hjelpeinnstikk (gj.sn)
-# Konvertert (andel)
-# Peroperative komplikasjoner (andel)
+#ok Peroperative komplikasjoner (andel)

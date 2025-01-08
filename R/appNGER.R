@@ -321,7 +321,7 @@ ui_nger <- function() {
                           dateRangeInput(inputId = 'datovalgTab', start = startDato, end = Sys.Date(),
                                          label = "Tidsperiode", separator="t.o.m.", language="nb"),
                           conditionalPanel(
-                            condition = "input.tab == 'Nøkkeltall, Hys'"  ,
+                            condition = "input.tab == 'Nøkkeltall, Hys' || input.tab == 'Nøkkeltall, Lap' ",
                             selectInput(inputId = 'enhetsUtvalgTab', label='Egen enhet eller hele landet',
                                         choices = enhetsUtvalg[2:3]
                             ),
@@ -350,8 +350,17 @@ ui_nger <- function() {
                                     h4('Tabellen viser resultat for et utvalg variabler (rad) med ulike
                                        filtreringer (kolonner)'),
                                     br(),
-                                    tableOutput('tabNokkelHys')
-                                    #downloadButton(outputId = 'lastNed_tabLapKompl', label='Last ned tabell')
+                                    tableOutput('tabNokkelHys'),
+                                    downloadButton(outputId = 'lastNed_tabNokkelHys', label='Last ned tabell')
+                           ),
+                           tabPanel('Nøkkeltall, Lap',
+                                    br(),
+                                    h3('Laparoskopi, nøkkeltall'),
+                                    h4('Tabellen viser resultat for et utvalg variabler (rad) med ulike
+                                       filtreringer (kolonner)'),
+                                    br(),
+                                    tableOutput('tabNokkelLap'),
+                                    downloadButton(outputId = 'lastNed_tabNokkelLap', label='Last ned tabell')
                            )
                ))
     ), #Tab tabelloversikter
@@ -1152,12 +1161,32 @@ server_nger <- function(input, output, session) {
     observe({
       tabNokkelHys <- tabNokkelHys(RegData = RegData,
                                    datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2],
-                                   reshID = ifelse(is.null(input$velgSykehusTab), reshID, as.numeric(input$velgSykehusTab)),
+                                   reshID = reshID,
+                                   velgAvd = ifelse(is.null(input$velgSykehusTab), reshID, as.numeric(input$velgSykehusTab)),
                                    enhetsUtvalg = input$enhetsUtvalgTab)
       output$tabNokkelHys <- renderTable(tabNokkelHys, rownames = T, align = 'r', #c('l', 'r', 'r', 'r', 'r', 'r'),
                                          spacing="xs")
+
+      output$lastNed_tabNokkelHys <-  downloadHandler(
+        filename = function(){paste0('tabNokkelHys.csv')},
+        content = function(file, filename){write.csv2(tabNokkelHys, file, row.names = T, na = '')})
+
     })
 
+    observe({
+      tabNokkelLap <- tabNokkelLap(RegData = RegData,
+                                   datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2],
+                                   reshID = reshID,
+                                   velgAvd=ifelse(is.null(input$velgSykehusTab), reshID, as.numeric(input$velgSykehusTab)),
+                                   enhetsUtvalg = input$enhetsUtvalgTab)
+      output$tabNokkelLap <- renderTable(tabNokkelLap, rownames = T, align = 'r',
+                                         spacing="xs")
+
+      output$lastNed_tabNokkelLap <-  downloadHandler(
+        filename = function(){paste0('tabNokkelLap.csv')},
+        content = function(file, filename){write.csv2(tabNokkelLap, file, row.names = T, na = '')})
+
+    })
 
 
   #---------Fordelinger------------

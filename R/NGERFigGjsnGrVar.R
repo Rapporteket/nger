@@ -198,7 +198,7 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
       farger <- FigTypUt$farger
       fargeHoved <- ifelse(grVar %in% c('ShNavn'), farger[4], farger[1])
       fargeRest <- farger[3]
-      graa <- c('#4D4D4D','#737373','#A6A6A6','#DADADA')  #Mørk til lys          																# Fire graatoner
+      #graa <- c('#4D4D4D','#737373','#A6A6A6','#DADADA')  #Mørk til lys          																# Fire graatoner
       antGr <- length(GrNavnSort)
       lwdRest <- 3	#tykkelse på linja som repr. landet
       cexleg <- 0.9	#Størrelse på legendtekst
