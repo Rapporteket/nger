@@ -37,9 +37,12 @@
 #' @inheritParams NGERUtvalgEnh
 #' @export
 
-NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', datoFra='2013-01-01', datoTil='3000-12-31',
-                                velgAvd=0, minald=0, maxald=130, OpMetode=99, Hastegrad='',
-                                AlvorlighetKompl='', Ngrense=10, reshID=0, outfile='', #enhetsUtvalg=0,
+NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
+                                datoFra='2013-01-01', datoTil='3000-12-31',
+                                velgAvd=0, minald=0, maxald=130,
+                                OpMetode=99, # Hastegrad='',
+                                AlvorlighetKompl='', behNivaa = 0,
+                                Ngrense=10, reshID=0, outfile='',
                                 velgDiag=0, preprosess=1, hentData=0, ...
                                 ) {
   if ("session" %in% names(list(...))) {
@@ -58,7 +61,8 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', datoFra='2013-01-01
   '%i%' <- intersect
   cexShNavn <- 0.85
 
-  NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, grVar='', OpMetode=OpMetode , figurtype='andelGrVar')
+  NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, #grVar='',
+                                     OpMetode=OpMetode , figurtype='andelGrVar')
   RegData <- NGERVarSpes$RegData
   #flerevar <- NGERVarSpes$flerevar
   #subtxt <- NGERVarSpes$subtxt
@@ -70,7 +74,7 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', datoFra='2013-01-01
 
   NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, OpMetode=OpMetode
                               ,minald=minald, maxald=maxald,
-                              AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad,
+                              AlvorlighetKompl=AlvorlighetKompl, behNivaa = behNivaa, # Hastegrad=Hastegrad,
                               velgAvd=velgAvd, velgDiag=velgDiag)
   RegData <- NGERUtvalg$RegData
   utvalgTxt <- NGERUtvalg$utvalgTxt

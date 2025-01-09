@@ -14,9 +14,9 @@ NGERFigGjsnTid(
   maxald = 110,
   reshID = 0,
   OpMetode = 99,
-  Hastegrad = "",
-  AlvorlighetKompl = "",
   velgDiag = 0,
+  behNivaa = 0,
+  AlvorlighetKompl = 0,
   outfile = "",
   enhetsUtvalg = 0,
   valgtMaal = "Gjsn",
@@ -52,10 +52,12 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 8: Kolpopeksiene
 9: Hysterectomier (alle)}
 
-\item{Hastegrad}{Hastegrad av operasjon.
-1: Elektiv
-2: Akutt
-3: Ø-hjelp}
+\item{velgDiag}{0: Alle
+1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
+2: Endometriose, livmorvegg (N80.0)
+3: Endometriose, unntatt livmorvegg.}
+
+\item{behNivaa}{Behandlingsvivå: 1-Poliklinisk, 2-Dagkirurgi, 3-Inneliggende}
 
 \item{AlvorlighetKompl}{Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
 Angis som en vektor av tall som tekst, f.eks. c('1','2')
@@ -63,11 +65,6 @@ Angis som en vektor av tall som tekst, f.eks. c('1','2')
 2: Middels alvorlig
 3: Alvorlig
 4: Dødelig}
-
-\item{velgDiag}{0: Alle
-1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
-2: Endometriose, livmorvegg (N80.0)
-3: Endometriose, unntatt livmorvegg.}
 
 \item{outfile}{Navn på fil figuren skrives til. Standard: '' (Figur skrives
 til systemets standard utdataenhet (som regel skjerm))}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/appNGER.R
 \name{ui_nger}
 \alias{ui_nger}
-\title{Brukergrensesnitt (ui) til nordscir-appen}
+\title{Brukergrensesnitt (ui) til nger-appen}
 \usage{
 ui_nger()
 }
@@ -10,5 +10,5 @@ ui_nger()
 Brukergrensesnittet (ui) til nger-appen
 }
 \description{
-Brukergrensesnitt (ui) til nordscir-appen
+Brukergrensesnitt (ui) til nger-appen
 }

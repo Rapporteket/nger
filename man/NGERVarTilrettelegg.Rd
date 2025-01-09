@@ -7,7 +7,6 @@
 NGERVarTilrettelegg(
   RegData,
   valgtVar,
-  grVar = "",
   OpMetode = 0,
   ind = 0,
   figurtype = "andeler"

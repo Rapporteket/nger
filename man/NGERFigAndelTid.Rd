@@ -7,20 +7,20 @@
 NGERFigAndelTid(
   RegData = 0,
   valgtVar,
+  preprosess = 1,
+  hentData = 0,
+  reshID = 0,
   datoFra = "2015-01-01",
   datoTil = Sys.Date(),
   minald = 0,
   maxald = 130,
   OpMetode = 99,
-  Hastegrad = "",
   AlvorlighetKompl = "",
-  reshID = 0,
-  outfile = "",
-  enhetsUtvalg = 0,
   velgDiag = 0,
-  preprosess = 1,
-  hentData = 0,
+  behNivaa = 0,
+  enhetsUtvalg = 0,
   tidsenhet = "Aar",
+  outfile = "",
   ...
 )
 }
@@ -28,6 +28,17 @@ NGERFigAndelTid(
 \item{RegData}{En dataramme med alle nødvendige variabler fra registeret}
 
 \item{valgtVar}{Hvilken variabel som skal visualiseres}
+
+\item{preprosess}{Preprosesser data
+0: Nei (Standard)
+1: Ja}
+
+\item{hentData}{Gjør spørring mot database
+0: Nei, RegData gis som input til funksjonen (Standard)
+1: Ja}
+
+\item{reshID}{Parameter følger fra innlogging helseregister.no og angir
+hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 
 \item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}
 
@@ -47,11 +58,6 @@ NGERFigAndelTid(
 8: Kolpopeksiene
 9: Hysterectomier (alle)}
 
-\item{Hastegrad}{Hastegrad av operasjon.
-1: Elektiv
-2: Akutt
-3: Ø-hjelp}
-
 \item{AlvorlighetKompl}{Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
 Angis som en vektor av tall som tekst, f.eks. c('1','2')
 1: Lite alvorlig
@@ -59,31 +65,22 @@ Angis som en vektor av tall som tekst, f.eks. c('1','2')
 3: Alvorlig
 4: Dødelig}
 
-\item{reshID}{Parameter følger fra innlogging helseregister.no og angir
-hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
+\item{velgDiag}{0: Alle
+1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
+2: Endometriose, livmorvegg (N80.0)
+3: Endometriose, unntatt livmorvegg.}
 
-\item{outfile}{Navn på fil figuren skrives til. Standard: '' (Figur skrives
-til systemets standard utdataenhet (som regel skjerm))}
+\item{behNivaa}{Behandlingsvivå: 1-Poliklinisk, 2-Dagkirurgi, 3-Inneliggende}
 
 \item{enhetsUtvalg}{Lag figur for
 0: Hele landet
 1: Egen enhet mot resten av landet (Standard)
 2: Egen enhet}
 
-\item{velgDiag}{0: Alle
-1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
-2: Endometriose, livmorvegg (N80.0)
-3: Endometriose, unntatt livmorvegg.}
-
-\item{preprosess}{Preprosesser data
-0: Nei (Standard)
-1: Ja}
-
-\item{hentData}{Gjør spørring mot database
-0: Nei, RegData gis som input til funksjonen (Standard)
-1: Ja}
-
 \item{tidsenhet}{Oppløsning på tidsaksen. Verdier: Aar (standard), Halvaar, Kvartal, Mnd}
+
+\item{outfile}{Navn på fil figuren skrives til. Standard: '' (Figur skrives
+til systemets standard utdataenhet (som regel skjerm))}
 }
 \value{
 Figur som viser andel av valgt variabel, utvikling over tid.

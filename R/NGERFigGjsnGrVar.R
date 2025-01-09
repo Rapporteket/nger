@@ -24,8 +24,9 @@
 
 NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31',
                              valgtVar, minald=0, maxald=130, OpMetode=99, AlvorlighetKompl=99,
-                             Hastegrad=99, valgtMaal='gjsn', hentData=0, preprosess=1,
-                             grVar='ShNavn', velgAvd=0, velgDiag=0, Ngrense=10,medKI=1,
+                             valgtMaal='gjsn', hentData=0, preprosess=1, #Hastegrad=99,
+                             behNivaa = 0,
+                             grVar='ShNavn', velgAvd=0, velgDiag=0, Ngrense=10, medKI=1,
                              lagFig=1, outfile='',...) {     #aar=0,
 
   if ("session" %in% names(list(...))) {
@@ -50,11 +51,9 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
   NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, datoFra = datoFra, datoTil = datoTil,
                               minald = minald, maxald = maxald,
                               OpMetode = OpMetode, AlvorlighetKompl=AlvorlighetKompl,
-                              Hastegrad=Hastegrad, velgAvd=velgAvd, velgDiag=velgDiag)
+                              velgAvd=velgAvd, velgDiag=velgDiag, behNivaa = behNivaa) #Hastegrad=Hastegrad,
   smltxt <- NGERUtvalg$smltxt
-  #medSml <- NGERUtvalg$medSml
   utvalgTxt <- NGERUtvalg$utvalgTxt
-  #ind <- NGERUtvalg$ind
   hovedgrTxt <- NGERUtvalg$hovedgrTxt
   RegData <- NGERUtvalg$RegData
 
@@ -199,7 +198,7 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
       farger <- FigTypUt$farger
       fargeHoved <- ifelse(grVar %in% c('ShNavn'), farger[4], farger[1])
       fargeRest <- farger[3]
-      graa <- c('#4D4D4D','#737373','#A6A6A6','#DADADA')  #Mørk til lys          																# Fire graatoner
+      #graa <- c('#4D4D4D','#737373','#A6A6A6','#DADADA')  #Mørk til lys          																# Fire graatoner
       antGr <- length(GrNavnSort)
       lwdRest <- 3	#tykkelse på linja som repr. landet
       cexleg <- 0.9	#Størrelse på legendtekst

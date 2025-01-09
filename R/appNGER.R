@@ -1,7 +1,7 @@
 #Resultattjeneste for NGER
 
 
-#' Brukergrensesnitt (ui) til nordscir-appen
+#' Brukergrensesnitt (ui) til nger-appen
 #'
 #' @return Brukergrensesnittet (ui) til nger-appen
 #' @export
@@ -21,8 +21,8 @@ ui_nger <- function() {
   enhetsUtvalg <- c("Egen mot resten av landet"=1,
                     "Hele landet"=0,
                     "Egen enhet"=2)
-  diag <- 0:8
-  names(diag) <- c('Alle', 'Godartede ovarialcyster', 'Endometriose, livmorvegg', 'Endo u livmorvegg',
+  diagnoser <- 0:8
+  names(diagnoser) <- c('Alle', 'Godartede ovarialcyster', 'Endometriose, livmorvegg', 'Endo u livmorvegg',
                    'Onkologi', 'Generell gynekologi', 'Gravide', 'Komplikasjoner', 'Infertilitet')
 
   opMetode <- c('Alle'=0,
@@ -40,13 +40,16 @@ ui_nger <- function() {
     "Middels alvorlig"=2,
     "Alvorlig"=3,
     "Dødelig"=4)
-  hastegrad <- c('Alle'=0,
-                 'Elektiv'=1,
-                 'Akutt'=2,
-                 'Ø-hjelp'=3)
-  dagkir <- c('Alle'=9,
-              'Dagkirurgi'=1,
-              'Ikke dagkirurgi'=0)
+
+  behNivaa <- c("Alle" =0, "Poliklinisk" = 1, "Dagkirurgi" = 2, "Inneliggende" = 3)
+
+  # hastegrad <- c('Alle' = 0,
+  #                'Elektiv' = 1,
+  #                'Akutt' = 2,
+  #                'Ø-hjelp' = 3)
+  # dagkir <- c('Alle' = 9,
+  #             'Dagkirurgi' = 1,
+  #             'Ikke dagkirurgi' = 0)
 
   tidsenheter <- rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
                        'Kvartal'='Kvartal', 'Måned'='Mnd'))
@@ -138,11 +141,11 @@ ui_nger <- function() {
                            value = Sys.Date(), max = Sys.Date() ),
                  selectInput(inputId = "tidsenhetReg", label="Velg tidsenhet",
                              choices = rev(c('År'= 'Aar', 'Måned'='Mnd'))),
-                 selectInput(inputId = 'velgDiagReg', label='Diagnose',
-                             choices = diag
-                 ),
                  selectInput(inputId = 'opMetodeReg', label='Operasjonstype',
                              choices = opMetode
+                 ),
+                 selectInput(inputId = 'velgDiagReg', label='Diagnose',
+                             choices = diagnoser
                  )
                ),
                conditionalPanel(
@@ -158,7 +161,7 @@ ui_nger <- function() {
                              choices = opMetode
                  ),
                  selectInput(inputId = 'diagnoseRegDump', label='Diagnose (kun datadump)',
-                             choices = diag
+                             choices = diagnoser
                  ),
                  selectInput(inputId = 'alvorlighetKomplDump',
                              label='Alvorlighetsgrad, postoperative komplikasjoner',
@@ -177,9 +180,9 @@ ui_nger <- function() {
                  id='ark',
                  tabPanel('Antall operasjoner',
                           h2("Antall opphold per avdeling"),
-                          uiOutput("undertittelReg"),
                           p("Velg tidsperiode for operasjon ved å velge sluttdato/tidsenhet i menyen til venstre"),
                           br(),
+                          uiOutput("undertittelReg"),
                           fluidRow(
                             tableOutput("tabAntOpphSh")
                             ,downloadButton(outputId = 'lastNed_tabAntOpph', label='Last ned')
@@ -239,8 +242,9 @@ ui_nger <- function() {
                           ),
                           conditionalPanel(condition = "input.kvalIndark == 'Figur' || input.kvalIndark == 'Tabell' ||
                       input.kvalIndark == 'RAND, alle dimensjoner' ",
-                                           selectInput(inputId = 'velgReshKval', label='Velg eget Sykehus',
-                                                       choices = uiOutput("sykehusValg")) #sykehusValg)
+                                           uiOutput("velgReshKval")
+                                           # selectInput(inputId = 'velgReshKval', label='Velg eget Sykehus',
+                                           #             choices = uiOutput("sykehusValg")) #sykehusValg)
                           ),
                           #Bare RAND013
                           conditionalPanel(condition = "input.kvalIndark == 'RAND, alle år'",
@@ -264,13 +268,13 @@ ui_nger <- function() {
                                       choices = opMetode
                           ),
                           selectInput(inputId = 'velgDiagKval', label='Diagnose',
-                                      choices = diag
+                                      choices = diagnoser
                           ),
-                          selectInput(inputId = 'hastegradKval', label='Hastegrad',
-                                      choices = hastegrad
-                          ),
-                          selectInput(inputId = 'dagkirKval', label='Dagkirurgi',
-                                      choices = dagkir
+                          # selectInput(inputId = 'hastegradKval', label='Hastegrad',
+                          #             choices = hastegrad
+                          # ),
+                          selectInput(inputId = 'behNivaaKval', label='Behandlingsnivå',
+                                      choices = behNivaa
                           ),
                           selectInput(inputId = 'alvorlighetKomplKval',
                                       label='Alvorlighetsgrad, postoperative komplikasjoner',
@@ -317,7 +321,7 @@ ui_nger <- function() {
                           dateRangeInput(inputId = 'datovalgTab', start = startDato, end = Sys.Date(),
                                          label = "Tidsperiode", separator="t.o.m.", language="nb"),
                           conditionalPanel(
-                            condition = "input.tab == 'Nøkkeltall, Hys'"  ,
+                            condition = "input.tab == 'Nøkkeltall, Hys' || input.tab == 'Nøkkeltall, Lap' ",
                             selectInput(inputId = 'enhetsUtvalgTab', label='Egen enhet eller hele landet',
                                         choices = enhetsUtvalg[2:3]
                             ),
@@ -346,8 +350,17 @@ ui_nger <- function() {
                                     h4('Tabellen viser resultat for et utvalg variabler (rad) med ulike
                                        filtreringer (kolonner)'),
                                     br(),
-                                    tableOutput('tabNokkelHys')
-                                    #downloadButton(outputId = 'lastNed_tabLapKompl', label='Last ned tabell')
+                                    tableOutput('tabNokkelHys'),
+                                    downloadButton(outputId = 'lastNed_tabNokkelHys', label='Last ned tabell')
+                           ),
+                           tabPanel('Nøkkeltall, Lap',
+                                    br(),
+                                    h3('Laparoskopi, nøkkeltall'),
+                                    h4('Tabellen viser resultat for et utvalg variabler (rad) med ulike
+                                       filtreringer (kolonner)'),
+                                    br(),
+                                    tableOutput('tabNokkelLap'),
+                                    downloadButton(outputId = 'lastNed_tabNokkelLap', label='Last ned tabell')
                            )
                ))
     ), #Tab tabelloversikter
@@ -437,11 +450,14 @@ ui_nger <- function() {
                     choices = opMetode
         ),
         selectInput(inputId = 'velgDiag', label='Diagnose',
-                    choices = diag
+                    choices = diagnoser
         ),
-        selectInput(inputId = 'hastegrad', label='Hastegrad',
-                    choices = hastegrad
+        selectInput(inputId = 'behNivaa', label='Behandlingsnivå',
+                    choices = behNivaa
         ),
+        # selectInput(inputId = 'hastegrad', label='Hastegrad',
+        #             choices = hastegrad
+        # ),
         selectInput(inputId = 'alvorlighetKompl',
                     label='Alvorlighetsgrad, postoperative komplikasjoner',
                     multiple = T, #selected=0,
@@ -528,11 +544,14 @@ ui_nger <- function() {
                            choices = opMetode
                ),
                selectInput(inputId = 'velgDiagAndel', label='Diagnose',
-                           choices = diag
+                           choices = diagnoser
                ),
-               selectInput(inputId = 'hastegradAndel', label='Hastegrad',
-                           choices = hastegrad
+               selectInput(inputId = 'behNivaaAndel', label='Behandlingsnivå',
+                           choices = behNivaa
                ),
+               # selectInput(inputId = 'hastegradAndel', label='Hastegrad',
+               #             choices = hastegrad
+               # ),
                selectInput(inputId = 'alvorlighetKomplAndel',
                            label='Alvorlighetsgrad, postoperative komplikasjoner',
                            multiple = T, #selected=0,
@@ -623,11 +642,14 @@ ui_nger <- function() {
                                choices = opMetode
                    ),
                    selectInput(inputId = 'velgDiagGjsn', label='Diagnose',
-                               choices = diag
+                               choices = diagnoser
                    ),
-                   selectInput(inputId = 'hastegradGjsn', label='Hastegrad',
-                               choices = hastegrad
+                   selectInput(inputId = 'behNivaaGjsn', label='Behandlingsnivå',
+                               choices = behNivaa
                    ),
+                   # selectInput(inputId = 'hastegradGjsn', label='Hastegrad',
+                   #             choices = hastegrad
+                   # ),
                    selectInput(inputId = 'alvorlighetKomplGjsn',
                                label='Alvorlighetsgrad, postoperative komplikasjoner',
                                multiple = T, #selected=0,
@@ -779,8 +801,6 @@ server_nger <- function(input, output, session) {
   sykehusValg <- c(0,sykehusValgUts)
   names(sykehusValg) <- c('Ikke valgt',sykehusNavn$x)
 
-
-
   reshID <- ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)
   #rolle <- reactive({ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')})
   rolle <- ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')
@@ -828,21 +848,6 @@ server_nger <- function(input, output, session) {
 
   #----------Registreringsoversikter ----------------------
 
-  output$undertittelReg <- renderUI({
-    t1 <- 'Tabellen viser operasjoner '
-    tagList(
-      br(),
-      h4(HTML(switch(input$tidsenhetReg,
-                     Mnd = paste0(t1, 'siste 12 måneder før ', input$sluttDatoReg, '<br />'),
-                     Aar = paste0(t1, 'siste 5 år før ', input$sluttDatoReg, '<br />'))),
-
-         if(as.numeric(input$opMetodeReg)!=0){
-           HTML(paste0('Operasjonsmetode: ',
-                       names(opMetode[opMetode==as.numeric(input$opMetodeReg)]), '<br />'))},
-         if(as.numeric(input$velgDiagReg)!=0){
-           paste0('Diagnose: ', names(diag[diag==as.numeric(input$velgDiagReg)]))}) #, '<br />'
-    )
-  })
   observe({
     tabAntOpphShMndAar <-
       switch(input$tidsenhetReg,
@@ -852,14 +857,25 @@ server_nger <- function(input, output, session) {
              Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg,
                                   OpMetode=as.numeric(input$opMetodeReg),
                                   velgDiag=as.numeric(input$velgDiagReg)))
-    output$tabAntOpphSh <- renderTable(tabAntOpphShMndAar, rownames = T, digits=0, spacing="xs")
+    output$tabAntOpphSh <- renderTable(tabAntOpphShMndAar$tabAntAvd, rownames = T, digits=0, spacing="xs")
     output$lastNed_tabAntOpph <- downloadHandler(
       filename = function(){paste0('tabAntOpph.csv')},
-      content = function(file, filename){write.csv2(tabAntOpphShMndAar, file, row.names = T, na = '')
+      content = function(file, filename){write.csv2(tabAntOpphShMndAar$tabAntAvd, file, row.names = T, na = '')
       })
 
+    output$undertittelReg <- renderUI({
+      t1 <- 'Tabellen viser operasjoner '
+      tagList(
+        br(),
+        h4(HTML(switch(input$tidsenhetReg,
+                       Mnd = paste0(t1, 'siste 12 måneder før ', input$sluttDatoReg, '<br />'),
+                       Aar = paste0(t1, 'siste 5 år før ', input$sluttDatoReg, '<br />'))),
+           HTML(paste0(tabAntOpphShMndAar$utvalgTxt[-1], '<br />'))
+        ))
+    })
+  }) #observe
 
-
+  observe({
     #RegData som har tilknyttede skjema av ulik type
     AntSkjemaAvHver <- tabAntSkjema(RegData=RegData,
                                     datoFra = input$datovalgReg[1],
@@ -886,7 +902,7 @@ server_nger <- function(input, output, session) {
                 choices = sykehusValg)
   })
 
-  reactive({
+  observe({
     if (rolle == 'SC') {
       valgtResh <- ifelse(is.null(input$velgReshReg), 0, as.numeric(input$velgReshReg))
       ind <- if (valgtResh == 0) {1:dim(RegOversikt)[1]
@@ -895,12 +911,12 @@ server_nger <- function(input, output, session) {
 
     }  else {
       tabDataRegKtr <- RegOversikt[which(RegOversikt$ReshId == reshID), ]}
-  })
+
 
   output$lastNed_dataTilRegKtr <- downloadHandler(
     filename = function(){'dataTilKtr.csv'},
     content = function(file, filename){write.csv2(tabDataRegKtr, file, row.names = F, na = '')})
-
+  })
 
   # Egen datadump, LU uten PROM
   RegDataAlle <- RegData
@@ -938,7 +954,13 @@ server_nger <- function(input, output, session) {
       content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, na = '')})
   })
   #---------Kvalitetsindikatorer------------
-  observe({   #KvalInd
+   #KvalInd
+
+    output$velgReshKval <- renderUI({
+      selectInput(inputId = 'velgReshKval', label='Velg sykehus',
+                  selected = 0,
+                  choices = sykehusValg)})
+  observe({
     output$kvalInd <- renderPlot({
       NGERFigKvalInd(RegData=RegData, preprosess = 0,
                      valgtVar=input$valgtVarKval,
@@ -948,12 +970,12 @@ server_nger <- function(input, output, session) {
                      minald=as.numeric(input$alderKval[1]),
                      maxald=as.numeric(input$alderKval[2]),
                      OpMetode = as.numeric(input$opMetodeKval),
-                     Hastegrad = as.numeric(input$hastegradKval),
-                     dagkir = as.numeric(input$dagkirKval),
+                     #Hastegrad = as.numeric(input$hastegradKval),
+                     behNivaa = as.numeric(input$behNivaaKval),
                      velgDiag = as.numeric(input$velgDiagKval),
                      AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
                      enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
-                     velgAvd=input$velgReshKval,
+                     velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
                      session = session)
     }, height=800, width=800)
 
@@ -964,16 +986,18 @@ server_nger <- function(input, output, session) {
       content = function(file){
         NGERFigKvalInd(RegData=RegData, preprosess = 0,
                        valgtVar=input$valgtVarKval,
-                       datoFra=input$datovalgKval[1], datoTil=input$datovalgKval[2],
+                       datoFra=input$datovalgKval[1],
+                       datoTil=input$datovalgKval[2],
                        reshID = reshID,
-                       minald=as.numeric(input$alderKval[1]), maxald=as.numeric(input$alderKval[2]),
+                       minald=as.numeric(input$alderKval[1]),
+                       maxald=as.numeric(input$alderKval[2]),
                        OpMetode = as.numeric(input$opMetodeKval),
-                       Hastegrad = as.numeric(input$hastegradKval),
-                       dagkir = as.numeric(input$dagkirKval),
+                       #Hastegrad = as.numeric(input$hastegradKval),
+                       behNivaa = as.numeric(input$behNivaaKval),
                        velgDiag = as.numeric(input$velgDiagKval),
                        AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
                        enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
-                       velgAvd=input$velgReshKval,
+                       velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
                        session = session,
                        outfile = file)
       })
@@ -988,11 +1012,12 @@ server_nger <- function(input, output, session) {
                      minald=as.numeric(input$alderKval[1]),
                      maxald=as.numeric(input$alderKval[2]),
                      OpMetode = as.numeric(input$opMetodeKval),
-                     Hastegrad = as.numeric(input$hastegradKval),
+                     #Hastegrad = as.numeric(input$hastegradKval),
+                     behNivaa = as.numeric(input$behNivaaKval),
                      velgDiag = as.numeric(input$velgDiagKval),
                      AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
                      enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
-                     velgAvd=input$velgReshKval,
+                     velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
                      session = session)
 
     tabKvalInd <- lagTabavFig(UtDataFraFig = UtDataKvalInd) #lagTabavFigAndeler
@@ -1030,7 +1055,8 @@ server_nger <- function(input, output, session) {
                    minald=as.numeric(input$alderKval[1]),
                    maxald=as.numeric(input$alderKval[2]),
                    OpMetode = as.numeric(input$opMetodeKval),
-                   Hastegrad = as.numeric(input$hastegradKval),
+                   behNivaa = as.numeric(input$behNivaaKval),
+                   #Hastegrad = as.numeric(input$hastegradKval),
                    velgDiag = as.numeric(input$velgDiagKval),
                    AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
                    session = session)
@@ -1048,7 +1074,8 @@ server_nger <- function(input, output, session) {
                      minald=as.numeric(input$alderKval[1]),
                      maxald=as.numeric(input$alderKval[2]),
                      OpMetode = as.numeric(input$opMetodeKval),
-                     Hastegrad = as.numeric(input$hastegradKval),
+                     behNivaa = as.numeric(input$behNivaaKval),
+                     #Hastegrad = as.numeric(input$hastegradKval),
                      velgDiag = as.numeric(input$velgDiagKval),
                      AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
                      session = session,
@@ -1057,17 +1084,20 @@ server_nger <- function(input, output, session) {
 
   #RAND, alle dim
   output$kvalRANDdim <- renderPlot({
+    print(reshID)
+    print(as.numeric(input$velgReshKval))
     NGERFigPrePost(RegData=RegData, preprosess = 0,
                    valgtVar='AlleRANDdim',
                    datoFra=input$datovalgKval[1],
                    datoTil=input$datovalgKval[2],
                    enhetsUtvalg=as.numeric(input$enhetsUtvalgKvalRAND),
                    reshID = reshID,
-                   velgAvd=as.numeric(input$velgReshKval),
+                   velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
                    minald=as.numeric(input$alderKval[1]),
                    maxald=as.numeric(input$alderKval[2]),
                    OpMetode = as.numeric(input$opMetodeKval),
-                   Hastegrad = as.numeric(input$hastegradKval),
+                   behNivaa = as.numeric(input$behNivaaKval),
+                   #Hastegrad = as.numeric(input$hastegradKval),
                    velgDiag = as.numeric(input$velgDiagKval),
                    AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
                    session = session)
@@ -1084,11 +1114,12 @@ server_nger <- function(input, output, session) {
                      datoTil=input$datovalgKval[2],
                      enhetsUtvalg=as.numeric(input$enhetsUtvalgKvalRAND),
                      reshID = reshID,
-                     velgAvd=as.numeric(input$velgReshKval),
+                     velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
                      minald=as.numeric(input$alderKval[1]),
                      maxald=as.numeric(input$alderKval[2]),
                      OpMetode = as.numeric(input$opMetodeKval),
-                     Hastegrad = as.numeric(input$hastegradKval),
+                     behNivaa = as.numeric(input$behNivaaKval),
+                     #Hastegrad = as.numeric(input$hastegradKval),
                      velgDiag = as.numeric(input$velgDiagKval),
                      AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
                      session = session,
@@ -1130,12 +1161,32 @@ server_nger <- function(input, output, session) {
     observe({
       tabNokkelHys <- tabNokkelHys(RegData = RegData,
                                    datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2],
-                                   reshID = ifelse(is.null(input$velgSykehusTab), reshID, as.numeric(input$velgSykehusTab)),
+                                   reshID = reshID,
+                                   velgAvd = ifelse(is.null(input$velgSykehusTab), reshID, as.numeric(input$velgSykehusTab)),
                                    enhetsUtvalg = input$enhetsUtvalgTab)
       output$tabNokkelHys <- renderTable(tabNokkelHys, rownames = T, align = 'r', #c('l', 'r', 'r', 'r', 'r', 'r'),
                                          spacing="xs")
+
+      output$lastNed_tabNokkelHys <-  downloadHandler(
+        filename = function(){paste0('tabNokkelHys.csv')},
+        content = function(file, filename){write.csv2(tabNokkelHys, file, row.names = T, na = '')})
+
     })
 
+    observe({
+      tabNokkelLap <- tabNokkelLap(RegData = RegData,
+                                   datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2],
+                                   reshID = reshID,
+                                   velgAvd=ifelse(is.null(input$velgSykehusTab), reshID, as.numeric(input$velgSykehusTab)),
+                                   enhetsUtvalg = input$enhetsUtvalgTab)
+      output$tabNokkelLap <- renderTable(tabNokkelLap, rownames = T, align = 'r',
+                                         spacing="xs")
+
+      output$lastNed_tabNokkelLap <-  downloadHandler(
+        filename = function(){paste0('tabNokkelLap.csv')},
+        content = function(file, filename){write.csv2(tabNokkelLap, file, row.names = T, na = '')})
+
+    })
 
 
   #---------Fordelinger------------
@@ -1154,7 +1205,8 @@ server_nger <- function(input, output, session) {
                      minald=as.numeric(input$alder[1]),
                      maxald=as.numeric(input$alder[2]),
                      OpMetode = as.numeric(input$opMetode),
-                     Hastegrad = as.numeric(input$hastegrad),
+                     #Hastegrad = as.numeric(input$hastegrad),
+                     behNivaa = as.numeric(input$behNivaa),
                      velgDiag = as.numeric(input$velgDiag),
                      AlvorlighetKompl = as.numeric(input$alvorlighetKompl),
                      enhetsUtvalg=as.numeric(input$enhetsUtvalg),
@@ -1174,7 +1226,8 @@ server_nger <- function(input, output, session) {
                        minald=as.numeric(input$alder[1]),
                        maxald=as.numeric(input$alder[2]),
                        OpMetode = as.numeric(input$opMetode),
-                       Hastegrad = as.numeric(input$hastegrad),
+                       behNivaa = as.numeric(input$behNivaa),
+                       #Hastegrad = as.numeric(input$hastegrad),
                        velgDiag = as.numeric(input$velgDiag),
                        AlvorlighetKompl = as.numeric(input$alvorlighetKompl),
                        enhetsUtvalg=as.numeric(input$enhetsUtvalg),
@@ -1191,7 +1244,8 @@ server_nger <- function(input, output, session) {
                      reshID = reshID,
                      minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
                      OpMetode = as.numeric(input$opMetode),
-                     Hastegrad = as.numeric(input$hastegrad),
+                     behNivaa = as.numeric(input$behNivaa),
+                     #Hastegrad = as.numeric(input$hastegrad),
                      velgDiag = as.numeric(input$velgDiag),
                      AlvorlighetKompl = as.numeric(input$alvorlighetKompl),
                      enhetsUtvalg=as.numeric(input$enhetsUtvalg),
@@ -1230,7 +1284,8 @@ server_nger <- function(input, output, session) {
       datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
       minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
       OpMetode = as.numeric(input$opMetodeAndel),
-      Hastegrad = as.numeric(input$hastegradAndel),
+      behNivaa = as.numeric(input$behNivaaAndel),
+      #Hastegrad = as.numeric(input$hastegradAndel),
       velgDiag = as.numeric(input$velgDiagAndel),
       AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
       session=session)
@@ -1246,7 +1301,8 @@ server_nger <- function(input, output, session) {
         datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
         minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
         OpMetode = as.numeric(input$opMetodeAndel),
-        Hastegrad = as.numeric(input$hastegradAndel),
+        behNivaa = as.numeric(input$behNivaaAndel),
+        #Hastegrad = as.numeric(input$hastegradAndel),
         velgDiag = as.numeric(input$velgDiagAndel),
         AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
         session=session,
@@ -1261,7 +1317,8 @@ server_nger <- function(input, output, session) {
       datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
       minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
       OpMetode = as.numeric(input$opMetodeAndel),
-      Hastegrad = as.numeric(input$hastegradAndel),
+      behNivaa = as.numeric(input$behNivaaAndel),
+      #Hastegrad = as.numeric(input$hastegradAndel),
       velgDiag = as.numeric(input$velgDiagAndel),
       AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
       tidsenhet = input$tidsenhetAndel,
@@ -1280,7 +1337,8 @@ server_nger <- function(input, output, session) {
         datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
         minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
         OpMetode = as.numeric(input$opMetodeAndel),
-        Hastegrad = as.numeric(input$hastegradAndel),
+        behNivaa = as.numeric(input$behNivaaAndel),
+        #Hastegrad = as.numeric(input$hastegradAndel),
         velgDiag = as.numeric(input$velgDiagAndel),
         AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
         tidsenhet = input$tidsenhetAndel,
@@ -1297,7 +1355,8 @@ server_nger <- function(input, output, session) {
       datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
       minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
       OpMetode = as.numeric(input$opMetodeAndel),
-      Hastegrad = as.numeric(input$hastegradAndel),
+      behNivaa = as.numeric(input$behNivaaAndel),
+      #Hastegrad = as.numeric(input$hastegradAndel),
       velgDiag = as.numeric(input$velgDiagAndel),
       AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
       tidsenhet = input$tidsenhetAndel,
@@ -1333,7 +1392,8 @@ server_nger <- function(input, output, session) {
         datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
         minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
         OpMetode = as.numeric(input$opMetodeAndel),
-        Hastegrad = as.numeric(input$hastegradAndel),
+        behNivaa = as.numeric(input$behNivaaAndel),
+        #Hastegrad = as.numeric(input$hastegradAndel),
         velgDiag = as.numeric(input$velgDiagAndel),
         AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
         session=session) #, lagFig = 0))
@@ -1377,7 +1437,8 @@ server_nger <- function(input, output, session) {
         minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
         valgtMaal = input$sentralmaal,
         OpMetode = as.numeric(input$opMetodeGjsn),
-        Hastegrad = as.numeric(input$hastegradGjsn),
+        behNivaa = as.numeric(input$behNivaaGjsn),
+        #Hastegrad = as.numeric(input$hastegradGjsn),
         velgDiag = as.numeric(input$velgDiagGjsn),
         AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn),
         session = session
@@ -1395,7 +1456,8 @@ server_nger <- function(input, output, session) {
           minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
           valgtMaal = input$sentralmaal,
           OpMetode = as.numeric(input$opMetodeGjsn),
-          Hastegrad = as.numeric(input$hastegradGjsn),
+          behNivaa = as.numeric(input$behNivaaGjsn),
+          #Hastegrad = as.numeric(input$hastegradGjsn),
           velgDiag = as.numeric(input$velgDiagGjsn),
           AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn),
           session = session,
@@ -1410,7 +1472,8 @@ server_nger <- function(input, output, session) {
       maxald=as.numeric(input$alderGjsn[2]),
       valgtMaal = input$sentralmaal,
       OpMetode = as.numeric(input$opMetodeGjsn),
-      Hastegrad = as.numeric(input$hastegradGjsn),
+      behNivaa = as.numeric(input$behNivaaGjsn),
+      #Hastegrad = as.numeric(input$hastegradGjsn),
       velgDiag = as.numeric(input$velgDiagGjsn),
       AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn),
       session = session)
@@ -1420,8 +1483,8 @@ server_nger <- function(input, output, session) {
         h5(HTML(paste0(UtDataGjsnGrVar$utvalgTxt, '<br />')))
       )}) #, align='center'
 
-    tabGjsnGrVar <- cbind(Antall = UtDataGjsnGrVar$Ngr$Hoved,
-                          Sentralmål = UtDataGjsnGrVar$AggVerdier$Hoved)
+    tabGjsnGrVar <- cbind('Antall' = UtDataGjsnGrVar$Ngr$Hoved,
+                          'Sentralmål' = UtDataGjsnGrVar$AggVerdier$Hoved)
     colnames(tabGjsnGrVar)[2] <- ifelse(input$sentralmaal == 'Med', 'Median', 'Gjennomsnitt')
 
     output$gjsnGrVarTab <- function() {
@@ -1459,7 +1522,8 @@ server_nger <- function(input, output, session) {
         minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
         valgtMaal = input$sentralmaal, enhetsUtvalg =  as.numeric(input$enhetsUtvalgGjsn),
         OpMetode = as.numeric(input$opMetodeGjsn),
-        Hastegrad = as.numeric(input$hastegradGjsn),
+        behNivaa = as.numeric(input$behNivaaGjsn),
+        #Hastegrad = as.numeric(input$hastegradGjsn),
         velgDiag = as.numeric(input$velgDiagGjsn),
         AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn),
         tidsenhet = input$tidsenhetGjsn,
@@ -1478,7 +1542,8 @@ server_nger <- function(input, output, session) {
           minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
           valgtMaal = input$sentralmaal, enhetsUtvalg =  as.numeric(input$enhetsUtvalgGjsn),
           OpMetode = as.numeric(input$opMetodeGjsn),
-          Hastegrad = as.numeric(input$hastegradGjsn),
+          behNivaa = as.numeric(input$behNivaaGjsn),
+          #Hastegrad = as.numeric(input$hastegradGjsn),
           velgDiag = as.numeric(input$velgDiagGjsn),
           AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn),
           tidsenhet = input$tidsenhetGjsn,
@@ -1495,7 +1560,8 @@ server_nger <- function(input, output, session) {
       valgtMaal = input$sentralmaal,
       enhetsUtvalg =  as.numeric(input$enhetsUtvalgGjsn),
       OpMetode = as.numeric(input$opMetodeGjsn),
-      Hastegrad = as.numeric(input$hastegradGjsn),
+      behNivaa = as.numeric(input$behNivaaGjsn),
+      #Hastegrad = as.numeric(input$hastegradGjsn),
       velgDiag = as.numeric(input$velgDiagGjsn),
       AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn),
       tidsenhet = input$tidsenhetGjsn, lagFigur = 0,

@@ -7,7 +7,9 @@
 tabNokkelHys(
   RegData = RegData,
   datoFra = Sys.Date() - 365,
-  datoTil = Sys.Date()
+  datoTil = Sys.Date(),
+  reshID = 0,
+  enhetsUtvalg = 0
 )
 }
 \arguments{
