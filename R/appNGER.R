@@ -889,34 +889,32 @@ server_nger <- function(input, output, session) {
   })
 
   # Hente oversikt over hvilke registrereinger som er gjort (opdato og fødselsdato)
-  RegOversikt <- RegData[ , c('Fodselsdato', 'OpDato', 'ReshId', 'ShNavn', 'BasisRegStatus')]
-  observe({
-    RegOversikt <- dplyr::filter(RegOversikt,
-                                 as.Date(OpDato) >= input$datovalgReg[1],
-                                 as.Date(OpDato) <= input$datovalgReg[2])
-  })
-
   output$velgReshReg <- renderUI({
     selectInput(inputId = 'velgReshReg', label='Velg sykehus',
                 selected = 0,
                 choices = sykehusValg)
   })
+    RegOversikt <- RegData[ , c('Fodselsdato', 'OpDato', 'ReshId', 'ShNavn', 'BasisRegStatus')]
 
-  observe({
-    if (rolle == 'SC') {
-      valgtResh <- ifelse(is.null(input$velgReshReg), 0, as.numeric(input$velgReshReg))
-      ind <- if (valgtResh == 0) {1:dim(RegOversikt)[1]
-      } else {which(as.numeric(RegOversikt$ReshId) %in% as.numeric(valgtResh))}
-      tabDataRegKtr <- RegOversikt[ind,]
+    observe({
+      RegOversikt <- dplyr::filter(RegOversikt,
+                                   as.Date(OpDato) >= input$datovalgReg[1],
+                                   as.Date(OpDato) <= input$datovalgReg[2])
 
-    }  else {
-      tabDataRegKtr <- RegOversikt[which(RegOversikt$ReshId == reshID), ]}
+      if (rolle == 'SC') {
+        valgtResh <- ifelse(is.null(input$velgReshReg), 0, as.numeric(input$velgReshReg))
+        ind <- if (valgtResh == 0) {1:dim(RegOversikt)[1]
+        } else {which(as.numeric(RegOversikt$ReshId) %in% as.numeric(valgtResh))}
+        tabDataRegKtr <- RegOversikt[ind,]
+
+      }  else {
+        tabDataRegKtr <- RegOversikt[which(RegOversikt$ReshId == reshID), ]}
 
 
-  output$lastNed_dataTilRegKtr <- downloadHandler(
-    filename = function(){'dataTilKtr.csv'},
-    content = function(file, filename){write.csv2(tabDataRegKtr, file, row.names = F, na = '')})
-  })
+      output$lastNed_dataTilRegKtr <- downloadHandler(
+        filename = function(){'dataTilKtr.csv'},
+        content = function(file, filename){write.csv2(tabDataRegKtr, file, row.names = F, na = '')})
+    })
 
   # Egen datadump, LU uten PROM
   RegDataAlle <- RegData
@@ -1291,6 +1289,7 @@ server_nger <- function(input, output, session) {
       session=session)
   }, height = 800, width=700 #height = function() {session$clientData$output_andelerGrVarFig_width} #})
   )
+
   output$LastNedFigAndelGrVar <- downloadHandler(
     filename = function(){
       paste0('FigAndelSh_', input$valgtVarAndel, Sys.time(), '.', input$bildeformatAndel)
@@ -1362,6 +1361,7 @@ server_nger <- function(input, output, session) {
       tidsenhet = input$tidsenhetAndel,
       enhetsUtvalg = input$enhetsUtvalgAndel,
       session=session) #,lagFig=0)
+
     tabAndelTid <- lagTabavFig(UtDataFraFig = AndelerTid, figurtype = 'andelTid')
 
 
