@@ -772,6 +772,47 @@ server_nger <- function(input, output, session) {
   if (paaServer) {
     rapbase::appLogger(session, msg = 'Starter Rapporteket-NGER')}
 
+  user <- rapbase::navbarWidgetServer2(
+    id = "navbar-widget",
+    orgName = "nger",
+    caller = "nger"
+  )
+
+  #reshID <- ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)
+  #rolle <- ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')
+
+  observeEvent(user$role(), {
+    if (user$role() == 'SC') {
+     showTab(inputId = "hovedark", target = "Registeradministrasjon")
+      shinyjs::show(id = 'velgResh')
+      shinyjs::show(id = 'velgReshReg')
+      shinyjs::show(id = 'velgReshKval')
+      shinyjs::show(id = 'velgSykehusFord')
+      shinyjs::show(id = 'velgSykehusTab')
+    } else {
+      shinyjs::hide(id = 'velgResh')
+      shinyjs::hide(id = 'velgReshReg')
+      shinyjs::hide(id = 'velgReshKval')
+      shinyjs::hide(id = 'velgSykehusFord')
+      shinyjs::hide(id = 'velgSykehusTab')
+      hideTab(inputId = "hovedark", target = "Registeradministrasjon")
+    }
+  })
+
+  # widget
+  if (paaServer) {
+    output$appUserName <- renderText(rapbase::getUserFullName(session))
+    output$appOrgName <- renderText(paste0('rolle: ', rolle, '<br> ReshID: ', user$org()) )}
+
+  # User info in widget
+  userInfo <- rapbase::howWeDealWithPersonalData(session)
+  observeEvent(input$userInfo, {
+    shinyalert::shinyalert("Dette vet Rapporteket om deg:", userInfo,
+                           type = "", imageUrl = "rap/logo.svg",
+                           closeOnEsc = TRUE, closeOnClickOutside = TRUE,
+                           html = TRUE, confirmButtonText = rapbase::noOptOutOk())
+  })
+
   #----------Hente data ----------
   if (paaServer) {
     RegData <- NGERRegDataSQL()
@@ -801,35 +842,6 @@ server_nger <- function(input, output, session) {
   sykehusValg <- c(0,sykehusValgUts)
   names(sykehusValg) <- c('Ikke valgt',sykehusNavn$x)
 
-  reshID <- ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)
-  #rolle <- reactive({ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')})
-  rolle <- ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')
-  brukernavn <- reactive({ifelse(paaServer, rapbase::getUserName(session), 'inkognito')})
-
-  observe({
-    if (rolle != 'SC') { #
-      shinyjs::hide(id = 'velgResh')
-      shinyjs::hide(id = 'velgReshReg')
-      shinyjs::hide(id = 'velgReshKval')
-      shinyjs::hide(id = 'velgSykehusFord')
-      shinyjs::hide(id = 'velgSykehusTab')
-      hideTab(inputId = "hovedark", target = "Registeradministrasjon")
-    }
-  })
-
-  # widget
-  if (paaServer) {
-    output$appUserName <- renderText(rapbase::getUserFullName(session))
-    output$appOrgName <- renderText(paste0('rolle: ', rolle, '<br> ReshID: ', reshID) )}
-
-  # User info in widget
-  userInfo <- rapbase::howWeDealWithPersonalData(session)
-  observeEvent(input$userInfo, {
-    shinyalert::shinyalert("Dette vet Rapporteket om deg:", userInfo,
-                           type = "", imageUrl = "rap/logo.svg",
-                           closeOnEsc = TRUE, closeOnClickOutside = TRUE,
-                           html = TRUE, confirmButtonText = rapbase::noOptOutOk())
-  })
 
   #--------------Startside------------------------------
 
@@ -838,10 +850,10 @@ server_nger <- function(input, output, session) {
     filename = function(){ paste0('NGERmndRapp', Sys.time(), '.pdf')},
     content = function(file){
       henteSamlerapporter(file, rnwFil="NGERmndRapp.Rnw",
-                          reshID = reshID)
+                          reshID = ruser$org())
     })
 
-  output$antRegMnd <- renderPlot({NGERFigAntReg(RegData=RegData, reshID = reshID)
+  output$antRegMnd <- renderPlot({NGERFigAntReg(RegData=RegData, reshID = ruser$org())
   }, height=500, width=900
   )
 
@@ -964,7 +976,7 @@ server_nger <- function(input, output, session) {
                      valgtVar=input$valgtVarKval,
                      datoFra=input$datovalgKval[1],
                      datoTil=input$datovalgKval[2],
-                     reshID = reshID,
+                     reshID = ruser$org(),
                      minald=as.numeric(input$alderKval[1]),
                      maxald=as.numeric(input$alderKval[2]),
                      OpMetode = as.numeric(input$opMetodeKval),
@@ -986,7 +998,7 @@ server_nger <- function(input, output, session) {
                        valgtVar=input$valgtVarKval,
                        datoFra=input$datovalgKval[1],
                        datoTil=input$datovalgKval[2],
-                       reshID = reshID,
+                       reshID = ruser$org(),
                        minald=as.numeric(input$alderKval[1]),
                        maxald=as.numeric(input$alderKval[2]),
                        OpMetode = as.numeric(input$opMetodeKval),
@@ -1006,7 +1018,7 @@ server_nger <- function(input, output, session) {
                      valgtVar=input$valgtVarKval,
                      datoFra=input$datovalgKval[1],
                      datoTil=input$datovalgKval[2],
-                     reshID = reshID,
+                     reshID = ruser$org(),
                      minald=as.numeric(input$alderKval[1]),
                      maxald=as.numeric(input$alderKval[2]),
                      OpMetode = as.numeric(input$opMetodeKval),
@@ -1089,7 +1101,7 @@ server_nger <- function(input, output, session) {
                    datoFra=input$datovalgKval[1],
                    datoTil=input$datovalgKval[2],
                    enhetsUtvalg=as.numeric(input$enhetsUtvalgKvalRAND),
-                   reshID = reshID,
+                   reshID = ruser$org(),
                    velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
                    minald=as.numeric(input$alderKval[1]),
                    maxald=as.numeric(input$alderKval[2]),
@@ -1111,7 +1123,7 @@ server_nger <- function(input, output, session) {
                      datoFra=input$datovalgKval[1],
                      datoTil=input$datovalgKval[2],
                      enhetsUtvalg=as.numeric(input$enhetsUtvalgKvalRAND),
-                     reshID = reshID,
+                     reshID = ruser$org(),
                      velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
                      minald=as.numeric(input$alderKval[1]),
                      maxald=as.numeric(input$alderKval[2]),
@@ -1159,7 +1171,7 @@ server_nger <- function(input, output, session) {
     observe({
       tabNokkelHys <- tabNokkelHys(RegData = RegData,
                                    datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2],
-                                   reshID = reshID,
+                                   reshID = ruser$org(),
                                    velgAvd = ifelse(is.null(input$velgSykehusTab), reshID, as.numeric(input$velgSykehusTab)),
                                    enhetsUtvalg = input$enhetsUtvalgTab)
       output$tabNokkelHys <- renderTable(tabNokkelHys, rownames = T, align = 'r', #c('l', 'r', 'r', 'r', 'r', 'r'),
@@ -1174,7 +1186,7 @@ server_nger <- function(input, output, session) {
     observe({
       tabNokkelLap <- tabNokkelLap(RegData = RegData,
                                    datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2],
-                                   reshID = reshID,
+                                   reshID = ruser$org(),
                                    velgAvd=ifelse(is.null(input$velgSykehusTab), reshID, as.numeric(input$velgSykehusTab)),
                                    enhetsUtvalg = input$enhetsUtvalgTab)
       output$tabNokkelLap <- renderTable(tabNokkelLap, rownames = T, align = 'r',
@@ -1199,7 +1211,7 @@ server_nger <- function(input, output, session) {
     output$fordelinger <- renderPlot({
       NGERFigAndeler(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
                      datoFra=input$datovalg[1], datoTil=input$datovalg[2],
-                     reshID = reshID,
+                     reshID = ruser$org(),
                      minald=as.numeric(input$alder[1]),
                      maxald=as.numeric(input$alder[2]),
                      OpMetode = as.numeric(input$opMetode),
@@ -1220,7 +1232,7 @@ server_nger <- function(input, output, session) {
       content = function(file){
         NGERFigAndeler(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
                        datoFra=input$datovalg[1], datoTil=input$datovalg[2],
-                       reshID = reshID,
+                       reshID = ruser$org(),
                        minald=as.numeric(input$alder[1]),
                        maxald=as.numeric(input$alder[2]),
                        OpMetode = as.numeric(input$opMetode),
@@ -1239,7 +1251,7 @@ server_nger <- function(input, output, session) {
     UtDataFord <-
       NGERFigAndeler(RegData=RegData, preprosess = 0, valgtVar=input$valgtVar,
                      datoFra=input$datovalg[1], datoTil=input$datovalg[2],
-                     reshID = reshID,
+                     reshID = ruser$org(),
                      minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
                      OpMetode = as.numeric(input$opMetode),
                      behNivaa = as.numeric(input$behNivaa),
@@ -1602,25 +1614,29 @@ server_nger <- function(input, output, session) {
   #------------------ Abonnement ----------------------------------------------
   orgs <- as.list(sykehusValgUts)
 
+  #Fases ut?:
+  brukernavn <- reactive({ifelse(paaServer, rapbase::getUserName(session), 'inkognito')})
+
   ## make a list for report metadata
   reports <- list(
     MndRapp = list(
       synopsis = "NGER/Rapporteket: Månedsrapport, abonnement",
       fun = "abonnementNGER", #Lag egen funksjon for utsending
       paramNames = c('rnwFil', 'reshID', 'brukernavn'), #"valgtRHF"),
-      paramValues = c('NGERmndRapp.Rnw', reshID, brukernavn) #'Alle')
+      paramValues = c('NGERmndRapp.Rnw', reshID, 'brukernavn') #NB: Brukernavn hentes fra user-objekt?
     )
   )
   #test <- nger::abonnementNGER(rnwFil="NGERmndRapp.Rnw", brukernavn='tullebukk', reshID=105460)
   rapbase::autoReportServer(
     id = "ngerAbb", registryName = "nger", type = "subscription",
-    paramNames = paramNames, paramValues = paramValues, #org = orgAbb$value,
+    paramNames = paramNames, paramValues = paramValues,
     reports = reports, orgs = orgs, eligible = TRUE
   )
 
   #-----------Registeradministrasjon-----------
 
-  if (rolle=='SC') {
+  observeEvent(user$role(), {
+  if (user$role() == 'SC') {
 
     ## liste med metadata for rapport
     reports <- list(
@@ -1659,6 +1675,7 @@ server_nger <- function(input, output, session) {
     ## veileding
     rapbase::exportGuideServer("ngerExportGuide", registryName)
   }
+  })
 
 } #server
 # Run the application
