@@ -69,8 +69,6 @@ ui_nger <- function() {
     #------------Startside--------------------------
     tabPanel("Startside",
              shinyjs::useShinyjs(),
-             #fluidRow(
-             #column(width=5,
              br(),
              tags$head(tags$style(".butt{background-color:#6baed6;} .butt{color: white;}")), # background color and font color
              h2('Velkommen til Rapporteket - Norsk Gynekologisk Endoskopiregister!', align='center'),
@@ -709,7 +707,7 @@ ui_nger <- function() {
                title='Registeradministrasjonens side for registreringer og resultater'),
              value = "Registeradministrasjon",
              h3('Siden er bare synlig for SC-bruker', align = 'center'),
-             #uiOutput('rolle'),
+             #uiOutput(user$role'),
 
              tabsetPanel(
                tabPanel(
@@ -779,8 +777,7 @@ server_nger <- function(input, output, session) {
   )
 
   #reshID <- ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)
-  #rolle <- ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')
-
+  
   observeEvent(user$role(), {
     if (user$role() == 'SC') {
      showTab(inputId = "hovedark", target = "Registeradministrasjon")
@@ -802,7 +799,7 @@ server_nger <- function(input, output, session) {
   # widget
   if (paaServer) {
     output$appUserName <- renderText(rapbase::getUserFullName(session))
-    output$appOrgName <- renderText(paste0('rolle: ', rolle, '<br> ReshID: ', user$org()) )}
+    output$appOrgName <- renderText(paste0('rolle: ', user$role(), '<br> ReshID: ', user$org()) )}
 
   # User info in widget
   userInfo <- rapbase::howWeDealWithPersonalData(session)
@@ -913,7 +910,7 @@ server_nger <- function(input, output, session) {
                                    as.Date(OpDato) >= input$datovalgReg[1],
                                    as.Date(OpDato) <= input$datovalgReg[2])
 
-      if (rolle == 'SC') {
+      if (user$role() == 'SC') {
         valgtResh <- ifelse(is.null(input$velgReshReg), 0, as.numeric(input$velgReshReg))
         ind <- if (valgtResh == 0) {1:dim(RegOversikt)[1]
         } else {which(as.numeric(RegOversikt$ReshId) %in% as.numeric(valgtResh))}
@@ -942,7 +939,7 @@ server_nger <- function(input, output, session) {
       indIntraKompl <- which((DataDump$LapKomplikasjoner==1) | (DataDump$HysKomplikasjoner==1))
       DataDump <- DataDump[indIntraKompl, ]}
 
-    if (rolle =='SC') {
+    if (user$role() =='SC') {
       valgtResh <- ifelse(is.null(input$velgReshReg),
                           0, as.numeric(input$velgReshReg))
       ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
