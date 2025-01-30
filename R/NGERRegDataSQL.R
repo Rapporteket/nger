@@ -82,7 +82,7 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
     -- LapIntraabdominell, fjernet nov23
     LapKarBlodning,
     LapKomplikasjoner,
-    LapKompTilgang,
+    -- LapKompTilgang, iflg Toril har denne samme innhold som LapSkadeTilgang
     LapKonvertert,
     -- LapMorcellator ERSTATTET når?
     -- LapMorcellatorMedPose, fjeret nov 23

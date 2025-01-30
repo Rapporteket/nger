@@ -2,7 +2,7 @@ Package: nger
 Type: Package
 Title: Resultatrapporter for NGER
 Version: 4.0.1
-Date: 2025-01-26
+Date: 2025-01-30
 Authors@R: c(person("Olsen", "Lena", email = "Lena.Ringstad.Olsen@unn.no",
     role = c("cre", "aut")))
 Maintainer: Lena Ringstad Olsen <lena.olsen@skde.no>
@@ -23,12 +23,10 @@ Imports:
     dplyr,
     rapbase,
     rapFigurer,
-    raplog,
     rmarkdown,
     shiny,
     shinyjs,
     testthat, 
-    xtable,
-    zoo
+    xtable
 VignetteBuilder: knitr
 RoxygenNote: 7.2.3

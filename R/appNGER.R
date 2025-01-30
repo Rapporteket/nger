@@ -776,8 +776,6 @@ server_nger <- function(input, output, session) {
     caller = "nger"
   )
 
-  #reshID <- ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 105460)
-  
   observeEvent(user$role(), {
     if (user$role() == 'SC') {
      showTab(inputId = "hovedark", target = "Registeradministrasjon")

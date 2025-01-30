@@ -1,17 +1,15 @@
-<<<<<<< HEAD
 
-Sys.setenv(FALK_EXTENDED_USER_RIGHTS="[{\"A\":80,\"R\":\"SC\",\"U\":106896},{\"A\":80,\"R\":\"LU\",\"U\":105593},{\"A\":81,\"R\":\"LC\",\"U\":106896}]")
+Sys.setenv(FALK_EXTENDED_USER_RIGHTS: "[{\"A\":80,\"R\":\"SC\",\"U\":110734},{\"A\":80,\"R\":\"LU\",\"U\":110734},{\"A\":80,\"R\":\"LU\",\"U\":108172},{\"A\":81,\"R\":\"LU\",\"U\":103575}]")
 Sys.setenv(R_RAP_INSTANCE="QAC")
-Sys.setenv(R_RAP_CONFIG_PATH="/home/rstudio/nordicscir/data-raw/config")
+Sys.setenv(R_RAP_CONFIG_PATH="/home/rstudio/nger/data-raw/config")
 # Sys.unsetenv("MYSQL_PORT_LOG")
-Sys.setenv(MYSQL_DB_DATA="NordicScirReportDataStaging")
+Sys.setenv(MYSQL_DB_DATA="ngerReportDataStaging")
 # Sys.setenv(MYSQL_USER="root")
 # Sys.setenv(MYSQL_PASSWORD="root")
 
 
-nordicscir::kjor_NSapper(register='nordicscir')
-=======
->>>>>>> 0b67e28158576cb49e3e85960d88e37614b8bdb1
+nger::kjor_NGERapp()
+
 RegData <- rapbase::loadRegData(
   registryName = "data",
   query="SELECT * FROM mainformdatacontract",
