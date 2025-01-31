@@ -29,5 +29,4 @@ Imports:
     shinyjs,
     testthat, 
     xtable
-VignetteBuilder: knitr
 RoxygenNote: 7.3.2
