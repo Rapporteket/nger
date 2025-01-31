@@ -7,6 +7,8 @@ Sys.setenv(MYSQL_DB_DATA="ngerReportDataStaging")
 # Sys.setenv(MYSQL_USER="root")
 # Sys.setenv(MYSQL_PASSWORD="root")
 
+Sys.setlocale(locale = 'nb_NO.UTF-8')
+source("dev/sysSetenv.R")
 
 nger::kjor_NGERapp()
 

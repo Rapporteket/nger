@@ -1659,13 +1659,12 @@ server_nger <- function(input, output, session) {
     paramNames <- shiny::reactive("reshID")
     paramValues <- shiny::reactive(org$value())
 
-    rapbase::autoReportServer(
+    rapbase::autoReportServer2(
       id = "NGERutsending", registryName = "nger", type = "dispatchment",
       org = org$value, paramNames = paramNames, paramValues = paramValues,
-      reports = reports, orgs = orgs, eligible = TRUE
+      reports = reports, orgs = orgs, eligible = (user$role() == "SC"), #TRUE
+      user = user
     )
-
-
 
     #----------- Eksport ----------------
     registryName <- "nger"
