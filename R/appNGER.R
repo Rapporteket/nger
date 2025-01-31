@@ -814,7 +814,7 @@ server_nger <- function(input, output, session) {
     #stopifnot(dim(RegData)[1]>0)
     errorCondition(dim(RegData)[1]==0, 'ingen data')
     qSkjemaOversikt <- 'SELECT * FROM SkjemaOversikt'
-    SkjemaOversikt <- rapbase::loadRegData(registryName='nger',
+    SkjemaOversikt <- rapbase::loadRegData(registryName='data', #'nger',
                                            query=qSkjemaOversikt, dbType='mysql')
   }
 
@@ -845,10 +845,10 @@ server_nger <- function(input, output, session) {
     filename = function(){ paste0('NGERmndRapp', Sys.time(), '.pdf')},
     content = function(file){
       henteSamlerapporter(file, rnwFil="NGERmndRapp.Rnw",
-                          reshID = ruser$org())
+                          reshID = user$org())
     })
 
-  output$antRegMnd <- renderPlot({NGERFigAntReg(RegData=RegData, reshID = ruser$org())
+  output$antRegMnd <- renderPlot({NGERFigAntReg(RegData=RegData, reshID = user$org())
   }, height=500, width=900
   )
 
@@ -971,7 +971,7 @@ server_nger <- function(input, output, session) {
                      valgtVar=input$valgtVarKval,
                      datoFra=input$datovalgKval[1],
                      datoTil=input$datovalgKval[2],
-                     reshID = ruser$org(),
+                     reshID = user$org(),
                      minald=as.numeric(input$alderKval[1]),
                      maxald=as.numeric(input$alderKval[2]),
                      OpMetode = as.numeric(input$opMetodeKval),
@@ -993,7 +993,7 @@ server_nger <- function(input, output, session) {
                        valgtVar=input$valgtVarKval,
                        datoFra=input$datovalgKval[1],
                        datoTil=input$datovalgKval[2],
-                       reshID = ruser$org(),
+                       reshID = user$org(),
                        minald=as.numeric(input$alderKval[1]),
                        maxald=as.numeric(input$alderKval[2]),
                        OpMetode = as.numeric(input$opMetodeKval),
@@ -1013,7 +1013,7 @@ server_nger <- function(input, output, session) {
                      valgtVar=input$valgtVarKval,
                      datoFra=input$datovalgKval[1],
                      datoTil=input$datovalgKval[2],
-                     reshID = ruser$org(),
+                     reshID = user$org(),
                      minald=as.numeric(input$alderKval[1]),
                      maxald=as.numeric(input$alderKval[2]),
                      OpMetode = as.numeric(input$opMetodeKval),
@@ -1096,7 +1096,7 @@ server_nger <- function(input, output, session) {
                    datoFra=input$datovalgKval[1],
                    datoTil=input$datovalgKval[2],
                    enhetsUtvalg=as.numeric(input$enhetsUtvalgKvalRAND),
-                   reshID = ruser$org(),
+                   reshID = user$org(),
                    velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
                    minald=as.numeric(input$alderKval[1]),
                    maxald=as.numeric(input$alderKval[2]),
@@ -1118,7 +1118,7 @@ server_nger <- function(input, output, session) {
                      datoFra=input$datovalgKval[1],
                      datoTil=input$datovalgKval[2],
                      enhetsUtvalg=as.numeric(input$enhetsUtvalgKvalRAND),
-                     reshID = ruser$org(),
+                     reshID = user$org(),
                      velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
                      minald=as.numeric(input$alderKval[1]),
                      maxald=as.numeric(input$alderKval[2]),
@@ -1140,7 +1140,7 @@ server_nger <- function(input, output, session) {
       filename = function(){paste0('tabInstrumentbruk.csv')},
       content = function(file, filename){write.csv2(tabInstrumentbruk, file, row.names = T, na = '')})
     LapKomplData <- tabKomplLap(RegData=RegData,
-                                reshID=reshID,
+                                reshID=user$org(),
                                 datoFra = input$datovalgTab[1],
                                 datoTil = input$datovalgTab[2])
 
@@ -1166,8 +1166,9 @@ server_nger <- function(input, output, session) {
     observe({
       tabNokkelHys <- tabNokkelHys(RegData = RegData,
                                    datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2],
-                                   reshID = ruser$org(),
-                                   velgAvd = ifelse(is.null(input$velgSykehusTab), reshID, as.numeric(input$velgSykehusTab)),
+                                   reshID = user$org(),
+                                   velgAvd = ifelse(is.null(input$velgSykehusTab),
+                                                    user$org(), as.numeric(input$velgSykehusTab)),
                                    enhetsUtvalg = input$enhetsUtvalgTab)
       output$tabNokkelHys <- renderTable(tabNokkelHys, rownames = T, align = 'r', #c('l', 'r', 'r', 'r', 'r', 'r'),
                                          spacing="xs")
@@ -1181,8 +1182,8 @@ server_nger <- function(input, output, session) {
     observe({
       tabNokkelLap <- tabNokkelLap(RegData = RegData,
                                    datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2],
-                                   reshID = ruser$org(),
-                                   velgAvd=ifelse(is.null(input$velgSykehusTab), reshID, as.numeric(input$velgSykehusTab)),
+                                   reshID = user$org(),
+                                   velgAvd=ifelse(is.null(input$velgSykehusTab), user$org(), as.numeric(input$velgSykehusTab)),
                                    enhetsUtvalg = input$enhetsUtvalgTab)
       output$tabNokkelLap <- renderTable(tabNokkelLap, rownames = T, align = 'r',
                                          spacing="xs")
@@ -1206,7 +1207,7 @@ server_nger <- function(input, output, session) {
     output$fordelinger <- renderPlot({
       NGERFigAndeler(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
                      datoFra=input$datovalg[1], datoTil=input$datovalg[2],
-                     reshID = ruser$org(),
+                     reshID = user$org(),
                      minald=as.numeric(input$alder[1]),
                      maxald=as.numeric(input$alder[2]),
                      OpMetode = as.numeric(input$opMetode),
@@ -1227,7 +1228,7 @@ server_nger <- function(input, output, session) {
       content = function(file){
         NGERFigAndeler(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
                        datoFra=input$datovalg[1], datoTil=input$datovalg[2],
-                       reshID = ruser$org(),
+                       reshID = user$org(),
                        minald=as.numeric(input$alder[1]),
                        maxald=as.numeric(input$alder[2]),
                        OpMetode = as.numeric(input$opMetode),
@@ -1246,7 +1247,7 @@ server_nger <- function(input, output, session) {
     UtDataFord <-
       NGERFigAndeler(RegData=RegData, preprosess = 0, valgtVar=input$valgtVar,
                      datoFra=input$datovalg[1], datoTil=input$datovalg[2],
-                     reshID = ruser$org(),
+                     reshID = user$org(),
                      minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
                      OpMetode = as.numeric(input$opMetode),
                      behNivaa = as.numeric(input$behNivaa),
@@ -1319,7 +1320,7 @@ server_nger <- function(input, output, session) {
   output$andelTid <- renderPlot({
     NGERFigAndelTid(
       RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
-      reshID= reshID,
+      reshID=user$org(),
       datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
       minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
       OpMetode = as.numeric(input$opMetodeAndel),
@@ -1339,7 +1340,7 @@ server_nger <- function(input, output, session) {
     content = function(file){
       NGERFigAndelTid(
         RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
-        reshID= reshID,
+        reshID=user$org(),
         datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
         minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
         OpMetode = as.numeric(input$opMetodeAndel),
@@ -1357,7 +1358,7 @@ server_nger <- function(input, output, session) {
     #AndelTid
     AndelerTid <- NGERFigAndelTid(
       RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
-      reshID= reshID,
+      reshID=user$org(),
       datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
       minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
       OpMetode = as.numeric(input$opMetodeAndel),
@@ -1524,7 +1525,7 @@ server_nger <- function(input, output, session) {
 
     output$gjsnTid <- renderPlot(
       NGERFigGjsnTid(
-        RegData=RegData, reshID= reshID, preprosess = 0, valgtVar=input$valgtVarGjsn,
+        RegData=RegData, reshID=user$org(), preprosess = 0, valgtVar=input$valgtVarGjsn,
         datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
         minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
         valgtMaal = input$sentralmaal, enhetsUtvalg =  as.numeric(input$enhetsUtvalgGjsn),
@@ -1544,7 +1545,7 @@ server_nger <- function(input, output, session) {
       },
       content = function(file){
         NGERFigGjsnTid(
-          RegData=RegData, reshID= reshID, preprosess = 0, valgtVar=input$valgtVarGjsn,
+          RegData=RegData, reshID=user$org(), preprosess = 0, valgtVar=input$valgtVarGjsn,
           datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
           minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
           valgtMaal = input$sentralmaal, enhetsUtvalg =  as.numeric(input$enhetsUtvalgGjsn),
@@ -1559,7 +1560,7 @@ server_nger <- function(input, output, session) {
       })
 
     UtDataGjsnTid <- NGERFigGjsnTid(
-      RegData=RegData, reshID= reshID, preprosess = 0,
+      RegData=RegData, reshID = user$org(), preprosess = 0,
       valgtVar=input$valgtVarGjsn,
       datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
       minald=as.numeric(input$alderGjsn[1]),
@@ -1611,14 +1612,17 @@ server_nger <- function(input, output, session) {
 
   #Fases ut?:
   brukernavn <- reactive({ifelse(paaServer, rapbase::getUserName(session), 'inkognito')})
+  #paramNames <- shiny::reactive("reshID")
+  #paramValues <- shiny::reactive(org$value())
+
 
   ## make a list for report metadata
   reports <- list(
     MndRapp = list(
       synopsis = "NGER/Rapporteket: Månedsrapport, abonnement",
-      fun = "abonnementNGER", #Lag egen funksjon for utsending
-      paramNames = c('rnwFil', 'reshID', 'brukernavn'), #"valgtRHF"),
-      paramValues = c('NGERmndRapp.Rnw', reshID, 'brukernavn') #NB: Brukernavn hentes fra user-objekt?
+      fun = "abonnementNGER",
+      paramNames = reactive(c('rnwFil', 'reshID', 'brukernavn')),
+      paramValues = reactive(c('NGERmndRapp.Rnw', user$org(), 'brukernavn')) #NB: Brukernavn hentes fra user-objekt?
     )
   )
   #test <- nger::abonnementNGER(rnwFil="NGERmndRapp.Rnw", brukernavn='tullebukk', reshID=105460)

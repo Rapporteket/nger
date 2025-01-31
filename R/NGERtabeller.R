@@ -212,6 +212,7 @@ NavnInstr <- c('Intl.vevsforsegler', 'Morcellator', 'Portioad.', 'Robotkir.', 'U
 RegDataUtvalg <- RegData[which(RegData$OpMetode==1), c('ShNavn', Instr)]
 
 InstrTabDum <- plyr::ddply(RegDataUtvalg, .variables='ShNavn', .drop=F, plyr::colwise(sum), na.rm=T)  #Dataramme m/7dim
+#InstrTabDum <- ftable(RegDataUtvalg[,Instr])
 Tot <- colSums(InstrTabDum[,2:(length(Instr)+1)])
 ShNavn <- InstrTabDum[,1]
 

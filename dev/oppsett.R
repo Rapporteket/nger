@@ -1,5 +1,5 @@
 
-Sys.setenv(FALK_EXTENDED_USER_RIGHTS: "[{\"A\":80,\"R\":\"SC\",\"U\":110734},{\"A\":80,\"R\":\"LU\",\"U\":110734},{\"A\":80,\"R\":\"LU\",\"U\":108172},{\"A\":81,\"R\":\"LU\",\"U\":103575}]")
+Sys.setenv(FALK_EXTENDED_USER_RIGHTS= "[{\"A\":85,\"R\":\"SC\",\"U\":110734},{\"A\":85,\"R\":\"LU\",\"U\":110734},{\"A\":85,\"R\":\"LU\",\"U\":108172},{\"A\":85,\"R\":\"LU\",\"U\":103575}]")
 Sys.setenv(R_RAP_INSTANCE="QAC")
 Sys.setenv(R_RAP_CONFIG_PATH="/home/rstudio/nger/data-raw/config")
 # Sys.unsetenv("MYSQL_PORT_LOG")
@@ -10,11 +10,9 @@ Sys.setenv(MYSQL_DB_DATA="ngerReportDataStaging")
 
 nger::kjor_NGERapp()
 
-RegData <- rapbase::loadRegData(
-  registryName = "data",
-  query="SELECT * FROM mainformdatacontract",
-  dbType="mysql")
-RegData <- NSPreprosesser(RegData)
+dum <- NGERRegDataSQL(datoFra = '2022-01-01')
+RegData <- NGERPreprosess(dum)
+rm('RegData')
 
 ##############################
 ## Kjøring på mobilt kontor ##

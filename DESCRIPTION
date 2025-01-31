@@ -21,6 +21,7 @@ Imports:
     magrittr,
     lubridate,
     dplyr,
+    plyr,
     rapbase,
     rapFigurer,
     rmarkdown,

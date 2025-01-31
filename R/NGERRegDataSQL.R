@@ -16,6 +16,7 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
     rapbase::repLogger(session = list(...)[["session"]], msg = paste0('Hentet rådata'))
   }
 
+  registryName = "data"  #"nger"
   #Flyttet til PROM-tabell? R1BesvarteProm,    -- ny jan.-2022
   # Hvor har denne blitt av?? Tss2BesvarteProm -- ny jan.-2022
 
@@ -171,7 +172,7 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
 
   #Data_AWN <- rapbase::loadRegData(registryName = "nger", query='select * FROM allevarnum', dbType = "mysql")
   #Data_Forl <- rapbase::loadRegData(registryName = "nger", query='select * FROM ForlopsOversikt', dbType = "mysql")
-  RegData <- rapbase::loadRegData(registryName = "nger", query=query, dbType = "mysql")
+  RegData <- rapbase::loadRegData(registryName = registryName, query=query, dbType = "mysql") #registryName = "nger"
 
   qOppfolging <- 'SELECT
   ForlopsID,
@@ -215,7 +216,7 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
     Tss2Type
   FROM followupsnum'
 
-  FollowupsNum <- rapbase::loadRegData(registryName = "nger", query=qOppfolging)
+  FollowupsNum <- rapbase::loadRegData(registryName = registryName, query=qOppfolging)
 # setdiff(sort(FollowupsNum$ForlopsID), RegData$ForlopsID)
 
   RegData <- dplyr::left_join(RegData, FollowupsNum, by="ForlopsID")
@@ -231,7 +232,7 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
     # }
 
     queryRAND36 <- 'select * FROM Rand36Report'
-    RAND36 <-  rapbase::loadRegData(registryName = "nger", queryRAND36, dbType = "mysql")
+    RAND36 <-  rapbase::loadRegData(registryName = registryName, queryRAND36, dbType = "mysql")
 
     Rvar <- grep(pattern='R', x=names(RAND36), value = TRUE, fixed = TRUE)
     #Navneendring; fjerne R..
