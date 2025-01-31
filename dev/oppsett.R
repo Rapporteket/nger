@@ -1,5 +1,5 @@
 
-Sys.setenv(FALK_EXTENDED_USER_RIGHTS= "[{\"A\":85,\"R\":\"SC\",\"U\":110734},{\"A\":85,\"R\":\"LU\",\"U\":110734},{\"A\":85,\"R\":\"LU\",\"U\":108172},{\"A\":85,\"R\":\"LU\",\"U\":103575}]")
+Sys.setenv(FALK_EXTENDED_USER_RIGHTS= "[{\"A\":86,\"R\":\"SC\",\"U\":110734},{\"A\":86,\"R\":\"LU\",\"U\":110734},{\"A\":86,\"R\":\"LU\",\"U\":108172},{\"A\":86,\"R\":\"LU\",\"U\":103575}]")
 Sys.setenv(R_RAP_INSTANCE="QAC")
 Sys.setenv(R_RAP_CONFIG_PATH="/home/rstudio/nger/data-raw/config")
 # Sys.unsetenv("MYSQL_PORT_LOG")
