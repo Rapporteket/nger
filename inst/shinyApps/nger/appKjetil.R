@@ -17,9 +17,9 @@ if (paaServer) {
   RegData <- NGERRegDataSQL() #datoFra = datoFra, datoTil = datoTil)
   #stopifnot(dim(RegData)[1]>0)
   errorCondition(dim(RegData)[1]==0, 'ingen data')
-  qSkjemaOversikt <- 'SELECT * FROM SkjemaOversikt'
-  SkjemaOversikt <- rapbase::loadRegData(registryName='nger',
-                                         query=qSkjemaOversikt, dbType='mysql')
+  qskjemaoversikt <- 'SELECT * FROM skjemaoversikt'
+  skjemaoversikt <- rapbase::loadRegData(registryName='nger',
+                                         query=qskjemaoversikt, dbType='mysql')
 }
 Sys.setenv(R_RAP_CONFIG_PATH='./data')
 
@@ -32,7 +32,7 @@ if (!exists('RegData')) {
 
 if (paaServer) {
  RegData <- NGERPreprosess(RegData)
- SkjemaOversikt <- NGERPreprosess(RegData = SkjemaOversikt)
+ skjemaoversikt <- NGERPreprosess(RegData = skjemaoversikt)
 }
 
 #-----Definere utvalgsinnhold
@@ -903,9 +903,9 @@ server <- function(input, output, session) {
       #                  "R0ScorePhys", "R0ScoreRoleLmtEmo", "R0ScoreRoleLmtPhy", "R0ScoreSosial",
       #                  "R0Spm2", "R0Status", "Tss2Behandlere", "Tss2Behandling", "Tss2Enighet",
       #                  "Tss2Generelt", "Tss2Lytte", "Tss2Mott", "Tss2Status", "Tss2Type")
-      # qAlle <- 'SELECT * FROM AlleVarNum
-      #          INNER JOIN ForlopsOversikt
-      #          ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID'
+      # qAlle <- 'SELECT * FROM allevarnum
+      #          INNER JOIN forlopsoversikt
+      #          ON allevarnum.ForlopsID = forlopsoversikt.ForlopsID'
       # RegDataAlle <- rapbase::loadRegData(registryName = "nger", query=qAlle, dbType = "mysql")
       # RegDataAlle <- NGERPreprosess(RegDataAlle)
       observe({

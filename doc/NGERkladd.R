@@ -1,8 +1,8 @@
 rm(list=ls())
-# admdata <- read.table('C:/SVN/jasper/nger/data/ForlopsOversikt2015-10-09 09-49-55.txt', sep=';', header=T)
-# RegData <- read.table('C:/SVN/jasper/nger/data/AlleVarNum2015-10-09 09-49-49.txt', sep=';', header=T)
-RegData <- read.table('C:/SVN/jasper/nger/data/AlleVarNum2016-02-04 10-35-25.txt', sep=';', header=T)
-admdata <- read.table('C:/SVN/jasper/nger/data/ForlopsOversikt2016-02-04 10-35-42.txt', sep=';', header=T)
+# admdata <- read.table('C:/SVN/jasper/nger/data/forlopsoversikt2015-10-09 09-49-55.txt', sep=';', header=T)
+# RegData <- read.table('C:/SVN/jasper/nger/data/allevarnum2015-10-09 09-49-49.txt', sep=';', header=T)
+RegData <- read.table('C:/SVN/jasper/nger/data/allevarnum2016-02-04 10-35-25.txt', sep=';', header=T)
+admdata <- read.table('C:/SVN/jasper/nger/data/forlopsoversikt2016-02-04 10-35-42.txt', sep=';', header=T)
 
 RegData <- merge(RegData, admdata, by.x = 'MCEID', by.y = 'ForlopsID')
 

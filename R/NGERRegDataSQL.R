@@ -21,21 +21,21 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
   # Hvor har denne blitt av?? Tss2BesvarteProm -- ny jan.-2022
 
   query <- paste0('SELECT
-    AlleVarNum.PasientID,
-    AlleVarNum.ForlopsID,
-    AlleVarNum.AvdRESH,
-    ForlopsOversikt.BasisRegStatus,
-    ForlopsOversikt.FodselsDato AS Fodselsdato,
-    ForlopsOversikt.HovedDato,
-    ForlopsOversikt.OppflgRegStatus,
-    ForlopsOversikt.OppflgStatus,
-    ForlopsOversikt.PasientAlder,
-    ForlopsOversikt.SykehusNavn,
-    AlleVarNum.SivilStatus,
+    allevarnum.PasientID,
+    allevarnum.ForlopsID,
+    allevarnum.AvdRESH,
+    forlopsoversikt.BasisRegStatus,
+    forlopsoversikt.FodselsDato AS Fodselsdato,
+    forlopsoversikt.HovedDato,
+    forlopsoversikt.OppflgRegStatus,
+    forlopsoversikt.OppflgStatus,
+    forlopsoversikt.PasientAlder,
+    forlopsoversikt.SykehusNavn,
+    allevarnum.SivilStatus,
     Utdanning,
-    AlleVarNum.Norsktalende,
-    AlleVarNum.Morsmaal,
-    AlleVarNum.MorsmaalAnnet,
+    allevarnum.Norsktalende,
+    allevarnum.Morsmaal,
+    allevarnum.MorsmaalAnnet,
 -- HysBlodning, erstattet nov23
     -- HysFluidOverload, erstattet nov23
     HysGjforingsGrad,
@@ -160,18 +160,18 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
     OpTidlLapsko,
     OpTidlVagInngrep,
     OpType
-    FROM AlleVarNum
-    INNER JOIN ForlopsOversikt
-    ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID
+    FROM allevarnum
+    INNER JOIN forlopsoversikt
+    ON allevarnum.ForlopsID = forlopsoversikt.ForlopsID
  WHERE HovedDato >= \'', datoFra, '\' AND HovedDato <= \'', datoTil, '\'')
 
-  #FROM alleVarNum INNER JOIN ForlopsOversikt ON alleVarNum.MCEID = ForlopsOversikt.ForlopsID
-  # query <- 'select * FROM AlleVarNum
-  #     INNER JOIN ForlopsOversikt
-  #     ON AlleVarNum.ForlopsID = ForlopsOversikt.ForlopsID'
+  #FROM allevarnum INNER JOIN forlopsoversikt ON allevarnum.MCEID = forlopsoversikt.ForlopsID
+  # query <- 'select * FROM allevarnum
+  #     INNER JOIN forlopsoversikt
+  #     ON allevarnum.ForlopsID = forlopsoversikt.ForlopsID'
 
   #Data_AWN <- rapbase::loadRegData(registryName = "nger", query='select * FROM allevarnum', dbType = "mysql")
-  #Data_Forl <- rapbase::loadRegData(registryName = "nger", query='select * FROM ForlopsOversikt', dbType = "mysql")
+  #Data_Forl <- rapbase::loadRegData(registryName = "nger", query='select * FROM forlopsoversikt', dbType = "mysql")
   RegData <- rapbase::loadRegData(registryName = registryName, query=query, dbType = "mysql") #registryName = "nger"
 
   qOppfolging <- 'SELECT
@@ -216,22 +216,22 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
     Tss2Type
   FROM followupsnum'
 
-  FollowupsNum <- rapbase::loadRegData(registryName = registryName, query=qOppfolging)
-# setdiff(sort(FollowupsNum$ForlopsID), RegData$ForlopsID)
+  followupsnum <- rapbase::loadRegData(registryName = registryName, query=qOppfolging)
+# setdiff(sort(followupsnum$ForlopsID), RegData$ForlopsID)
 
-  RegData <- dplyr::left_join(RegData, FollowupsNum, by="ForlopsID")
+  RegData <- dplyr::left_join(RegData, followupsnum, by="ForlopsID")
 
   if (medPROM==1) {
 
-    #Sjekk ved å sammenligne R0 og R1-variabler fra AllevARnUM OG rand36-TABELL
-    #UTGÅR siden RAND-variabler nå er fjernet fra AlleVarNum
+    #Sjekk ved å sammenligne R0 og R1-variabler fra allevarnum OG rand36-TABELL
+    #UTGÅR siden RAND-variabler nå er fjernet fra allevarnum
     # R0var <- grep(pattern='R0', x=sort(names(RegData)), value = TRUE, fixed = TRUE)
     # R1var <- grep(pattern='R1', x=sort(names(RegData)), value = TRUE, fixed = TRUE)
     # if (length(c(R0var, R1var)) >0) {
     #   RegDataUrand <- RegData[, -which(names(RegData) %in% c(R0var, R1var))]
     # }
 
-    queryRAND36 <- 'select * FROM Rand36Report'
+    queryRAND36 <- 'select * FROM rand36report'
     RAND36 <-  rapbase::loadRegData(registryName = registryName, queryRAND36, dbType = "mysql")
 
     Rvar <- grep(pattern='R', x=names(RAND36), value = TRUE, fixed = TRUE)
@@ -259,7 +259,7 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
   # Rvar <- grep(pattern='R', x=sort(names(RegDataR)), value = TRUE, fixed = TRUE)
   # RegDataR <- RegDataR[,c("ForlopsID", Rvar)]
   # summary(RegDataR)
-# Flyttet fra AlleVarNum til Rand36Report i mai23
+# Flyttet fra allevarnum til rand36report i mai23
 #
 #   -- R0Metode,
 #   -- R0ScorePhys,

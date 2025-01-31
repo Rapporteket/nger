@@ -775,10 +775,36 @@ server_nger <- function(input, output, session) {
   paaServer <- (context %in% c("DEV", "TEST", "QA","QAC", "PRODUCTION", "PRODUCTIONC")) #rapbase::isRapContext()
   if (paaServer) {
     rapbase::appLogger(session, msg = 'Starter Rapporteket-NGER')}
+  #----------Hente data ----------
+  if (paaServer) {
+    RegData <- NGERRegDataSQL()
+    #stopifnot(dim(RegData)[1]>0)
+    errorCondition(dim(RegData)[1]==0, 'ingen data')
+    qskjemaoversikt <- 'SELECT * FROM skjemaoversikt'
+    skjemaoversikt <- rapbase::loadRegData(registryName='data', #'nger',
+                                           query=qskjemaoversikt, dbType='mysql')
+  }
+
+  #tulledata <- 0
+  if (!exists('RegData')) {
+    #data("NGERtulledata.Rdata", package = "nger")
+    load('./data/NGERtulledata.Rdata')
+    tulledata <- 1 #Må få med denne i tulledatafila..
+  }
+
+  if (paaServer) {
+    RegData <- NGERPreprosess(RegData)
+    skjemaoversikt <- NGERPreprosess(RegData = skjemaoversikt)
+    map_avdeling <- data.frame(
+      UnitId = unique(RegData$ReshId),
+      orgname = RegData$ShNavn[match(unique(RegData$ReshId),
+                                          RegData$ReshId)])
+  }
 
   user <- rapbase::navbarWidgetServer2(
     id = "navbar-widget",
     orgName = "nger",
+    map_orgname = map_avdeling,
     caller = "nger"
   )
 
@@ -813,28 +839,6 @@ server_nger <- function(input, output, session) {
                            closeOnEsc = TRUE, closeOnClickOutside = TRUE,
                            html = TRUE, confirmButtonText = rapbase::noOptOutOk())
   })
-
-  #----------Hente data ----------
-  if (paaServer) {
-    RegData <- NGERRegDataSQL()
-    #stopifnot(dim(RegData)[1]>0)
-    errorCondition(dim(RegData)[1]==0, 'ingen data')
-    qSkjemaOversikt <- 'SELECT * FROM SkjemaOversikt'
-    SkjemaOversikt <- rapbase::loadRegData(registryName='data', #'nger',
-                                           query=qSkjemaOversikt, dbType='mysql')
-  }
-
-  #tulledata <- 0
-  if (!exists('RegData')) {
-    #data("NGERtulledata.Rdata", package = "nger")
-    load('./data/NGERtulledata.Rdata')
-    tulledata <- 1 #Må få med denne i tulledatafila..
-  }
-
-  if (paaServer) {
-    RegData <- NGERPreprosess(RegData)
-    SkjemaOversikt <- NGERPreprosess(RegData = SkjemaOversikt)
-  }
 
   #Definere utvalgsinnhold
   sykehusNavn <- sort(unique(RegData$ShNavn), index.return=T)

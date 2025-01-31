@@ -1,4 +1,4 @@
-CREATE VIEW AlleVarNum AS
+CREATE VIEW allevarnum AS
 SELECT 
   patient.ID as PatientID,
                 patient.REGISTERED_DATE as PatRegDate,

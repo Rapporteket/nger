@@ -3,9 +3,9 @@
 
 rm(list=ls())
 dato <- 'Aarsrapp2019_2020-04-28'
-NGERBasis <- read.table(paste0('A:/NGER/AlleVarNum', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #,
-NGERForlop <- read.table(paste0('A:/NGER/ForlopsOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
-NGERSkjema <- read.table(paste0('A:/NGER/SkjemaOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
+NGERBasis <- read.table(paste0('A:/NGER/allevarnum', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #,
+NGERForlop <- read.table(paste0('A:/NGER/forlopsoversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
+NGERSkjema <- read.table(paste0('A:/NGER/skjemaoversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
 NGERData <- merge(NGERForlop, NGERBasis, by = "ForlopsID", suffixes = c('forl',''), all = FALSE)
 NGERData <- NGERData[(as.Date(NGERData$OpDato) >= as.Date('2016-01-01')) &
                        (as.Date(NGERData$OpDato) <= as.Date('2019-12-31')), ]

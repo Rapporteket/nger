@@ -14,7 +14,7 @@ NGERPreprosess <- function(RegData=RegData)
   #Kun ferdigstilte registreringer:
   #OK
   if ('BasisRegStatus' %in% (names(RegData))) { RegData <- RegData[RegData$BasisRegStatus==1, ]}#Leveres fortsatt registreringer m/BasisRegStatus=0
-  #Opf0Status=1 for alle registreringer i FollowupsNum
+  #Opf0Status=1 for alle registreringer i followupsnum
   #OppflgRegStatus:
   # NULL	Oppfølginger finnes ikke for denne typen forløp.
   # -2	Ingen oppføringer er opprettet.
@@ -49,7 +49,7 @@ NGERPreprosess <- function(RegData=RegData)
   names(RegData)[which(names(RegData)=='PasientAlder')] <- 'Alder' #Change var name
   RegData$SykehusNavn <- trimws(as.character(RegData$SykehusNavn)) #Fjerner mellomrom (før) og etter navn
   RegData$ShNavn <- trimws(as.character(RegData$SykehusNavn)) #Fjerner mellomrom (før) og etter navn
-  names(RegData)[which(names(RegData)=='SykehusNavn')] <- 'ShNavn' #Change var name
+  # names(RegData)[which(names(RegData)=='SykehusNavn')] <- 'ShNavn' #Change var name
 
   #108698 (Kongsvinger Innland) endres til Kongsvinger 4215373
   ind <- which(RegData$ReshId == 108698)

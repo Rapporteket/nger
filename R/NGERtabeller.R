@@ -52,20 +52,20 @@ tabAntOpphSh5Aar <- function(RegData, datoTil=Sys.Date(),
 
 #'  Hvor mange skjema av hver type
 #' @export
-tabAntSkjemaGml <- function(SkjemaOversikt, datoFra = '2019-01-01', datoTil=Sys.Date(), skjemastatus=1){
-  #tabAntSkjema(SkjemaOversikt, datoFra = '2019-01-01', datoTil=Sys.Date(), skjemastatus=1)
+tabAntSkjemaGml <- function(skjemaoversikt, datoFra = '2019-01-01', datoTil=Sys.Date(), skjemastatus=1){
+  #tabAntSkjema(skjemaoversikt, datoFra = '2019-01-01', datoTil=Sys.Date(), skjemastatus=1)
   #NB: Denne skal også kunne vise skjema i kladd!
   #Operasjon	Laparoskopi,	Hysteroskopi,	Oppfølging, RAND36, ,TSS2
   #Skjemastatus kan være -1, 0 og 1
-  SkjemaOversikt$SkjemaRekkeflg <- factor(SkjemaOversikt$SkjemaRekkeflg, levels = c(1,3,5,7,9,11, 15))
+  skjemaoversikt$SkjemaRekkeflg <- factor(skjemaoversikt$SkjemaRekkeflg, levels = c(1,3,5,7,9,11, 15))
   skjemanavn <- c('Operasjon','Laparoskopi','Hysteroskopi', 'Oppfølging', 'RAND36', 'TSS2', 'RAND36, 1år')
 
 
-  indDato <- which(as.Date(SkjemaOversikt$InnDato) >= datoFra & as.Date(SkjemaOversikt$InnDato) <= datoTil)
-  indSkjemastatus <- which(SkjemaOversikt$SkjemaStatus==skjemastatus)
-  SkjemaOversikt <- SkjemaOversikt[intersect(indDato, indSkjemastatus),]
+  indDato <- which(as.Date(skjemaoversikt$InnDato) >= datoFra & as.Date(skjemaoversikt$InnDato) <= datoTil)
+  indSkjemastatus <- which(skjemaoversikt$SkjemaStatus==skjemastatus)
+  skjemaoversikt <- skjemaoversikt[intersect(indDato, indSkjemastatus),]
 
-  tab <-table(SkjemaOversikt[,c('ShNavn', 'SkjemaRekkeflg')])
+  tab <-table(skjemaoversikt[,c('ShNavn', 'SkjemaRekkeflg')])
   colnames(tab) <- skjemanavn
   tab <- xtable::xtable(tab)
 
@@ -73,7 +73,7 @@ return(tab)
 }
 
 #'  Hvor mange skjema av hver type
-#'  @param RegData AlleVarNum påkoblet RAND-data
+#'  @param RegData allevarnum påkoblet RAND-data
 #' @export
 tabAntSkjema <- function(RegData, datoFra = '2019-01-01', datoTil=Sys.Date()){
   #Operasjon	Laparoskopi,	Hysteroskopi - bare besvarte skjema,	Oppfølging, RAND36, ,TSS2
