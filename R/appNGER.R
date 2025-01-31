@@ -13,6 +13,7 @@ ui_nger <- function() {
   startDato <- paste0(as.numeric(format(idag-100, "%Y")), '-01-01') #'2019-01-01' #Sys.Date()-364
   # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
   addResourcePath('rap', system.file('www', package='rapbase'))
+  context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
 
   regTitle = 'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER'
 
@@ -88,10 +89,15 @@ ui_nger <- function() {
              ),
              mainPanel(width = 8,
                        tags$head(tags$link(rel="shortcut icon", href="rap/favicon.ico")),
-                       rapbase::appNavbarUserWidget(user = uiOutput("appUserName"),
-                                                    organization = uiOutput("appOrgName")
-                                                    , addUserInfo = TRUE
-                       ),
+
+                       if (context %in% c("DEV", "TEST", "QA", "PRODUCTION", "QAC", "PRODUCTIONC")) {
+                         rapbase::navbarWidgetInput("navbar-widget", selectOrganization = TRUE)
+                       },
+
+                       # rapbase::appNavbarUserWidget(user = uiOutput("appUserName"),
+                       #                              organization = uiOutput("appOrgName")
+                       #                              , addUserInfo = TRUE
+                       # ),
                        h4('Du er nå inne på Rapporteket for NGER. Rapporteket er registerets resultattjeneste.
                             Disse sidene inneholder en samling av figurer og tabeller som viser resultater fra registeret.
                             På hver av sidene kan man gjøre utvalg i menyene til venstre. Alle resultater er basert
@@ -915,7 +921,7 @@ server_nger <- function(input, output, session) {
         tabDataRegKtr <- RegOversikt[ind,]
 
       }  else {
-        tabDataRegKtr <- RegOversikt[which(RegOversikt$ReshId == reshID), ]}
+        tabDataRegKtr <- RegOversikt[which(RegOversikt$ReshId == user$org()), ]}
 
 
       output$lastNed_dataTilRegKtr <- downloadHandler(
@@ -950,7 +956,7 @@ server_nger <- function(input, output, session) {
                        grep('R0', navn), grep('R1', navn), grep('R3', navn),
                        grep('RY1', navn), grep('Tss', navn))
       tabDataDump <-
-        DataDump[which(DataDump$ReshId == reshID), -fjernVarInd]
+        DataDump[which(DataDump$ReshId == user$org()), -fjernVarInd]
 
     } #Tar bort PROM/PREM til egen avdeling
 
@@ -1089,8 +1095,8 @@ server_nger <- function(input, output, session) {
 
   #RAND, alle dim
   output$kvalRANDdim <- renderPlot({
-    print(reshID)
-    print(as.numeric(input$velgReshKval))
+    # print(reshID)
+    # print(as.numeric(input$velgReshKval))
     NGERFigPrePost(RegData=RegData, preprosess = 0,
                    valgtVar='AlleRANDdim',
                    datoFra=input$datovalgKval[1],
