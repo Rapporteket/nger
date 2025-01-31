@@ -1,7 +1,7 @@
 Package: nger
 Type: Package
 Title: Resultatrapporter for NGER
-Version: 4.0.2
+Version: 4.0.3
 Date: 2025-01-30
 Authors@R: c(person("Olsen", "Lena", email = "Lena.Ringstad.Olsen@unn.no",
     role = c("cre", "aut")))
@@ -22,6 +22,7 @@ Imports:
     lubridate,
     dplyr,
     plyr,
+    tidyr,
     rapbase,
     rapFigurer,
     rmarkdown,
