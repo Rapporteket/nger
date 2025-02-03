@@ -29,3 +29,5 @@ nger.Rproj
 testRAND36.csv
 testRAND36.xlsx
 figurer/
+
+*.sql*
