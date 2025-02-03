@@ -36,7 +36,7 @@ services:
   app:
     depends_on:
       - db
-    image: rapporteket/nger:4.0.2
+    image: rapporteket/nger:4.0.3
     ports:
       - 3838:3838
     volumes:

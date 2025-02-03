@@ -24,7 +24,7 @@ ui_nger <- function() {
                     "Egen enhet"=2)
   diagnoser <- 0:8
   names(diagnoser) <- c('Alle', 'Godartede ovarialcyster', 'Endometriose, livmorvegg', 'Endo u livmorvegg',
-                   'Onkologi', 'Generell gynekologi', 'Gravide', 'Komplikasjoner', 'Infertilitet')
+                        'Onkologi', 'Generell gynekologi', 'Gravide', 'Komplikasjoner', 'Infertilitet')
 
   opMetode <- c('Alle'=0,
                 'Laparoskopi'=1,
@@ -38,9 +38,9 @@ ui_nger <- function() {
                 'Kolpopeksiene' = 8)
 
   alvorKompl <- c("Lite alvorlig"=1,
-    "Middels alvorlig"=2,
-    "Alvorlig"=3,
-    "Dødelig"=4)
+                  "Middels alvorlig"=2,
+                  "Alvorlig"=3,
+                  "Dødelig"=4)
 
   behNivaa <- c("Alle" =0, "Poliklinisk" = 1, "Dagkirurgi" = 2, "Inneliggende" = 3)
 
@@ -330,7 +330,7 @@ ui_nger <- function() {
                                         choices = enhetsUtvalg[2:3]
                             ),
                             uiOutput("velgSykehusTab")
-                            )
+                          )
              ),
              mainPanel(
                tabsetPanel(id='tab',
@@ -798,7 +798,7 @@ server_nger <- function(input, output, session) {
     map_avdeling <- data.frame(
       UnitId = unique(RegData$ReshId),
       orgname = RegData$ShNavn[match(unique(RegData$ReshId),
-                                          RegData$ReshId)])
+                                     RegData$ReshId)])
   }
 
   user <- rapbase::navbarWidgetServer2(
@@ -810,7 +810,7 @@ server_nger <- function(input, output, session) {
 
   observeEvent(user$role(), {
     if (user$role() == 'SC') {
-     showTab(inputId = "hovedark", target = "Registeradministrasjon")
+      showTab(inputId = "hovedark", target = "Registeradministrasjon")
       shinyjs::show(id = 'velgResh')
       shinyjs::show(id = 'velgReshReg')
       shinyjs::show(id = 'velgReshKval')
@@ -911,27 +911,27 @@ server_nger <- function(input, output, session) {
                 selected = 0,
                 choices = sykehusValg)
   })
-    RegOversikt <- RegData[ , c('Fodselsdato', 'OpDato', 'ReshId', 'ShNavn', 'BasisRegStatus')]
+  RegOversikt <- RegData[ , c('Fodselsdato', 'OpDato', 'ReshId', 'ShNavn', 'BasisRegStatus')]
 
-    observe({
-      RegOversikt <- dplyr::filter(RegOversikt,
-                                   as.Date(OpDato) >= input$datovalgReg[1],
-                                   as.Date(OpDato) <= input$datovalgReg[2])
+  observe({
+    RegOversikt <- dplyr::filter(RegOversikt,
+                                 as.Date(OpDato) >= input$datovalgReg[1],
+                                 as.Date(OpDato) <= input$datovalgReg[2])
 
-      if (user$role() == 'SC') {
-        valgtResh <- ifelse(is.null(input$velgReshReg), 0, as.numeric(input$velgReshReg))
-        ind <- if (valgtResh == 0) {1:dim(RegOversikt)[1]
-        } else {which(as.numeric(RegOversikt$ReshId) %in% as.numeric(valgtResh))}
-        tabDataRegKtr <- RegOversikt[ind,]
+    if (user$role() == 'SC') {
+      valgtResh <- ifelse(is.null(input$velgReshReg), 0, as.numeric(input$velgReshReg))
+      ind <- if (valgtResh == 0) {1:dim(RegOversikt)[1]
+      } else {which(as.numeric(RegOversikt$ReshId) %in% as.numeric(valgtResh))}
+      tabDataRegKtr <- RegOversikt[ind,]
 
-      }  else {
-        tabDataRegKtr <- RegOversikt[which(RegOversikt$ReshId == user$org()), ]}
+    }  else {
+      tabDataRegKtr <- RegOversikt[which(RegOversikt$ReshId == user$org()), ]}
 
 
-      output$lastNed_dataTilRegKtr <- downloadHandler(
-        filename = function(){'dataTilKtr.csv'},
-        content = function(file, filename){write.csv2(tabDataRegKtr, file, row.names = F, na = '')})
-    })
+    output$lastNed_dataTilRegKtr <- downloadHandler(
+      filename = function(){'dataTilKtr.csv'},
+      content = function(file, filename){write.csv2(tabDataRegKtr, file, row.names = F, na = '')})
+  })
 
   # Egen datadump, LU uten PROM
   RegDataAlle <- RegData
@@ -969,12 +969,12 @@ server_nger <- function(input, output, session) {
       content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, na = '')})
   })
   #---------Kvalitetsindikatorer------------
-   #KvalInd
+  #KvalInd
 
-    output$velgReshKval <- renderUI({
-      selectInput(inputId = 'velgReshKval', label='Velg sykehus',
-                  selected = 0,
-                  choices = sykehusValg)})
+  output$velgReshKval <- renderUI({
+    selectInput(inputId = 'velgReshKval', label='Velg sykehus',
+                selected = 0,
+                choices = sykehusValg)})
   observe({
     output$kvalInd <- renderPlot({
       NGERFigKvalInd(RegData=RegData, preprosess = 0,
@@ -1167,51 +1167,51 @@ server_nger <- function(input, output, session) {
     #,caption = tabtxtLapKompl)
   })
 
-    output$velgSykehusTab <- renderUI({
-      selectInput(inputId = 'velgSykehusTab', label='Velg sykehus',
-                  selected = 0,
-                  choices = sykehusValg)
-    })
+  output$velgSykehusTab <- renderUI({
+    selectInput(inputId = 'velgSykehusTab', label='Velg sykehus',
+                selected = 0,
+                choices = sykehusValg)
+  })
 
-    observe({
-      tabNokkelHys <- tabNokkelHys(RegData = RegData,
-                                   datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2],
-                                   reshID = user$org(),
-                                   velgAvd = ifelse(is.null(input$velgSykehusTab),
-                                                    user$org(), as.numeric(input$velgSykehusTab)),
-                                   enhetsUtvalg = input$enhetsUtvalgTab)
-      output$tabNokkelHys <- renderTable(tabNokkelHys, rownames = T, align = 'r', #c('l', 'r', 'r', 'r', 'r', 'r'),
-                                         spacing="xs")
+  observe({
+    tabNokkelHys <- tabNokkelHys(RegData = RegData,
+                                 datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2],
+                                 reshID = user$org(),
+                                 velgAvd = ifelse(is.null(input$velgSykehusTab),
+                                                  user$org(), as.numeric(input$velgSykehusTab)),
+                                 enhetsUtvalg = input$enhetsUtvalgTab)
+    output$tabNokkelHys <- renderTable(tabNokkelHys, rownames = T, align = 'r', #c('l', 'r', 'r', 'r', 'r', 'r'),
+                                       spacing="xs")
 
-      output$lastNed_tabNokkelHys <-  downloadHandler(
-        filename = function(){paste0('tabNokkelHys.csv')},
-        content = function(file, filename){write.csv2(tabNokkelHys, file, row.names = T, na = '')})
+    output$lastNed_tabNokkelHys <-  downloadHandler(
+      filename = function(){paste0('tabNokkelHys.csv')},
+      content = function(file, filename){write.csv2(tabNokkelHys, file, row.names = T, na = '')})
 
-    })
+  })
 
-    observe({
-      tabNokkelLap <- tabNokkelLap(RegData = RegData,
-                                   datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2],
-                                   reshID = user$org(),
-                                   velgAvd=ifelse(is.null(input$velgSykehusTab), user$org(), as.numeric(input$velgSykehusTab)),
-                                   enhetsUtvalg = input$enhetsUtvalgTab)
-      output$tabNokkelLap <- renderTable(tabNokkelLap, rownames = T, align = 'r',
-                                         spacing="xs")
+  observe({
+    tabNokkelLap <- tabNokkelLap(RegData = RegData,
+                                 datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2],
+                                 reshID = user$org(),
+                                 velgAvd=ifelse(is.null(input$velgSykehusTab), user$org(), as.numeric(input$velgSykehusTab)),
+                                 enhetsUtvalg = input$enhetsUtvalgTab)
+    output$tabNokkelLap <- renderTable(tabNokkelLap, rownames = T, align = 'r',
+                                       spacing="xs")
 
-      output$lastNed_tabNokkelLap <-  downloadHandler(
-        filename = function(){paste0('tabNokkelLap.csv')},
-        content = function(file, filename){write.csv2(tabNokkelLap, file, row.names = T, na = '')})
+    output$lastNed_tabNokkelLap <-  downloadHandler(
+      filename = function(){paste0('tabNokkelLap.csv')},
+      content = function(file, filename){write.csv2(tabNokkelLap, file, row.names = T, na = '')})
 
-    })
+  })
 
 
   #---------Fordelinger------------
 
-    output$velgSykehusFord <- renderUI({
-      selectInput(inputId = 'velgSykehusFord', label='Velg sykehus',
-                  selected = 0,
-                  choices = sykehusValg)
-    })
+  output$velgSykehusFord <- renderUI({
+    selectInput(inputId = 'velgSykehusFord', label='Velg sykehus',
+                selected = 0,
+                choices = sykehusValg)
+  })
 
   observe({ #Fordeling
     output$fordelinger <- renderPlot({
@@ -1627,62 +1627,76 @@ server_nger <- function(input, output, session) {
 
 
   ## make a list for report metadata
-  reports <- list(
-    MndRapp = list(
-      synopsis = "NGER/Rapporteket: Månedsrapport, abonnement",
-      fun = "abonnementNGER",
-      paramNames = reactive(c('rnwFil', 'reshID', 'brukernavn')),
-      paramValues = reactive(c('NGERmndRapp.Rnw', user$org(), 'brukernavn')) #NB: Brukernavn hentes fra user-objekt?
+  # reports <- list(
+  #   MndRapp = list(
+  #     synopsis = "NGER/Rapporteket: Månedsrapport, abonnement",
+  #     fun = "abonnementNGER",
+  #     paramNames = reactive(c('rnwFil', 'reshID', 'brukernavn')),
+  #     paramValues = reactive(c('NGERmndRapp.Rnw', user$org(), 'brukernavn')) #NB: Brukernavn hentes fra user-objekt?
+  #   )
+  # )
+  #test <- nger::abonnementNGER(rnwFil="NGERmndRapp.Rnw", brukernavn='tullebukk', reshID=105460)
+  shiny::observe(
+    rapbase::autoReportServer2(
+      id = "ngerAbb",
+      registryName = "nger",
+      type = "subscription",
+      # paramNames = c('rnwFil', 'reshID', 'brukernavn'),
+      # paramValues = c('NGERmndRapp.Rnw', user$org(), 'brukernavn'),
+      reports = list(
+        MndRapp = list(
+          synopsis = "NGER/Rapporteket: Månedsrapport, abonnement",
+          fun = "abonnementNGER",
+          paramNames = c('rnwFil', 'reshID', 'brukernavn'),
+          paramValues = c('NGERmndRapp.Rnw', user$org(), 'brukernavn') #NB: Brukernavn hentes fra user-objekt?
+        )
+      ),
+      orgs = orgs,
+      eligible = TRUE,
+      user = user
     )
   )
-  #test <- nger::abonnementNGER(rnwFil="NGERmndRapp.Rnw", brukernavn='tullebukk', reshID=105460)
-  rapbase::autoReportServer(
-    id = "ngerAbb", registryName = "nger", type = "subscription",
-    paramNames = paramNames, paramValues = paramValues,
-    reports = reports, orgs = orgs, eligible = TRUE
-  )
-
   #-----------Registeradministrasjon-----------
 
   observeEvent(user$role(), {
-  if (user$role() == 'SC') {
+    if (user$role() == 'SC') {
 
-    ## liste med metadata for rapport
-    reports <- list(
-      MndRapp = list(
-        synopsis = "Rapporteket-NGER: Månedsrapport",
-        fun = "abonnementNGER",
-        paramNames = c('rnwFil', "reshID"),
-        paramValues = c('NGERmndRapp.Rnw', 0)
-      ),
-      SamleRapp = list(
-        synopsis = "Rapporteket-NGER: Rapport, div. resultater",
-        fun = "abonnementNGER",
-        paramNames = c('rnwFil', "reshID"),
-        paramValues = c('NGERSamleRapp.Rnw', 0)
+      ## liste med metadata for rapport
+      reports <- list(
+        MndRapp = list(
+          synopsis = "Rapporteket-NGER: Månedsrapport",
+          fun = "abonnementNGER",
+          paramNames = c('rnwFil', "reshID"),
+          paramValues = c('NGERmndRapp.Rnw', 0)
+        ),
+        SamleRapp = list(
+          synopsis = "Rapporteket-NGER: Rapport, div. resultater",
+          fun = "abonnementNGER",
+          paramNames = c('rnwFil', "reshID"),
+          paramValues = c('NGERSamleRapp.Rnw', 0)
+        )
       )
-    )
 
-    org <- rapbase::autoReportOrgServer("NGERutsending", orgs)
+      org <- rapbase::autoReportOrgServer("NGERutsending", orgs)
 
-    # oppdatere reaktive parametre, for å få inn valgte verdier (overskrive de i report-lista)
-    paramNames <- shiny::reactive("reshID")
-    paramValues <- shiny::reactive(org$value())
+      # oppdatere reaktive parametre, for å få inn valgte verdier (overskrive de i report-lista)
+      paramNames <- shiny::reactive("reshID")
+      paramValues <- shiny::reactive(org$value())
 
-    rapbase::autoReportServer2(
-      id = "NGERutsending", registryName = "nger", type = "dispatchment",
-      org = org$value, paramNames = paramNames, paramValues = paramValues,
-      reports = reports, orgs = orgs, eligible = (user$role() == "SC"), #TRUE
-      user = user
-    )
+      rapbase::autoReportServer2(
+        id = "NGERutsending", registryName = "nger", type = "dispatchment",
+        org = org$value, #paramNames = paramNames, paramValues = paramValues,
+        reports = reports, orgs = orgs, eligible = (user$role() == "SC"), #TRUE
+        user = user
+      )
 
-    #----------- Eksport ----------------
-    registryName <- "nger"
-    ## brukerkontroller
-    rapbase::exportUCServer("ngerExport", registryName)
-    ## veileding
-    rapbase::exportGuideServer("ngerExportGuide", registryName)
-  }
+      #----------- Eksport ----------------
+      registryName <- "nger"
+      ## brukerkontroller
+      rapbase::exportUCServer("ngerExport", registryName)
+      ## veileding
+      rapbase::exportGuideServer("ngerExportGuide", registryName)
+    }
   })
 
 } #server
