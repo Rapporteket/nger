@@ -15,6 +15,8 @@ Remotes:
       Rapporteket/rapFigurer,
       Rapporteket/rapbase@main
 Imports:
+    devtools,
+    digest,
     DT,
     kableExtra,
     knitr,
@@ -24,10 +26,14 @@ Imports:
     plyr,
     rapbase,
     rapFigurer,
+    remotes,
     rmarkdown,
     shiny,
     shinyjs,
+    stringr,
     testthat, 
+    tidyr,
+    tools,
     xtable
 VignetteBuilder: knitr
 RoxygenNote: 7.2.3
