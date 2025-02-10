@@ -1625,14 +1625,12 @@ server_nger <- function(input, output, session) {
       id = "ngerAbb",
       registryName = "nger",
       type = "subscription",
-      # paramNames = c('rnwFil', 'reshID', 'brukernavn'),
-      # paramValues = c('NGERmndRapp.Rnw', user$org(), 'brukernavn'),
       reports = list(
         MndRapp = list(
           synopsis = "NGER/Rapporteket: Månedsrapport, abonnement",
           fun = "abonnementNGER",
-          paramNames = c('rnwFil', 'reshID', 'brukernavn'),
-          paramValues = c('NGERmndRapp.Rnw', user$org(), 'brukernavn') #NB: Brukernavn hentes fra user-objekt?
+          paramNames = c('rnwFil', 'reshID'),
+          paramValues = c('NGERmndRapp.Rnw', user$org())
         )
       ),
       orgs = orgs,
