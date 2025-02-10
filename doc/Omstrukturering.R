@@ -1,4 +1,4 @@
-AlleVarNum:
+allevarnum:
   TSSvar
 [1] "Tss2Behandlere"    "Tss2Behandling"    "Tss2BesvarteProm"  "Tss2Enighet"       "Tss2ForstLukket"   "Tss2ForstLukketAv"
 [7] "Tss2Generelt"      "Tss2Lytte"         "Tss2Mott"          "Tss2Score"         "Tss2ScoreAVG"      "Tss2Status"
@@ -37,15 +37,15 @@ sort(names(PROM))
 [61] "Tss2Score"         "Tss2ScoreAVG"      "Tss2Status"        "Tss2Type"          "Aar"
 
 
-query <- 'select * FROM AlleVarNum'
-AlleVarNum <- rapbase::loadRegData(registryName = "nger", query, dbType = "mysql")
-R0var <- grep(pattern='R0', x=sort(names(AlleVarNum)), value = TRUE, fixed = TRUE)
-R1var <- grep(pattern='R1', x=sort(names(AlleVarNum)), value = TRUE, fixed = TRUE)
-TSS2var <- grep(pattern='Tss2', x=sort(names(AlleVarNum)), value = TRUE, fixed = TRUE)
-AlleVarNum <- AlleVarNum[, -which(names(AlleVarNum) %in% c(R0var, R1var, TSS2var))]
+query <- 'select * FROM allevarnum'
+allevarnum <- rapbase::loadRegData(registryName = "nger", query, dbType = "mysql")
+R0var <- grep(pattern='R0', x=sort(names(allevarnum)), value = TRUE, fixed = TRUE)
+R1var <- grep(pattern='R1', x=sort(names(allevarnum)), value = TRUE, fixed = TRUE)
+TSS2var <- grep(pattern='Tss2', x=sort(names(allevarnum)), value = TRUE, fixed = TRUE)
+allevarnum <- allevarnum[, -which(names(allevarnum) %in% c(R0var, R1var, TSS2var))]
 
 
-queryPROMtab <- 'select * FROM PromPrem'
+queryPROMtab <- 'select * FROM promprem'
 PROM <-  rapbase::loadRegData(registryName = "nger", queryPROMtab, dbType = "mysql")
 
 TSSvar <- c(TSS2var, "SendtDato", "Metode", 'ForlopsID')
@@ -72,7 +72,7 @@ PROM_RANDw <- PROM_RAND %>%
   values_from = all_of(Rvar_uR)
 )
 
-RegDataR <- dplyr::left_join(AlleVarNum, PROM_RANDw, by="ForlopsID")
+RegDataR <- dplyr::left_join(allevarnum, PROM_RANDw, by="ForlopsID")
 RegDataPROM <- dplyr::left_join(RegDataR, PROM_TSS, by="ForlopsID")
 
 

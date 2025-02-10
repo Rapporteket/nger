@@ -44,14 +44,14 @@ setwd('C:/RegistreGIT/nger/inst/')
 setwd('~/nger/inst/')
 data('NGERtulledata', package = 'nger')
 
-AVN <- read.table('C:/Registerdata/nger/AlleVarNum2022-11-10.csv', sep = ';',
+AVN <- read.table('C:/Registerdata/nger/allevarnum2022-11-10.csv', sep = ';',
                       header = T,encoding = 'UTF-8')
-ForlData <- read.table('C:/Registerdata/nger/ForlopsOversikt2022-11-10.csv', sep = ';',
+ForlData <- read.table('C:/Registerdata/nger/forlopsoversikt2022-11-10.csv', sep = ';',
                        header = T,encoding = 'UTF-8')
 varForl <- c('BasisRegStatus', 'HovedDato','OppflgRegStatus','OppflgStatus','PasientAlder','SykehusNavn','ForlopsID')
 RegData <- merge(AVN, ForlData[,varForl], by = 'ForlopsID')
 RegData <- nger::NGERPreprosess(RegData=RegData) #I App'en preprosesseres data
-SkjemaData <- read.table('C:/Registerdata/nger/SkjemaOversikt2022-11-10.csv', sep = ';',
+SkjemaData <- read.table('C:/Registerdata/nger/skjemaoversikt2022-11-10.csv', sep = ';',
                        header = T,encoding = 'UTF-8')
 SkjemaData <- nger::NGERPreprosess(RegData = SkjemaData)
 
@@ -110,10 +110,10 @@ table(RegData[which(is.na(RegData$Opf0Status)), c('Opf0metode', 'Aar')], useNA =
 rm(list=ls())
 dato <- '2022-11-10'
 #dato <- '2019-03-18Aarsrapp18'
-NGERBasis <- read.table(paste0('C:/Registerdata/nger/AlleVarNum', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #,
-NGERForlop <- read.table(paste0('C:/Registerdata/nger/ForlopsOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
-NGERSkjema <- read.table(paste0('C:/Registerdata/nger/SkjemaOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
-#NGEROppf <- read.table('C:/Registre/NGER/data/FollowupsNum2016-10-14.csv', sep=';', header=T, fileEncoding = 'UTF-8')
+NGERBasis <- read.table(paste0('C:/Registerdata/nger/allevarnum', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #,
+NGERForlop <- read.table(paste0('C:/Registerdata/nger/forlopsoversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
+NGERSkjema <- read.table(paste0('C:/Registerdata/nger/skjemaoversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
+#NGEROppf <- read.table('C:/Registre/NGER/data/followupsnum2016-10-14.csv', sep=';', header=T, fileEncoding = 'UTF-8')
 #NGERData <- merge(NGERForlop, NGERBasis, by = "ForlopsID", suffixes = c('','xx'), all = FALSE)
 #NGERData <- merge(NGERData, NGEROppf, by = "ForlopsID", suffixes = c('','YY'),all.x = TRUE)
 NGERData <- merge(NGERBasis, NGERForlop, by = "ForlopsID", suffixes = c('','YY'),all.x = TRUE, all.y=FALSE)
@@ -123,9 +123,9 @@ NGERData <- merge(NGERBasis, NGERForlop, by = "ForlopsID", suffixes = c('','YY')
 # RegData <- NGERUtvalgEnh(RegData, datoFra = '2016-01-01', datoTil = '2018-12-31')$RegData
 # save(RegData, file=paste0('A:/NGER/Aarsrapp2018', dato, '.Rdata'))
 # write.table(RegData, file = "A:/NGER/Aarsrapp2018.csv", row.names= FALSE, sep = ';', fileEncoding = 'UTF-8')
-SkjemaOversikt <- NGERSkjema
-save(RegData, SkjemaOversikt, file=paste0('A:/NGER/NGER', dato, '.RData'))
-save(RegData, SkjemaOversikt, file=paste0('A:/NGER/NGERtestdata.RData'))
+skjemaoversikt <- NGERSkjema
+save(RegData, skjemaoversikt, file=paste0('A:/NGER/NGER', dato, '.RData'))
+save(RegData, skjemaoversikt, file=paste0('A:/NGER/NGERtestdata.RData'))
 save(NGERData, file=paste0('A:/NGER/Aarsrapp', dato, '.RData'))
 
 RegData <- NGERData[which(NGERData$OpDato >= as.Date('2016-01-01')) & which(NGERData$OpDato <= as.Date('2018-12-31')),]
@@ -136,12 +136,12 @@ load(paste0('A:/NGER/Aarsrapp20182019-03-18.Rdata'))
 
 #----------------------------------- Lage tulledata ------------------------------
 #Denne inneholder ingen id'er og trenger ikke
-#SkjemaOversikt <- NGERSkjema[ ,c("Skjemanavn", "SkjemaRekkeflg",  "SkjemaStatus",  "OpprettetDato", "HovedDato")]
-qSkjemaOversikt <- 'SELECT * FROM SkjemaOversikt'
-SkjemaOversikt <- rapbase::loadRegData(registryName='nger',
-                                       query=qSkjemaOversikt, dbType='mysql')
-SkjemaOversikt <- NGERPreprosess(SkjemaOversikt)
-SkjemaOversikt<- lageTulleData(RegData=SkjemaOversikt, antSh=26, antObs=20000)
+#skjemaoversikt <- NGERSkjema[ ,c("Skjemanavn", "SkjemaRekkeflg",  "SkjemaStatus",  "OpprettetDato", "HovedDato")]
+qskjemaoversikt <- 'SELECT * FROM skjemaoversikt'
+skjemaoversikt <- rapbase::loadRegData(registryName='nger',
+                                       query=qskjemaoversikt, dbType='mysql')
+skjemaoversikt <- NGERPreprosess(skjemaoversikt)
+skjemaoversikt<- lageTulleData(RegData=skjemaoversikt, antSh=26, antObs=20000)
 
 varBort <- c('PasRegDato', 'PersonNr', 'PersonNrType', 'FodselsDato', 'Morsmaal', 'MorsmaalAnnet',
            'Tss2ScoreAVG', 'AvdRESHYY', 'ShNavn', 'PasientIDYY', 'PostNr', 'PostSted', 'Kommune', 'Kommunenr',
@@ -151,7 +151,7 @@ varBort <- c('PasRegDato', 'PersonNr', 'PersonNrType', 'FodselsDato', 'Morsmaal'
            grep('Opf1', names(RegData)), grep('RY1', names(RegData)))
 RegData <- lageTulleData(RegData=0, varBort=varBort, antSh=26, antObs=20000)
 
-save(SkjemaOversikt, RegData, file = './data/NGERtulledata.Rdata')
+save(skjemaoversikt, RegData, file = './data/NGERtulledata.Rdata')
 
 #----------------------------------- PARAMETRE ------------------------------
 RegData <- NGERRegDataSQL()
@@ -421,9 +421,9 @@ dataTilResultatPort(RegData=NGERData, valgtKI='KomplPostop',  OpMetode = 2, aar=
 ######################### LITT LEKING ##############################
 setwd("C:/ResultattjenesteGIT/nger/")
 
-NGERAlleVarNum <- read.table('C:/Registre/NGER/data/AlleVarNum2016-06-08.csv', sep=';', header=T, encoding = 'UTF-8') #,
-NGERForlop <- read.table('C:/Registre/NGER/data/ForlopsOversikt2016-06-08.csv', sep=';', header=T, encoding = 'UTF-8')
-NGERRegData <- merge(NGERForlop, NGERAlleVarNum, by.x = "ForlopsID", by.y = "MCEID", all = FALSE)
+NGERallevarnum <- read.table('C:/Registre/NGER/data/allevarnum2016-06-08.csv', sep=';', header=T, encoding = 'UTF-8') #,
+NGERForlop <- read.table('C:/Registre/NGER/data/forlopsoversikt2016-06-08.csv', sep=';', header=T, encoding = 'UTF-8')
+NGERRegData <- merge(NGERForlop, NGERallevarnum, by.x = "ForlopsID", by.y = "MCEID", all = FALSE)
 RegData <- NGERRegData
 
 data.frame(lapply(df, function(v) {

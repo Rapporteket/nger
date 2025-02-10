@@ -26,8 +26,8 @@ SELECT
   YEAR(f.HovedDato) AS year,
   f.ShNavn
 FROM
-  AlleVarNum v
-INNER JOIN ForlopsOversikt f ON v.MCEID = f.ForlopsID
+  allevarnum v
+INNER JOIN forlopsoversikt f ON v.MCEID = f.ForlopsID
 WHERE
   YEAR(f.HovedDato) < ", reportYear + 1, " AND
   YEAR(f.HovedDato) >= ", reportYear - 2
@@ -105,8 +105,8 @@ SELECT
   v.ComplEquipInstruments,
   v.ComplEquipSuture
 FROM
-  AlleVarNum v
-INNER JOIN ForlopsOversikt f ON v.MCEID = f.ForlopsID
+  allevarnum v
+INNER JOIN forlopsoversikt f ON v.MCEID = f.ForlopsID
 WHERE
   v.OpMetode = 1 AND
   f.HovedDato >= \'', datoFra, '\' AND

@@ -1,8 +1,8 @@
 rm(list=ls())
 
 dato <- '2017-11-30'
-#NGERBasis <- read.table(paste0('A:/NGER/AlleVarNum', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #,
-#NGERForlop <- read.table(paste0('A:/NGER/ForlopsOversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
+#NGERBasis <- read.table(paste0('A:/NGER/allevarnum', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #,
+#NGERForlop <- read.table(paste0('A:/NGER/forlopsoversikt', dato, '.csv'), sep=';', header=T, fileEncoding = 'UTF-8')
 #NGERData <- merge(NGERBasis, NGERForlop, by = "ForlopsID", suffixes = c('','YY'),all.x = TRUE, all.y=FALSE)
 #RegData <- NGERData
 #save(RegData, file=paste0('A:/NGER/NGER', dato, '.Rdata'))

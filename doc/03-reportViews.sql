@@ -2,10 +2,10 @@
 
 -- This view is prepared for v1.1.2.
   
-drop view if exists ForlopsOversikt;
+drop view if exists forlopsoversikt;
 drop view if exists Dekningsgradsanalyse;
 
-create view ForlopsOversikt AS  
+create view forlopsoversikt AS  
   select    
     m.CENTREID AS AvdRESH,
     getFriendlyName(m.CENTREID) AS SykehusNavn,  
@@ -124,8 +124,8 @@ create view ForlopsOversikt AS
   where o.STATUS = 1 AND (ifnull(l.STATUS, 1) = 1 OR ifnull(h.STATUS, 1) = 1); 
   
   
-drop view if exists SkjemaOversikt;
-create view SkjemaOversikt AS
+drop view if exists skjemaoversikt;
+create view skjemaoversikt AS
 select 
   'Operasjon' AS Skjemanavn,
   CAST(skjema.STATUS AS CHAR(3)) AS SkjemaStatus, 
@@ -423,8 +423,8 @@ ORDER BY patient.ID;
 
 
 
-drop view if exists AlleVarNum;
-CREATE VIEW AlleVarNum AS
+drop view if exists allevarnum;
+CREATE VIEW allevarnum AS
 SELECT 
   patient.ID as PasientID,
   patient.REGISTERED_DATE as PasRegDato,
@@ -610,8 +610,8 @@ from
     LEFT OUTER JOIN hysteroscopy h ON m.MCEID = h.MCEID;   
 
 
-drop view if exists FollowupsNum;
-create view FollowupsNum as 
+drop view if exists followupsnum;
+create view followupsnum as 
 SELECT 
   patient.ID as PasientID,
   patient.REGISTERED_DATE as PasRegDato,
