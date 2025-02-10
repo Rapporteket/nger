@@ -4,7 +4,7 @@
 \alias{rader}
 \title{Definerer rader i en nøkkeltallstabell}
 \usage{
-rader(RegData, var, stat = "median", verdi = 1, met = "hys")
+rader(RegData, var, stat = "median", verdi = 1)
 }
 \arguments{
 \item{RegData}{- dataramme, NGER-data}
@@ -18,7 +18,8 @@ rader(RegData, var, stat = "median", verdi = 1, met = "hys")
 \item{met}{- 'hys' (hysteroskopi) eller 'lap' (laparoskopi)}
 }
 \value{
-Leverer beregnede tall til rad i nøkkeltallstabell
+Leverer beregnede tall til rad i nøkkeltallstabell.
+NB, NB: Rad 2 og 3 gjelder kun hysteroskopi, rad 4 kun laparoskopi
 }
 \description{
 Definerer rader i en nøkkeltallstabell

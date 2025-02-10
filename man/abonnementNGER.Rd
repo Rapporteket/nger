@@ -6,7 +6,6 @@
 \usage{
 abonnementNGER(
   rnwFil,
-  brukernavn = "ngerBrukernavn",
   reshID = 0,
   datoFra = Sys.Date() - 180,
   datoTil = Sys.Date()
@@ -14,8 +13,6 @@ abonnementNGER(
 }
 \arguments{
 \item{rnwFil}{NoWeb-fil med filending: eksempel.rnw}
-
-\item{brukernavn}{innlogget bruker}
 
 \item{reshID}{brukerens reshID}
 
