@@ -1620,22 +1620,6 @@ server_nger <- function(input, output, session) {
   #------------------ Abonnement ----------------------------------------------
   orgs <- as.list(sykehusValgUts)
 
-  #Fases ut?:
-  brukernavn <- reactive({ifelse(paaServer, rapbase::getUserName(session), 'inkognito')})
-  #paramNames <- shiny::reactive("reshID")
-  #paramValues <- shiny::reactive(org$value())
-
-
-  ## make a list for report metadata
-  # reports <- list(
-  #   MndRapp = list(
-  #     synopsis = "NGER/Rapporteket: Månedsrapport, abonnement",
-  #     fun = "abonnementNGER",
-  #     paramNames = reactive(c('rnwFil', 'reshID', 'brukernavn')),
-  #     paramValues = reactive(c('NGERmndRapp.Rnw', user$org(), 'brukernavn')) #NB: Brukernavn hentes fra user-objekt?
-  #   )
-  # )
-  #test <- nger::abonnementNGER(rnwFil="NGERmndRapp.Rnw", brukernavn='tullebukk', reshID=105460)
   shiny::observe(
     rapbase::autoReportServer2(
       id = "ngerAbb",
