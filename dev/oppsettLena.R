@@ -4,7 +4,7 @@ devtools::install(upgrade = FALSE, dependencies = FALSE)
 
 Sys.setenv(R_RAP_INSTANCE="QAC")
 Sys.setenv(R_RAP_CONFIG_PATH="/home/rstudio/nger/data-raw/config")
-Sys.setenv(MYSQL_DB_DATA="NGERReportDataStaging")
+
 
 nger::kjor_NGERapp()
 

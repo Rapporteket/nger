@@ -720,10 +720,23 @@ ui_nger <- function() {
                  h4("Utsending av rapporter"),
                  sidebarPanel(
                    rapbase::autoReportOrgInput("NGERutsending"),
-                   rapbase::autoReportInput("NGERutsending")
+                   rapbase::autoReportInput("NGERutsending"),
+                   shiny::actionButton(inputId = "run_autoreport",
+                                       label = "Kjør autorapporter"),
+                   shiny::dateInput(inputId = "rapportdato",
+                                    label = "Kjør rapporter med dato:",
+                                    value = Sys.Date(),
+                                    min = Sys.Date(),
+                                    max = Sys.Date() + 366
+                   ),
+                   shiny::checkboxInput(inputId = "dryRun", label = "Send e-post")
                  ),
                  mainPanel(
-                   rapbase::autoReportUI("NGERutsending")
+                   rapbase::autoReportUI("NGERutsending"),
+                   p(em("System message:")),
+                   verbatimTextOutput("sysMessage"),
+                   p(em("Function message:")),
+                   verbatimTextOutput("funMessage")
                  )
                ), #Utsending-tab
                tabPanel(
@@ -1661,14 +1674,14 @@ server_nger <- function(input, output, session) {
 
       org <- rapbase::autoReportOrgServer("NGERutsending", orgs)
 
-      # oppdatere reaktive parametre, for å få inn valgte verdier (overskrive de i report-lista)
-      paramNames <- shiny::reactive("reshID")
-      paramValues <- shiny::reactive(org$value())
-
       rapbase::autoReportServer2(
-        id = "NGERutsending", registryName = "nger", type = "dispatchment",
-        org = org$value, #paramNames = paramNames, paramValues = paramValues,
-        reports = reports, orgs = orgs, eligible = (user$role() == "SC"), #TRUE
+        id = "NGERutsending",
+        registryName = "nger",
+        type = "dispatchment",
+        org = org$value,
+        reports = reports,
+        orgs = orgs,
+        eligible = (user$role() == "SC"),
         user = user
       )
 
@@ -1680,6 +1693,35 @@ server_nger <- function(input, output, session) {
       rapbase::exportGuideServer("ngerExportGuide", registryName)
     }
   })
+
+  kjor_autorapport <- shiny::observeEvent(input$run_autoreport, {
+    dato <- input$rapportdato
+    dryRun <- !(input$dryRun)
+    withCallingHandlers({
+      shinyjs::html("sysMessage", "")
+      shinyjs::html("funMessage", "")
+      shinyjs::html("funMessage",
+                    rapbase::runAutoReport(group = "nger",
+                                           dato = dato, dryRun = dryRun))
+    },
+    message = function(m) {
+      shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
+    })
+  })
+
+  # output$confgreier1 <- shiny::renderText({
+  #   paste("rapbase::getConfig(\"rapbaseConfig.yml\")$network$sender:",
+  #         rapbase::getConfig("rapbaseConfig.yml")$network$sender)
+  # })
+  # output$confgreier2 <- shiny::renderText({
+  #   paste("rapbase::getConfig(\"rapbaseConfig.yml\")$network$smtp$server:",
+  #         rapbase::getConfig("rapbaseConfig.yml")$network$smtp$server)
+  # })
+  # output$confgreier3 <- shiny::renderText({
+  #   paste("rapbase::getConfig(\"rapbaseConfig.yml\")$network$smtp$port:",
+  #         rapbase::getConfig("rapbaseConfig.yml")$network$smtp$port)
+  # })
+
 
 } #server
 # Run the application
