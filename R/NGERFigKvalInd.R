@@ -52,7 +52,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
                                     %i% which(RegData$InnDato >= '2018-01-01'), ],
                     RAND3 = RegData[ which(RegData$R3Metode %in% 1:3) #which(RegData$RY1Status==1) %i%
                                      %i% which(RegData$InnDato >= '2018-01-01'), ],
-                    TSS0 = RegData[which(RegData$Tss2Type %in% 1:3) #which(RegData$Tss2Status==1) %i%
+                    TSS0 = RegData[which(RegData$Tss2Generelt %in% 0:4) #Tss2Type Tss2Status==1) %i%
                                    %i% which(RegData$InnDato >= '2016-01-01'), ],
                     kvalInd = RegData)
   NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, reshID=reshID,  minald = minald, maxald = maxald, datoFra = datoFra,
