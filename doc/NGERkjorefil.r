@@ -7,7 +7,15 @@ kodebok_kategorier = klokebok %>% filter(type == 'Listevariabel')
 
 #---------Teste ny versjon av registeret, nov. 2023
 
-RegData <- NGERRegDataSQL()
+RegData <- NGERRegDataSQL(datoFra = '2020-01-01', datoTil = '2022-12-31')
+
+
+#----Avvik alle enkeltspm, TSS2
+#TSS0 = RegData[which(RegData$Tss2Type %in% 1:3)
+table(RegData$R0Metode, useNA = 'a')
+table(RegData$R0ScorePhys, useNA = 'a')
+table(RegData$R0ScorePain, useNA = 'a')
+ftable(RegData$Tss2Type, RegData$Tss2Generelt, exclude = '')
 
 #------Feilsøking, tull med utvalg
 which(RegData[,ProsLap] == 'LCD01', arr.ind = TRUE)[,1]

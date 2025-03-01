@@ -45,6 +45,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
   #------- Gjøre utvalg
 #Utvalg fra variable:
   #Metode: [1:"Oppfølging pr post/brev", 2:"Oppfølging pr telefonintervju", 3:e-prom, 9:"Oppfølging ikke mulig"]
+  #NB: Sier ikke om skjema faktisk er besvart. For RAND stemmer dette med antall besvarte, ikke for TSS2
   RegData <- switch(valgtVar,
                     RAND0 = RegData[which(RegData$R0Metode %in% 1:2) #Inneholder kun verdiene 1, 2 og tomme
                                     %i% which(RegData$InnDato >= '2016-01-01'), ],
@@ -52,7 +53,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
                                     %i% which(RegData$InnDato >= '2018-01-01'), ],
                     RAND3 = RegData[ which(RegData$R3Metode %in% 1:3) #which(RegData$RY1Status==1) %i%
                                      %i% which(RegData$InnDato >= '2018-01-01'), ],
-                    TSS0 = RegData[which(RegData$Tss2Type %in% 1:3) #which(RegData$Tss2Status==1) %i%
+                    TSS0 = RegData[which(RegData$Tss2Generelt %in% 0:4) #Tss2Type %in% 1:3 Tss2Status==1
                                    %i% which(RegData$InnDato >= '2016-01-01'), ],
                     kvalInd = RegData)
   NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, reshID=reshID,  minald = minald, maxald = maxald, datoFra = datoFra,
