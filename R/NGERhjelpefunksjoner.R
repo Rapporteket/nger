@@ -3,12 +3,23 @@
 
 
 #' Kjør Shiny Application
+#'
+#' @param browser App åpner i browser
+#' @param logAsJson Logg i json-format
+#'
 #' @return Et objekt som representerer den NGERapp'en
 #' @export
 
-kjor_NGERapp <- function() {
+kjor_NGERapp <- function(browser = FALSE, logAsJson = FALSE) {
 
-  app <- shiny::shinyApp(ui = nger::ui_nger, server = nger::server_nger)
+  if (logAsJson) {
+    rapbase::loggerSetup()
+  }
+  app <- shiny::shinyApp(
+    ui = nger::ui_nger,
+    server = nger::server_nger,
+    options = list(launch.browser = browser)
+  )
 
   return(app)
 }
