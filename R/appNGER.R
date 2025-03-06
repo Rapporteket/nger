@@ -1619,68 +1619,69 @@ server_nger <- function(input, output, session) {
 
   #------------------ Abonnement ----------------------------------------------
   orgs <- as.list(sykehusValgUts)
+  paramNames <- shiny::reactive(c("reshID"))
+  paramValues <- shiny::reactive(c(user$org()))
 
-  shiny::observe(
-    rapbase::autoReportServer2(
-      id = "ngerAbb",
-      registryName = "nger",
-      type = "subscription",
-      reports = list(
-        MndRapp = list(
-          synopsis = "NGER/Rapporteket: Månedsrapport, abonnement",
-          fun = "abonnementNGER",
-          paramNames = c('rnwFil', 'reshID'),
-          paramValues = c('NGERmndRapp.Rnw', user$org())
-        )
-      ),
-      orgs = orgs,
-      eligible = TRUE,
-      user = user
-    )
+  rapbase::autoReportServer2(
+    id = "ngerAbb",
+    registryName = "nger",
+    type = "subscription",
+    paramNames = paramNames,
+    paramValues = paramValues,
+    reports = list(
+      MndRapp = list(
+        synopsis = "NGER/Rapporteket: Månedsrapport, abonnement",
+        fun = "abonnementNGER",
+        paramNames = c('rnwFil', 'reshID'),
+        paramValues = c('NGERmndRapp.Rnw', 999999)
+      )
+    ),
+    orgs = orgs,
+    user = user
   )
   #-----------Registeradministrasjon-----------
 
-  observeEvent(user$role(), {
-    if (user$role() == 'SC') {
-
-      ## liste med metadata for rapport
-      reports <- list(
-        MndRapp = list(
-          synopsis = "Rapporteket-NGER: Månedsrapport",
-          fun = "abonnementNGER",
-          paramNames = c('rnwFil', "reshID"),
-          paramValues = c('NGERmndRapp.Rnw', 0)
-        ),
-        SamleRapp = list(
-          synopsis = "Rapporteket-NGER: Rapport, div. resultater",
-          fun = "abonnementNGER",
-          paramNames = c('rnwFil', "reshID"),
-          paramValues = c('NGERSamleRapp.Rnw', 0)
-        )
-      )
-
-      org <- rapbase::autoReportOrgServer("NGERutsending", orgs)
-
-      # oppdatere reaktive parametre, for å få inn valgte verdier (overskrive de i report-lista)
-      paramNames <- shiny::reactive("reshID")
-      paramValues <- shiny::reactive(org$value())
-
-      rapbase::autoReportServer2(
-        id = "NGERutsending", registryName = "nger", type = "dispatchment",
-        org = org$value, #paramNames = paramNames, paramValues = paramValues,
-        reports = reports, orgs = orgs, eligible = (user$role() == "SC"), #TRUE
-        user = user
-      )
-
-      #----------- Eksport ----------------
-      registryName <- "nger"
-      ## brukerkontroller
-      rapbase::exportUCServer("ngerExport", registryName)
-      ## veileding
-      rapbase::exportGuideServer("ngerExportGuide", registryName)
-    }
+  ## liste med metadata for rapport
+  reports <- list(
+    MndRapp = list(
+      synopsis = "Rapporteket-NGER: Månedsrapport",
+      fun = "abonnementNGER",
+      paramNames = c('rnwFil', "reshID"),
+      paramValues = c('NGERmndRapp.Rnw', 0)
+    ),
+    SamleRapp = list(
+      synopsis = "Rapporteket-NGER: Rapport, div. resultater",
+      fun = "abonnementNGER",
+      paramNames = c('rnwFil', "reshID"),
+      paramValues = c('NGERSamleRapp.Rnw', 0)
+    )
+  )
+  org <- rapbase::autoReportOrgServer("NGERutsending", orgs)
+  # oppdatere reaktive parametre, for å få inn valgte verdier (overskrive de i report-lista)
+  paramNames <- shiny::reactive("reshID")
+  paramValues <- shiny::reactive(org$value())
+  vis_rapp <- shiny::reactiveVal(FALSE)
+  shiny::observeEvent(user$role(), {
+    vis_rapp(user$role() == "SC")
   })
-
+  rapbase::autoReportServer(
+    id = "NGERutsending",
+    registryName = "nger",
+    type = "dispatchment",
+    org = org$value,
+    paramNames = paramNames,
+    paramValues = paramValues,
+    reports = reports,
+    orgs = orgs,
+    eligible = vis_rapp,
+    user = user
+  )
+  #----------- Eksport ----------------
+  registryName <- "nger"
+  ## brukerkontroller
+  rapbase::exportUCServer("ngerExport", registryName)
+  ## veileding
+  rapbase::exportGuideServer("ngerExportGuide", registryName)
 } #server
 # Run the application
 #shinyApp(ui = ui, server = server)
