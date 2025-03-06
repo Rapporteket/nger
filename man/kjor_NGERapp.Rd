@@ -4,7 +4,12 @@
 \alias{kjor_NGERapp}
 \title{Kjør Shiny Application}
 \usage{
-kjor_NGERapp()
+kjor_NGERapp(browser = FALSE, logAsJson = FALSE)
+}
+\arguments{
+\item{browser}{App åpner i browser}
+
+\item{logAsJson}{Logg i json-format}
 }
 \value{
 Et objekt som representerer den NGERapp'en
