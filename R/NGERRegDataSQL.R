@@ -160,18 +160,11 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
     OpTidlLapsko,
     OpTidlVagInngrep,
     OpType
-    FROM allevarnum
-    INNER JOIN forlopsoversikt
+    FROM allevarnum_materialized
+    INNER JOIN forlopsoversikt_materialized
     ON allevarnum.ForlopsID = forlopsoversikt.ForlopsID
  WHERE HovedDato >= \'', datoFra, '\' AND HovedDato <= \'', datoTil, '\'')
 
-  #FROM allevarnum INNER JOIN forlopsoversikt ON allevarnum.MCEID = forlopsoversikt.ForlopsID
-  # query <- 'select * FROM allevarnum
-  #     INNER JOIN forlopsoversikt
-  #     ON allevarnum.ForlopsID = forlopsoversikt.ForlopsID'
-
-  #Data_AWN <- rapbase::loadRegData(registryName = "nger", query='select * FROM allevarnum', dbType = "mysql")
-  #Data_Forl <- rapbase::loadRegData(registryName = "nger", query='select * FROM forlopsoversikt', dbType = "mysql")
   RegData <- rapbase::loadRegData(registryName = registryName, query=query, dbType = "mysql") #registryName = "nger"
 
   qOppfolging <- 'SELECT
@@ -214,12 +207,12 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
     Tss2Score,
     Tss2Status,
     Tss2Type
-  FROM followupsnum'
+  FROM followupsnum_materialized'
 
-  followupsnum <- rapbase::loadRegData(registryName = registryName, query=qOppfolging)
-# setdiff(sort(followupsnum$ForlopsID), RegData$ForlopsID)
+  Oppfolging <- rapbase::loadRegData(registryName = registryName, query=qOppfolging)
+# setdiff(sort(Oppfolging$ForlopsID), RegData$ForlopsID)
 
-  RegData <- dplyr::left_join(RegData, followupsnum, by="ForlopsID")
+  RegData <- dplyr::left_join(RegData, Oppfolging, by="ForlopsID")
 
   if (medPROM==1) {
 
@@ -231,7 +224,7 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
     #   RegDataUrand <- RegData[, -which(names(RegData) %in% c(R0var, R1var))]
     # }
 
-    queryRAND36 <- 'select * FROM rand36report'
+    queryRAND36 <- 'select * FROM rand36report_materialized'
     RAND36 <-  rapbase::loadRegData(registryName = registryName, queryRAND36, dbType = "mysql")
 
     Rvar <- grep(pattern='R', x=names(RAND36), value = TRUE, fixed = TRUE)
