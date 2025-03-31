@@ -21,21 +21,21 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
   # Hvor har denne blitt av?? Tss2BesvarteProm -- ny jan.-2022
 
   query <- paste0('SELECT
-    allevarnum.PasientID,
-    allevarnum.ForlopsID,
-    allevarnum.AvdRESH,
-    forlopsoversikt.BasisRegStatus,
-    forlopsoversikt.FodselsDato AS Fodselsdato,
-    forlopsoversikt.HovedDato,
-    forlopsoversikt.OppflgRegStatus,
-    forlopsoversikt.OppflgStatus,
-    forlopsoversikt.PasientAlder,
-    forlopsoversikt.SykehusNavn,
-    allevarnum.SivilStatus,
+    allevarnum_materialized.PasientID,
+    allevarnum_materialized.ForlopsID,
+    allevarnum_materialized.AvdRESH,
+    forlopsoversikt_materialized.BasisRegStatus,
+    forlopsoversikt_materialized.FodselsDato AS Fodselsdato,
+    forlopsoversikt_materialized.HovedDato,
+    forlopsoversikt_materialized.OppflgRegStatus,
+    forlopsoversikt_materialized.OppflgStatus,
+    forlopsoversikt_materialized.PasientAlder,
+    forlopsoversikt_materialized.SykehusNavn,
+    allevarnum_materialized.SivilStatus,
     Utdanning,
-    allevarnum.Norsktalende,
-    allevarnum.Morsmaal,
-    allevarnum.MorsmaalAnnet,
+    allevarnum_materialized.Norsktalende,
+    allevarnum_materialized.Morsmaal,
+    allevarnum_materialized.MorsmaalAnnet,
 -- HysBlodning, erstattet nov23
     -- HysFluidOverload, erstattet nov23
     HysGjforingsGrad,
@@ -160,18 +160,11 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
     OpTidlLapsko,
     OpTidlVagInngrep,
     OpType
-    FROM allevarnum
-    INNER JOIN forlopsoversikt
-    ON allevarnum.ForlopsID = forlopsoversikt.ForlopsID
+    FROM allevarnum_materialized
+    INNER JOIN forlopsoversikt_materialized
+    ON allevarnum_materialized.ForlopsID = forlopsoversikt_materialized.ForlopsID
  WHERE HovedDato >= \'', datoFra, '\' AND HovedDato <= \'', datoTil, '\'')
 
-  #FROM allevarnum INNER JOIN forlopsoversikt ON allevarnum.MCEID = forlopsoversikt.ForlopsID
-  # query <- 'select * FROM allevarnum
-  #     INNER JOIN forlopsoversikt
-  #     ON allevarnum.ForlopsID = forlopsoversikt.ForlopsID'
-
-  #Data_AWN <- rapbase::loadRegData(registryName = "nger", query='select * FROM allevarnum', dbType = "mysql")
-  #Data_Forl <- rapbase::loadRegData(registryName = "nger", query='select * FROM forlopsoversikt', dbType = "mysql")
   RegData <- rapbase::loadRegData(registryName = registryName, query=query, dbType = "mysql") #registryName = "nger"
 
   qOppfolging <- 'SELECT
@@ -214,12 +207,12 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
     Tss2Score,
     Tss2Status,
     Tss2Type
-  FROM followupsnum'
+  FROM followupsnum_materialized'
 
-  followupsnum <- rapbase::loadRegData(registryName = registryName, query=qOppfolging)
-# setdiff(sort(followupsnum$ForlopsID), RegData$ForlopsID)
+  Oppfolging <- rapbase::loadRegData(registryName = registryName, query=qOppfolging)
+# setdiff(sort(Oppfolging$ForlopsID), RegData$ForlopsID)
 
-  RegData <- dplyr::left_join(RegData, followupsnum, by="ForlopsID")
+  RegData <- dplyr::left_join(RegData, Oppfolging, by="ForlopsID")
 
   if (medPROM==1) {
 
@@ -231,7 +224,7 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
     #   RegDataUrand <- RegData[, -which(names(RegData) %in% c(R0var, R1var))]
     # }
 
-    queryRAND36 <- 'select * FROM rand36report'
+    queryRAND36 <- 'select * FROM rand36report_materialized'
     RAND36 <-  rapbase::loadRegData(registryName = registryName, queryRAND36, dbType = "mysql")
 
     Rvar <- grep(pattern='R', x=names(RAND36), value = TRUE, fixed = TRUE)
