@@ -21,21 +21,21 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
   # Hvor har denne blitt av?? Tss2BesvarteProm -- ny jan.-2022
 
   query <- paste0('SELECT
-    allevarnum.PasientID,
-    allevarnum.ForlopsID,
-    allevarnum.AvdRESH,
-    forlopsoversikt.BasisRegStatus,
-    forlopsoversikt.FodselsDato AS Fodselsdato,
-    forlopsoversikt.HovedDato,
-    forlopsoversikt.OppflgRegStatus,
-    forlopsoversikt.OppflgStatus,
-    forlopsoversikt.PasientAlder,
-    forlopsoversikt.SykehusNavn,
-    allevarnum.SivilStatus,
+    allevarnum_materialized.PasientID,
+    allevarnum_materialized.ForlopsID,
+    allevarnum_materialized.AvdRESH,
+    forlopsoversikt_materialized.BasisRegStatus,
+    forlopsoversikt_materialized.FodselsDato AS Fodselsdato,
+    forlopsoversikt_materialized.HovedDato,
+    forlopsoversikt_materialized.OppflgRegStatus,
+    forlopsoversikt_materialized.OppflgStatus,
+    forlopsoversikt_materialized.PasientAlder,
+    forlopsoversikt_materialized.SykehusNavn,
+    allevarnum_materialized.SivilStatus,
     Utdanning,
-    allevarnum.Norsktalende,
-    allevarnum.Morsmaal,
-    allevarnum.MorsmaalAnnet,
+    allevarnum_materialized.Norsktalende,
+    allevarnum_materialized.Morsmaal,
+    allevarnum_materialized.MorsmaalAnnet,
 -- HysBlodning, erstattet nov23
     -- HysFluidOverload, erstattet nov23
     HysGjforingsGrad,
@@ -162,7 +162,7 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
     OpType
     FROM allevarnum_materialized
     INNER JOIN forlopsoversikt_materialized
-    ON allevarnum.ForlopsID = forlopsoversikt.ForlopsID
+    ON allevarnum_materialized.ForlopsID = forlopsoversikt_materialized.ForlopsID
  WHERE HovedDato >= \'', datoFra, '\' AND HovedDato <= \'', datoTil, '\'')
 
   RegData <- rapbase::loadRegData(registryName = registryName, query=query, dbType = "mysql") #registryName = "nger"
