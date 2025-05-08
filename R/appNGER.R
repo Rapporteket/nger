@@ -780,7 +780,7 @@ server_nger <- function(input, output, session) {
     RegData <- NGERRegDataSQL()
     #stopifnot(dim(RegData)[1]>0)
     errorCondition(dim(RegData)[1]==0, 'ingen data')
-    qskjemaoversikt <- 'SELECT * FROM skjemaoversikt_materialized'
+    qskjemaoversikt <- 'SELECT * FROM skjemaoversikt'
     skjemaoversikt <- rapbase::loadRegData(registryName='data', #'nger',
                                            query=qskjemaoversikt, dbType='mysql')
   }
