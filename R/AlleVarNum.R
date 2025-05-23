@@ -1,13 +1,12 @@
-
 #' Lager AlleVarNum
 #'
-#' @return
-#' @export Returnerer AlleVarNum
+#' @return Returnerer AlleVarNum
+#' @export
 #'
 
 AlleVarNum <- function() {
 
- qAVN <-  'SELECT
+ query <-  'SELECT
   patient.ID as PasientID,
   patient.REGISTERED_DATE as PasRegDato,
   patient.SSN as PersonNr,
@@ -187,14 +186,16 @@ AlleVarNum <- function() {
   hysteroscopy.CONVERTED_LAPAROSCOPY AS HysKonvLaparoskopi,
   hysteroscopy.CONVERTED_LAPROTOMY AS HysKonvLaparotomi,
   hysteroscopy.FIRST_TIME_CLOSED as HysForstLukket,
-  hysteroscopy.STATUS as HysStatus
+  hysteroscopy.STATUS as HysStatus,
+  centre.CENTRENAME as SykehusNavn
   FROM mce
   INNER JOIN patient ON mce.PATIENT_ID = patient.ID
   INNER JOIN operation ON mce.MCEID = operation.MCEID
-  LEFT OUTER JOIN laparoscopy ON mce.MCEID = laparoscopy.MCEID
-  LEFT OUTER JOIN hysteroscopy ON mce.MCEID = hysteroscopy.MCEID
-  LEFT OUTER JOIN user u_op ON operation.FIRST_TIME_CLOSED_BY = u_op.ID -- ADDED
-  LEFT OUTER JOIN user u_hys ON hysteroscopy.FIRST_TIME_CLOSED_BY = u_hys.ID -- ADDED
+  LEFT JOIN laparoscopy ON mce.MCEID = laparoscopy.MCEID
+  LEFT JOIN hysteroscopy ON mce.MCEID = hysteroscopy.MCEID
+  LEFT JOIN user u_op ON operation.FIRST_TIME_CLOSED_BY = u_op.ID -- ADDED
+  LEFT JOIN user u_hys ON hysteroscopy.FIRST_TIME_CLOSED_BY = u_hys.ID -- ADDED
+  LEFT JOIN centre on mce.CENTREID = centre.ID
   WHERE
   operation.STATUS = 1
   AND (laparoscopy.STATUS = 1 OR hysteroscopy.STATUS = 1)'
