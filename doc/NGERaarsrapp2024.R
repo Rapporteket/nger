@@ -264,7 +264,7 @@ tabOpph <- tabAntOpphSh5Aar(RegData=RegData, datoTil=datoTil)$tabAntAvd
 AarNaa <- as.numeric(format.Date(datoTil, "%Y"))
 tabAvdAarN <- addmargins(table(RegData[which(RegData$Aar %in% (AarNaa-4):AarNaa), c('ShNavn','Aar')]), margin = 1)
 xtable::xtable(tabAvdAarN, digits=0, align=c('l', rep('r',ncol(tabAvdAarN))),
-               caption = 'Antall registrerte opphold',
+               caption = 'Antall registrerte inngrep',
                label = 'tab:AntRegAar')
 
 
@@ -274,7 +274,9 @@ tab <- table(RegData1aar[ ,c('ShNavn', "OpMetode")]) #, 'Aar'
 dimnames(tab)$OpMetode <- c('Lap', 'Hys', 'Begge')
 tab <- addmargins(tab, margin = 1)
 
-xtable::xtable(tab, align=c('l', rep('r',ncol(tab))), digits=0)
+xtable::xtable(tab, align=c('l', rep('r',ncol(tab))), digits=0,
+              caption= 'Antall registrerte inngrep fordelt på type inngrep for rapporteringsåret'
+              )
 
 # ggplot::ggplot(RegData, aes(OpMetode)) +
 #   geom_histogram(bins = 3) +
