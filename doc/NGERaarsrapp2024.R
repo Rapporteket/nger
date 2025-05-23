@@ -1,5 +1,8 @@
 
 #--------------------------------Data og parametrekobling--------------------------
+Sys.setlocale(locale = 'nb_NO.UTF-8')
+source("dev/sysSetenv.R")
+
 # Inndata til funksjon:
 library(nger)
 datoFra <- '2019-01-01'
@@ -12,7 +15,7 @@ datoTil1Yoppf <- paste0(rappAar-1, '-12-31')
 NGERData <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil))
 NGERData1aar <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra1aar, datoTil = datoTil))
 
-setwd('~/Aarsrappresultater/NGER' ) #"P:/Registerinfo og historie/NGER/aarsrapp/")
+setwd('../Aarsrapp/NGER' ) #"P:/Registerinfo og historie/NGER/aarsrapp/")
 
 #------------------------------ Fordelingsfigurer --------------------------
 # 'BMI-kategori' = 'OpBMI',
@@ -169,6 +172,7 @@ for (valgtVar in variabler) {
   NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar,  outfile=outfile)
 }
 
+
 #Laparoskopi
 variabler <- c( 'KomplIntra', 'Opf0AlvorlighetsGrad', 'Opf0AlvorlighetsGrad1', 'KomplPostopAlvor',
                 'Opf0Reoperasjon','LapKonvertert', 'LapKonvertertUventet')
@@ -192,6 +196,11 @@ for (valgtVar in variabler) {
   NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar,
                       OpMetode=2, outfile=outfile)
 }
+
+'Poliklin'
+NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0,
+                    valgtVar='Poliklin',  OpMetode=2, outfile='Poliklin_HystShus.pdf')
+
 
 #TLH
 #Fjernet 2021: 'Alder',

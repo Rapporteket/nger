@@ -516,7 +516,8 @@ ui_nger <- function() {
                              'Antibiotika' = 'OpAntibProfylakse',
                              'ASA-grad > II' = 'OpASA',
                              # 'Blodfortynnende' = 'Blodfortynnende', fjernet nov23
-                             'Behandlingsnivå' = 'OpBehNivaa',
+                             'Behandl, dagkir' = 'OpBehNivaa',
+                             'Behandl, poliklinisk' = 'Poliklin',
                              'Fedme (BMI>30)' = 'OpBMI',
                              'Konvertert til laparotomi' = 'LapKonvertert',
                              'Konvertert til laparotomi, ikke forventet' = 'LapKonvertertUventet',

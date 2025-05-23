@@ -290,8 +290,17 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
     RegData$VariabelGr <- factor(RegData$OpBehNivaa, levels=koder, labels = grtxt) #levels=c(nivaa,9)
     varTxt <- 'dagkirurgiske inngrep'
     RegData$Variabel[RegData$OpBehNivaa ==2] <- 1
-
   }
+
+  if (valgtVar == 'Poliklin') {  #AndelGrVar, AndelTid
+    #  if (valgtVar == 'OpDagkirurgi') {   #Andeler, AndelGrVar, AndelTid #0: Nei, 1: Ja Manglende:Ukjent
+    #1-Poliklinisk, 2-Dagkirurgi, 3-Inneliggende
+    tittel <-  'Poliklinisk'
+    RegData <- RegData[which(RegData$OpBehNivaa %in% 1:3), ]
+    varTxt <- 'polikliniske inngrep'
+    RegData$Variabel[RegData$OpBehNivaa ==1] <- 1
+  }
+
   if (valgtVar == 'OpIVaktTid') {   #Andeler
     #0: Nei, 1: Ja Manglende:Ukjent
     tittel <- 'Operasjon i vakttid'
