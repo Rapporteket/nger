@@ -56,7 +56,7 @@ AVN <- read.table('C:/Registerdata/nger/allevarnum2022-11-10.csv', sep = ';',
                       header = T,encoding = 'UTF-8')
 ForlData <- read.table('C:/Registerdata/nger/forlopsoversikt2022-11-10.csv', sep = ';',
                        header = T,encoding = 'UTF-8')
-varForl <- c('BasisRegStatus', 'HovedDato','OppflgRegStatus','OppflgStatus','PasientAlder','SykehusNavn','ForlopsID')
+varForl <- c('BasisRegStatus', 'OpDato','OppflgRegStatus','OppflgStatus','PasientAlder','SykehusNavn','ForlopsID')
 RegData <- merge(AVN, ForlData[,varForl], by = 'ForlopsID')
 RegData <- nger::NGERPreprosess(RegData=RegData) #I App'en preprosesseres data
 SkjemaData <- read.table('C:/Registerdata/nger/skjemaoversikt2022-11-10.csv', sep = ';',
@@ -144,7 +144,7 @@ load(paste0('A:/NGER/Aarsrapp20182019-03-18.Rdata'))
 
 #----------------------------------- Lage tulledata ------------------------------
 #Denne inneholder ingen id'er og trenger ikke
-#skjemaoversikt <- NGERSkjema[ ,c("Skjemanavn", "SkjemaRekkeflg",  "SkjemaStatus",  "OpprettetDato", "HovedDato")]
+#skjemaoversikt <- NGERSkjema[ ,c("Skjemanavn", "SkjemaRekkeflg",  "SkjemaStatus",  "OpprettetDato", "OpDato")]
 qskjemaoversikt <- 'SELECT * FROM skjemaoversikt'
 skjemaoversikt <- rapbase::loadRegData(registryName='nger',
                                        query=qskjemaoversikt, dbType='mysql')
@@ -358,8 +358,8 @@ UtDataFraFig <- NGERFigKvalInd(RegData=0, hentData = 1, datoFra='2017-10-01', va
                outfile=outfile)
 tabKvalInd <- lagTabavFig(UtDataFraFig = UtKval)
 
-RegData <- RegData[which(as.Date(RegData$HovedDato)>= as.Date('2017-01-01')), ]
-ind <- which(as.Date(RegData$HovedDato) < '2017-03-30')
+RegData <- RegData[which(as.Date(RegData$OpDato)>= as.Date('2017-01-01')), ]
+ind <- which(as.Date(RegData$OpDato) < '2017-03-30')
 sum(table(RegData$Opf0metode[ind], useNA = 'a')[3:4])/length(ind)
 table(RegData$Opf0Status[ind], useNA = 'a')
 table(RegData$Opf0metode[ind], useNA = 'a')

@@ -8,11 +8,18 @@
 
 Sys.setlocale(locale = 'nb_NO.UTF-8')
 source("dev/sysSetenv.R")
-
 nger::kjor_NGERapp(browser = TRUE)
 
 
-dum <- NGERRegDataSQL(datoFra = '2024-01-01')
+AlleVarNum <-  rapbase::loadRegData(registryName = "data", query='select * FROM allevarnum', dbType = "mysql")
+Forlopsoversikt <- rapbase::loadRegData(registryName = "data", query='select * FROM forlopsoversikt', dbType = "mysql")
+
+NgerData <- nger:: NGERRegDataSQL()
+
+sum(is.na(AlleVarNum$OpDato))
+head(AlleVarNum$OpDato)
+
+RegData <- NGERRegDataSQL(datoFra = '2024-01-01')
 RegData <- NGERPreprosess(dum)
 rm('RegData')
 

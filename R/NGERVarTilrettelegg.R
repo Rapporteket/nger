@@ -1098,7 +1098,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     #            paste0('Tilgang: \n', c('Palmers point[1/3-16]', 'Navlen[1/3-16]', 'Annet[1/2-22]'))) #LapTilgangsMetode
     grtxt <- c(paste0('Metode: \n', c('Åpent', 'Veress-nål', 'Direkte')), #,  'Optisk trokar [1/1-20]'
               paste0('Tilgang: \n', c('Palmers point[1/3-16]', 'Navlen[1/3-16]','Vaginalt[14/11-23]', 'Annet[14/11-23]'))) #LapTilgangsMetode
-    indMar16tilg <- which(as.Date(RegData$HovedDato)>='2016-03-01')
+    indMar16tilg <- which(as.Date(RegData$OpDato)>='2016-03-01')
     indMet <- which(RegData$LapTilgangsMetode %in% 0:2) #c(0:2,9)
     indTilg <- which(RegData$LapTilgang %in% c(1:3,9)) # 1:2,9
 

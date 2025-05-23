@@ -910,7 +910,7 @@ server_nger <- function(input, output, session) {
                 selected = 0,
                 choices = sykehusValg)
   })
-  RegOversikt <- RegData[ , c('Fodselsdato', 'OpDato', 'ReshId', 'ShNavn', 'BasisRegStatus')]
+  RegOversikt <- RegData[ , c('Fodselsdato', 'OpDato', 'ReshId', 'ShNavn')] #, 'BasisRegStatus'
 
   observe({
     RegOversikt <- dplyr::filter(RegOversikt,

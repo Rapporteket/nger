@@ -16,16 +16,18 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
   #Flyttet til PROM-tabell? R1BesvarteProm,    -- ny jan.-2022
   # Hvor har denne blitt av?? Tss2BesvarteProm -- ny jan.-2022
 
+  #Faser ut forlopsoversikt
+  #forlopsoversikt.BasisRegStatus - bare ei registrering i AlleVarNum har BasisRegStatus=0
+  #forlopsoversikt.OppflgRegStatus - ikke i bruk
+  #forlopsoversikt.OppflgStatus - ikke i bruk
+  #forlopsoversikt.PasientAlder, - endrer til å beregne selv
+
+
   query <- paste0('SELECT
     allevarnum.PasientID,
     allevarnum.ForlopsID,
     allevarnum.AvdRESH,
-    forlopsoversikt.BasisRegStatus,
-    forlopsoversikt.FodselsDato AS Fodselsdato,
-    forlopsoversikt.HovedDato,
-    forlopsoversikt.OppflgRegStatus,
-    forlopsoversikt.OppflgStatus,
-    forlopsoversikt.PasientAlder,
+    allevarnum.FodselsDato AS Fodselsdato,
     forlopsoversikt.SykehusNavn,
     allevarnum.SivilStatus,
     Utdanning,
@@ -159,7 +161,7 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
     FROM allevarnum
     INNER JOIN forlopsoversikt
     ON allevarnum.ForlopsID = forlopsoversikt.ForlopsID
- WHERE HovedDato >= \'', datoFra, '\' AND HovedDato <= \'', datoTil, '\'')
+ WHERE OpDato >= \'', datoFra, '\' AND OpDato <= \'', datoTil, '\'')
 
   RegData <- rapbase::loadRegData(registryName = registryName, query=query, dbType = "mysql") #registryName = "nger"
 

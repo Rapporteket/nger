@@ -32,24 +32,20 @@ NGERPreprosess <- function(RegData=RegData)
 
 
   #Riktig format på datovariable:
-  #RegData$FodselsDato <- as.Date(RegData$FodselsDato, format="%Y-%m-%d")
-  #RegData$InnDato <- as.Date(RegData$OpDato, format="%Y-%m-%d")
-  #!!! HovedDato tilsvarer OpDato. Benytter HovedDato siden OpDato ikke finnes i alle skjema
-  RegData$InnDato <- as.Date(RegData$HovedDato, format="%Y-%m-%d")
-  #RegData$InnDato <- as.Date(RegData$OpDato, format="%Y-%m-%d") #
-  RegData$MndNum <- as.POSIXlt(RegData$HovedDato, format="%Y-%m-%d")$mon +1
+  RegData$InnDato <- as.Date(RegData$OpDato, format="%Y-%m-%d")
+  RegData$MndNum <- as.POSIXlt(RegData$OpDato, format="%Y-%m-%d")$mon +1
   RegData$Kvartal <- ceiling(RegData$MndNum/3)
   RegData$Halvaar <- ceiling(RegData$MndNum/6)
-  RegData$Aar <- 1900 + as.POSIXlt(RegData$HovedDato, format="%Y-%m-%d")$year #strptime(RegData$Innleggelsestidspunkt, format="%Y")$year
+  RegData$Aar <- 1900 + as.POSIXlt(RegData$OpDato, format="%Y-%m-%d")$year #strptime(RegData$Innleggelsestidspunkt, format="%Y")$year
   RegData$MndAar <- format(RegData$InnDato, '%b%y')
 
 
-  #Riktig navn på resh-variabel:
+  #Vask og nye:
+  #names(RegData)[which(names(RegData)=='PasientAlder')] <- 'Alder'
+  RegData$Alder <- (as.Date(RegData$OpDato) - as.Date(RegData$Fodselsdato))/365.25
   names(RegData)[which(names(RegData)=='AvdRESH')] <- 'ReshId' #Change var name
-  names(RegData)[which(names(RegData)=='PasientAlder')] <- 'Alder' #Change var name
-  RegData$SykehusNavn <- trimws(as.character(RegData$SykehusNavn)) #Fjerner mellomrom (før) og etter navn
   RegData$ShNavn <- trimws(as.character(RegData$SykehusNavn)) #Fjerner mellomrom (før) og etter navn
-  # names(RegData)[which(names(RegData)=='SykehusNavn')] <- 'ShNavn' #Change var name
+  # names(RegData)[which(names(RegData)=='SykehusNavn')] <- 'ShNavn'
 
   #108698 (Kongsvinger Innland) endres til Kongsvinger 4215373
   ind <- which(RegData$ReshId == 108698)
