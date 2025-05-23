@@ -9,7 +9,7 @@
 Sys.setlocale(locale = 'nb_NO.UTF-8')
 source("dev/sysSetenv.R")
 
-nger::kjor_NGERapp()
+nger::kjor_NGERapp(browser = TRUE)
 
 
 dum <- NGERRegDataSQL(datoFra = '2024-01-01')

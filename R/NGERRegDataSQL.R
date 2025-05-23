@@ -12,10 +12,6 @@
 
 NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM=1, ...) {
 
-  if ("session" %in% names(list(...))) {
-    rapbase::repLogger(session = list(...)[["session"]], msg = paste0('Hentet rådata'))
-  }
-
   registryName = "data"  #"nger"
   #Flyttet til PROM-tabell? R1BesvarteProm,    -- ny jan.-2022
   # Hvor har denne blitt av?? Tss2BesvarteProm -- ny jan.-2022

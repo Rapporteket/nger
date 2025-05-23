@@ -78,9 +78,6 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil=S
                             behNivaa = 0,
                             velgAvd=0, velgDiag=0, hentData=0, preprosess=1,...)
 {
-  if ("session" %in% names(list(...))) {
-    rapbase::repLogger(session = list(...)[["session"]], msg = paste0('NGERFigAndeler: ',valgtVar))
-  }
 
   ## Hvis spørring skjer fra R på server. ######################
   if(hentData == 1){

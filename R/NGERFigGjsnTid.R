@@ -25,9 +25,6 @@ NGERFigGjsnTid <- function(RegData, valgtVar='alder', datoFra='2011-01-01', dato
                            outfile='',enhetsUtvalg=0, valgtMaal='Gjsn', preprosess=1, hentData=0,
                            lagFigur=1,...){
 
-  if ("session" %in% names(list(...))) {
-    rapbase::repLogger(session = list(...)[["session"]], msg = paste0('FigGjsnTid: ',valgtVar))
-  }
   if (hentData == 1) {
     RegData <- NGERRegDataSQL(datoFra, datoTil)
   }

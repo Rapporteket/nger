@@ -35,9 +35,6 @@ NGERFigAndelTid <- function(RegData=0, valgtVar, preprosess=1, hentData=0, reshI
                             enhetsUtvalg=0, tidsenhet='Aar', outfile='',
                             ...) {
 
-  if ("session" %in% names(list(...))) {
-    rapbase::repLogger(session = list(...)[["session"]], msg = paste0('FigAndelTid: ',valgtVar))
-  }
 
   ## Hvis spørring skjer fra R på server. ######################
   if(hentData == 1){
