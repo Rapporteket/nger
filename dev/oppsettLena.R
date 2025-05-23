@@ -12,7 +12,7 @@ source("dev/sysSetenv.R")
 nger::kjor_NGERapp()
 
 
-dum <- NGERRegDataSQL(datoFra = '2022-01-01')
+dum <- NGERRegDataSQL(datoFra = '2024-01-01')
 RegData <- NGERPreprosess(dum)
 rm('RegData')
 

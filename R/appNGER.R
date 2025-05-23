@@ -776,14 +776,13 @@ server_nger <- function(input, output, session) {
   if (paaServer) {
     rapbase::appLogger(session, msg = 'Starter Rapporteket-NGER')}
   #----------Hente data ----------
-  if (paaServer) {
+  # if (paaServer) {
     RegData <- NGERRegDataSQL()
-    #stopifnot(dim(RegData)[1]>0)
     errorCondition(dim(RegData)[1]==0, 'ingen data')
-    qskjemaoversikt <- 'SELECT * FROM skjemaoversikt'
-    skjemaoversikt <- rapbase::loadRegData(registryName='data', #'nger',
-                                           query=qskjemaoversikt, dbType='mysql')
-  }
+    # qskjemaoversikt <- 'SELECT * FROM skjemaoversikt'
+    # skjemaoversikt <- rapbase::loadRegData(registryName='data', #'nger',
+    #                                        query=qskjemaoversikt, dbType='mysql')
+  #}
 
   #tulledata <- 0
   if (!exists('RegData')) {
@@ -792,14 +791,14 @@ server_nger <- function(input, output, session) {
     tulledata <- 1 #Må få med denne i tulledatafila..
   }
 
-  if (paaServer) {
+#  if (paaServer) {
     RegData <- NGERPreprosess(RegData)
-    skjemaoversikt <- NGERPreprosess(RegData = skjemaoversikt)
+    # skjemaoversikt <- NGERPreprosess(RegData = skjemaoversikt)
     map_avdeling <- data.frame(
       UnitId = unique(RegData$ReshId),
       orgname = RegData$ShNavn[match(unique(RegData$ReshId),
                                      RegData$ReshId)])
-  }
+#  }
 
   user <- rapbase::navbarWidgetServer2(
     id = "navbar-widget",
