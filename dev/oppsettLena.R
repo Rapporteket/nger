@@ -5,14 +5,16 @@
 # Lena :
 # Sys.setenv(MYSQL_USER="root")
 # Sys.setenv(MYSQL_PASSWORD="root")
+setwd("C:/Users/lro2402unn/RegistreGIT/nger")
 
 Sys.setlocale(locale = 'nb_NO.UTF-8')
 source("dev/sysSetenv.R")
+
 nger::kjor_NGERapp(browser = TRUE)
 
-
-AlleVarNum <-  rapbase::loadRegData(registryName = "data", query='select * FROM allevarnum', dbType = "mysql")
-Forlopsoversikt <- rapbase::loadRegData(registryName = "data", query='select * FROM forlopsoversikt', dbType = "mysql")
+#AlleVarNum <-  rapbase::loadRegData(registryName = "data", query='select * FROM allevarnum', dbType = "mysql")
+#Forlopsoversikt <- rapbase::loadRegData(registryName = "data", query='select * FROM forlopsoversikt', dbType = "mysql")
+AlleVarNum <- AlleVarNum()
 
 NgerData <- nger:: NGERRegDataSQL()
 
