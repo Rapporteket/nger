@@ -7,9 +7,9 @@
 followupsnum <- function() {
   query <- "
 SELECT
-  patient.ID as PasientID,
+  --  patient.ID as PasientID,
   mce.MCEID as ForlopsID,
-  mce.CENTREID AS AvdRESH,
+  --  mce.CENTREID AS AvdRESH,
   followup.FOLLOWUP_TYPE AS Opf0metode,
   followup.PROM_ANSWERED AS Opf0BesvarteProm,
   followup.COMPLICATIONS_EXIST AS Opf0Komplikasjoner,
@@ -64,5 +64,43 @@ WHERE
 "
 
   followupsnum <- rapbase::loadRegData(registryName = 'data', query=query, dbType = "mysql")
+
+#  Variabler som var med tidligere:
+  # ForlopsID,
+  # Opf0BesvarteProm,   -- ny jan.-2022
+  # Opf0metode,
+  # Opf0AlvorlighetsGrad,
+  # Opf0KomplBlodning,
+  # Opf0BlodningAbdom,
+  # Opf0BlodningIntraabdominal,
+  # Opf0BlodningVaginal,
+  # Opf0Komplikasjoner,
+  # Opf0KomplInfeksjon,
+  # Opf0KomplOrgan,
+  # Opf0InfUVI,
+  # Opf0InfOpSaar  ,
+  # Opf0InfIntraabdominal,
+  # Opf0InfEndometritt,
+  # Opf0InfAnnen,
+  # Opf0OrganBlare,
+  # Opf0OrganTarm,
+  # Opf0OrganUreter,
+  # Opf0OrganKar,
+  # Opf0OrganAnnen,
+  # Opf0Reoperasjon,
+  # Opf0ReopLaparoskopi,
+  # Opf0ReopLaparotomi,
+  # Opf0Status,
+  # Tss2Behandling,
+  # Tss2Behandlere,
+  # Tss2Enighet,
+  # Tss2Generelt,
+  # Tss2Lytte,
+  # Tss2Mott,
+  # Tss2Score,
+  # Tss2Status,
+  # Tss2Type
+  # FROM followupsnum'
+
 
 }

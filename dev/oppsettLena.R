@@ -12,9 +12,6 @@ source("dev/sysSetenv.R")
 
 nger::kjor_NGERapp(browser = TRUE)
 
-#AlleVarNum <-  rapbase::loadRegData(registryName = "data", query='select * FROM allevarnum', dbType = "mysql")
-#Forlopsoversikt <- rapbase::loadRegData(registryName = "data", query='select * FROM forlopsoversikt', dbType = "mysql")
-AlleVarNum <- AlleVarNum()
 
 NgerData <- nger:: NGERRegDataSQL()
 

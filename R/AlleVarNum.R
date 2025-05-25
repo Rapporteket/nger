@@ -187,7 +187,8 @@ AlleVarNum <- function() {
   hysteroscopy.CONVERTED_LAPROTOMY AS HysKonvLaparotomi,
   hysteroscopy.FIRST_TIME_CLOSED as HysForstLukket,
   hysteroscopy.STATUS as HysStatus,
-  centre.CENTRENAME as SykehusNavn
+  centre.CENTRENAME as SykehusLangNavn,
+  centreattribute.ATTRIBUTEVALUE as SykehusNavn
   FROM mce
   INNER JOIN patient ON mce.PATIENT_ID = patient.ID
   INNER JOIN operation ON mce.MCEID = operation.MCEID
@@ -196,6 +197,7 @@ AlleVarNum <- function() {
   LEFT JOIN user u_op ON operation.FIRST_TIME_CLOSED_BY = u_op.ID -- ADDED
   LEFT JOIN user u_hys ON hysteroscopy.FIRST_TIME_CLOSED_BY = u_hys.ID -- ADDED
   LEFT JOIN centre on mce.CENTREID = centre.ID
+  LEFT JOIN centreattribute on mce.CENTREID = centreattribute.ID
   WHERE
   operation.STATUS = 1
   AND (laparoscopy.STATUS = 1 OR hysteroscopy.STATUS = 1)'
