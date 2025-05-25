@@ -4,9 +4,8 @@
 #' @export
 #'
 
-followupsnum <- function() {
-  query <- "
-SELECT
+followupsnum <- function(datoFra = '2013-01-01', datoTil = Sys.Date()) {
+  query <- paste0('SELECT
   --  patient.ID as PasientID,
   mce.MCEID as ForlopsID,
   --  mce.CENTREID AS AvdRESH,
@@ -36,7 +35,6 @@ SELECT
   followup.COMPLICATIONTYPE_ORGAN_SPECIFY_OTHER AS Opf0OrganAnnen,
   followup.SERIOUSNESS AS Opf0AlvorlighetsGrad,
   followup.FIRST_TIME_CLOSED as Opf0ForstLukket,
-  CONCAT(u_followup.FIRSTNAME, ' ', u_followup.LASTNAME) as Opf0ForstLukketAv, -- MODIFIED
   followup.STATUS as Opf0Status,
 
   tss2.FOLLOWUP_TYPE as Tss2Type,
@@ -49,7 +47,6 @@ SELECT
   tss2.SCORE as Tss2Score,
   tss2.SCORE_AVG as Tss2ScoreAVG,
   tss2.FIRST_TIME_CLOSED as Tss2ForstLukket,
-  CONCAT(u_tss2.FIRSTNAME, ' ', u_tss2.LASTNAME) as Tss2ForstLukketAv, -- MODIFIED
   tss2.STATUS as Tss2Status
 
 FROM mce
@@ -60,12 +57,17 @@ LEFT OUTER JOIN tss2 ON (mce.MCEID = tss2.MCEID AND tss2.STATUS = 1)
 LEFT OUTER JOIN user u_followup ON followup.FIRST_TIME_CLOSED_BY = u_followup.ID -- ADDED
 LEFT OUTER JOIN user u_tss2 ON tss2.FIRST_TIME_CLOSED_BY = u_tss2.ID -- ADDED
 WHERE
-  operation.STATUS = 1;
-"
+  operation.STATUS = 1
+   AND operation.OP_DATE >= \'', datoFra, '\' AND operation.OP_DATE <= \'', datoTil, '\'')
+
 
   followupsnum <- rapbase::loadRegData(registryName = 'data', query=query, dbType = "mysql")
 
-#  Variabler som var med tidligere:
+  # Tatt ut:  CONCAT(u_followup.FIRSTNAME, ' ', u_followup.LASTNAME) as Opf0ForstLukketAv, -- MODIFIED
+#  CONCAT(u_tss2.FIRSTNAME, ' ', u_tss2.LASTNAME) as Tss2ForstLukketAv, -- MODIFIED
+
+
+#  Variabler som skal være med:
   # ForlopsID,
   # Opf0BesvarteProm,   -- ny jan.-2022
   # Opf0metode,

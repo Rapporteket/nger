@@ -4,9 +4,9 @@
 #' @export
 #'
 
-AlleVarNum <- function() {
+AlleVarNum <- function(datoFra = '2013-01-01' , datoTil = Sys.Date()) {
 
- query <-  'SELECT
+ query <- paste0('SELECT
   patient.ID as PasientID,
   patient.REGISTERED_DATE as PasRegDato,
   patient.SSN as PersonNr,
@@ -187,7 +187,6 @@ AlleVarNum <- function() {
   hysteroscopy.CONVERTED_LAPROTOMY AS HysKonvLaparotomi,
   hysteroscopy.FIRST_TIME_CLOSED as HysForstLukket,
   hysteroscopy.STATUS as HysStatus,
-  centre.CENTRENAME as SykehusLangNavn,
   centreattribute.ATTRIBUTEVALUE as SykehusNavn
   FROM mce
   INNER JOIN patient ON mce.PATIENT_ID = patient.ID
@@ -196,11 +195,11 @@ AlleVarNum <- function() {
   LEFT JOIN hysteroscopy ON mce.MCEID = hysteroscopy.MCEID
   LEFT JOIN user u_op ON operation.FIRST_TIME_CLOSED_BY = u_op.ID -- ADDED
   LEFT JOIN user u_hys ON hysteroscopy.FIRST_TIME_CLOSED_BY = u_hys.ID -- ADDED
-  LEFT JOIN centre on mce.CENTREID = centre.ID
   LEFT JOIN centreattribute on mce.CENTREID = centreattribute.ID
   WHERE
   operation.STATUS = 1
-  AND (laparoscopy.STATUS = 1 OR hysteroscopy.STATUS = 1)'
+  AND (laparoscopy.STATUS = 1 OR hysteroscopy.STATUS = 1)
+  AND operation.OP_DATE >= \'', datoFra, '\' AND operation.OP_DATE <= \'', datoTil, '\'')
 
   AlleVarNum <- rapbase::loadRegData(registryName = 'data', query=query, dbType = "mysql")
 

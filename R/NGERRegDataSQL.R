@@ -23,11 +23,10 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
   #forlopsoversikt.PasientAlder, - endrer til å beregne selv
 
   cat("\nBefore allevarnum\n")
-  AlleVarNum <- AlleVarNum()
-  cat("\nAfter allevarnum\n")
+  AlleVarNum <- AlleVarNum(datoFra = datoFra, datoTil=datoTil)
 
   cat("\nBefore oppfolging\n")
-  Oppfolging <- followupsnum()
+  Oppfolging <- followupsnum(datoFra = datoFra, datoTil=datoTil)
   cat("\nAfter oppfolging\n")
 
 #  intersect(sort(names(AlleVarNum)), sort(names(Oppfolging)))
