@@ -516,7 +516,8 @@ ui_nger <- function() {
                              'Antibiotika' = 'OpAntibProfylakse',
                              'ASA-grad > II' = 'OpASA',
                              # 'Blodfortynnende' = 'Blodfortynnende', fjernet nov23
-                             'Behandlingsnivå' = 'OpBehNivaa',
+                             'Behandl, dagkir' = 'OpBehNivaa',
+                             'Behandl, poliklinisk' = 'Poliklin',
                              'Fedme (BMI>30)' = 'OpBMI',
                              'Konvertert til laparotomi' = 'LapKonvertert',
                              'Konvertert til laparotomi, ikke forventet' = 'LapKonvertertUventet',
@@ -773,17 +774,10 @@ server_nger <- function(input, output, session) {
   #-- Div serveroppstart----
   context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
   paaServer <- (context %in% c("DEV", "TEST", "QA","QAC", "PRODUCTION", "PRODUCTIONC")) #rapbase::isRapContext()
-  if (paaServer) {
-    rapbase::appLogger(session, msg = 'Starter Rapporteket-NGER')}
-  #----------Hente data ----------
-  if (paaServer) {
+
+    #----------Hente data ----------
     RegData <- NGERRegDataSQL()
-    #stopifnot(dim(RegData)[1]>0)
     errorCondition(dim(RegData)[1]==0, 'ingen data')
-    qskjemaoversikt <- 'SELECT * FROM skjemaoversikt'
-    skjemaoversikt <- rapbase::loadRegData(registryName='data', #'nger',
-                                           query=qskjemaoversikt, dbType='mysql')
-  }
 
   #tulledata <- 0
   if (!exists('RegData')) {
@@ -792,14 +786,11 @@ server_nger <- function(input, output, session) {
     tulledata <- 1 #Må få med denne i tulledatafila..
   }
 
-  if (paaServer) {
     RegData <- NGERPreprosess(RegData)
-    skjemaoversikt <- NGERPreprosess(RegData = skjemaoversikt)
     map_avdeling <- data.frame(
       UnitId = unique(RegData$ReshId),
       orgname = RegData$ShNavn[match(unique(RegData$ReshId),
                                      RegData$ReshId)])
-  }
 
   user <- rapbase::navbarWidgetServer2(
     id = "navbar-widget",
@@ -911,7 +902,7 @@ server_nger <- function(input, output, session) {
                 selected = 0,
                 choices = sykehusValg)
   })
-  RegOversikt <- RegData[ , c('Fodselsdato', 'OpDato', 'ReshId', 'ShNavn', 'BasisRegStatus')]
+  RegOversikt <- RegData[ , c('FodselsDato', 'OpDato', 'ReshId', 'ShNavn')] #, 'BasisRegStatus'
 
   observe({
     RegOversikt <- dplyr::filter(RegOversikt,

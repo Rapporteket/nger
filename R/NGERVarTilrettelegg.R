@@ -290,8 +290,17 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
     RegData$VariabelGr <- factor(RegData$OpBehNivaa, levels=koder, labels = grtxt) #levels=c(nivaa,9)
     varTxt <- 'dagkirurgiske inngrep'
     RegData$Variabel[RegData$OpBehNivaa ==2] <- 1
-
   }
+
+  if (valgtVar == 'Poliklin') {  #AndelGrVar, AndelTid
+    #  if (valgtVar == 'OpDagkirurgi') {   #Andeler, AndelGrVar, AndelTid #0: Nei, 1: Ja Manglende:Ukjent
+    #1-Poliklinisk, 2-Dagkirurgi, 3-Inneliggende
+    tittel <-  'Poliklinisk'
+    RegData <- RegData[which(RegData$OpBehNivaa %in% 1:3), ]
+    varTxt <- 'polikliniske inngrep'
+    RegData$Variabel[RegData$OpBehNivaa ==1] <- 1
+  }
+
   if (valgtVar == 'OpIVaktTid') {   #Andeler
     #0: Nei, 1: Ja Manglende:Ukjent
     tittel <- 'Operasjon i vakttid'
@@ -1098,7 +1107,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     #            paste0('Tilgang: \n', c('Palmers point[1/3-16]', 'Navlen[1/3-16]', 'Annet[1/2-22]'))) #LapTilgangsMetode
     grtxt <- c(paste0('Metode: \n', c('Åpent', 'Veress-nål', 'Direkte')), #,  'Optisk trokar [1/1-20]'
               paste0('Tilgang: \n', c('Palmers point[1/3-16]', 'Navlen[1/3-16]','Vaginalt[14/11-23]', 'Annet[14/11-23]'))) #LapTilgangsMetode
-    indMar16tilg <- which(as.Date(RegData$HovedDato)>='2016-03-01')
+    indMar16tilg <- which(as.Date(RegData$OpDato)>='2016-03-01')
     indMet <- which(RegData$LapTilgangsMetode %in% 0:2) #c(0:2,9)
     indTilg <- which(RegData$LapTilgang %in% c(1:3,9)) # 1:2,9
 

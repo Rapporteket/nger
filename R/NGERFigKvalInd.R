@@ -26,9 +26,6 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
                            hentData=0, preprosess=1, velgDiag=0, Ngrense=10,
                            outfile='', ...) {
 
-  if ("session" %in% names(list(...))) {
-    rapbase::repLogger(session = list(...)[["session"]], msg = paste0('FigKvalInd: ',valgtVar))
-  }
   if (hentData == 1) {
     RegData <- NGERRegDataSQL(datoFra, datoTil)
   }

@@ -12,5 +12,5 @@ Sys.setenv(R_RAP_CONFIG_PATH="C:/Users/ast046/repo/rapporteket/rygg/dev/config")
 Sys.setenv(MYSQL_DB_DATA="nger")
 
 Sys.setenv(MYSQL_HOST="localhost") # for mobilt kontor
-nger::kjor_NGERapp()
+nger::kjor_NGERapp(browser = TRUE)
 

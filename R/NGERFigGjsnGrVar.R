@@ -29,9 +29,6 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
                              grVar='ShNavn', velgAvd=0, velgDiag=0, Ngrense=10, medKI=1,
                              lagFig=1, outfile='',...) {     #aar=0,
 
-  if ("session" %in% names(list(...))) {
-    rapbase::repLogger(session = list(...)[["session"]], msg = paste0('Figur, sentralmål: ',valgtVar))
-  }
   if (hentData == 1) {
     RegData <- NGERRegDataSQL(datoFra, datoTil)
   }
