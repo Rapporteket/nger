@@ -12,7 +12,6 @@
 
 NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM=1, ...) {
 
-  registryName = "data"  #"nger"
   #Flyttet til PROM-tabell? R1BesvarteProm,    -- ny jan.-2022
   # Hvor har denne blitt av?? Tss2BesvarteProm -- ny jan.-2022
 
@@ -22,12 +21,9 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
   #forlopsoversikt.OppflgStatus - ikke i bruk
   #forlopsoversikt.PasientAlder, - endrer til å beregne selv
 
-  cat("\nBefore allevarnum\n")
-  AlleVarNum <- AlleVarNum(datoFra = datoFra, datoTil=datoTil)
+  AlleVarNum <- AlleVarNum(datoFra = datoFra, datoTil = datoTil)
 
-  cat("\nBefore oppfolging\n")
-  Oppfolging <- followupsnum(datoFra = datoFra, datoTil=datoTil)
-  cat("\nAfter oppfolging\n")
+  Oppfolging <- followupsnum(datoFra = datoFra, datoTil = datoTil)
 
 #  intersect(sort(names(AlleVarNum)), sort(names(Oppfolging)))
 
