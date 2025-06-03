@@ -776,7 +776,7 @@ server_nger <- function(input, output, session) {
   paaServer <- (context %in% c("DEV", "TEST", "QA","QAC", "PRODUCTION", "PRODUCTIONC")) #rapbase::isRapContext()
 
     #----------Hente data ----------
-    RegData <- NGERRegDataSQL()
+    RegData <- NGERRegDataSQL(datoFra='2024-01-01')
     errorCondition(dim(RegData)[1]==0, 'ingen data')
 
   #tulledata <- 0
