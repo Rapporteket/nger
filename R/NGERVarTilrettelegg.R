@@ -58,7 +58,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
                      gjsnGrVar = 'alder ved operasjon',
                      gjsnTid = 'Alder ved operasjon')
     gr <- c(0, seq(15, 80, 5), 120)
-    RegData$VariabelGr <- cut(RegData$Alder, breaks=gr, include.lowest=TRUE, right=FALSE)
+    RegData$VariabelGr <- cut(as.numeric(RegData$Alder), breaks=gr, include.lowest=TRUE, right=FALSE)
     grtxt <- c('<15', levels(RegData$VariabelGr)[2:(length(gr)-2)], '80+')
     subtxt <- 'Aldersgrupper (år)'
     xAkseTxt <- ' alder'
