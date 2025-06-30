@@ -740,19 +740,19 @@ ui_nger <- function() {
     ), #tab SC
     #----------Abonnement-----------------
 
-    # tabPanel(p("Abonnement",
-    #            title='Bestill automatisk utsending av rapporter på e-post'),
-    #          value = 'Abonnement',
-    #
-    #          sidebarLayout(
-    #            sidebarPanel(
-    #              rapbase::autoReportInput("ngerAbb")
-    #            ),
-    #            shiny::mainPanel(
-    #              rapbase::autoReportUI("ngerAbb")
-    #            )
-    #          )
-    # ), #tab abonnement
+    tabPanel(p("Abonnement",
+               title='Bestill automatisk utsending av rapporter på e-post'),
+             value = 'Abonnement',
+
+             sidebarLayout(
+               sidebarPanel(
+                 rapbase::autoReportInput("ngerAbb")
+               ),
+               shiny::mainPanel(
+                 rapbase::autoReportUI("ngerAbb")
+               )
+             )
+    ), #tab abonnement
 
 
     #--------slutt tab'er----------
@@ -1610,26 +1610,26 @@ server_nger <- function(input, output, session) {
 
   #------------------ Abonnement ----------------------------------------------
   orgs <- as.list(sykehusValgUts)
-  paramNames <- shiny::reactive(c("reshID"))
-  paramValues <- shiny::reactive(c(user$org()))
+  paramNames <- shiny::reactive("reshID")
+  paramValues <- shiny::reactive(user$org())
 
-  # rapbase::autoReportServer2(
-  #   id = "ngerAbb",
-  #   registryName = "nger",
-  #   type = "subscription",
-  #   paramNames = paramNames,
-  #   paramValues = paramValues,
-  #   reports = list(
-  #     MndRapp = list(
-  #       synopsis = "NGER/Rapporteket: Månedsrapport, abonnement",
-  #       fun = "abonnementNGER",
-  #       paramNames = c('rnwFil', 'reshID'),
-  #       paramValues = c('NGERmndRapp.Rnw', 999999)
-  #     )
-  #   ),
-  #   orgs = orgs,
-  #   user = user
-  # )
+  rapbase::autoReportServer2(
+    id = "ngerAbb",
+    registryName = "nger",
+    type = "subscription",
+    paramNames = paramNames,
+    paramValues = paramValues,
+    reports = list(
+      MndRapp = list(
+        synopsis = "NGER/Rapporteket: Månedsrapport, abonnement",
+        fun = "abonnementNGER",
+        paramNames = c('rnwFil', 'reshID'),
+        paramValues = c('NGERmndRapp.Rnw', "user$org()")
+      )
+    ),
+    orgs = orgs,
+    user = user
+  )
   #-----------Registeradministrasjon-----------
 
   ## liste med metadata for rapport
@@ -1667,6 +1667,7 @@ server_nger <- function(input, output, session) {
     eligible = vis_rapp,
     user = user
   )
+
   #----------- Eksport ----------------
   registryName <- "nger"
   ## brukerkontroller
