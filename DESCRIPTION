@@ -13,7 +13,7 @@ Depends:
     R (>= 3.5.0)
 Remotes: 
       Rapporteket/rapFigurer,
-      Rapporteket/rapbase@main
+      Rapporteket/rapbase@ant_linjer_autorapport
 Imports:
     devtools,
     digest,

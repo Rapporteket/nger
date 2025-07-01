@@ -298,7 +298,7 @@ xtable::xtable(tab, align=c('l', rep('r',ncol(tab))), digits=0,
 #KomplIntra, KomplPostop, KomplPostopAlvor
 #OpMetode  1: Laparoskopi #2: Hysteroskopi,
 library(nger)
-setwd('/home/rstudio/Aarsrappresultater' )
+setwd('../Aarsrapp/NGER')
 RegData <- NGERPreprosess(RegData = NGERRegDataSQL(datoFra = '2019-01-01'))
 
 # nyResh <- setdiff(sort(unique(RegData$ReshId)), names(nyID))
