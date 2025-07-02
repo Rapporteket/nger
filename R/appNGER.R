@@ -1613,7 +1613,7 @@ server_nger <- function(input, output, session) {
   paramNames <- shiny::reactive("reshID")
   paramValues <- shiny::reactive(user$org())
 
-  rapbase::autoReportServer2(
+  rapbase::autoReportServer(
     id = "ngerAbb",
     registryName = "nger",
     type = "subscription",
@@ -1621,10 +1621,10 @@ server_nger <- function(input, output, session) {
     paramValues = paramValues,
     reports = list(
       MndRapp = list(
-        synopsis = "NGER/Rapporteket: Månedsrapport, abonnement",
+        synopsis = "NGER: Månedsrapport, abonnement",
         fun = "abonnementNGER",
         paramNames = c('rnwFil', 'reshID'),
-        paramValues = c('NGERmndRapp.Rnw', "user$org()")
+        paramValues = c('NGERmndRapp.Rnw', 0) # "user$org()")
       )
     ),
     orgs = orgs,
