@@ -1567,9 +1567,18 @@ server_nger <- function(input, output, session) {
 
 
   #------------------ Abonnement ----------------------------------------------
+  output$mndRapp.pdf <- downloadHandler(
+    filename = function(){ paste0('NGERmndRapp', Sys.time(), '.pdf')},
+    content = function(file){
+      henteSamlerapporter(file, rnwFil="NGERmndRapp.Rnw",
+                          reshID = user$org())
+    })
+
   orgs <- as.list(sykehusValgUts)
-  paramNames <- shiny::reactive("reshID")
-  paramValues <- shiny::reactive(user$org())
+
+  observe({
+ # paramNames <- shiny::reactive("reshID")
+#  paramValues <- shiny::reactive(user$org())
 
   rapbase::autoReportServer(
     id = "ngerAbb",
@@ -1582,12 +1591,13 @@ server_nger <- function(input, output, session) {
         synopsis = "NGER: Månedsrapport, abonnement",
         fun = "abonnementNGER",
         paramNames = c('rnwFil', 'reshID'),
-        paramValues = c('NGERmndRapp.Rnw', 0) # "user$org()")
+        paramValues = c('NGERmndRapp.Rnw', user$org()) # "user$org()")
       )
     ),
     orgs = orgs,
     user = user
   )
+})
   #-----------Registeradministrasjon-----------
 
   ## liste med metadata for rapport
@@ -1613,6 +1623,7 @@ server_nger <- function(input, output, session) {
   shiny::observeEvent(user$role(), {
     vis_rapp(user$role() == "SC")
   })
+
   rapbase::autoReportServer(
     id = "NGERutsending",
     registryName = "nger",

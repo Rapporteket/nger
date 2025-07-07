@@ -108,7 +108,6 @@ henteSamlerapporter <- function(filnavn, rnwFil, reshID=0,
   src <- normalizePath(system.file(rnwFil, package='nger'))
   # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
   owd <- setwd(tempdir())
-  #on.exit(setwd(owd))
   file.copy(src, tmpFile, overwrite = TRUE)
 
   knitr::knit2pdf(tmpFile)
