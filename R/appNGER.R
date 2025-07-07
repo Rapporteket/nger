@@ -1584,8 +1584,8 @@ server_nger <- function(input, output, session) {
     id = "ngerAbb",
     registryName = "nger",
     type = "subscription",
-    paramNames = paramNames,
-    paramValues = paramValues,
+    # paramNames = paramNames,
+    # paramValues = paramValues,
     reports = list(
       MndRapp = list(
         synopsis = "NGER: Månedsrapport, abonnement",
