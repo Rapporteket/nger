@@ -1065,8 +1065,6 @@ server_nger <- function(input, output, session) {
 
   #RAND, alle dim
   output$kvalRANDdim <- renderPlot({
-    # print(reshID)
-    # print(as.numeric(input$velgReshKval))
     NGERFigPrePost(RegData=RegData, preprosess = 0,
                    valgtVar='AlleRANDdim',
                    datoFra=input$datovalgKval[1],
@@ -1576,28 +1574,26 @@ server_nger <- function(input, output, session) {
 
   orgs <- as.list(sykehusValgUts)
 
-  observe({
- # paramNames <- shiny::reactive("reshID")
-#  paramValues <- shiny::reactive(user$org())
+  paramNamesAbb <- shiny::reactive(c("reshID"))
+  paramValuesAbb <- shiny::reactive(user$org())
 
   rapbase::autoReportServer(
     id = "ngerAbb",
     registryName = "nger",
     type = "subscription",
-    # paramNames = paramNames,
-    # paramValues = paramValues,
+    paramNames = paramNamesAbb,
+    paramValues = paramValuesAbb,
     reports = list(
       MndRapp = list(
         synopsis = "NGER: Månedsrapport, abonnement",
         fun = "abonnementNGER",
         paramNames = c('rnwFil', 'reshID'),
-        paramValues = c('NGERmndRapp.Rnw', user$org()) # "user$org()")
+        paramValues = c('NGERmndRapp.Rnw', "user$org()")
       )
     ),
     orgs = orgs,
     user = user
   )
-})
   #-----------Registeradministrasjon-----------
 
   ## liste med metadata for rapport
