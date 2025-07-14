@@ -12,6 +12,8 @@ source("dev/sysSetenv.R")
 
 nger::kjor_NGERapp(browser = TRUE)
 
+rapbase::runAutoReport(group = "nger",
+                       dato = Sys.Date()+1, dryRun = TRUE)
 
 NgerData <- nger:: NGERRegDataSQL()
 RegData <- NGERRegDataSQL()
