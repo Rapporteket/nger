@@ -770,17 +770,11 @@ server_nger <- function(input, output, session) {
   #-- Div serveroppstart----
   context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
   paaServer <- (context %in% c("DEV", "TEST", "QA","QAC", "PRODUCTION", "PRODUCTIONC")) #rapbase::isRapContext()
+  rapbase::appLogger(session, msg = 'Starter Rapporteket-NGER')
 
     #----------Hente data ----------
     RegData <- NGERRegDataSQL()
     errorCondition(dim(RegData)[1]==0, 'ingen data')
-
-  #tulledata <- 0
-  if (!exists('RegData')) {
-    #data("NGERtulledata.Rdata", package = "nger")
-    load('./data/NGERtulledata.Rdata')
-    tulledata <- 1 #Må få med denne i tulledatafila..
-  }
 
     RegData <- NGERPreprosess(RegData)
     map_avdeling <- data.frame(
@@ -796,7 +790,9 @@ server_nger <- function(input, output, session) {
   )
 
   observeEvent(user$role(), {
-    if (user$role() == 'SC') {
+    # print(user)
+
+      if (user$role() == 'SC') {
       showTab(inputId = "hovedark", target = "Registeradministrasjon")
       shinyjs::show(id = 'velgResh')
       shinyjs::show(id = 'velgReshReg')
