@@ -121,17 +121,17 @@ AlleVarNum <- function(datoFra = '2013-01-01' , datoTil = Sys.Date()) {
   laparoscopy.COMPLICATIONS_CONTRIBUTING_ADHESIONS AS LapSkadeaarsakAdher,
   laparoscopy.COMPLICATIONS_CONTRIBUTING_PREVIOUS_SURGERY AS LapSkadeaarsakTidlKir,
   laparoscopy.COMPLICATIONS_CONTRIBUTING_OTHER AS LapSkadeaarsakAnnet,
-  laparoscopy.PORTIOADAPTER AS LapUterusmanipulatorFJERNET,
-  laparoscopy.TILGANG AS LapKompTilgang,
-  laparoscopy.HJELPEINSTIKK AS LapHjelpeinnstikk,
-  laparoscopy.INTRAABDOMINAL AS LapIntraabdominell,
-  laparoscopy.TEKNISK_UTSTYR AS LapTekniskUtstyr,
-  laparoscopy.POSTOPERATIV AS LapPostoperativ,
-  laparoscopy.KAR_BLEED AS LapKarBlodning,
-  laparoscopy.TARM AS LapTarm,
-  laparoscopy.BLAERE AS LapBlare,
-  laparoscopy.URETER AS LapUreter,
-  laparoscopy.NERV AS LapNerv,
+  --  laparoscopy.PORTIOADAPTER AS LapUterusmanipulatorFJERNET,  #Utgått
+  --  laparoscopy.TILGANG AS LapKompTilgang,  #Utgått
+  --  laparoscopy.HJELPEINSTIKK AS LapHjelpeinnstikk,  #Utgått
+  --  laparoscopy.INTRAABDOMINAL AS LapIntraabdominell,  #Utgått
+  --  laparoscopy.TEKNISK_UTSTYR AS LapTekniskUtstyr,  #Utgått
+  --  laparoscopy.POSTOPERATIV AS LapPostoperativ,   #Utgått
+  --  laparoscopy.KAR_BLEED AS LapKarBlodning,  #Utgått
+  --  laparoscopy.TARM AS LapTarm,  #Utgått
+  --  laparoscopy.BLAERE AS LapBlare,   #Utgått
+  --  laparoscopy.URETER AS LapUreter,  #Utgått
+  --  laparoscopy.NERV AS LapNerv,  #Utgått
   laparoscopy.CONVERTED AS LapKonvertert,
   laparoscopy.CONVERTED_STATUS AS Konverteringsstatus,
   laparoscopy.STATUS AS LapStatus,
@@ -162,11 +162,11 @@ AlleVarNum <- function(datoFra = '2013-01-01' , datoTil = Sys.Date()) {
   hysteroscopy.ANNET_ALTERNATIV AS HysUfullAnnet,
   hysteroscopy.ANNEN_ARSAK AS HysUfullAnnetArsak,
   hysteroscopy.COMPLICATIONS AS HysKomplikasjoner,
-  hysteroscopy.ACCESS AS HysTilgang,
-  hysteroscopy.TECHNICAL AS HysTeknisk,
-  hysteroscopy.PERFORATION AS HysPerforasjon,
-  hysteroscopy.BLEEDING AS HysBlodning,
-  hysteroscopy.FLUID_OVERLOAD AS HysFluidOverload,
+  --  hysteroscopy.ACCESS AS HysTilgang, #Utgått
+  --  hysteroscopy.TECHNICAL AS HysTeknisk, #Utgått
+  --  hysteroscopy.PERFORATION AS HysPerforasjon, #Utgått
+  --  hysteroscopy.BLEEDING AS HysBlodning, #Utgått
+  --  hysteroscopy.FLUID_OVERLOAD AS HysFluidOverload,  #Utgått
   hysteroscopy.COMPLICATIONS_CERVIX_STENOSIS AS HysSkadeaarsakStenose,
   hysteroscopy.COMPLICATIONS_INTRAUTERINE_ADHESIONS AS HysSkadeaarsakAd,
   hysteroscopy.COMPLICATIONS_TECHNICAL AS HysSkadeaarsakTeknUtst,
