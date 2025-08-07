@@ -726,26 +726,26 @@ ui_nger <- function() {
 
              sidebarLayout(
                sidebarPanel(
-                 rapbase::autoReportInput("ngerAbb"),
+                 rapbase::autoReportInput("ngerAbb")
 
-                 shiny::actionButton(inputId = "run_autoreport",
-                                     label = "Kjør autorapporter"),
-                 shiny::dateInput(inputId = "rapportdato",
-                                  label = "Kjør rapporter med dato:",
-                                  value = Sys.Date(),
-                                  min = Sys.Date(),
-                                  max = Sys.Date() + 366
-                 ),
-                 shiny::checkboxInput(inputId = "dryRun", label = "Send e-post")
+                 # shiny::actionButton(inputId = "run_autoreport",
+                 #                     label = "Kjør autorapporter"),
+                 # shiny::dateInput(inputId = "rapportdato",
+                 #                  label = "Kjør rapporter med dato:",
+                 #                  value = Sys.Date(),
+                 #                  min = Sys.Date(),
+                 #                  max = Sys.Date() + 366
+                 # ),
+                 # shiny::checkboxInput(inputId = "dryRun", label = "Send e-post")
 
                ),
                shiny::mainPanel(
                  rapbase::autoReportUI("ngerAbb"),
-br(),
-                 p(em("System message:")),
-                 verbatimTextOutput("sysMessage"),
-                 p(em("Function message:")),
-                 verbatimTextOutput("funMessage")
+br()
+                 # p(em("System message:")),
+                 # verbatimTextOutput("sysMessage"),
+                 # p(em("Function message:")),
+                 # verbatimTextOutput("funMessage")
                )
              )
     ), #tab abonnement
@@ -1646,20 +1646,20 @@ server_nger <- function(input, output, session) {
     user = user
   )
 
-  kjor_autorapport <- shiny::observeEvent(input$run_autoreport, {
-    dato <- input$rapportdato
-    dryRun <- !(input$dryRun)
-    withCallingHandlers({
-      shinyjs::html("sysMessage", "")
-      shinyjs::html("funMessage", "")
-      shinyjs::html("funMessage",
-                    rapbase::runAutoReport(group = "nger",
-                                           dato = dato, dryRun = dryRun))
-    },
-    message = function(m) {
-      shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
-    })
-  })
+  # kjor_autorapport <- shiny::observeEvent(input$run_autoreport, {
+  #   dato <- input$rapportdato
+  #   dryRun <- !(input$dryRun)
+  #   withCallingHandlers({
+  #     shinyjs::html("sysMessage", "")
+  #     shinyjs::html("funMessage", "")
+  #     shinyjs::html("funMessage",
+  #                   rapbase::runAutoReport(group = "nger",
+  #                                          dato = dato, dryRun = dryRun))
+  #   },
+  #   message = function(m) {
+  #     shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
+  #   })
+  # })
 
   #----------- Eksport ----------------
   registryName <- "nger"

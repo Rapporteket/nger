@@ -7,9 +7,7 @@
 # Sys.setenv(MYSQL_PASSWORD="root")
 setwd("C:/Users/lro2402unn/RegistreGIT/nger")
 
-Sys.setlocale(locale = 'nb_NO.UTF-8')
 source("dev/sysSetenv.R")
-
 nger::kjor_NGERapp(browser = TRUE)
 
 rapbase::runAutoReport(group = "nger",
