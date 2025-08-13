@@ -4,7 +4,7 @@
 \alias{followupsnum}
 \title{Lager followupsnum}
 \usage{
-followupsnum()
+followupsnum(datoFra = "2013-01-01", datoTil = Sys.Date())
 }
 \value{
 Returnerer followupsnum

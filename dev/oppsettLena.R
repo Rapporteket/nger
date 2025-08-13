@@ -20,7 +20,7 @@ rm('RegData')
 
 
 #devtools::install("../rapbase/.")
-devtools::install(upgrade = FALSE, dependencies = FALSE)
+remotes::install_github('Rapporteket/rapFigurer', ref = 'lint')
 
 # dekoding av database-dump
 # sship::dec("c://Users/ast046/Downloads/nordicscir573c60536ce3.sql.gz__20241107_122831.tar.gz", keyfile = "p://.ssh/id_rsa")
@@ -30,3 +30,6 @@ source("dev/sysSetenv.R")
 
 
 remotes::install_github('Rapporteket/nger', ref = 'v4.0.19')
+
+#For å teste alle
+devtools::test()
