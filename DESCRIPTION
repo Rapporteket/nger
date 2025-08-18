@@ -13,7 +13,7 @@ Depends:
     R (>= 3.5.0)
 Remotes: 
       Rapporteket/rapFigurer,
-      Rapporteket/rapbase@standardEmail
+      Rapporteket/rapbase@main
 Imports:
     devtools,
     digest,
