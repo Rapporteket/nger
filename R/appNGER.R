@@ -697,10 +697,32 @@ ui_nger <- function() {
                  h4("Utsending av rapporter"),
                  sidebarPanel(
                    rapbase::autoReportOrgInput("NGERutsending"),
-                   rapbase::autoReportInput("NGERutsending")
+                   rapbase::autoReportInput("NGERutsending"),
+                   br(),
+                   br(),
+
+                    # Kommenter ut når skal i prod:
+                   br(),
+                   br(),
+                   shiny::actionButton(inputId = "run_autoreport",
+                                       label = "Kjør autorapporter"),
+                   shiny::dateInput(inputId = "rapportdato",
+                                    label = "Kjør rapporter med dato:",
+                                    value = Sys.Date(),
+                                    min = Sys.Date(),
+                                    max = Sys.Date() + 366
+                   ),
+                   shiny::checkboxInput(inputId = "dryRun", label = "Send e-post")
                  ),
                  mainPanel(
-                   rapbase::autoReportUI("NGERutsending")
+                   rapbase::autoReportUI("NGERutsending"),
+                   # Kommenter ut når skal i prod:
+                   br(),
+                   br(),
+                   p(em("System message:")),
+                   verbatimTextOutput("sysMessage"),
+                   p(em("Function message:")),
+                   verbatimTextOutput("funMessage")
                  )
                ), #Utsending-tab
                tabPanel(
@@ -710,7 +732,7 @@ ui_nger <- function() {
                  ),
                  mainPanel(
                    rapbase::exportGuideUI("ngerExportGuide")
-                 )
+                   )
                ) #Eksport-tab
              ) #tabsetPanel
     ), #tab SC
@@ -724,25 +746,10 @@ ui_nger <- function() {
                sidebarPanel(
                  rapbase::autoReportInput("ngerAbb")
 
-                 # shiny::actionButton(inputId = "run_autoreport",
-                 #                     label = "Kjør autorapporter"),
-                 # shiny::dateInput(inputId = "rapportdato",
-                 #                  label = "Kjør rapporter med dato:",
-                 #                  value = Sys.Date(),
-                 #                  min = Sys.Date(),
-                 #                  max = Sys.Date() + 366
-                 # ),
-                 # shiny::checkboxInput(inputId = "dryRun", label = "Send e-post")
-
-               ),
-               shiny::mainPanel(
-                 rapbase::autoReportUI("ngerAbb"),
-br()
-                 # p(em("System message:")),
-                 # verbatimTextOutput("sysMessage"),
-                 # p(em("Function message:")),
-                 # verbatimTextOutput("funMessage")
-               )
+             ),
+             mainPanel(
+               rapbase::autoReportUI("ngerAbb")
+             )
              )
     ), #tab abonnement
 
@@ -1646,20 +1653,21 @@ server_nger <- function(input, output, session) {
     user = user
   )
 
-  # kjor_autorapport <- shiny::observeEvent(input$run_autoreport, {
-  #   dato <- input$rapportdato
-  #   dryRun <- !(input$dryRun)
-  #   withCallingHandlers({
-  #     shinyjs::html("sysMessage", "")
-  #     shinyjs::html("funMessage", "")
-  #     shinyjs::html("funMessage",
-  #                   rapbase::runAutoReport(group = "nger",
-  #                                          dato = dato, dryRun = dryRun))
-  #   },
-  #   message = function(m) {
-  #     shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
-  #   })
-  # })
+# Kommenter ut når skal i prod !
+  kjor_autorapport <- shiny::observeEvent(input$run_autoreport, {
+    dato <- input$rapportdato
+    dryRun <- !(input$dryRun)
+    withCallingHandlers({
+      shinyjs::html("sysMessage", "")
+      shinyjs::html("funMessage", "")
+      shinyjs::html("funMessage",
+                    rapbase::runAutoReport(group = "nger",
+                                           dato = dato, dryRun = dryRun))
+    },
+    message = function(m) {
+      shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
+    })
+  })
 
   #----------- Eksport ----------------
   registryName <- "nger"
