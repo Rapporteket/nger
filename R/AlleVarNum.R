@@ -187,6 +187,8 @@ AlleVarNum <- function(datoFra = '2013-01-01' , datoTil = Sys.Date()) {
   hysteroscopy.CONVERTED_LAPROTOMY AS HysKonvLaparotomi,
   hysteroscopy.FIRST_TIME_CLOSED as HysForstLukket,
   hysteroscopy.STATUS as HysStatus,
+  u_op.LASTNAME AS OpForstLukketAv,
+  u_op.LASTNAME AS HysForstLukketAv,
   centreattribute.ATTRIBUTEVALUE as SykehusNavn
   FROM mce
   INNER JOIN patient ON mce.PATIENT_ID = patient.ID
@@ -204,9 +206,9 @@ AlleVarNum <- function(datoFra = '2013-01-01' , datoTil = Sys.Date()) {
   AlleVarNum <- rapbase::loadRegData(registryName = 'data', query=query, dbType = "mysql")
 
   #Tatt ut:
-  # CONCAT(u_op.FIRSTNAME, ' ', u_op.LASTNAME) as OpForstLukketAv, -- MODIFIED
-  # CONCAT(u_hys.FIRSTNAME, ' ', u_hys.LASTNAME) as HysForstLukketAv, -- MODIFIED
 
+  #  CONCAT(u_op.FIRSTNAME, ' ', u_op.LASTNAME) AS OpForstLukketAv,
+  #  CONCAT(u_hys.FIRSTNAME, ' ', u_hys.LASTNAME) AS HysForstLukketAv
 
   #Må legges til:
   # CASE operation.BMI_CATEGORY
