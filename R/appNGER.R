@@ -11,8 +11,6 @@ ui_nger <- function() {
 
   idag <- Sys.Date()
   startDato <- paste0(as.numeric(format(idag-100, "%Y")), '-01-01') #'2019-01-01' #Sys.Date()-364
-  # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
-  addResourcePath('rap', system.file('www', package='rapbase'))
   context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
 
   regTitle = 'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER'
@@ -51,11 +49,10 @@ ui_nger <- function() {
     id = 'hovedark',
 
     # lag logo og tittel som en del av navbar
-    title = div(a(includeHTML(system.file('www/logo.svg', package='rapbase'))),
-                regTitle),
+    title = rapbase::title(regTitle),
     # sett inn tittel også i browser-vindu
     windowTitle = regTitle,
-    theme = "rap/bootstrap.css",
+    theme = rapbase::theme(),
 
 
 
