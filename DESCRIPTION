@@ -1,7 +1,7 @@
 Package: nger
 Type: Package
 Title: Resultatrapporter for NGER
-Version: 4.0.20
+Version: 4.0.27
 Date: 2025-11-05
 Authors@R: c(person("Olsen", "Lena", email = "Lena.Ringstad.Olsen@unn.no",
     role = c("cre", "aut")))
@@ -37,3 +37,4 @@ Imports:
     tools,
     xtable
 RoxygenNote: 7.3.2
+
