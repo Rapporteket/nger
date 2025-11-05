@@ -14,6 +14,7 @@ nger::kjor_NGERapp(browser = TRUE)
 rapbase::runAutoReport(group = "nger",
                        dato = Sys.Date()+1, dryRun = TRUE)
 
+AlleVarNum <- AlleVarNum(datoFra = '2025-01-01')
 NgerData <- nger:: NGERRegDataSQL()
 RegData <- NGERRegDataSQL()
 RegData <- NGERPreprosess(RegData)

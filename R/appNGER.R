@@ -9,10 +9,7 @@ ui_nger <- function() {
 
   library(nger)
 
-  idag <- Sys.Date()
-  startDato <- paste0(as.numeric(format(idag-100, "%Y")), '-01-01') #'2019-01-01' #Sys.Date()-364
-  # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
-  addResourcePath('rap', system.file('www', package='rapbase'))
+  startDato <- paste0(as.numeric(format(Sys.Date()-100, "%Y")), '-01-01') #'2019-01-01' #Sys.Date()-364
   context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
 
   regTitle = 'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER'
@@ -51,11 +48,10 @@ ui_nger <- function() {
     id = 'hovedark',
 
     # lag logo og tittel som en del av navbar
-    title = div(a(includeHTML(system.file('www/logo.svg', package='rapbase'))),
-                regTitle),
+    title = rapbase::title(regTitle),
     # sett inn tittel også i browser-vindu
     windowTitle = regTitle,
-    theme = "rap/bootstrap.css",
+    theme = rapbase::theme(),
 
 
 
@@ -527,7 +523,7 @@ ui_nger <- function() {
                              'TSS2: Pasient og behandlere svært enige om målsetn. for behandlinga' = 'Tss2Enighet'
                  )
                ),
-               dateRangeInput(inputId = 'datovalgAndel', start = startDato, end = idag,
+               dateRangeInput(inputId = 'datovalgAndel', start = startDato, end = Sys.Date(),
                               label = "Tidsperiode", separator="t.o.m.", language="nb"),
                sliderInput(inputId="alderAndel", label = "Alder", min = 0,
                            max = 110, value = c(0, 110)),
@@ -953,10 +949,14 @@ server_nger <- function(input, output, session) {
         DataDump[which(DataDump$ReshId == user$org()), -fjernVarInd]
 
     } #Tar bort PROM/PREM til egen avdeling
+    txtLog <- paste0('Datadump for Nakke: ',
+                     'tidsperiode ', input$datovalgRegKtr[1], '_', input$datovalgRegKtr[2])
 
     output$lastNed_dataDump <- downloadHandler(
       filename = function(){'dataDumpNGER.csv'},
-      content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, na = '')})
+      content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, na = '')
+        rapbase::repLogger(session = session, msg = txtLog)
+        })
   })
   #---------Kvalitetsindikatorer------------
   #KvalInd
