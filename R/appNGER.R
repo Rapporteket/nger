@@ -949,8 +949,8 @@ server_nger <- function(input, output, session) {
         DataDump[which(DataDump$ReshId == user$org()), -fjernVarInd]
 
     } #Tar bort PROM/PREM til egen avdeling
-    txtLog <- paste0('Datadump for Nakke: ',
-                     'tidsperiode ', input$datovalgRegKtr[1], '_', input$datovalgRegKtr[2])
+    txtLog <- paste0('Datadump for NGER: ',
+                     'tidsperiode ', input$datovalgReg[1], '_', input$datovalgReg[2])
 
     output$lastNed_dataDump <- downloadHandler(
       filename = function(){'dataDumpNGER.csv'},
