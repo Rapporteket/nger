@@ -301,7 +301,8 @@ library(nger)
 setwd('../Aarsrapp/NGER')
 RegData <- NGERPreprosess(RegData = NGERRegDataSQL(datoFra = '2019-01-01'))
 
-# nyResh <- setdiff(sort(unique(RegData$ReshId)), names(nyID))
+#Sjekke om det har kommet nye enheter:
+ nyResh <- setdiff(sort(unique(RegData$ReshId)), names(nyID))
 # RegData$ShNavn[match(nyResh, RegData$ReshId)]
 # table(RegData$ShNavn)
 lastNedFil <- 0
