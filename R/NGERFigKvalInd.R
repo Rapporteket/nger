@@ -136,17 +136,18 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
 
     #postop.kompl. lap og - hys
     tittel <- 'Kvalitetsindikatorer, prosessmål'
-    grNavn <- c('Postop. komplikasjon: \n Reoperasjon',
+    grNavn <- c(# Bort: 'Postop. komplikasjon: \n Reoperasjon',
                 'Postop. komp., middels/alvorlig, \n laparoskopi', #NY
                 'Postop. komp., middels/alvorlig, \n hysteroskopi', #NY
                'Intraop. komplikasjon ved \n laparoskopi',
-               'Intraop. komplikasjon ved \n hysteroskopi',
-               'Konvertert lap. til laparotomi \n ', #"LapKonvertert":
-               'Konvertert hysteroskopi til \n laparoskopi/-tomi') #"HysKonvertert":
+               'Intraop. komplikasjon ved \n hysteroskopi')
+               # Bort: 'Konvertert lap. til laparotomi \n ', #"LapKonvertert":
+               # Bort: 'Konvertert hysteroskopi til \n laparoskopi/-tomi') #"HysKonvertert":
                # 'Ikke utført oppfølging \n etter 4 uker')
                # 'Ikke ferdistilt registrering \n innen 6 uker')
-    variable <- c('PostOpKomplReop', 'PostKomplLap', 'PostKomplHys', 'LapKomplikasjoner', 'HysKomplikasjoner',
-                  'LapKonvertert', 'HysKonvertert') #, 'Opf0') #, 'Innen6uker')
+    variable <- c(# 'PostOpKomplReop',
+                  'PostKomplLap', 'PostKomplHys', 'LapKomplikasjoner', 'HysKomplikasjoner')
+                  # 'LapKonvertert', 'HysKonvertert')
 
     indKompl <- which(RegData$Opf0Komplikasjoner %in% 0:1)
     #Postop.kompl. laparoskopi
