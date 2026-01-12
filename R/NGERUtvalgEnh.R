@@ -90,7 +90,7 @@ NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', f
               '5' = which(RegData[,ProsLap] == 'LCC11', arr.ind = TRUE)[,1], #LCC11: laparoskopisk subtotal hysterektomi)
 
               '6' = which(RegData[,ProsLap] == 'LCD11', arr.ind = TRUE)[,1], #LCD11: laparoskopisk assistert vaginal hysterektomi).
-              '7' = which(RegData$LapRobotKirurgi == 1), #ROBOT_KIRURGI==TRUE
+              '7' = which(RegData$LapRobotKirurgi == 1), #ROBOT_KIRURGI==TRUE Legg til ZXC96 i LapPros1..4
               '8' = which(RegData[,ProsLap] == 'LEF51', arr.ind = TRUE)[,1], #LCC11: Kolpopeksiene)
               '9' = unique(c(which(RegData$LapProsedyre1 %in% hysterektomikoder),
                            which(RegData$LapProsedyre2 %in% hysterektomikoder), #Egentlig ikke nødvendig å sjekke pros2 og 3
