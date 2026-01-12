@@ -12,38 +12,82 @@
 
 NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM=1, ...) {
 
-  #Flyttet til PROM-tabell? R1BesvarteProm,    -- ny jan.-2022
-  # Hvor har denne blitt av?? Tss2BesvarteProm -- ny jan.-2022
+#  AlleVarNum <- AlleVarNum(datoFra = datoFra, datoTil = datoTil)
 
-  #Faser ut forlopsoversikt
-  #forlopsoversikt.BasisRegStatus - bare ei registrering i AlleVarNum har BasisRegStatus=0
-  #forlopsoversikt.OppflgRegStatus - ikke i bruk
-  #forlopsoversikt.OppflgStatus - ikke i bruk
-  #forlopsoversikt.PasientAlder, - endrer til å beregne selv
+# Raskest å hente alle også filtrere på dato eller filtrere på dato til slutt?
 
-  AlleVarNum <- AlleVarNum(datoFra = datoFra, datoTil = datoTil)
+  #user - QReg-brukere
+  #centreattribute - enhetsnavn (ID=resh, ATTRIBUTEVALUE=enhetsnavn)
 
-  Oppfolging <- followupsnum(datoFra = datoFra, datoTil = datoTil)
+#mce
+  qmce <- 'SELECT * from mce'
+  mceSkjema <-  rapbase::loadRegData(registryName = 'data',
+                                     query=qmce)
 
-#  intersect(sort(names(AlleVarNum)), sort(names(Oppfolging)))
+#Operasjon
+  qOp <- 'SELECT * from operation'
+  OpSkjema <-  rapbase::loadRegData(registryName = 'data',
+                                     query=qOp)
+OpSkjema <- OpSkjema[ ,-which(names(OpSkjema) %in% intersect(names(OpSkjema), names(mceSkjema)))]
 
-  RegData <- dplyr::left_join(AlleVarNum, Oppfolging, by="ForlopsID")
+
+#Laparskopi
+  qLap <- 'SELECT * from laparoscopy'
+  LaparskopiSkjema <-  rapbase::loadRegData(registryName = 'data',
+                                            query=qLap)
+
+#Hysteroskopi
+  qHys <- 'SELECT * from hysteroscopy'
+  HysteroskopiSkjema <-  rapbase::loadRegData(registryName = 'data',
+                                            query=qHys)
+
+
+#Pasientskjema:
+qPas <- paste0('SELECT
+ID AS PasientID,
+BIRTH_DATE,
+REGISTERED_DATE,
+NATIVE_LANGUAGE,
+NORWEGIAN,
+COUNTY,
+REGIONAL_HEALTH_AUTHORITY AS RHF, -- fjern?
+TOWN,
+MUNICIPALITY_NUMBER,
+MUNICIPALITY_NAME,
+EDUCATION,
+DECEASED,
+DECEASED_DATE,
+REAPER_DATE,
+MARITAL_STATUS,
+OWNING_CENTRE,
+TSUPDATED,
+TSCREATED
+FROM patient')
+
+ # 'select * from patient'
+  PasientSkjema <- rapbase::loadRegData(registryName = 'data',
+                                      query=qPas)
+
+#Oppfølgigsskjema:
+  #Ikke filtrert på ferdigstilt
+  Oppf0skjema1 <- followupsnum(datoFra = datoFra, datoTil = datoTil)
+   qOppf0 <- paste0('select * FROM followup
+                    INNER JOIN operation on followup.MCEID = operation.MCEID
+                    WHERE operation.STATUS = 1 AND
+                    operation.OP_DATE >= \'', datoFra, '\' AND operation.OP_DATE <= \'', datoTil, '\'')
+   Oppf0skjema <- rapbase::loadRegData(registryName = 'data', query=qOppf0)
+
+
+
+  RegData <- dplyr::left_join(AlleVarNum, Oppf0skjema, by="ForlopsID")
+
 
   if (medPROM==1) {
-
-    #Sjekk ved å sammenligne R0 og R1-variabler fra allevarnum OG rand36-TABELL
-    #UTGÅR siden RAND-variabler nå er fjernet fra allevarnum
-    # R0var <- grep(pattern='R0', x=sort(names(RegData)), value = TRUE, fixed = TRUE)
-    # R1var <- grep(pattern='R1', x=sort(names(RegData)), value = TRUE, fixed = TRUE)
-    # if (length(c(R0var, R1var)) >0) {
-    #   RegDataUrand <- RegData[, -which(names(RegData) %in% c(R0var, R1var))]
-    # }
-
     RAND36 <-  rand36report()
-   # intersect(sort(names(RegData)), sort(names(RAND36)))
-
     Rvar <- grep(pattern='R', x=names(RAND36), value = TRUE, fixed = TRUE)
-    #Navneendring; fjerne R..
+
+
+    #Navneendring; fjerne prefix R..
     Rvar_uR <- substring(Rvar, 2)
     names(RAND36)[which(names(RAND36) %in% Rvar)] <- Rvar_uR
 
@@ -51,8 +95,7 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM
       tidyr::pivot_wider(
         id_cols = 'ForlopsID',
         id_expand = FALSE,
-        names_from ='Aar',  #c('Aar', Rvar),
-        #names_prefix = "A",
+        names_from ='Aar',
         names_sep = "",
         names_glue = "{'R'}{Aar}{.value}",
         names_sort = FALSE,
