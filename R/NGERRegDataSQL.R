@@ -87,10 +87,11 @@ FROM patient')
   }
 
    if (gml==1){
-    Oppf0skjema1 <- followupsnum(datoFra = datoFra, datoTil = datoTil)
+    Oppf0skjema <- followupsnum(datoFra = datoFra, datoTil = datoTil)
     AlleVarNum <- AlleVarNum(datoFra = datoFra, datoTil = datoTil)
     RegData <- dplyr::left_join(AlleVarNum, Oppf0skjema, by="ForlopsID")
-  }
+   }
+
   if (medPROM==1) {
     RAND36 <-  rand36report()
     Rvar <- grep(pattern='R', x=names(RAND36), value = TRUE, fixed = TRUE)
