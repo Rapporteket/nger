@@ -92,6 +92,11 @@ NGERPreprosess <- function(RegData=RegData)
       RegData[ind ,innh] <- stringr::str_trim(substr(RegData[ind ,innh],1,4))
     }
 
+indRobot <- which(RegData[ ,c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3', 'LapProsedyre4')] == 'ZXC96',
+                  arr.ind = TRUE)[,1]
+# test <- which(RegData$LapRobotKirurgi==1)
+RegData$LapRobotKirurgi[indRobot] <- 1
+
   }
 
   return(invisible(RegData))

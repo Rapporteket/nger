@@ -21,10 +21,11 @@ rapbase::runAutoReport(group = "nger",
 
 AlleVarNum <- AlleVarNum(datoFra = '2025-01-01')
 NgerData <- nger:: NGERRegDataSQL()
+
 RegData <- NGERRegDataSQL()
 RegData <- NGERPreprosess(RegData)
+
 rm('RegData')
-test <- RegData[ ,c("InnDato", "LapStatus", variable)]
 
 devtools::install("../rapbase/.")
 devtools::install(upgrade = FALSE, dependencies = FALSE)
