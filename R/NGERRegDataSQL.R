@@ -10,10 +10,10 @@
 #' @export
 
 
-NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM=1, ...) {
+NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(), medPROM=1, gml=1, ...) {
 
-#  AlleVarNum <- AlleVarNum(datoFra = datoFra, datoTil = datoTil)
 
+  if (gml==0) {
 # Raskest å hente alle også filtrere på dato eller filtrere på dato til slutt?
 
   #user - QReg-brukere
@@ -70,18 +70,27 @@ FROM patient')
 
 #Oppfølgigsskjema:
   #Ikke filtrert på ferdigstilt
-  Oppf0skjema1 <- followupsnum(datoFra = datoFra, datoTil = datoTil)
    qOppf0 <- paste0('select * FROM followup
                     INNER JOIN operation on followup.MCEID = operation.MCEID
                     WHERE operation.STATUS = 1 AND
                     operation.OP_DATE >= \'', datoFra, '\' AND operation.OP_DATE <= \'', datoTil, '\'')
    Oppf0skjema <- rapbase::loadRegData(registryName = 'data', query=qOppf0)
 
+   qOppf6 <- paste0('select * FROM followup6
+                    INNER JOIN operation on followup.MCEID = operation.MCEID
+                    WHERE operation.STATUS = 1 AND
+                    operation.OP_DATE >= \'', datoFra, '\' AND operation.OP_DATE <= \'', datoTil, '\'')
+   Oppf6skjema <- rapbase::loadRegData(registryName = 'data', query=qOppf6)
 
+# SAMMENSTILL ALLE SKJEMA
+# RegData <- ...
+  }
 
-  RegData <- dplyr::left_join(AlleVarNum, Oppf0skjema, by="ForlopsID")
-
-
+   if (gml==1){
+    Oppf0skjema1 <- followupsnum(datoFra = datoFra, datoTil = datoTil)
+    AlleVarNum <- AlleVarNum(datoFra = datoFra, datoTil = datoTil)
+    RegData <- dplyr::left_join(AlleVarNum, Oppf0skjema, by="ForlopsID")
+  }
   if (medPROM==1) {
     RAND36 <-  rand36report()
     Rvar <- grep(pattern='R', x=names(RAND36), value = TRUE, fixed = TRUE)
