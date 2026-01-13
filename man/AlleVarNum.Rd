@@ -4,7 +4,7 @@
 \alias{AlleVarNum}
 \title{Lager AlleVarNum}
 \usage{
-AlleVarNum()
+AlleVarNum(datoFra = "2013-01-01", datoTil = Sys.Date())
 }
 \value{
 Returnerer AlleVarNum

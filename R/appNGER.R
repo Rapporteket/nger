@@ -491,23 +491,21 @@ ui_nger <- function() {
 
                selectInput(
                  inputId = "valgtVarAndel", label="Velg variabel",
-                 choices = c('Kval.ind: Komplikasjoner under operasjon' = 'KomplIntra',
-                             'Kval.ind: Postop. komplikasjon: moderate/alvorlige (grad 2-4)' = 'KomplPostopAlvor',
-                             'Kval.ind: TSS2: Positiv oppfatning om gyn. avd.' = 'Tss2Generelt',
-                             'Alder over 70 år' = 'Alder',
+                 choices = c('Alder over 70 år' = 'Alder',
                              'Antibiotika' = 'OpAntibProfylakse',
                              'ASA-grad > II' = 'OpASA',
                              # 'Blodfortynnende' = 'Blodfortynnende', fjernet nov23
                              'Behandl, dagkir' = 'OpBehNivaa',
                              'Behandl, poliklinisk' = 'Poliklin',
                              'Fedme (BMI>30)' = 'OpBMI',
+                             'Komplikasjoner under operasjon' = 'KomplIntra',
                              'Konvertert til laparotomi' = 'LapKonvertert',
                              'Konvertert til laparotomi, ikke forventet' = 'LapKonvertertUventet',
                              # 'Lokalbedøvelse' = 'OpAnestesi', fjernet nov23
                              'Operasjonstid (minutter)' = 'OpTid',
                              'Pasienter med høyere utdanning' = 'Utdanning',
                              'Postop. komplikasjon: Alle' = 'KomplPostop',
-                             'Postop. komplikasjon: Alvorlig og middels' = 'KomplPostopAlvor',
+                             'Postop. komplikasjon: moderate/alvorlige (grad 2-4)' = 'KomplPostopAlvor',
                              'Postop. komplikasjon: Blødning' = 'Opf0KomplBlodning',
                              'Postop. komplikasjon: Infeksjon' = 'Opf0KomplInfeksjon',
                              'Postop. komplikasjon: Infeksjon, alvorlig/middels' = 'Opf0KomplAlvorInfeksjon',
@@ -520,7 +518,8 @@ ui_nger <- function() {
                              'TSS2: Behandlingsopplegg/-innhold passet svært bra' = 'Tss2Behandling',
                              'TSS2: Behandlerne lyttet- og forsto i svært stor grad' = 'Tss2Lytte',
                              'TSS2: Pasienten hadde svært stor tillit til sine behandlere' = 'Tss2Behandlere',
-                             'TSS2: Pasient og behandlere svært enige om målsetn. for behandlinga' = 'Tss2Enighet'
+                             'TSS2: Pasient og behandlere svært enige om målsetn. for behandlinga' = 'Tss2Enighet',
+                             'TSS2: Positiv oppfatning om gyn. avd.' = 'Tss2Generelt'
                  )
                ),
                dateRangeInput(inputId = 'datovalgAndel', start = startDato, end = Sys.Date(),

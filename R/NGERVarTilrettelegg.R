@@ -967,13 +967,33 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     #Postoperative komplikasjoner. Bare registreringer hvor Opf0Komplikasjoner er 0 el. 1
     tittel <- 'Postoperative komplikasjoner'
     RegData <- RegData[which(RegData$Opf0Komplikasjoner %in% 0:1), ]
-    grtxt <- c('Blødning', 'Infeksjon', 'Organskade')
-    variable <- c('Opf0KomplBlodning', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan')
+    grtxt <- c('Blødning', 'Infeksjon', 'Organskade', 'Reoperasjon')
+    variable <- c('Opf0KomplBlodning', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan', 'Opf0Reoperasjon')
     xAkseTxt <- 'Andel operasjoner (%)'
     ind1 <- which(RegData[ ,variable] == 1, arr.ind=T) #Ja i alle variable
     RegData[ ,variable] <- 0
     RegData[ ,variable][ind1] <- 1
   }
+
+#Ny figur for 6mnd-ktr tilsv figuren under, men med disse variabler
+# Gjelder kun hysterektomier
+  # COMPLICATIONS_EXIST %in% 0:1:
+  # COMPLICATIONS_RUPTUR	COMPLICATIONS_REOP	COMPLICATIONS_INFECTION
+  # if (valgtVar=='KomplPostopType') { #fordeling, andelTid, andelGrVar
+  #   #Postoperative komplikasjoner. Bare registreringer hvor Opf0Komplikasjoner er 0 el. 1
+  #   tittel <- 'Postoperative komplikasjoner'
+  #   RegData <- RegData[which(RegData$Opf0Komplikasjoner %in% 0:1), ]
+  #   grtxt <- c('Blødning', 'Infeksjon', 'Organskade', 'Reoperasjon')
+  #   variable <- c('Opf0KomplBlodning', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan', 'Opf0Reoperasjon')
+  #   xAkseTxt <- 'Andel operasjoner (%)'
+  #   ind1 <- which(RegData[ ,variable] == 1, arr.ind=T) #Ja i alle variable
+  #   RegData[ ,variable] <- 0
+  #   RegData[ ,variable][ind1] <- 1
+  # }
+
+
+
+
   if (valgtVar=='KomplAlvorPostopType') { #fordeling, andelTid, andelGrVar
     #Postoperative komplikasjoner. Bare registreringer hvor Opf0Komplikasjoner er 0 el. 1
     tittel <- 'Postop. komplikasjoner, alvorlig/middels alvorlig'

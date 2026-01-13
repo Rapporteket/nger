@@ -68,8 +68,11 @@ NGERPreprosess <- function(RegData=RegData)
 
   #Endrer til bare store bokstaver
   if ('LapDiagnose1' %in% (names(RegData))) {
-    DiagVar <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3', 'HysDiagnose1','HysDiagnose2', 'HysDiagnose3')
-    ProsVar <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3', 'HysProsedyre1','HysProsedyre2', 'HysProsedyre3')
+    DiagVar <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3', 'LapDiagnose4',
+                 'HysDiagnose1','HysDiagnose2', 'HysDiagnose3',
+                 'OpIndikasjon1', 'OpIndikasjon2', 'OpIndikasjon3')
+    ProsVar <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3', 'LapProsedyre4',
+                 'HysProsedyre1','HysProsedyre2', 'HysProsedyre3')
 
     for (var in c(DiagVar,ProsVar)) {
       RegData[ ,var] <- toupper(RegData[ ,var])

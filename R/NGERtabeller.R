@@ -379,7 +379,7 @@ return(tabUt)
 rader <- function(RegData, var, stat = 'median', verdi=1){ #, met='hys'
 
   indPostKomp <- which(RegData$Opf0Komplikasjoner==1)
-  indTss2Gen <- which(RegData$Tss2Generelt %in% 2:3)
+  indTss2Gen <- which(RegData$Tss2Generelt %in% 3:4)
 
 #  Kun hysteroskopi
     indUfull <- which(RegData$HysGjforingsGrad==2)
