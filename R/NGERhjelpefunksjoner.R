@@ -15,10 +15,12 @@ kjor_NGERapp <- function(browser = FALSE, logAsJson = FALSE) {
   if (logAsJson) {
     rapbase::loggerSetup()
   }
+  if (browser) {
+    options(shiny.launch.browser = TRUE)
+  }
   app <- shiny::shinyApp(
     ui = nger::ui_nger,
-    server = nger::server_nger,
-    options = list(launch.browser = browser)
+    server = nger::server_nger
   )
 
   return(app)
