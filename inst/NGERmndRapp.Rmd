@@ -60,12 +60,12 @@ I Rapporteket kan ein også finne mange flere figurer og tabeller, samt gjøre e
 ```{r lageTabell, include=TRUE, echo=FALSE, results='asis'}
 options(xtable.comment = FALSE)
 antMnd <- 6
-xtable::xtable(nger::tabAntOpphShMnd(RegData=NGERData,
+knitr::kable(nger::tabAntOpphShMnd(RegData=NGERData,
                                      datoTil = Sys.Date(), antMnd=antMnd, reshID=reshID)$tabAntAvd,
                digits=0,
                caption=paste0('Antall registreringer ved ditt sykehus siste ', antMnd, ' måneder.'))
 
-xtable::xtable(nger::tabAntOpphShMnd(RegData=RegData2aar,
+knitr::kable(nger::tabAntOpphShMnd(RegData=RegData2aar,
                                      datoTil = Sys.Date()-365, antMnd=antMnd, reshID=reshID)$tabAntAvd,
                digits=0,
                caption=paste0('Antall registreringer ved ditt sykehus forrige år.'))
