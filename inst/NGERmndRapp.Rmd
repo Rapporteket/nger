@@ -8,25 +8,25 @@ params:
 ---
 
 ```{r hentData, include=FALSE}
-datoTil <- Sys.Date()
-dato <- as.POSIXlt(datoTil)
-datoFra <- as.Date(paste0(1900 + dato$year - 1, "-", dato$mon + 1, "-", "01"))
+dato_til <- Sys.Date()
+dato <- as.POSIXlt(dato_til)
+dato_fra <- as.Date(paste0(1900 + dato$year - 1, "-", dato$mon + 1, "-", "01"))
 
-NGERData <- nger::NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil)
-NGERData <- nger::NGERPreprosess(RegData = NGERData)
-RegData2aar <- nger::NGERPreprosess(
-  RegData = nger::NGERRegDataSQL(datoFra = datoFra - 365, datoTil = datoTil)
+nger_data <- nger::NGERRegDataSQL(datoFra = dato_fra, datoTil = dato_til)
+nger_data <- nger::NGERPreprosess(RegData = nger_data)
+reg_data2aar <- nger::NGERPreprosess(
+  RegData = nger::NGERRegDataSQL(datoFra = dato_fra - 365, datoTil = dato_til)
 )
 
 ```
 
 ```{r SetteParametre, include=FALSE}
 tidsenhet <- "Mnd"
-reshID <- params$reshId
-shtxt <- as.character(NGERData$ShNavn[match(reshID, NGERData$ReshId)])
-RegDataEget <- NGERData[which(NGERData$ReshId == reshID), ]
-maxDatoEget <- format.Date(
-  max(RegDataEget$InnDato), format = "%d.%m.%Y", tz = "UTC"
+resh_id <- params$reshId
+shtxt <- as.character(nger_data$ShNavn[match(resh_id, nger_data$ReshId)])
+reg_data_eget <- nger_data[which(nger_data$ReshId == resh_id), ]
+max_dato_eget <- format.Date(
+  max(reg_data_eget$InnDato), format = "%d.%m.%Y", tz = "UTC"
 )
 ```
 
@@ -49,7 +49,7 @@ I tilfeller der utvalget inneholder få registreringer og disse kombineres med e
 
 
 For `r shtxt` er siste ferdigstilte innleggingsdato i denne rapporten
-`r maxDatoEget`.
+`r max_dato_eget`.
 
 Denne rapporten kan også hentes ved å logge seg inn på Rapporteket-NGER og klikke på "Last ned Månedsrapport".
 Det betyr at alle kan hente seg representative månadsrapporter når de måtte ønske.
@@ -58,23 +58,38 @@ I Rapporteket kan ein også finne mange flere figurer og tabeller, samt gjøre e
 # Aktivitet og kvalitet
 
 ```{r lageTabell, include=TRUE, echo=FALSE, results='asis'}
-options(xtable.comment = FALSE)
-antMnd <- 6
-knitr::kable(nger::tabAntOpphShMnd(RegData=NGERData,
-                                     datoTil = Sys.Date(), antMnd=antMnd, reshID=reshID)$tabAntAvd,
-               digits=0,
-               caption=paste0('Antall registreringer ved ditt sykehus siste ', antMnd, ' måneder.'))
+ant_mnd <- 6
 
-knitr::kable(nger::tabAntOpphShMnd(RegData=RegData2aar,
-                                     datoTil = Sys.Date()-365, antMnd=antMnd, reshID=reshID)$tabAntAvd,
-               digits=0,
-               caption=paste0('Antall registreringer ved ditt sykehus forrige år.'))
+knitr::kable(
+  nger::tabAntOpphShMnd(
+    RegData = nger_data,
+    datoTil = Sys.Date(),
+    antMnd = ant_mnd,
+    reshID = resh_id
+  )$tabAntAvd,
+  digits = 0,
+  caption = paste(
+    "Antall registreringer ved ditt sykehus siste",
+    ant_mnd, "måneder."
+  )
+)
+
+knitr::kable(
+  nger::tabAntOpphShMnd(
+    RegData = reg_data2aar,
+    datoTil = Sys.Date() - 365,
+    antMnd = ant_mnd,
+    reshID = resh_id
+  )$tabAntAvd,
+  digits = 0,
+  caption = "Antall registreringer ved ditt sykehus forrige år."
+)
 ```
 
 
 ```{r lageFigur1, include=TRUE, echo=FALSE}
-nger::NGERFigKvalInd(RegData=NGERData, preprosess=0, reshID=reshID,
-                     valgtVar='kvalInd',
+nger::NGERFigKvalInd(RegData = nger_data, preprosess = 0, reshID = resh_id,
+                     valgtVar = "kvalInd",
                      enhetsUtvalg = 1)
 ```
 
@@ -82,20 +97,33 @@ nger::NGERFigKvalInd(RegData=NGERData, preprosess=0, reshID=reshID,
 
 
 ```{r lageFigur2, include=TRUE, echo=FALSE}
-variabler <- c('KomplIntra', 'KomplPostop', 'KomplPostopAlvor', 'Opf0Reoperasjon')
+variabler <- c(
+  "KomplIntra",
+  "KomplPostop",
+  "KomplPostopAlvor",
+  "Opf0Reoperasjon"
+)
 for (valgtVar in variabler) {
-	nger::NGERFigAndelTid(RegData=NGERData,
-	                      valgtVar=valgtVar,
-	                reshID=reshID, enhetsUtvalg=1,
-              tidsenhet=tidsenhet, preprosess=0)
+  nger::NGERFigAndelTid(
+    RegData = nger_data,
+    valgtVar = valgtVar,
+    reshID = resh_id,
+    enhetsUtvalg = 1,
+    tidsenhet = tidsenhet,
+    preprosess = 0
+  )
 }
 ```
 
 
 ```{r lageFigur3, include=TRUE, echo=FALSE}
-variable <- c('KomplIntra', 'KomplPostop', 'Opf0Status')
+variable <- c("KomplIntra", "KomplPostop", "Opf0Status")
 for (valgtVar in variable) {
-	nger::NGERFigAndelerGrVar(RegData=NGERData, valgtVar=valgtVar, preprosess=0,
-	                          reshID=reshID)
+  nger::NGERFigAndelerGrVar(
+    RegData = nger_data,
+    valgtVar = valgtVar,
+    preprosess = 0,
+    reshID = resh_id
+  )
 }
 ```
