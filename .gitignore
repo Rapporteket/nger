@@ -19,6 +19,7 @@ testing
 *.gitignore
 *NGERSamledok-concordance.tex
 inst/doc
+inst/*html
 
 figure
 NGERmonthlyReport.pdf
