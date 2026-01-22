@@ -90,10 +90,15 @@ knitr::kable(
 ```
 
 
-```{r lageFigur1, include=TRUE, echo=FALSE}
+```{r lageFigur1, include=FALSE}
 nger::NGERFigKvalInd(RegData = nger_data, preprosess = 0, reshID = resh_id,
                      valgtVar = "kvalInd",
-                     enhetsUtvalg = 1)
+                     enhetsUtvalg = 1,
+                     outfile = "KvalIndPros.png")
+```
+
+```{r, echo=FALSE, out.width="100%", fig.cap="Kvalitetsindikatorer, prosessmål"}
+knitr::include_graphics("KvalIndPros.png")
 ```
 
 
@@ -113,11 +118,28 @@ for (valgtVar in variabler) {
     reshID = resh_id,
     enhetsUtvalg = 1,
     tidsenhet = tidsenhet,
-    preprosess = 0
+    preprosess = 0,
+    outfile = paste0(valgtVar, "_Alle", tidsenhet, ".png")
   )
 }
 ```
 
+```{r, echo=FALSE, out.width="100%", fig.cap="Komplikasjoner, intraoperativt"}
+knitr::include_graphics(paste0("KomplIntra", "_Alle", tidsenhet, ".png"))
+```
+
+
+```{r, echo=FALSE, out.width="100%", fig.cap="Komplikasjoner, postoperative"}
+knitr::include_graphics(paste0("KomplPostop", "_Alle", tidsenhet, ".png"))
+```
+
+```{r, echo=FALSE, out.width="100%", fig.cap="Postop. komplikasjon, moderat/alvorlig"}
+knitr::include_graphics(paste0("KomplPostopAlvor", "_Alle", tidsenhet, ".png"))
+```
+
+```{r, echo=FALSE, out.width="100%", fig.cap="Postop. komplikasjon: Reoperasjon"}
+knitr::include_graphics(paste0("Opf0Reoperasjon", "_Alle", tidsenhet, ".png"))
+```
 
 ```{r lageFigur3, include=TRUE, echo=FALSE}
 variable <- c("KomplIntra", "KomplPostop", "Opf0Status")
@@ -126,7 +148,20 @@ for (valgtVar in variable) {
     RegData = nger_data,
     valgtVar = valgtVar,
     preprosess = 0,
-    reshID = resh_id
+    reshID = resh_id,
+    outfile = paste0(valgtVar, "_", tidsenhet, ".png")
   )
 }
+```
+
+```{r, echo=FALSE, out.width="100%", fig.cap="Komplikasjoner, intraoperativt"}
+knitr::include_graphics(paste0("KomplIntra", "_", tidsenhet, ".png"))
+```
+
+```{r, echo=FALSE, out.width="100%", fig.cap="Komplikasjoner, postoperative"}
+knitr::include_graphics(paste0("KomplPostop", "_", tidsenhet, ".png"))
+```
+
+```{r, echo=FALSE, out.width="100%", fig.cap="Pasienter som har svart på oppfølging"}
+knitr::include_graphics(paste0("Opf0Status", "_", tidsenhet, ".png"))
 ```
