@@ -15,7 +15,7 @@ Sys.setenv(MYSQL_HOST="localhost") # for mobilt kontor
 source("dev/sysSetenv.R")
 rmarkdown::render(
   "inst/NGERmndRapp.Rmd",
-  params = list(reshId = 100412, hospital = "Kristiansand"),
+  params = list(reshId = 100412),
   output_format = "pdf_document"
 )
 

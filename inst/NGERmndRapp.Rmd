@@ -2,11 +2,10 @@
 title: |
   | Norsk gynekologisk endoskopiregister
   | MÅNEDSRAPPORT
-  | `r params$hospital`
+  | `r shtxt`
 date: '`r format(Sys.time(), "%d. %B, %Y")`'
 output: pdf_document
 params:
-  hospital: Sykehus X
   reshId: 999999
 ---
 
