@@ -1,0 +1,168 @@
+---
+title: |
+  | Norsk gynekologisk endoskopiregister
+  | MÅNEDSRAPPORT
+  | `r shtxt`
+date: '`r format(Sys.time(), "%d. %B, %Y")`'
+output: pdf_document
+params:
+  reshId: 999999
+header-includes:
+  - \usepackage[english, norsk]{babel}
+---
+
+```{r hentData, include=FALSE}
+dato_til <- Sys.Date()
+dato <- as.POSIXlt(dato_til)
+dato_fra <- as.Date(paste0(1900 + dato$year - 1, "-", dato$mon + 1, "-", "01"))
+
+nger_data <- nger::NGERRegDataSQL(datoFra = dato_fra, datoTil = dato_til)
+nger_data <- nger::NGERPreprosess(RegData = nger_data)
+reg_data2aar <- nger::NGERPreprosess(
+  RegData = nger::NGERRegDataSQL(datoFra = dato_fra - 365, datoTil = dato_til)
+)
+
+```
+
+```{r SetteParametre, include=FALSE}
+tidsenhet <- "Mnd"
+resh_id <- params$reshId
+shtxt <- as.character(nger_data$ShNavn[match(resh_id, nger_data$ReshId)])
+reg_data_eget <- nger_data[which(nger_data$ReshId == resh_id), ]
+max_dato_eget <- format.Date(
+  max(reg_data_eget$InnDato), format = "%d.%m.%Y", tz = "UTC"
+)
+```
+
+
+# Datagrunnlag
+
+Denne rapporten er utarbeidet på oppdrag fra Norsk gynekologisk endoskopiregister (NGER) og blir generert automatisk fra Rapporteket.
+Alle resultat er baserte på data fra registeret som per rapportdato  er ferdigstilte i QReg.
+
+
+Fagrådet i NGER er ansvarleg for alle vurderinger og tolkninger av data, samt feil i resultat som skyldes feil i datagrunnlaget.
+En feilkilde i rapporten vil trolig vere ufullstendig registrering og evt. manglende ferdigstilleslse av registreringer ved flere av sykehusene.
+Dette etterslepet vil variere både i tid og volum, og medfører at det varierer hvor representative data er for de ulike sykehusene. Rapporten har følgelig usikkert datagrunnlag og er kun ment til internt bruk. 
+
+
+Rapporten inneholder aggregerte data.
+I tilfeller der utvalget inneholder få registreringer og disse kombineres med eksempelvis demografiske data, kan det ikke utelukkes at rapporterte data kan tilbakeføres til enkeltpersoner.
+
+**Av grunnene nevnt over, ber NGER om at denne rapporten ikke blir brukt offentlig i noen samanheng eller på noe vis blir offentliggjort.**
+
+
+For `r shtxt` er siste ferdigstilte innleggingsdato i denne rapporten
+`r max_dato_eget`.
+
+Denne rapporten kan også hentes ved å logge seg inn på Rapporteket-NGER og klikke på "Last ned Månedsrapport".
+Det betyr at alle kan hente seg representative månadsrapporter når de måtte ønske.
+I Rapporteket kan ein også finne mange flere figurer og tabeller, samt gjøre endringar i tidsintervall og sammenlikningsgrunnlag.
+
+# Aktivitet og kvalitet
+
+```{r lageTabell, include=TRUE, echo=FALSE, results='asis'}
+ant_mnd <- 6
+
+knitr::kable(
+  nger::tabAntOpphShMnd(
+    RegData = nger_data,
+    datoTil = Sys.Date(),
+    antMnd = ant_mnd,
+    reshID = resh_id
+  )$tabAntAvd,
+  digits = 0,
+  caption = paste(
+    "Antall registreringer ved ditt sykehus siste",
+    ant_mnd, "måneder."
+  )
+)
+
+knitr::kable(
+  nger::tabAntOpphShMnd(
+    RegData = reg_data2aar,
+    datoTil = Sys.Date() - 365,
+    antMnd = ant_mnd,
+    reshID = resh_id
+  )$tabAntAvd,
+  digits = 0,
+  caption = "Antall registreringer ved ditt sykehus forrige år."
+)
+```
+
+
+```{r lageFigur1, include=FALSE}
+nger::NGERFigKvalInd(RegData = nger_data, preprosess = 0, reshID = resh_id,
+                     valgtVar = "kvalInd",
+                     enhetsUtvalg = 1,
+                     outfile = "KvalIndPros.png")
+```
+
+```{r, echo=FALSE, out.width="100%", fig.cap="Kvalitetsindikatorer, prosessmål"}
+knitr::include_graphics("KvalIndPros.png")
+```
+
+
+
+
+```{r lageFigur2, include=TRUE, echo=FALSE}
+variabler <- c(
+  "KomplIntra",
+  "KomplPostop",
+  "KomplPostopAlvor",
+  "Opf0Reoperasjon"
+)
+for (valgtVar in variabler) {
+  nger::NGERFigAndelTid(
+    RegData = nger_data,
+    valgtVar = valgtVar,
+    reshID = resh_id,
+    enhetsUtvalg = 1,
+    tidsenhet = tidsenhet,
+    preprosess = 0,
+    outfile = paste0(valgtVar, "_Alle", tidsenhet, ".png")
+  )
+}
+```
+
+```{r, echo=FALSE, out.width="100%", fig.cap="Komplikasjoner, intraoperativt"}
+knitr::include_graphics(paste0("KomplIntra", "_Alle", tidsenhet, ".png"))
+```
+
+
+```{r, echo=FALSE, out.width="100%", fig.cap="Komplikasjoner, postoperative"}
+knitr::include_graphics(paste0("KomplPostop", "_Alle", tidsenhet, ".png"))
+```
+
+```{r, echo=FALSE, out.width="100%", fig.cap="Postop. komplikasjon, moderat/alvorlig"}
+knitr::include_graphics(paste0("KomplPostopAlvor", "_Alle", tidsenhet, ".png"))
+```
+
+```{r, echo=FALSE, out.width="100%", fig.cap="Postop. komplikasjon: Reoperasjon"}
+knitr::include_graphics(paste0("Opf0Reoperasjon", "_Alle", tidsenhet, ".png"))
+```
+
+```{r lageFigur3, include=TRUE, echo=FALSE}
+variable <- c("KomplIntra", "KomplPostop", "Opf0Status")
+for (valgtVar in variable) {
+  nger::NGERFigAndelerGrVar(
+    RegData = nger_data,
+    valgtVar = valgtVar,
+    preprosess = 0,
+    reshID = resh_id,
+    outfile = paste0(valgtVar, "_", tidsenhet, ".png")
+  )
+}
+```
+
+```{r, echo=FALSE, out.width="100%", fig.cap="Komplikasjoner, intraoperativt"}
+knitr::include_graphics(paste0("KomplIntra", "_", tidsenhet, ".png"))
+```
+
+```{r, echo=FALSE, out.width="100%", fig.cap="Komplikasjoner, postoperative"}
+knitr::include_graphics(paste0("KomplPostop", "_", tidsenhet, ".png"))
+```
+
+```{r, echo=FALSE, out.width="100%", fig.cap="Pasienter som har svart på oppfølging"}
+knitr::include_graphics(paste0("Opf0Status", "_", tidsenhet, ".png"))
+```
