@@ -1,8 +1,4 @@
 ---
-title: |
-  | Norsk gynekologisk endoskopiregister
-  | MÅNEDSRAPPORT
-  | `r shtxt`
 date: '`r format(Sys.time(), "%d. %B, %Y")`'
 output: pdf_document
 params:
@@ -34,6 +30,12 @@ max_dato_eget <- format.Date(
 )
 ```
 
+---
+title: |
+  | Norsk gynekologisk endoskopiregister
+  | MÅNEDSRAPPORT
+  | `r shtxt`
+---
 
 # Datagrunnlag
 
