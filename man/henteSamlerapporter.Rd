@@ -4,24 +4,14 @@
 \alias{henteSamlerapporter}
 \title{Generere samlerapporter i app}
 \usage{
-henteSamlerapporter(
-  filnavn,
-  rnwFil,
-  reshID = 0,
-  datoFra = Sys.Date() - 180,
-  datoTil = Sys.Date()
-)
+henteSamlerapporter(filnavn, rmdFil, reshID = 0)
 }
 \arguments{
 \item{filnavn}{benyttes i downloadhandler}
 
-\item{rnwFil}{Fila som skal kompileres. Eks. 'Eksempel.rnw'}
+\item{rmdFil}{Fila som skal kompileres. Eks. 'Eksempel.Rmd'}
 
 \item{reshID}{reshID}
-
-\item{datoFra}{startdato}
-
-\item{datoTil}{sluttdato}
 }
 \description{
 Generere samlerapporter i app

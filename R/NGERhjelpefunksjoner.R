@@ -100,8 +100,6 @@ lageTulleData <- function(RegData=0, varBort=NA, datoFra= '2017-01-01', antSh=26
 #' @param filnavn benyttes i downloadhandler
 #' @param rmdFil Fila som skal kompileres. Eks. 'Eksempel.Rmd'
 #' @param reshID reshID
-#' @param datoFra startdato
-#' @param datoTil sluttdato
 #'
 #' @export
 henteSamlerapporter <- function(filnavn, rmdFil, reshID = 0) {
