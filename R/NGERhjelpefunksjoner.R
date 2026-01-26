@@ -108,21 +108,10 @@ henteSamlerapporter <- function(filnavn, rmdFil, reshID = 0,
                                 datoFra = Sys.Date() - 180,
                                 datoTil = Sys.Date()) {
 
-#  rapbase::renderRmd(
-#    sourceFile =  system.file(rmdFil, package = "nger"),
-#    outputType = "pdf",
-#    params = list(
-#      reshId = reshID
-#    )
-#  )
+  owd <- getwd()
+  setwd(tempdir())
+  on.exit(setwd(owd))
 
-#  tmpfile <- paste0("tmp", rmdFil)
-#  src <- normalizePath(system.file(rmdFil, package = "nger"))
-#  # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
-#  orgwdr <- getwd()
-#  setwd(tempdir())
-#  file.copy(src, tmpfile, overwrite = TRUE)
-#
   message(paste0("Genererer rapport for reshID=", reshID, " ..."))
   rmarkdown::render(
     input = system.file(rmdFil, package = "nger"),
@@ -131,12 +120,7 @@ henteSamlerapporter <- function(filnavn, rmdFil, reshID = 0,
     clean = TRUE,
     output_file = filnavn
   )
-#
   gc() #Opprydning gc-"garbage collection"
-#  file.copy(paste0(substr(tmpfile, 1, nchar(tmpfile) - 3), "pdf"), filnavn)
-#
-#  # gjenopprette arbeidskatalog
-#  setwd(orgwdr)
 }
 
 #' Kjøre samlerapporter for abonnement i NGER
