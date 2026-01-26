@@ -835,13 +835,13 @@ server_nger <- function(input, output, session) {
 
   #--------------Startside------------------------------
 
-  output$mndRapp.pdf <- downloadHandler(
-    #filename = function(){ downloadFilename('NGERmaanedsrapport')},
+  output$mndRapp.pdf <- shiny::downloadHandler(
     filename = function(){ paste0('NGERmndRapp', Sys.time(), '.pdf')},
     content = function(file){
-      henteSamlerapporter(file, rnwFil="NGERmndRapp.Rnw",
+      henteSamlerapporter(file, rmdFil="NGERmndRapp.Rmd",
                           reshID = user$org())
-    })
+    }
+  )
 
   output$antRegMnd <- renderPlot({NGERFigAntReg(RegData=RegData, reshID = user$org())
   }, height=500, width=900
@@ -1583,12 +1583,6 @@ server_nger <- function(input, output, session) {
 
 
   #------------------ Abonnement ----------------------------------------------
-  output$mndRapp.pdf <- downloadHandler(
-    filename = function(){ paste0('NGERmndRapp', Sys.time(), '.pdf')},
-    content = function(file){
-      henteSamlerapporter(file, rnwFil="NGERmndRapp.Rnw",
-                          reshID = user$org())
-    })
 
   orgs <- as.list(sykehusValgUts)
 
