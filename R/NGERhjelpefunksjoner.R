@@ -104,9 +104,7 @@ lageTulleData <- function(RegData=0, varBort=NA, datoFra= '2017-01-01', antSh=26
 #' @param datoTil sluttdato
 #'
 #' @export
-henteSamlerapporter <- function(filnavn, rmdFil, reshID = 0,
-                                datoFra = Sys.Date() - 180,
-                                datoTil = Sys.Date()) {
+henteSamlerapporter <- function(filnavn, rmdFil, reshID = 0) {
 
   owd <- getwd()
   setwd(tempdir())
