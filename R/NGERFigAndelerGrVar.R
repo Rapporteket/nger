@@ -37,7 +37,7 @@
 #' @inheritParams NGERUtvalgEnh
 #' @export
 
-NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
+NGERFigAndelerGrVar_no_tests <- function(RegData=0, valgtVar='Alder',
                                 datoFra='2013-01-01', datoTil='3000-12-31',
                                 velgAvd=0, minald=0, maxald=130,
                                 OpMetode=99, # Hastegrad='',
@@ -185,3 +185,294 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
   return(invisible(FigDataParam))
 }
 
+NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
+                                datoFra='2013-01-01', datoTil='3000-12-31',
+                                velgAvd=0, minald=0, maxald=130,
+                                OpMetode=99, # Hastegrad='',
+                                AlvorlighetKompl='', behNivaa = 0,
+                                Ngrense=10, reshID=0, outfile='',
+                                velgDiag=0, preprosess=1, hentData=0, ...
+                                ) {
+  library(ggplot2)
+  
+  ## Hvis spørring skjer fra R på server. ######################
+  if(hentData == 1){
+    RegData <- NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil)
+  }
+
+  # Hvis RegData ikke har blitt preprosessert
+  if (preprosess==1){
+    RegData <- NGERPreprosess(RegData=RegData)
+  }
+
+  '%i%' <- intersect
+
+  NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar,
+                                     OpMetode=OpMetode , figurtype='andelGrVar')
+  RegData <- NGERVarSpes$RegData
+
+  grtxt <- NGERVarSpes$grtxt
+  tittel <- NGERVarSpes$tittel
+  
+  KvalIndGrenser <- NGERVarSpes$KvalIndGrenser
+  sortAvtagende <- NGERVarSpes$sortAvtagende
+  
+  grVar <- 'ShNavn'
+
+  NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, OpMetode=OpMetode
+                              ,minald=minald, maxald=maxald,
+                              AlvorlighetKompl=AlvorlighetKompl, behNivaa = behNivaa,
+                              velgAvd=velgAvd, velgDiag=velgDiag)
+  RegData <- NGERUtvalg$RegData
+  utvalgTxt <- NGERUtvalg$utvalgTxt
+
+
+  dummy0 <- NA #-0.001
+  N <- dim(RegData)[1]
+  Nvar <- tapply(RegData$Variabel, RegData[ ,grVar], sum, na.rm=T)
+  if(N > 0) {Ngr <- table(RegData[ ,grVar])}	else {Ngr <- 0}
+  AntGr <- length(which(Ngr >= Ngrense))	#length(which(Midt>0))
+  
+  #Nvar[names(Nvar) == 'Trondheim'] <- 387-191
+  AndelerGr <- round(100*Nvar/Ngr,2)
+  
+
+  indGrUt <- as.numeric(which(Ngr < Ngrense))
+  if (length(indGrUt)==0) { indGrUt <- 0}
+  AndelerGr[indGrUt] <- dummy0
+  sortInd <- order(as.numeric(AndelerGr), decreasing=TRUE)
+  Ngrtxt <- as.character(Ngr)
+  Ngrtxt[indGrUt] <- paste0('<', Ngrense)
+
+  AggVerdier <- list(Hoved = NULL, Tot =NULL)
+  AggVerdier$Hoved <- AndelerGr[sortInd]
+  AggVerdier$Tot <- round(100*sum(RegData$Variabel)/N, 2)
+  GrNavnSort <- paste0(names(Ngr)[sortInd], ' (',Ngrtxt[sortInd], ')')
+
+  andeltxt <- paste0(sprintf('%.1f',AggVerdier$Hoved), '%') 	
+  if (length(indGrUt)>0) {andeltxt[(AntGr+1):(AntGr+length(indGrUt))] <- ''}
+
+  FigDataParam <- list(AggVerdier=AggVerdier,
+                       N=N,
+                       Ngr=Ngr[sortInd],
+                       KvalIndGrenser = NGERVarSpes$KvalIndGrenser,
+                       GrNavnSort=GrNavnSort,
+                       tittel=tittel,
+                       utvalgTxt=utvalgTxt,
+                       andeltxt=andeltxt,
+                       fargepalett=NGERUtvalg$fargepalett,
+                       hovedgrTxt=NGERUtvalg$hovedgrTxt,
+                       outfile=outfile)
+
+  #-----------Figur---------------------------------------
+  if (all(is.na(Ngr))) {
+
+    tekst <- "Ingen registrerte data for dette utvalget"
+
+    p <- ggplot() +
+      theme_void() +
+      labs(title = tittel) +
+      annotate("text", x = 0, y = 0, label = tekst, size = 5) +
+      annotate("text", x = 0, y = -0.2, label = paste(utvalgTxt, collapse = "\n"),
+              size = 3.5, color = farger[1])
+
+    print(p)
+
+  } else if (max(Ngr, na.rm = TRUE) < Ngrense) {
+
+    tekst <- paste0("Færre enn ", Ngrense, " registreringer ved hvert av sykehusene")
+
+    p <- ggplot() +
+      theme_void() +
+      labs(title = tittel) +
+      annotate("text", x = 0, y = 0, label = tekst, size = 5) +
+      annotate("text", x = 0, y = -0.2, label = paste(utvalgTxt, collapse = "\n"),
+              size = 3.5, color = farger[1])
+
+    print(p)
+
+  } else {
+
+    #--------------------------FIGUR---------------------------------------------------
+    #Innparametre: ...
+
+    plotAndelerGrVar(FigDataParam)
+
+
+    
+    
+    }
+
+    return(invisible(FigDataParam))
+
+                                }
+
+
+plotAndelerGrVar <- function(FigDataParam, titleSize = 20, subtitleSize = 15, legendSize = 12, axisTextSize = 10, bestKvalInd = 'lav', nTicks = 5) {
+  AggVerdier <- FigDataParam$AggVerdier
+  N <- FigDataParam$N
+  Ngr <- FigDataParam$Ngr
+  KvalIndGrenser <- FigDataParam$KvalIndGrenser
+  GrNavnSort <- FigDataParam$GrNavnSort
+  tittel <- FigDataParam$tittel
+  utvalgTxt <- FigDataParam$utvalgTxt
+  andeltxt <- FigDataParam$andeltxt
+  fargepalett <- FigDataParam$fargepalett
+  hovedgrTxt <- FigDataParam$hovedgrTxt
+  outfile <- FigDataParam$outfile
+  
+  FigTypUt <- rapFigurer::figtype(outfile, fargepalett=fargepalett)	#height=3*800,
+  farger <- FigTypUt$farger
+  
+  
+
+  # 1) AndelerPlot (NA → 0 kun for plotting, ggplot fjerner NA verdier)
+  andeler <- as.numeric(AggVerdier$Hoved)
+  andelerPlot <- replace(andeler, is.na(andeler), 0)
+
+  # 2) Datasett til ggplot
+  ggDataFrame <- data.frame(
+    andelProsent = andeler,      # ekte verdi (kan være NA)
+    andelerPlot  = andelerPlot,  # brukt til stolpehøyde
+    gruppeNavn   = as.character(GrNavnSort),
+    andelTekst   = as.character(andeltxt)
+  )
+  ggDataFrame <- rbind(
+    ggDataFrame,
+    data.frame(
+      andelProsent = NA,
+      andelerPlot  = 0,
+      gruppeNavn   = "(N)",
+      andelTekst   = ""
+    )
+  )
+
+  # ---- Sorter alle "(N)" ----
+  rest <- ggDataFrame[ggDataFrame$gruppeNavn != "(N)", ]
+  rest <- rest[order(-ifelse(is.na(rest$andelProsent), -Inf, rest$andelProsent)), ]
+
+  # Combine with "(N)" last
+  ggDataFrame <- rbind(rest, ggDataFrame[ggDataFrame$gruppeNavn == "(N)", ])
+
+  # ---- Lock plotting order ----
+  ggDataFrame$gruppeNavn <- factor(
+    ggDataFrame$gruppeNavn,
+    levels = ggDataFrame$gruppeNavn
+  )
+
+  # 3) Gjennomsnittslinje
+  gjennomsnittY <- AggVerdier$Tot[1]
+
+  gjennomsnittEtikett <- paste0(
+    hovedgrTxt[1], " (",
+    sprintf("%.1f", gjennomsnittY), "%), N=", N
+  )
+
+  # 4) Dynamisk øvre grense på prosentaksen
+  maksAndel <- max(ggDataFrame$andelProsent, na.rm = TRUE)*1.15
+  prettyVals <- pretty(c(0, maksAndel), n = nTicks) #funksjon som finner "pent" fordelte verdier for aksen
+  ovreGrense <- max(prettyVals)
+
+  # 5) Kvalitetsindikator: Bakgrunnsbånd basert på kvalitetsgrenser
+  visKvalIndGrenser <- any(KvalIndGrenser > 0, na.rm = TRUE)
+  kvalIndFarger <- c("#3baa34", "#fd9c00", "#e30713") # Grønn, gul, rød
+  if (bestKvalInd == 'høy') {
+    kvalIndFarger <- rev(kvalIndFarger) # Rød, gul, grønn
+  }
+
+  if (visKvalIndGrenser) {
+
+    # Sikre at grensene er numeriske, sorterte og gyldige
+    kvalBreaks <- sort(as.numeric(KvalIndGrenser))
+    stopifnot(length(kvalBreaks) == 4, all(diff(kvalBreaks) > 0))
+
+    # Lag kvalitetsindikator-bånd på prosentaksen (bånd etter verdi-aksen; blir "vertikale" etter coord_flip)
+    bakgrunnBånd <- data.frame(
+      ymin = kvalBreaks[-length(kvalBreaks)],
+      ymax = kvalBreaks[-1],
+      fill = kvalIndFarger
+    )
+
+    # Hvis aksen ikke går til 100, klipp båndene til ovreGrense
+    bakgrunnBånd$ymin <- pmax(bakgrunnBånd$ymin, 0)
+    bakgrunnBånd$ymax <- pmin(bakgrunnBånd$ymax, ovreGrense)
+
+    # fjern kvalitetsindikator-bånd for (N)
+    n_levels <- length(levels(ggDataFrame$gruppeNavn))
+    bakgrunnBånd$xmin <- 0.5
+    bakgrunnBånd$xmax <- (n_levels - 1) + 0.5
+
+    # Fjern bånd som ender opp tomme
+    bakgrunnBånd <- bakgrunnBånd[bakgrunnBånd$ymax > bakgrunnBånd$ymin, ]
+  }
+
+  # 6) Plot
+  p <- ggplot(ggDataFrame, aes(x = gruppeNavn, y = andelerPlot))
+
+  # Legg til bakgrunnsbånd først slik at de ligger bak stolpene
+  if (visKvalIndGrenser) {
+    p <- p +
+      geom_rect(
+        data = bakgrunnBånd,
+        aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = fill),
+        inherit.aes = FALSE,
+        alpha = 0.20
+      ) +
+      scale_fill_identity()
+  }
+
+  # Stolper, linjer og tekst
+  p <- p +
+    geom_col(fill = farger[3], width = 0.65) +
+
+    # Gjennomsnittslinje med legend
+    geom_hline(
+      aes(yintercept = gjennomsnittY, linetype = gjennomsnittEtikett),
+      color = farger[2],
+      linewidth = 1
+    ) +
+    scale_linetype_manual(
+      values = setNames("solid", gjennomsnittEtikett),
+      name = NULL
+    ) +
+
+    # Verdietiketter til høyre for stolpene
+    geom_text(
+      aes(label = andelTekst),
+      color = farger[1],
+      hjust = -0.2
+    ) +
+
+    coord_flip() +
+
+    # Prosentakse
+    scale_y_continuous(
+      breaks = prettyVals,
+      limits = c(0, ovreGrense),
+      expand = expansion(mult = c(0, 0))
+    ) +
+
+    # Tittel og undertittel
+    labs(
+      title = tittel,
+      subtitle = paste(utvalgTxt, collapse = "\n"),
+      x = NULL,
+      y = "Andel (%)"
+    ) +
+
+    # Layout
+    theme_minimal() +
+    theme(
+      panel.grid = element_blank(),
+      axis.ticks.x = element_line(color = "black"),
+      axis.line.x  = element_line(color = "black"),
+      legend.position = "top",
+      legend.justification = "center",
+      legend.text = element_text(size = legendSize),
+      plot.subtitle = element_text(size = subtitleSize, color = farger[1]),
+      plot.title = element_text(size = titleSize),
+      axis.text.y = element_text(size = axisTextSize)
+    )
+
+  print(p) 
+}
