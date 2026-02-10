@@ -37,7 +37,7 @@
 #' @inheritParams NGERUtvalgEnh
 #' @export
 
-NGERFigAndelerGrVar_no_tests <- function(RegData=0, valgtVar='Alder',
+NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
                                 datoFra='2013-01-01', datoTil='3000-12-31',
                                 velgAvd=0, minald=0, maxald=130,
                                 OpMetode=99, # Hastegrad='',
@@ -185,7 +185,7 @@ NGERFigAndelerGrVar_no_tests <- function(RegData=0, valgtVar='Alder',
   return(invisible(FigDataParam))
 }
 
-NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
+NGERFigAndelerGrVar_no_tests <- function(RegData=0, valgtVar='Alder',
                                 datoFra='2013-01-01', datoTil='3000-12-31',
                                 velgAvd=0, minald=0, maxald=130,
                                 OpMetode=99, # Hastegrad='',
@@ -193,7 +193,7 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
                                 Ngrense=10, reshID=0, outfile='',
                                 velgDiag=0, preprosess=1, hentData=0, ...
                                 ) {
-  library(ggplot2)
+  
   
   ## Hvis spørring skjer fra R på server. ######################
   if(hentData == 1){
@@ -226,45 +226,107 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
   RegData <- NGERUtvalg$RegData
   utvalgTxt <- NGERUtvalg$utvalgTxt
 
+  #--------------------------FIGUR---------------------------------------------------
 
-  dummy0 <- NA #-0.001
-  N <- dim(RegData)[1]
-  Nvar <- tapply(RegData$Variabel, RegData[ ,grVar], sum, na.rm=T)
-  if(N > 0) {Ngr <- table(RegData[ ,grVar])}	else {Ngr <- 0}
-  AntGr <- length(which(Ngr >= Ngrense))	#length(which(Midt>0))
+  FigDataParam <- plotAndelerGrVar(RegData, Variabel = RegData$Variabel,
+                                    hovedgrTxt = NGERUtvalg$hovedgrTxt,
+                                    grVar = grVar,
+                                    KvalIndGrenser = NGERVarSpes$KvalIndGrenser,
+                                    tittel = tittel,
+                                    utvalgTxt = utvalgTxt,
+                                    Ngrense = Ngrense,
+                                    fargepalett = NGERUtvalg$fargepalett,
+                                    grtxt = grtxt,
+                                    outfile = outfile)
+
+
   
-  #Nvar[names(Nvar) == 'Trondheim'] <- 387-191
-  AndelerGr <- round(100*Nvar/Ngr,2)
   
 
-  indGrUt <- as.numeric(which(Ngr < Ngrense))
-  if (length(indGrUt)==0) { indGrUt <- 0}
-  AndelerGr[indGrUt] <- dummy0
-  sortInd <- order(as.numeric(AndelerGr), decreasing=TRUE)
+  return(invisible(FigDataParam))
+
+                                }
+
+
+plotAndelerGrVar <- function(RegData, 
+                            Variabel,
+                            hovedgrTxt = '',
+                            grVar ='ShNavn', 
+                            KvalIndGrenser = NA, 
+                            tittel = 'tittel', 
+                            utvalgTxt = '',
+                            Ngrense = 10,
+                            titleSize = 20, 
+                            subtitleSize = 15, 
+                            legendSize = 12, 
+                            axisTextSize = 10, 
+                            bestKvalInd = 'lav', 
+                            nTicks = 5,
+                            fargepalett = 'BlaaOff',
+                            grtxt = '',
+                            outfile='') {
+  library(ggplot2)
+  
+  FigTypUt <- rapFigurer::figtype(outfile, fargepalett=fargepalett)	#height=3*800,
+  farger <- FigTypUt$farger
+
+  dummy0 <- NA  # -0.001
+
+  N <- nrow(RegData)
+
+  # Gruppestørrelser og summer per gruppe (robust ved N == 0)
+  if (N > 0) {
+    Ngr  <- table(RegData[, grVar])
+    Nvar <- tapply(RegData$Variabel, RegData[, grVar], sum, na.rm = TRUE)
+  } else {
+    Ngr  <- table(factor(character(0)))
+    Nvar <- numeric(0)
+  }
+
+  # Andeler per gruppe (i %), og hvilke grupper som er under grense
+  AndelerGr <- round(100 * Nvar / Ngr, 2)
+
+  indGrUt <- which(Ngr < Ngrense)
+  AntGr   <- sum(Ngr >= Ngrense)
+
+  # Sett under-grense til dummy0 (NA)
+  if (length(indGrUt) > 0) {
+    AndelerGr[indGrUt] <- dummy0
+  }
+
+  # Sorter synkende (NB: NA havner sist)
+  sortInd <- order(AndelerGr, decreasing = TRUE, na.last = TRUE)
+
+  # Tekst for N per gruppe (med <Ngrense for små grupper)
   Ngrtxt <- as.character(Ngr)
-  Ngrtxt[indGrUt] <- paste0('<', Ngrense)
+  if (length(indGrUt) > 0) {
+    Ngrtxt[indGrUt] <- paste0("<", Ngrense)
+  }
 
-  AggVerdier <- list(Hoved = NULL, Tot =NULL)
+  # Aggregerte verdier
+  AggVerdier <- list(Hoved = NULL, Tot = NULL)
   AggVerdier$Hoved <- AndelerGr[sortInd]
-  AggVerdier$Tot <- round(100*sum(RegData$Variabel)/N, 2)
-  GrNavnSort <- paste0(names(Ngr)[sortInd], ' (',Ngrtxt[sortInd], ')')
+  AggVerdier$Tot   <- if (N > 0) round(100 * sum(RegData$Variabel, na.rm = TRUE) / N, 2) else NA_real_
 
-  andeltxt <- paste0(sprintf('%.1f',AggVerdier$Hoved), '%') 	
-  if (length(indGrUt)>0) {andeltxt[(AntGr+1):(AntGr+length(indGrUt))] <- ''}
+  # Sorterte gruppenavn med N-tekst
+  GrNavnSort <- paste0(names(Ngr)[sortInd], " (", Ngrtxt[sortInd], ")")
+
+  # Andeltekst (blank for under-grense)
+  andeltxt <- paste0(sprintf("%.1f", AggVerdier$Hoved), "%")
+  if (length(indGrUt) > 0) {
+    andeltxt[(AntGr + 1):(AntGr + length(indGrUt))] <- ""
+  }
 
   FigDataParam <- list(AggVerdier=AggVerdier,
-                       N=N,
+                       N=N, #Nfig,
                        Ngr=Ngr[sortInd],
-                       KvalIndGrenser = NGERVarSpes$KvalIndGrenser,
-                       GrNavnSort=GrNavnSort,
+                       KvalIndGrenser <- KvalIndGrenser,
+                       grtxt=grtxt,
                        tittel=tittel,
                        utvalgTxt=utvalgTxt,
-                       andeltxt=andeltxt,
-                       fargepalett=NGERUtvalg$fargepalett,
-                       hovedgrTxt=NGERUtvalg$hovedgrTxt,
-                       outfile=outfile)
-
-  #-----------Figur---------------------------------------
+                       fargepalett=fargepalett,
+                       hovedgrTxt=hovedgrTxt)
+  
   if (all(is.na(Ngr))) {
 
     tekst <- "Ingen registrerte data for dette utvalget"
@@ -276,7 +338,6 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
       annotate("text", x = 0, y = -0.2, label = paste(utvalgTxt, collapse = "\n"),
               size = 3.5, color = farger[1])
 
-    print(p)
 
   } else if (max(Ngr, na.rm = TRUE) < Ngrense) {
 
@@ -287,45 +348,10 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
       labs(title = tittel) +
       annotate("text", x = 0, y = 0, label = tekst, size = 5) +
       annotate("text", x = 0, y = -0.2, label = paste(utvalgTxt, collapse = "\n"),
-              size = 3.5, color = farger[1])
+              size = 3.5)
 
-    print(p)
 
   } else {
-
-    #--------------------------FIGUR---------------------------------------------------
-    #Innparametre: ...
-
-    plotAndelerGrVar(FigDataParam)
-
-
-    
-    
-    }
-
-    return(invisible(FigDataParam))
-
-                                }
-
-
-plotAndelerGrVar <- function(FigDataParam, titleSize = 20, subtitleSize = 15, legendSize = 12, axisTextSize = 10, bestKvalInd = 'lav', nTicks = 5) {
-  AggVerdier <- FigDataParam$AggVerdier
-  N <- FigDataParam$N
-  Ngr <- FigDataParam$Ngr
-  KvalIndGrenser <- FigDataParam$KvalIndGrenser
-  GrNavnSort <- FigDataParam$GrNavnSort
-  tittel <- FigDataParam$tittel
-  utvalgTxt <- FigDataParam$utvalgTxt
-  andeltxt <- FigDataParam$andeltxt
-  fargepalett <- FigDataParam$fargepalett
-  hovedgrTxt <- FigDataParam$hovedgrTxt
-  outfile <- FigDataParam$outfile
-  
-  FigTypUt <- rapFigurer::figtype(outfile, fargepalett=fargepalett)	#height=3*800,
-  farger <- FigTypUt$farger
-  
-  
-
   # 1) AndelerPlot (NA → 0 kun for plotting, ggplot fjerner NA verdier)
   andeler <- as.numeric(AggVerdier$Hoved)
   andelerPlot <- replace(andeler, is.na(andeler), 0)
@@ -351,15 +377,16 @@ plotAndelerGrVar <- function(FigDataParam, titleSize = 20, subtitleSize = 15, le
   rest <- ggDataFrame[ggDataFrame$gruppeNavn != "(N)", ]
   rest <- rest[order(-ifelse(is.na(rest$andelProsent), -Inf, rest$andelProsent)), ]
 
-  # Combine with "(N)" last
+  # Legg "(N)" sist i datasettet for å sikre at det plottes sist (øverst etter coord_flip)
   ggDataFrame <- rbind(rest, ggDataFrame[ggDataFrame$gruppeNavn == "(N)", ])
 
-  # ---- Lock plotting order ----
+  # ---- Lås rekkefølge ----
   ggDataFrame$gruppeNavn <- factor(
     ggDataFrame$gruppeNavn,
     levels = ggDataFrame$gruppeNavn
   )
-
+  nLevels <- length(levels(ggDataFrame$gruppeNavn))
+  
   # 3) Gjennomsnittslinje
   gjennomsnittY <- AggVerdier$Tot[1]
 
@@ -397,10 +424,9 @@ plotAndelerGrVar <- function(FigDataParam, titleSize = 20, subtitleSize = 15, le
     bakgrunnBånd$ymin <- pmax(bakgrunnBånd$ymin, 0)
     bakgrunnBånd$ymax <- pmin(bakgrunnBånd$ymax, ovreGrense)
 
-    # fjern kvalitetsindikator-bånd for (N)
-    n_levels <- length(levels(ggDataFrame$gruppeNavn))
+    # fjern kvalitetsindikator-bånd for (N)-label
     bakgrunnBånd$xmin <- 0.5
-    bakgrunnBånd$xmax <- (n_levels - 1) + 0.5
+    bakgrunnBånd$xmax <- (nLevels - 1) + 0.5
 
     # Fjern bånd som ender opp tomme
     bakgrunnBånd <- bakgrunnBånd[bakgrunnBånd$ymax > bakgrunnBånd$ymin, ]
@@ -420,21 +446,28 @@ plotAndelerGrVar <- function(FigDataParam, titleSize = 20, subtitleSize = 15, le
       ) +
       scale_fill_identity()
   }
-
+  
   # Stolper, linjer og tekst
   p <- p +
     geom_col(fill = farger[3], width = 0.65) +
 
-    # Gjennomsnittslinje med legend
-    geom_hline(
-      aes(yintercept = gjennomsnittY, linetype = gjennomsnittEtikett),
+    geom_segment(
+      data = data.frame(
+        x = 0.5,
+        xend = (nLevels - 1) + 0.5,   # stop before "(N)"
+        y = gjennomsnittY,
+        yend = gjennomsnittY,
+        lab = gjennomsnittEtikett
+      ),
+      aes(x = x, xend = xend, y = y, yend = yend, linetype = lab),
       color = farger[2],
-      linewidth = 1
+      linewidth = 1,
+      inherit.aes = FALSE
     ) +
     scale_linetype_manual(
       values = setNames("solid", gjennomsnittEtikett),
       name = NULL
-    ) +
+    )+
 
     # Verdietiketter til høyre for stolpene
     geom_text(
@@ -473,6 +506,11 @@ plotAndelerGrVar <- function(FigDataParam, titleSize = 20, subtitleSize = 15, le
       plot.title = element_text(size = titleSize),
       axis.text.y = element_text(size = axisTextSize)
     )
-
-  print(p) 
+  }
+  print(p)
+  if( outfile != '') {
+    print(outfile)
+    ggsave(outfile, plot = p)
+  }
+  return(FigDataParam)
 }
