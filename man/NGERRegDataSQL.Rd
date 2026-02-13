@@ -2,13 +2,14 @@
 % Please edit documentation in R/NGERRegDataSQL.R
 \name{NGERRegDataSQL}
 \alias{NGERRegDataSQL}
-\title{Henter global dataramme for NGER}
+\title{Henter NGER-data}
 \usage{
 NGERRegDataSQL(
   datoFra = "2013-01-01",
   datoTil = Sys.Date(),
   medPROM = 1,
   gml = 1,
+  alleData = 1,
   ...
 )
 }
@@ -23,5 +24,5 @@ NGERRegDataSQL(
 RegData data frame
 }
 \description{
-Henter NGER-data fra staging.
+Henter NGER-data
 }
