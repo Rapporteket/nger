@@ -1583,12 +1583,6 @@ server_nger <- function(input, output, session) {
 
 
   #------------------ Abonnement ----------------------------------------------
-  output$mndRapp.pdf <- downloadHandler(
-    filename = function(){ paste0('NGERmndRapp', Sys.time(), '.pdf')},
-    content = function(file){
-      henteSamlerapporter(file, rnwFil="NGERmndRapp.Rnw",
-                          reshID = user$org())
-    })
 
   orgs <- as.list(sykehusValgUts)
 
