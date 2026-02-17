@@ -8,11 +8,7 @@ hentDataTabell(tabellnavn = "operation", qVar = "*", egneVarNavn = 1)
 }
 \arguments{
 \item{tabellnavn}{Navn på tabell som skal lastes inn.
-  centreattribute.ATTRIBUTEVALUE as SykehusNavn
-Kan ha følgende verdier:
-'mce', 'patient', 'operation', 'laparoscopy', 'hysteroscopy'
-user - nødvendig?
-For å mappe på enhetsnavn: centreattribute on mce.CENTREID = centreattribute.ID}
+centreattribute.ATTRIBUTEVALUE as SykehusNavn}
 
 \item{egneVarNavn}{0 - Qreg-navn benyttes.
 1 - selvvalgte navn fra Friendlyvar benyttes}

@@ -919,7 +919,8 @@ server_nger <- function(input, output, session) {
   })
 
   # Egen datadump, LU uten PROM
-  RegDataAlle <- RegData
+  RegDataAlle <- NGERRegDataSQL(medPROM=0, gml=0, alleVar=1)
+  RegDataAlle <- NGERPreprosess(RegData = RegDataAlle)
   observe({
     DataDump <-
       NGERUtvalgEnh(RegData = RegDataAlle,

@@ -22,8 +22,9 @@ rapbase::runAutoReport(group = "nger",
 AlleVarNum <- AlleVarNum(datoFra = '2025-01-01')
 NgerData <- nger:: NGERRegDataSQL()
 
-RegData <- NGERRegDataSQL()
-RegData <- NGERPreprosess(RegData)
+RegDataNy <- NGERRegDataSQL(datoFra = '2025-01-01', datoTil = Sys.Date(),
+                          medPROM=0, gml=0, alleVar=1)
+RegData <- NGERPreprosess(RegDataNy)
 
 rm('RegData')
 

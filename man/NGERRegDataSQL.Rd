@@ -9,7 +9,7 @@ NGERRegDataSQL(
   datoTil = Sys.Date(),
   medPROM = 1,
   gml = 1,
-  alleData = 1,
+  alleVar = 1,
   ...
 )
 }
@@ -19,6 +19,8 @@ NGERRegDataSQL(
 \item{datoTil}{Seneste dato i utvalget (vises alltid i figuren).}
 
 \item{medPROM:}{koble på RAND og TSS2-variabler}
+
+\item{alleData}{1- alle variabler med, 0 - utvalgte variabler med}
 }
 \value{
 RegData data frame
