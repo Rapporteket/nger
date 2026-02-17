@@ -88,10 +88,18 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
 
     #mce Trenger nok ganske få av disse variablene
     # mce_patient_data # eneste som inneholder kobling mellom mceid og pasientid
+    qmce <- paste0('MCEID, CENTREID, PATIENT_ID, STATUS,
+      DELIVERY_DATE, PARENT_MCE, MCE_TYPE, OPER_DATE, OPER_CARE_LEVEL,
+      OPER_UPDATEDBY, LAPARO_STATUS, LAPARO_TSUPDATED, HYSTERO_STATUS,
+      RAND36_TSUPDATED, FOLLOWUP_STATUS, FOLLOWUP_TYPE, TSS2_STATUS,
+      TSS2_FOLLOWUP_TYPE, FOLLOWUP_TSS2_PROM_STATUS, PREM_STATUS,
+      FOLLOWUP_6MND_STATUS, FOLLOWUP_6MND_PROM_STATUS, RAND36_Y1_STATUS,
+      RAND36_Y1_PROM_STATUS, RAND36_Y3_STATUS, RAND36_Y3_PROM_STATUS,
+      TSCREATED, TSUPDATED')
 
-   # qmce <-
+
     mceSkjema <- hentDataTabell(tabellnavn = "mce",
-                               qVar = '*',
+                               qVar = qmce,
                                egneVarNavn = 0)
     #Operasjon
     OpSkjema <-  hentDataTabell(tabellnavn = "operation",
@@ -117,7 +125,7 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
 
 
     #Pasientskjema:
-    qPas <- if (alleVar == 1) {'*'} else {
+    qPas<-#ifalleVar== 1) {'*'} else {
      paste0('ID, # AS PasientID,
               BIRTH_DATE,
               REGISTERED_DATE,
@@ -136,7 +144,7 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
               OWNING_CENTRE,
               TSUPDATED,
               TSCREATED')
-   }
+  # }
 
    PasSkjema <- hentDataTabell(tabellnavn = "patient",
                                                  qVar = qPas,
