@@ -80,22 +80,22 @@ enhetsUtvalg <- 1
 RegData <- NGERPreprosess(NGERRegDataSQL(datoFra = '2021-01-01', datoTil = '2021-10-31'))
 
 table(RegData$Opf0Status, useNA = 'a')
-#Alle med Opf0Status=NA har også NA for 'Opf0metode', 'Opf0BesvarteProm', 'Opf0Komplikasjoner'
-RegData[is.na(RegData$Opf0Status), c('Opf0metode', 'Opf0BesvarteProm', 'Opf0Komplikasjoner')]
+#Alle med Opf0Status=NA har også NA for 'Opf0metode', 'Opf0UtfViaEprom', 'Opf0Komplikasjoner'
+RegData[is.na(RegData$Opf0Status), c('Opf0metode', '', 'Opf0Komplikasjoner')]
 prop.table(table(RegData$Opf0Komplikasjoner, useNA = 'a'))
 prop.table(table(RegData$Opf0InfOpSaar, useNA = 'a'))
 
-table(RegData[which(RegData$Opf0Status==1 & RegData$Opf0metode %in% 1:2), c('Opf0Komplikasjoner', 'Opf0BesvarteProm')], useNA = 'a')
+table(RegData[which(RegData$Opf0Status==1 & RegData$Opf0metode %in% 1:2), c('Opf0Komplikasjoner', '')], useNA = 'a')
 
-addmargins(table(RegData[which(RegData$Opf0Status==1), c('Opf0metode', 'Opf0BesvarteProm')], useNA = 'a'))
+addmargins(table(RegData[which(RegData$Opf0Status==1), c('Opf0metode', '')], useNA = 'a'))
 addmargins(table(RegData[which(RegData$Opf0Status==1), c('Opf0metode', 'Opf0Komplikasjoner')], useNA = 'a'))
 addmargins(table(RegData[which(RegData$Opf0Status==1), c('Opf0metode', 'Opf0InfOpSaar')], useNA = 'a'))
 
 
 table(RegData$Opf0metode, useNA = 'a')
 
-sum(RegData$Opf0metode %in% 1:2 | (RegData$Opf0metode == 3 & RegData$Opf0BesvarteProm==1), na.rm = T)
-prop.table(table(RegData$Opf0metode %in% 1:2 | (RegData$Opf0metode == 3 & RegData$Opf0BesvarteProm==1), useNA = 'a'))
+sum(RegData$Opf0metode %in% 1:2 | (RegData$Opf0metode == 3 & RegData$Opf0UtfViaEprom==1), na.rm = T)
+prop.table(table(RegData$Opf0metode %in% 1:2 | (RegData$Opf0metode == 3 & RegData$Opf0UtfViaEprom==1), useNA = 'a'))
 sum(RegData$Opf0Komplikasjoner %in% 0:1)
 
 RegData$Variabel <- 0

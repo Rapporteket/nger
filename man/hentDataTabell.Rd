@@ -7,8 +7,7 @@
 hentDataTabell(tabellnavn = "operation", qVar = "*", egneVarNavn = 1)
 }
 \arguments{
-\item{tabellnavn}{Navn på tabell som skal lastes inn.
-centreattribute.ATTRIBUTEVALUE as SykehusNavn}
+\item{tabellnavn}{Navn på tabell som skal lastes inn.}
 
 \item{egneVarNavn}{0 - Qreg-navn benyttes.
 1 - selvvalgte navn fra Friendlyvar benyttes}

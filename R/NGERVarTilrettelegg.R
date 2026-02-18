@@ -394,12 +394,12 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
     tittel <- 'Oppfølgingsmetode for PROM-skjema'
     gr <- c(1,2,3,9)
     grtxt <- c('post', 'telefon', 'ePROM', 'Ikke besvart')
-    RegData$Opf0metode[RegData$Opf0metode==3 & RegData$Opf0BesvarteProm==0] <- 9
+    RegData$Opf0metode[RegData$Opf0metode==3 & RegData$Opf0UtfViaEprom ==0] <- 9
     RegData[RegData$Opf0metode %in% c(1:3,9), ]
     RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = gr)
   }
 
-  #Opf0BesvarteProm angir om skjemaet er besvart eller utløpt via ePROM og vil være null for skjema som er manuelt inntastet.
+  # Opf0UtfViaEprom angir om skjemaet er besvart eller utløpt via ePROM og vil være null for skjema som er manuelt inntastet.
   #Opf0Status angir om oppfølgingsskjemaet er opprettet, kladd eller ferdigstilt.
   #Siden Opf0Status er en avkrysningsboks kan den kun settes til true (1) og false (0) på skjemaene i registerapplikasjonen og
   #disse lagres som binære tallverdier i databasen. I tillegg settes Status variabler til -1 når skjema opprettes.
@@ -413,7 +413,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
     #Tar ut hendelser siste 8 uker:
     datoTil <- as.Date(Sys.Date() - 8*7)  #min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 8*7))
     RegData <- RegData[which(as.Date(RegData$InnDato) <= datoTil),]
-    RegData$Variabel[(RegData$Opf0metode %in% 1:2) | (RegData$Opf0metode==3 & RegData$Opf0BesvarteProm==1)] <- 1
+    RegData$Variabel[(RegData$Opf0metode %in% 1:2) | (RegData$Opf0metode==3 & RegData$Opf0UtfViaEprom==1)] <- 1
     #RegData$Variabel[RegData$Opf0metode %in% 1:3 ] <- 1 # Må fjerne de som ikke har svart på PROM
   #RegData$Variabel[RegData$Opf0Status==1] <- 1 Her vil vi også få med de som har oppfølging ikke mulig. Uansett er denne variabelen feil (7.feb.2022
     varTxt <- 'svar på postoperativ oppfølging'

@@ -775,10 +775,12 @@ server_nger <- function(input, output, session) {
   rapbase::appLogger(session, msg = 'Starter Rapporteket-NGER')
 
     #----------Hente data ----------
-    RegData <- NGERRegDataSQL()
-    errorCondition(dim(RegData)[1]==0, 'ingen data')
+    #RegData <- NGERRegDataSQL()
+    RegDataAlle <- NGERRegDataSQL(medPROM=1, gml=0)
+    errorCondition(dim(RegDataAlle)[1]==0, 'ingen data')
 
-    RegData <- NGERPreprosess(RegData)
+    RegData <- NGERPreprosess(RegDataAlle)
+
     map_avdeling <- data.frame(
       UnitId = unique(RegData$ReshId),
       orgname = RegData$ShNavn[match(unique(RegData$ReshId),
@@ -898,6 +900,7 @@ server_nger <- function(input, output, session) {
   })
   RegOversikt <- RegData[ , c('FodselsDato', 'OpDato', 'ReshId', 'ShNavn')] #, 'BasisRegStatus'
 
+  # Data til kontroll
   observe({
     RegOversikt <- dplyr::filter(RegOversikt,
                                  as.Date(OpDato) >= input$datovalgReg[1],
@@ -918,12 +921,12 @@ server_nger <- function(input, output, session) {
       content = function(file, filename){write.csv2(tabDataRegKtr, file, row.names = F, na = '')})
   })
 
-  # Egen datadump, LU uten PROM
-  RegDataAlle <- NGERRegDataSQL(medPROM=0, gml=0, alleVar=1)
-  RegDataAlle <- NGERPreprosess(RegData = RegDataAlle)
+  # --------Egen datadump, (NB: LU uten PROM)---------
+  # RegDataAlle <- NGERRegDataSQL(medPROM=1, gml=0)
+  # RegDataAlle <- NGERPreprosess(RegData = RegDataAlle)
   observe({
     DataDump <-
-      NGERUtvalgEnh(RegData = RegDataAlle,
+      NGERUtvalgEnh(RegData = RegData,
                     datoFra = input$datovalgReg[1],
                     datoTil = input$datovalgReg[2],
                     OpMetode = as.numeric(input$opMetodeRegDump),
@@ -942,7 +945,7 @@ server_nger <- function(input, output, session) {
       tabDataDump <- DataDump[ind,]
     } else {
       navn <- names(DataDump)
-      fjernVarInd <- c(grep('Opf0', navn), grep('Opf1', navn),
+      fjernVarInd <- c(grep('Opf0', navn), grep('Opf6', navn),
                        grep('R0', navn), grep('R1', navn), grep('R3', navn),
                        grep('RY1', navn), grep('Tss', navn))
       tabDataDump <-

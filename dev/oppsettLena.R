@@ -22,8 +22,18 @@ rapbase::runAutoReport(group = "nger",
 AlleVarNum <- AlleVarNum(datoFra = '2025-01-01')
 NgerData <- nger:: NGERRegDataSQL()
 
-RegDataNy <- NGERRegDataSQL(datoFra = '2025-01-01', datoTil = Sys.Date(),
-                          medPROM=0, gml=0, alleVar=1)
+tictoc::tic('start gml')
+RegDataGml <- NGERRegDataSQL(#datoFra = '2025-01-01', datoTil = Sys.Date(),
+                             medPROM=1, gml=1)
+tictoc::toc()
+tictoc::tic('start ny')
+RegDataNy <- NGERRegDataSQL(# datoFra = '2025-01-01', datoTil = Sys.Date(),
+                          medPROM=1, gml=0)
+tictoc::toc()
+
+setdiff(sort(names(RegDataNy)), sort(names(RegDataGml)))
+setdiff(sort(names(RegDataGml)), sort(names(RegDataNy)))
+
 RegData <- NGERPreprosess(RegDataNy)
 
 rm('RegData')
