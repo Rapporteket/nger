@@ -28,6 +28,7 @@ Imports:
     rapbase,
     rapFigurer,
     remotes,
+    rlang,
     rmarkdown,
     shiny,
     shinyjs,
