@@ -10,7 +10,7 @@ Description: Pakke for generering av resultatrapporter for NGER.
 Encoding: UTF-8
 LazyData: TRUE
 Depends:
-    R (>= 3.5.0)
+    R (>= 4.1.0)
 Remotes: 
       Rapporteket/rapFigurer,
       Rapporteket/rapbase@main
@@ -37,4 +37,4 @@ Imports:
     tools,
     xtable
 RoxygenNote: 7.3.2
-
+License: GPL-3
