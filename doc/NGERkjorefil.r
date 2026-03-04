@@ -50,7 +50,6 @@ dev.off()
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 setwd('C:/RegistreGIT/nger/inst/')
 setwd('~/nger/inst/')
-data('NGERtulledata', package = 'nger')
 
 AVN <- read.table('C:/Registerdata/nger/allevarnum2022-11-10.csv', sep = ';',
                       header = T,encoding = 'UTF-8')
@@ -159,7 +158,7 @@ varBort <- c('PasRegDato', 'PersonNr', 'PersonNrType', 'FodselsDato', 'Morsmaal'
            grep('Opf1', names(RegData)), grep('RY1', names(RegData)))
 RegData <- lageTulleData(RegData=0, varBort=varBort, antSh=26, antObs=20000)
 
-save(skjemaoversikt, RegData, file = './data/NGERtulledata.Rdata')
+#save(skjemaoversikt, RegData, file = './data/NGERtulledata.Rdata')
 
 #----------------------------------- PARAMETRE ------------------------------
 RegData <- NGERRegDataSQL()
@@ -352,7 +351,6 @@ NGERFigPrePost(RegData=0, valgtVar='AlleRANDdim',
 #-----------------------------Kvalietsindikatorer------------------------------
 #valgtVar <- 'kvalInd' #RAND0, TSS0, kvalInd
 outfile <- '' #paste0(valgtVar, '_kvalInd.png')
-data("NGERtulledata")
 UtDataFraFig <- NGERFigKvalInd(RegData=0, hentData = 1, datoFra='2017-10-01', valgtVar='kvalInd', OpMetode=99,
                Hastegrad=99, preprosess=1, Ngrense=10, enhetsUtvalg=1, reshID = 8, velgAvd = 0,
                outfile=outfile)
