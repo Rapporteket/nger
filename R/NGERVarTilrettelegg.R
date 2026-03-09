@@ -735,7 +735,6 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
   #(Alternativt kan vi gjøre beregninga her og sende tilbake teller og nevner for den sammensatte variabelen)
 
   if (valgtVar %in% c('Diagnoser', 'DiagnoseGr')) { #Tilfelle hvor man heller endrer format på variablene...?
-    #Gammel kommentar?: PER NÅ FEIL. SAMME DIAGNOSE KAN VÆRE FØRT OPP FLERE GANGER FOR SAMME PASIENT.
     #Tar unique for hver rad. Antar dette er for å ta høyde for at sm. diag oppf. flere ganger.
     tittel <- 'Hyppigst forekommende diagnoser'
     diagLap <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3')
@@ -743,7 +742,6 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     var <- c(diagLap, diagHys)
     ant <- 20
     cexgr <- 1-0.005*ant
-    #RegData <- NGERPreprosess(NGERRegDataSQL())
     if (valgtVar=='DiagnoseGr') {
       for (k in var) {
         RegData$var <- RegData[,k]
@@ -784,40 +782,28 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     if (sum(ind_na) > 0) {
       AlleDiag <- AlleDiag[-which(ind_na)] }
 
-  # if (valgtVar=='DiagnoseGr') {
-  #   #Slår sammen til grupper:
-  #   # Sterk, ofte/uregelm. menstruasjon  N92.X
-  #     AlleDiag[grep('N92',AlleDiag)] <- 'UregMens' #'Sterk, ofte, uregelm. menstr.'
-  #   # Leiomyom i uterus D25.X
-  #     AlleDiag[grep('D25',AlleDiag)] <- 'Leiomyom' #'Leiomyom i uterus'
-  #   # Cyste/tumor i ovarium (D27, N83.0, N83.1, N83.2
-  #     AlleDiag[union(grep('D27',AlleDiag),
-  #                    AlleDiag %in% c('N830', 'N831', 'N832'))] <- 'Cyste'  #'Cyste,tumor i ovarium'
-  #   # Dysmenore (N94.4, N95.5, N94.6)
-  #     AlleDiag[AlleDiag %in% c('N944', 'N955', 'N946')] <- 'Dysmenore'
-  #   # Endometriose N80.X
-  #     AlleDiag[grep('N80',AlleDiag)] <- 'Endometriose'
-  #   # Infertilitet  N97.X	:
-  #     AlleDiag[grep('N97',AlleDiag)] <- 'Infertilitet'
-  #   # Svangerskap u livmor  O00.X
-  #     AlleDiag[grep('O00',AlleDiag)] <- 'SvangerUL' #'Svangerskap u livmor'
-  #   # Adheranser i buk/bekken  N73.6, N99.4
-  #     AlleDiag[AlleDiag %in% c('N736', 'N994')] <- 'Adheranser' #'Adheranser i buk,bekken'
-  #   # Polypp i kjønnsorganer  N84.X
-  #     AlleDiag[grep('N84',AlleDiag)] <- 'Polypp' #'Polypp i kjønnsorganer'
-  #   #	Dysplasi i livmorhals N87.X
-  #     AlleDiag[grep('N87',AlleDiag)] <- 'Dysplasi' #'Dysplasi i livmorhals'
-#}
     AlleDiagSort <- sort(table(AlleDiag[which(AlleDiag != '')]), decreasing = TRUE)
-    variable <- names(AlleDiagSort)[1:min(length(AlleDiagSort), ant)]	#Alle diagnoser som skal være med. Kan benyttes til å lage indeks...
-    grtxt <- dplyr::recode(variable,
-                    'UregMens' = 'Sterk/ofte/uregelm. menstr.',
-                    'Leiomyom'= 'Leiomyom i uterus',
-                    'Cyste' = 'Cyste/tumor i ovarium',
-                    'SvangerUL' = 'Svangerskap u/livmor',
-                    'Adheranser' = 'Adheranser i buk/bekken',
-                    'Polypp' = 'Polypp i kjønnsorganer',
-                    'Dysplasi' = 'Dysplasi i livmorhals'
+    variable <- names(AlleDiagSort)[1:min(length(AlleDiagSort), ant)]
+    #Alle diagnoser som skal være med. Kan benyttes til å lage indeks...
+
+    # df_recoded <- df %>%
+    #   dplyr::mutate(
+    #     category = case_when(
+    #       category == "apple"  ~ "fruit_a",
+    #       category == "orange" ~ "fruit_o",
+    #       TRUE ~ category   # beholder original verdi
+    #     )
+    #   )
+
+
+    grtxt <- dplyr::replace_values(variable,  #recode
+                    'UregMens' ~ 'Sterk/ofte/uregelm. menstr.',
+                    'Leiomyom' ~ 'Leiomyom i uterus',
+                    'Cyste' ~ 'Cyste/tumor i ovarium',
+                    'SvangerUL' ~ 'Svangerskap u/livmor',
+                    'Adheranser' ~ 'Adheranser i buk/bekken',
+                    'Polypp' ~ 'Polypp i kjønnsorganer',
+                    'Dysplasi' ~ 'Dysplasi i livmorhals'
                     )
     nymatr <- as.data.frame(matrix(0,dim(RegData)[1],ant))
     names(nymatr) <- variable
@@ -852,7 +838,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     variable <- names(AlleProsSort)[1:min(length(AlleProsSort), ant)]
     grtxt <- variable
     if (valgtVar == 'ProsedyreGr') {
-      grtxt <- dplyr::recode(variable, 'laphyst' = 'Lapar. hysterektomi')}
+      grtxt <- dplyr::replace_values(variable, 'laphyst' ~ 'Lapar. hysterektomi')} #recode
     nymatr <- as.data.frame(matrix(0,dim(RegData)[1], ant))
     names(nymatr) <- variable
     for (k in variable) {

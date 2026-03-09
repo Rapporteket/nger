@@ -19,22 +19,20 @@ nger::kjor_NGERapp(browser = TRUE)
 rapbase::runAutoReport(group = "nger",
                        dato = Sys.Date()+1, dryRun = TRUE)
 
-AlleVarNum <- AlleVarNum(datoFra = '2025-01-01')
+#AlleVarNum <- AlleVarNum(datoFra = '2025-01-01')
 NgerData <- nger:: NGERRegDataSQL()
+RegData <- NgerData
 
-tictoc::tic('start gml')
 RegDataGml <- NGERRegDataSQL(#datoFra = '2025-01-01', datoTil = Sys.Date(),
                              medPROM=1, gml=1)
-tictoc::toc()
-tictoc::tic('start ny')
-RegDataNy <- NGERRegDataSQL(# datoFra = '2025-01-01', datoTil = Sys.Date(),
+RegDataNy <- NGERRegDataSQL(datoFra = '2025-01-01', datoTil = Sys.Date(),
                           medPROM=1, gml=0)
-tictoc::toc()
-
-setdiff(sort(names(RegDataNy)), sort(names(RegDataGml)))
-setdiff(sort(names(RegDataGml)), sort(names(RegDataNy)))
-
+#ProsedyreGr, Prosedyrer, Diagnoser, DiagnoseGr
+NGERFigAndeler(RegData=RegDataNy, valgtVar='Prosedyrer')
 RegData <- NGERPreprosess(RegDataNy)
+
+
+
 
 rm('RegData')
 

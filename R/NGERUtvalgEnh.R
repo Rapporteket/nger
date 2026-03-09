@@ -83,7 +83,8 @@ NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', f
     } else {indMCE <- 1:Ninn}
   if (OpMetode %in% c(4:9)) {
       ProsLap <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3', 'LapProsedyre4')
-      hysterektomikoder <- c('LCD00', 'LCD01','LCD04','LCD11', 'LCC11', 'LCD97', 'LCD31', 'LCD30', 'LCD40')
+      hysterektomikoder <- c('LCD00', 'LCD01','LCD04','LCD11', 'LCC11', 'LCD97',
+                             'LCD31', 'LCD30', 'LCD40', 'LCD96', 'LCC10', 'LCC20')
       indMCE <- switch(as.character(OpMetode),
               '4' = unique(c(which(RegData[,ProsLap] == 'LCD01', arr.ind = TRUE)[,1],
                                          which(RegData[,ProsLap] == 'LCD04', arr.ind = TRUE)[,1])), #LCD01 + LCD04: total laparoskopisk hysterektomi
