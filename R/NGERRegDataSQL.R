@@ -122,7 +122,7 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
     LapSkjema <-  hentDataTabell(tabellnavn = "laparoscopy",
                                         qVar = '*',
                                         egneVarNavn = 1)
-    intersect(sort(names(LapSkjema)), sort(names(OpSkjema)))
+    # intersect(sort(names(LapSkjema)), sort(names(OpSkjema)))
     #Hysteroskopi
     HysSkjema <-  hentDataTabell(tabellnavn = "hysteroscopy",
                                  qVar = '*',
@@ -170,8 +170,8 @@ if (medPROM == 1) {
     Oppf0Skjema <- hentDataTabell(tabellnavn = "followup",
                                               qVar = '*',
                                               egneVarNavn = 1)
-   Oppf0Skjema <- Oppf0Skjema |> dplyr::rename(Opf0metode = FOLLOWUP_TYPE,
-                                               Opf0UtfViaEprom = ErOppfoelgingss)
+   Oppf0Skjema <- Oppf0Skjema |> dplyr::rename(Opf0metode = FOLLOWUP_TYPE)
+
    # followup.PROM_ANSWERED AS Opf0BesvarteProm, -> Opf0Utf ->Opf0UtfViaEprom
 
    Oppf6Skjema <- hentDataTabell(tabellnavn = "followup6",

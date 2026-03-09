@@ -7,10 +7,10 @@
 # Sys.setenv(MYSQL_PASSWORD="root")
 setwd("C:/Users/lro2402unn/RegistreGIT/nger")
 setwd('../data')
-sship::dec("c://Users/lro2402unn/RegistreGIT/data/nakke16c3f936f.sql.gz__20260112_082700.tar.gz",
+sship::dec("c://Users/lro2402unn/RegistreGIT/data/nger1702cb1d5.sql.gz__20260219_092951.tar.gz",
            keyfile = "c://Users/lro2402unn/.ssh/id_rsa",
            target_dir = "c://Users/lro2402unn/RegistreGIT/data/.")
-
+# source c://Users/lro2402unn/RegistreGIT/data/nger1702cb1d5.sql;
 
 library(nger)
 source("dev/sysSetenv.R")
