@@ -1,12 +1,13 @@
 Package: nger
 Type: Package
 Title: Resultatrapporter for NGER
-Version: 4.1.1
-Date: 2026-01-13
+Version: 4.1.3
+Date: 2026-03-09
 Authors@R: c(person("Olsen", "Lena", email = "Lena.Ringstad.Olsen@unn.no",
     role = c("cre", "aut")))
 Maintainer: Lena Ringstad Olsen <lena.olsen@skde.no>
 Description: Pakke for generering av resultatrapporter for NGER.
+License: GPL2
 Encoding: UTF-8
 LazyData: TRUE
 Depends:
