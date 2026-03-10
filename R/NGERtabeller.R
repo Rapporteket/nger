@@ -79,13 +79,13 @@ tabAntSkjema <- function(RegData, datoFra = '2019-01-01', datoTil=Sys.Date()){
   #Operasjon	Laparoskopi,	Hysteroskopi - bare besvarte skjema,	Oppfølging, RAND36, ,TSS2
   #  RAND-tabellen inneholder bare besvarte skjema, så her kan jeg telle ut fra «Metode» = 1,2 el 3.
 #  TSS2 har ingen egen metode-variabel. Teller alle som har fått beregnet en Tss2Score.
-#  For oppfølging en måned etter: Opf0metode = 1 | Opfmetode=2 | (Opf0metode=3 & Opf0BesvarteProm =1)
+#  For oppfølging en måned etter: Opf0metode = 1 | Opfmetode=2 | (Opf0metode=3 &  Opf0UtfViaEprom=1)
 
   indDato <- which(as.Date(RegData$InnDato) >= datoFra & as.Date(RegData$InnDato) <= datoTil)
   RegData <- RegData[indDato, ]
   RegData$ShNavn <- as.factor(RegData$ShNavn)
 
-  indOpf0 <- with(RegData, which(Opf0metode == 1 | Opf0metode==2 | (Opf0metode==3 & Opf0BesvarteProm == 1)))
+  indOpf0 <- with(RegData, which(Opf0metode == 1 | Opf0metode==2 | (Opf0metode==3 & Opf0UtfViaEprom == 1)))
   tab <- cbind(
     'Operasjon' = table(RegData$ShNavn),
     'Laparoskopi' = table(RegData$ShNavn[RegData$LapStatus==1]),

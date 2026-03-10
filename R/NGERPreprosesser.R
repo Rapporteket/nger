@@ -44,8 +44,10 @@ NGERPreprosess <- function(RegData=RegData)
   #names(RegData)[which(names(RegData)=='PasientAlder')] <- 'Alder'
   RegData$Alder <- (as.Date(RegData$OpDato) - as.Date(RegData$FodselsDato))/365.25
   names(RegData)[which(names(RegData)=='AvdRESH')] <- 'ReshId' #Change var name
-  RegData$ShNavn <- trimws(as.character(RegData$SykehusNavn)) #Fjerner mellomrom (før) og etter navn
-  # names(RegData)[which(names(RegData)=='SykehusNavn')] <- 'ShNavn'
+  names(RegData)[which(names(RegData)=='CENTREID')] <- 'ReshId'
+  names(RegData)[which(names(RegData)=='SykehusNavn')] <- 'ShNavn'
+
+  RegData$ShNavn <- trimws(as.character(RegData$ShNavn)) #Fjerner mellomrom (før) og etter navn
 
   #108698 (Kongsvinger Innland) endres til Kongsvinger 4215373
 #ahs  ind <- which(RegData$ReshId == 108698)
@@ -54,7 +56,8 @@ NGERPreprosess <- function(RegData=RegData)
 
   #Tomme sykehusnavn får resh som navn:
   indTom <- which(is.na(RegData$ShNavn) | RegData$ShNavn == '')
-  RegData$ShNavn[indTom] <- RegData$ReshId[indTom]
+  if (length(indTom) > 0) {
+  RegData$ShNavn[indTom] <- RegData$ReshId[indTom]}
 
   #Sjekker om alle resh har egne enhetsnavn
   dta <- unique(RegData[ ,c('ReshId', 'ShNavn')])

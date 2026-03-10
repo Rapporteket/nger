@@ -10,7 +10,7 @@ followupsnum <- function(datoFra = '2013-01-01', datoTil = Sys.Date()) {
   mce.MCEID as ForlopsID,
   --  mce.CENTREID AS AvdRESH,
   followup.FOLLOWUP_TYPE AS Opf0metode,
-  followup.PROM_ANSWERED AS Opf0BesvarteProm,
+  followup.PROM_ANSWERED AS Opf0UtfViaEprom,
   followup.COMPLICATIONS_EXIST AS Opf0Komplikasjoner,
   followup.COMPLICATIONTYPE_REOP AS Opf0Reoperasjon,
   followup.COMPLICATIONTYPE_REOP_SPECIFY_LAPAROSCOPY AS Opf0ReopLaparoskopi,
@@ -69,7 +69,7 @@ WHERE
 
 #  Variabler som skal være med:
   # ForlopsID,
-  # Opf0BesvarteProm,   -- ny jan.-2022
+  # Opf0UtfViaEprom,   -- ny jan.-2022
   # Opf0metode,
   # Opf0AlvorlighetsGrad,
   # Opf0KomplBlodning,
