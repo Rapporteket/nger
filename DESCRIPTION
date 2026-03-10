@@ -16,7 +16,6 @@ Remotes:
       Rapporteket/rapFigurer,
       Rapporteket/rapbase@main
 Imports:
-    Imports:
     devtools,
     digest,
     DT,
