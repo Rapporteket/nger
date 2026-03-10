@@ -16,6 +16,7 @@ Remotes:
       Rapporteket/rapFigurer,
       Rapporteket/rapbase@main
 Imports:
+    Imports:
     devtools,
     digest,
     DT,
@@ -29,6 +30,7 @@ Imports:
     rapbase,
     rapFigurer,
     remotes,
+    rlang,
     rmarkdown,
     shiny,
     shinyjs,
