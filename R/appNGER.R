@@ -798,17 +798,7 @@ server_nger <- function(input, output, session) {
 
       if (user$role() == 'SC') {
       showTab(inputId = "hovedark", target = "Registeradministrasjon")
-      shinyjs::show(id = 'velgResh')
-      shinyjs::show(id = 'velgReshReg')
-      shinyjs::show(id = 'velgReshKval')
-      shinyjs::show(id = 'velgSykehusFord')
-      shinyjs::show(id = 'velgSykehusTab')
     } else {
-      shinyjs::hide(id = 'velgResh')
-      shinyjs::hide(id = 'velgReshReg')
-      shinyjs::hide(id = 'velgReshKval')
-      shinyjs::hide(id = 'velgSykehusFord')
-      shinyjs::hide(id = 'velgSykehusTab')
       hideTab(inputId = "hovedark", target = "Registeradministrasjon")
     }
   })
@@ -894,9 +884,13 @@ server_nger <- function(input, output, session) {
 
   # Hente oversikt over hvilke registrereinger som er gjort (opdato og fødselsdato)
   output$velgReshReg <- renderUI({
-    selectInput(inputId = 'velgReshReg', label='Velg sykehus',
-                selected = 0,
-                choices = sykehusValg)
+    if (user$role() == 'SC') {
+      selectInput(inputId = 'velgReshReg', label='Velg sykehus',
+                  selected = 0,
+                  choices = sykehusValg)
+    } else {
+      NULL
+    }
   })
   RegOversikt <- RegData[ , c('FodselsDato', 'OpDato', 'ReshId', 'ShNavn')] #, 'BasisRegStatus'
 
@@ -965,9 +959,14 @@ server_nger <- function(input, output, session) {
   #KvalInd
 
   output$velgReshKval <- renderUI({
+    if (user$role() == 'SC') {
     selectInput(inputId = 'velgReshKval', label='Velg sykehus',
                 selected = 0,
-                choices = sykehusValg)})
+                choices = sykehusValg)
+    } else {
+      NULL
+    }
+  })
   observe({
     output$kvalInd <- renderPlot({
       NGERFigKvalInd(RegData=RegData, preprosess = 0,
@@ -1152,9 +1151,13 @@ server_nger <- function(input, output, session) {
   })
 
   output$velgSykehusTab <- renderUI({
-    selectInput(inputId = 'velgSykehusTab', label='Velg sykehus',
-                selected = 0,
-                choices = sykehusValg)
+    if (user$role() == 'SC') {
+      selectInput(inputId = 'velgSykehusTab', label='Velg sykehus',
+                  selected = 0,
+                  choices = sykehusValg)
+    } else {
+      NULL
+    }
   })
 
   observe({
@@ -1192,9 +1195,13 @@ server_nger <- function(input, output, session) {
   #---------Fordelinger------------
 
   output$velgSykehusFord <- renderUI({
-    selectInput(inputId = 'velgSykehusFord', label='Velg sykehus',
-                selected = 0,
-                choices = sykehusValg)
+    if (user$role() == 'SC') {
+      selectInput(inputId = 'velgSykehusFord', label='Velg sykehus',
+                  selected = 0,
+                  choices = sykehusValg)
+    } else {
+      NULL
+    }
   })
 
   observe({ #Fordeling
