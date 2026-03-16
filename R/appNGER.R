@@ -1272,7 +1272,7 @@ server_nger <- function(input, output, session) {
 
   #--------------Andeler-----------------------------------
   output$andelerGrVar <- renderPlot({
-    NGERFigAndelerGrVar(
+    p <- NGERFigAndelerGrVar(
       RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
       datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
       minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
@@ -1281,6 +1281,7 @@ server_nger <- function(input, output, session) {
       velgDiag = as.numeric(input$velgDiagAndel),
       AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
       session=session)
+      print(p)
   }, height = 800, width=700 #height = function() {session$clientData$output_andelerGrVarFig_width} #})
   )
 
@@ -1289,7 +1290,8 @@ server_nger <- function(input, output, session) {
       paste0('FigAndelSh_', input$valgtVarAndel, Sys.time(), '.', input$bildeformatAndel)
     },
     content = function(file){
-      NGERFigAndelerGrVar(
+      format <- shiny::req(input$bildeformatAndel)
+      p <- NGERFigAndelerGrVar(
         RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
         datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
         minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
@@ -1297,8 +1299,27 @@ server_nger <- function(input, output, session) {
         behNivaa = as.numeric(input$behNivaaAndel),
         velgDiag = as.numeric(input$velgDiagAndel),
         AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
-        session=session,
-        outfile = file)
+        session=session)
+      device <- switch(
+        format,
+        pdf = "pdf",
+        png = "png",
+        jpg = "jpeg",
+        bmp = "bmp",
+        tif = "tiff",
+        svg = "svg",
+        stop("Ukjent filformat")
+      )
+      ggplot2::ggsave(
+        filename = file,
+        plot = p,
+        device = format,
+        width = 7,
+        height = 8,
+        units = "in",
+        dpi = 300,
+        limitsize = FALSE
+      )
     })
 
 

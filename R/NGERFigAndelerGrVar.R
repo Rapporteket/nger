@@ -361,12 +361,10 @@ PlotAndelerGrVar <- function(RegData,
       legend.text = element_text(size = legendSize),
       plot.subtitle = element_text(size = subtitleSize, color = farger[1]),
       plot.title = element_text(size = titleSize),
-      axis.text.y = element_text(size = axisTextSize)
+      axis.text.y = element_text(size = axisTextSize),
+      plot.margin = margin(t = 10, r = 20, b = 10, l = 10)
     )
   }
-  print(p)
-  if( outfile != '') {
-    dev.off()
-  }
-  return(FigDataParam)
+  
+  p
 }
