@@ -684,57 +684,7 @@ ui_nger <- function() {
       )
     ), #GjsnGrVar/Tid
 
-    #-------Registeradministrasjon----------
-    tabPanel(p("Registeradministrasjon",
-               title='Registeradministrasjonens side for registreringer og resultater'),
-             value = "Registeradministrasjon",
-             h3('Siden er bare synlig for SC-bruker', align = 'center'),
-             #uiOutput(user$role'),
-
-             tabsetPanel(
-               tabPanel(
-                 h4("Utsending av rapporter"),
-                 sidebarPanel(
-                   rapbase::autoReportOrgInput("NGERutsending"),
-                   rapbase::autoReportInput("NGERutsending"),
-                   br(),
-                   br(),
-
-                    # Kommenter ut når skal i prod:
-                   br(),
-                   br(),
-                   shiny::actionButton(inputId = "run_autoreport",
-                                       label = "Kjør autorapporter"),
-                   shiny::dateInput(inputId = "rapportdato",
-                                    label = "Kjør rapporter med dato:",
-                                    value = Sys.Date(),
-                                    min = Sys.Date(),
-                                    max = Sys.Date() + 366
-                   ),
-                   shiny::checkboxInput(inputId = "dryRun", label = "Send e-post")
-                 ),
-                 mainPanel(
-                   rapbase::autoReportUI("NGERutsending"),
-                   # Kommenter ut når skal i prod:
-                   br(),
-                   br(),
-                   p(em("System message:")),
-                   verbatimTextOutput("sysMessage"),
-                   p(em("Function message:")),
-                   verbatimTextOutput("funMessage")
-                 )
-               ), #Utsending-tab
-               tabPanel(
-                 h4("Eksport av krypterte data"),
-                 sidebarPanel(
-                   rapbase::exportUCInput("ngerExport")
-                 ),
-                 mainPanel(
-                   rapbase::exportGuideUI("ngerExportGuide")
-                   )
-               ) #Eksport-tab
-             ) #tabsetPanel
-    ), #tab SC
+    
     #----------Abonnement-----------------
 
     tabPanel(p("Abonnement",
@@ -797,7 +747,6 @@ server_nger <- function(input, output, session) {
     # print(user)
 
       if (user$role() == 'SC') {
-      showTab(inputId = "hovedark", target = "Registeradministrasjon")
       shinyjs::show(id = 'velgResh')
       shinyjs::show(id = 'velgReshReg')
       shinyjs::show(id = 'velgReshKval')
@@ -809,7 +758,6 @@ server_nger <- function(input, output, session) {
       shinyjs::hide(id = 'velgReshKval')
       shinyjs::hide(id = 'velgSykehusFord')
       shinyjs::hide(id = 'velgSykehusTab')
-      hideTab(inputId = "hovedark", target = "Registeradministrasjon")
     }
   })
 
@@ -1611,6 +1559,70 @@ server_nger <- function(input, output, session) {
     user = user
   )
   #-----------Registeradministrasjon-----------
+  observeEvent(user$role(), {
+    if (user$role() == "SC") {
+      message("Adding Registeradministrasjon tab for user with role ", user$role())
+      shiny::insertTab(
+        inputId = "hovedark",
+        tab = tabPanel(p("Registeradministrasjon",
+                    title='Registeradministrasjonens side for registreringer og resultater'),
+                  value = "Registeradministrasjon",
+                  h3('Siden er bare synlig for SC-bruker', align = 'center'),
+                  #uiOutput(user$role'),
+
+                  tabsetPanel(
+                    tabPanel(
+                      h4("Utsending av rapporter"),
+                      sidebarPanel(
+                        rapbase::autoReportOrgInput("NGERutsending"),
+                        rapbase::autoReportInput("NGERutsending"),
+                        br(),
+                        br(),
+
+                        # Kommenter ut når skal i prod:
+                        br(),
+                        br(),
+                        shiny::actionButton(inputId = "run_autoreport",
+                                            label = "Kjør autorapporter"),
+                        shiny::dateInput(inputId = "rapportdato",
+                                        label = "Kjør rapporter med dato:",
+                                        value = Sys.Date(),
+                                        min = Sys.Date(),
+                                        max = Sys.Date() + 366
+                        ),
+                        shiny::checkboxInput(inputId = "dryRun", label = "Send e-post")
+                      ),
+                      mainPanel(
+                        rapbase::autoReportUI("NGERutsending"),
+                        # Kommenter ut når skal i prod:
+                        br(),
+                        br(),
+                        p(em("System message:")),
+                        verbatimTextOutput("sysMessage"),
+                        p(em("Function message:")),
+                        verbatimTextOutput("funMessage")
+                      )
+                    ), #Utsending-tab
+                    tabPanel(
+                      h4("Eksport av krypterte data"),
+                      sidebarPanel(
+                        rapbase::exportUCInput("ngerExport")
+                      ),
+                      mainPanel(
+                        rapbase::exportGuideUI("ngerExportGuide")
+                        )
+                    ) #Eksport-tab
+                  ) #tabsetPanel
+          ),
+          target = "Abonnement",
+          position = "before"
+      )
+      } else {
+        message("Removing Registeradministrasjon tab for user with role ", user$role())
+        shiny::removeTab(inputId = "hovedark", target = "Registeradministrasjon")
+      }
+  })
+
 
   ## liste med metadata for rapport
   reports <- list(
