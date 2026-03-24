@@ -906,7 +906,7 @@ server_nger <- function(input, output, session) {
     output$lastNed_dataDump <- downloadHandler(
       filename = function(){'dataDumpNGER.csv'},
       content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, na = '')
-        rapbase::repLogger(session = session, msg = txtLog)
+        rapbase::repLogger2(user = user, msg = txtLog)
         })
   })
   #---------Kvalitetsindikatorer------------
