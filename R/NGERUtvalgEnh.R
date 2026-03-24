@@ -43,7 +43,7 @@
 #'
 #' @export
 #'
-NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', fargepalett='BlaaOff',
+NGERUtvalgEnh <- function(RegData, datoFra='2011-01-01', datoTil='3000-12-31', fargepalett='BlaaOff',
                           minald=0, maxald=110, OpMetode=0, AlvorlighetKompl=0, #dagkir=9, # Hastegrad=0,
                           behNivaa = 0,
                           enhetsUtvalg=0, velgAvd=0, velgDiag=0, reshID=0)
@@ -77,7 +77,7 @@ NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', f
   #Utvalg på alder:
   indAld <- which(RegData$Alder >= minald & RegData$Alder <= maxald)
   #Utvalg på dato:
-  indDato <- which(as.Date(RegData$InnDato) >= datoFra & as.Date(RegData$InnDato) <= datoTil)  #as.Date(datoFra)
+  indDato <- which(as.Date(RegData$OpDato) >= datoFra & as.Date(RegData$OpDato) <= datoTil)  #as.Date(datoFra)
   #Operasjonstype:
   indMCE <- if (OpMetode %in% c(1:3)){which(RegData$OpMetode %in% c(OpMetode,3))
     } else {indMCE <- 1:Ninn}
@@ -171,8 +171,8 @@ if (velgDiag !=0) {
   N <- dim(RegData)[1]
 
 
-  utvalgTxt <- c(paste0('Operasjonsdato: ', if (N>0) {min(RegData$InnDato, na.rm=T)} else {datoFra},
-                       ' til ', if (N>0) {max(RegData$InnDato, na.rm=T)} else {datoTil}),
+  utvalgTxt <- c(paste0('Operasjonsdato: ', if (N>0) {min(RegData$OpDato, na.rm=T)} else {datoFra},
+                       ' til ', if (N>0) {max(RegData$OpDato, na.rm=T)} else {datoTil}),
                  if ((minald>0) | (maxald<110))
                     {paste0('Pasienter fra ', if (N>0) {min(RegData$Alder, na.rm=T)} else {minald},
                         ' til ', if (N>0) {max(RegData$Alder, na.rm=T)} else {maxald}, ' år')},

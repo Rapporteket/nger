@@ -40,7 +40,7 @@ NGERFigAntReg  <- function(RegData, datoTil=Sys.Date(), reshID=0,
   utvalgTxt <- NGERUtvalg$utvalgTxt[-1] #Ønsker ikke datoutvalg
   tittel <- 'Registrerte operasjoner'
 
-maaneder <- factor(format(RegData$InnDato, '%b %y'),
+maaneder <- factor(format(RegData$OpDato, '%b %y'),
                 levels = format(seq(datoFra, as.Date(datoTil), by="month"), "%b %y"))
 
 AntMnd <- table(maaneder)

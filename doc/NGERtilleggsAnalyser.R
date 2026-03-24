@@ -23,7 +23,7 @@ datoTil <- '2017-12-31'
 RegData <- NGERPreprosess(RegData) ##Her konverteres til bare store bokstaver i prosedyre- og diagnosekoder
 Utvalg <- NGERUtvalgEnh(RegData, datoFra = datoFra, datoTil = datoTil)
 RegData <- Utvalg$RegData
-RegData$Aar <- as.character(strftime(RegData$InnDato, format="%Y"))
+RegData$Aar <- as.character(strftime(RegData$OpDato, format="%Y"))
 #table(RegData$Aar)
 RegData <- RegData[which(RegData$ReshId %in% reshID),] #Bare Ullevål, Haukeland og Tønsberg
 #table(RegData$ShNavn)

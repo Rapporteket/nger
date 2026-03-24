@@ -45,7 +45,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
   Rand0var <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
                 'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')
   if (valgtVar %in% c(TSS0var, Rand0var)) {
-   RegData <- RegData[RegData$InnDato >= '2016-01-01', ]}
+   RegData <- RegData[RegData$OpDato >= '2016-01-01', ]}
 
 
   if (valgtVar=='Alder') {	#Andeler, , #andelGrVar, GjsnGrVar, GjsnTid
@@ -412,7 +412,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
     #Kode: tomme, -1,0,1 8.feb.2022 -1 og 0 har "forsvunnet". Nå bare 1 og tomme
     #Tar ut hendelser siste 8 uker:
     datoTil <- as.Date(Sys.Date() - 8*7)  #min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 8*7))
-    RegData <- RegData[which(as.Date(RegData$InnDato) <= datoTil),]
+    RegData <- RegData[which(as.Date(RegData$OpDato) <= datoTil),]
     RegData$Variabel[(RegData$Opf0metode %in% 1:2) | (RegData$Opf0metode==3 & RegData$Opf0UtfViaEprom==1)] <- 1
     #RegData$Variabel[RegData$Opf0metode %in% 1:3 ] <- 1 # Må fjerne de som ikke har svart på PROM
   #RegData$Variabel[RegData$Opf0Status==1] <- 1 Her vil vi også få med de som har oppfølging ikke mulig. Uansett er denne variabelen feil (7.feb.2022
@@ -447,7 +447,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
   if (valgtVar == 'RegForsinkelse') {  #Andeler, GjsnGrVar
     #Leveringsdato vil oppdateres ved reåpning og kan derfor ikke brukes. mars19: Toril mener den er pålitelig nok.
     #17.nov-23: Endrer til OpForstLukket
-    RegData$Diff <- as.numeric(as.Date(RegData$OpForstLukket) - as.Date(RegData$InnDato)) #difftime(RegData$InnDato, RegData$Leveringsdato) #
+    RegData$Diff <- as.numeric(as.Date(RegData$OpForstLukket) - as.Date(RegData$OpDato)) #difftime(RegData$OpDato, RegData$Leveringsdato) #
     RegData <- RegData[which(RegData$Diff > -1), ]
     tittel <- switch(figurtype,
                      andeler='Tid fra operasjon til ferdigstilt registrering',

@@ -16,21 +16,16 @@ library(nger)
 source("dev/sysSetenv.R")
 nger::kjor_NGERapp(browser = TRUE)
 
-rapbase::runAutoReport(group = "nger",
-                       dato = Sys.Date()+1, dryRun = TRUE)
+RegData <- nger::NGERRegDataSQL(datoFra = '2023-01-01', medPROM = 1)
 
-#AlleVarNum <- AlleVarNum(datoFra = '2025-01-01')
-NgerData <- nger:: NGERRegDataSQL()
-RegData <- NgerData
-
-RegDataGml <- NGERRegDataSQL(#datoFra = '2025-01-01', datoTil = Sys.Date(),
-                             medPROM=1, gml=1)
-RegDataNy <- NGERRegDataSQL(datoFra = '2025-01-01', datoTil = Sys.Date(),
-                          medPROM=1, gml=0)
+RegData <- NGERPreprosess(RegData = RegData)
 #ProsedyreGr, Prosedyrer, Diagnoser, DiagnoseGr
 NGERFigAndeler(RegData=RegDataNy, valgtVar='Prosedyrer')
 RegData <- NGERPreprosess(RegDataNy)
 
+
+rapbase::runAutoReport(group = "nger",
+                       dato = Sys.Date()+1, dryRun = TRUE)
 
 
 

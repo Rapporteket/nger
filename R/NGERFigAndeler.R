@@ -15,7 +15,6 @@
 #'     \item KomplReopUtd: Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper
 #'     \item LapKomplikasjoner: Laparoskopiske intrapoerative komplikasjoner
 #'     \item LapEkstrautstyr: Laparoskopisk ekstrautstyr - Kommer, NY variabel: koagulasjon og klipping
-#'     \item LapIntraabdominell: Laparoskopiske intraabdominale komplikasjoner
 #'     \item LapNumHjelpeinnstikk: Antall hjelpeinnstikk
 #'     \item LapTeknikk: Laparoskopisk tilgang, teknikk og metode (Tidl LapTilgangsMetode)
 #'     \item Norsktalende: Pasientens norskkunnskaper

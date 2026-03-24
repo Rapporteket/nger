@@ -41,7 +41,7 @@ SorterOgNavngiTidsEnhet <- function(RegData, tidsenhet='Aar', tab=0) {
       RegData$TidsEnhetSort <- switch(tidsenhet,
                                       Aar = RegData$Aar-min(RegData$Aar)+1,
                                       Mnd = RegData$MndNum-min(RegData$MndNum[RegData$Aar==min(RegData$Aar)])+1
-                                          +(RegData$Aar-min(RegData$Aar))*12, #format(RegData$InnDato, '%b%y'), #
+                                          +(RegData$Aar-min(RegData$Aar))*12, #format(RegData$OpDato, '%b%y'), #
                                       Kvartal = RegData$Kvartal-min(RegData$Kvartal[RegData$Aar==min(RegData$Aar)])+1+
                                             (RegData$Aar-min(RegData$Aar))*4,
                                       Halvaar = RegData$Halvaar-min(RegData$Halvaar[RegData$Aar==min(RegData$Aar)])+1+
@@ -50,8 +50,8 @@ SorterOgNavngiTidsEnhet <- function(RegData, tidsenhet='Aar', tab=0) {
 
       tidtxt <- switch(tidsenhet,
                        #Henter fullt månedsnavn og forkorter etterpå.
-                       Mnd = format.Date(seq(from=lubridate::floor_date(as.Date(min(as.Date(RegData$InnDato), na.rm = T)), 'month'),
-                                         to=max(as.Date(RegData$InnDato), na.rm = T), by='month'), format = '%B%y'), #Hele måneden
+                       Mnd = format.Date(seq(from=lubridate::floor_date(as.Date(min(as.Date(RegData$OpDato), na.rm = T)), 'month'),
+                                         to=max(as.Date(RegData$OpDato), na.rm = T), by='month'), format = '%B%y'), #Hele måneden
                        Kvartal = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhetSort), RegData$TidsEnhetSort)], 3,4),
                                        sprintf('%01.0f', RegData$Kvartal[match(1:max(RegData$TidsEnhetSort), RegData$TidsEnhetSort)]), sep='-'),
                        Halvaar = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhetSort), RegData$TidsEnhetSort)], 3,4),
