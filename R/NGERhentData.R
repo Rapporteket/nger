@@ -11,16 +11,30 @@ mappingEgneNavn <- function(tabell, tabType) {
     rapbase::loadRegData( "data",
                           query = "SELECT FIELD_NAME, REGISTRATION_TYPE, USER_SUGGESTION #, USER_DATE
                            FROM friendly_vars")
-  rydd <- which(friendlyVarTab$USER_SUGGESTION == 'VERBOTEN')
-  if (length(rydd)>0) {
-    friendlyVarTab <- friendlyVarTab[-which(friendlyVarTab$USER_SUGGESTION == 'VERBOTEN'), ]}
 
+  # indRydd <- which(friendlyVarTab$USER_SUGGESTION %in% c('VERBOTEN', 'NEINNICHTS'))
+  # if (length(indRydd)>0) {
+  #   friendlyVarTab <- friendlyVarTab[-indRydd, ]}
+  # print(tabType)
+  #friendlyVarTabType <- friendlyVarTab
   indTabType <- which(friendlyVarTab$REGISTRATION_TYPE %in% tabType)
-   navnFr <- friendlyVarTab$FIELD_NAME[indTabType]
-   kuttTabPrefiks <- if (tabType %in% c( 'RAND36_0', 'RAND36_1', 'RAND36_3')) {
-     'RAND36_'} else {paste0(tabType, '_')}
-   navn <- gsub(kuttTabPrefiks, "", navnFr)
-   names(navn) <- friendlyVarTab$USER_SUGGESTION[indTabType]
+  if (!length(indTabType)==0) {
+    friendlyVarTabType <- friendlyVarTab[indTabType,]
+    kuttTabPrefiks <- if (tabType %in% c( 'RAND36_0', 'RAND36_1', 'RAND36_3')) {
+      'RAND36_'} else {paste0(tabType, '_')}
+  }
+
+  rydd <- which(friendlyVarTabType$USER_SUGGESTION  %in% c('VERBOTEN', 'NEINNICHTS'))
+  if (length(rydd)>0) {
+    fjernvar <- gsub(kuttTabPrefiks, "", friendlyVarTabType$FIELD_NAME[rydd])
+    indFjern <- which(names(tabell) %in% fjernvar)
+    if (length(indFjern) > 0) {
+      tabell <- tabell[ , -indFjern]}
+    friendlyVarTabType <- friendlyVarTabType[-rydd, ]
+  }
+
+   navn <- gsub(kuttTabPrefiks, "", friendlyVarTabType$FIELD_NAME)
+   names(navn) <- friendlyVarTabType$USER_SUGGESTION # [indTabType]
   tabellEgne <- dplyr::rename(tabell, dplyr::any_of(navn)) #all_of(navn
   return(tabellEgne)
   }
@@ -53,11 +67,6 @@ hentDataTabell <- function(tabellnavn = "operation",
   tabell <- rapbase::loadRegData(registryName = "data",
                                  query = query)
 
-  if (egneVarNavn == 1) {
-    tabType <- toupper(tabellnavn)
-    tabell <- mappingEgneNavn(tabell, tabType)
-  }
-
   if (tabellnavn == 'rand36') {
     #Har oppdatert navnene i variabelregisteret, så skal ikke trenge suffiks
     RAND36_0 <- mappingEgneNavn(tabell[tabell$YEAR == 0, ], 'RAND36_0')
@@ -66,7 +75,13 @@ hentDataTabell <- function(tabellnavn = "operation",
     tabell <- merge(RAND36_0, RAND36_1, by='ForlopsID',
                     all.x = TRUE, suffixes = c('', '1aar') ) |>
       merge(RAND36_3, by='ForlopsID', all.x = TRUE, suffixes = c('', '3aar'))
+    egneVarNavn <- 0
       }
+
+  if (egneVarNavn == 1) {
+    tabType <- toupper(tabellnavn)
+    tabell <- mappingEgneNavn(tabell, tabType)
+  }
 
   return(tabell)
 }
@@ -155,7 +170,7 @@ NGERRegDataSQL <- function(datoFra = '2011-01-01', datoTil = Sys.Date(),
    EnhetsNavn <- hentDataTabell(tabellnavn = "centreattribute",
                                 qVar = 'ID,
                                 ATTRIBUTEVALUE as ShNavn',
-                                             egneVarNavn = 1)
+                                             egneVarNavn = 0)
    RegData <-
      merge(mceSkjema,
            PasSkjema, by.x = "PATIENT_ID", by.y = "PasientID",

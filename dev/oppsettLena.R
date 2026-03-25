@@ -16,6 +16,7 @@ library(nger)
 source("dev/sysSetenv.R")
 nger::kjor_NGERapp(browser = TRUE)
 
+source("dev/sysSetenv.R")
 RegData <- nger::NGERRegDataSQL(datoFra = '2023-01-01', medPROM = 1)
 
 RegData <- NGERPreprosess(RegData = RegData)
