@@ -4,7 +4,13 @@
 \alias{hentDataTabell}
 \title{Hent datatabell fra ngers database}
 \usage{
-hentDataTabell(tabellnavn = "operation", qVar = "*", egneVarNavn = 1)
+hentDataTabell(
+  tabellnavn = "operation",
+  qVar = "*",
+  datoFra = "2011-01-01",
+  datoTil = Sys.Date(),
+  egneVarNavn = 1
+)
 }
 \arguments{
 \item{tabellnavn}{Navn på tabell som skal lastes inn.}

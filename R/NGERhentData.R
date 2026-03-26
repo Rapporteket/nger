@@ -107,9 +107,6 @@ NGERRegDataSQL <- function(datoFra = '2011-01-01', datoTil = Sys.Date(),
 
     # mce_patient_data # eneste som inneholder kobling mellom mceid og pasientid
     qmce <- paste0('MCEID, CENTREID, PATIENT_ID')
-    # MCE_TYPE, OPER_DATE, PARENT_MCE, , TSCREATED, TSUPDATED
-    # LAPARO_STATUS, LAPARO_TSUPDATED, HYSTERO_STATUS, FOLLOWUP_STATUS, FOLLOWUP_TYPE,
-    # TSS2_STATUS, TSS2_FOLLOWUP_TYPE, FOLLOWUP_TSS2_PROM_STATUS, FOLLOWUP_6MND_STATUS, RAND36_Y1_STATUS,
 
     mceSkjema <- hentDataTabell(tabellnavn = "mce",
                                qVar = qmce,
@@ -128,9 +125,8 @@ NGERRegDataSQL <- function(datoFra = '2011-01-01', datoTil = Sys.Date(),
        ANESTHESIA_SEDATION, ASA, OPTIME_COUNT, ANTIBIOTIC_PROPHYLAXIS, SURVIVED,
        STATUS, FIRST_TIME_CLOSED"
     # TSCREATED, COMPLICATION_COMMENT, TSUPDATED,
-#datoFra <- '2025-01-01'
-#datoTil <- '2025-12-31'
-    OpSkjema <-  hentDataTabell(tabellnavn = "operation",
+
+        OpSkjema <-  hentDataTabell(tabellnavn = "operation",
                                 datoFra = datoFra,
                                 datoTil = datoTil,
                                 qVar = qOp,
@@ -258,8 +254,7 @@ if (medPROM == 1) {
 
   #Fjern var med Ver, CENTREID, UPDATEDBY
   # ??_SPECIFY??, COMMENT,
- RegData <- RegData[ ,-c(grep('Ver', names(RegData)),
-                         grep('CENTREID', names(RegData)),
+ RegData <- RegData[ ,-c(grep('CENTREID', names(RegData)),
                          grep('COMMENT', names(RegData)),
                          grep('CREATED', names(RegData)),
                          grep('CLOSED', names(RegData)),

@@ -20,8 +20,6 @@
 
 NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype='andeler'){
   #grVar='',
-
-
   "%i%" <- intersect
 
   #----------- Figurparametre ------------------------------

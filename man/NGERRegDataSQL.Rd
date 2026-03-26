@@ -5,7 +5,7 @@
 \title{Henter NGER-data}
 \usage{
 NGERRegDataSQL(
-  datoFra = "2013-01-01",
+  datoFra = "2011-01-01",
   datoTil = Sys.Date(),
   medPROM = 1,
   gml = 0,
