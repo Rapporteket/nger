@@ -50,7 +50,6 @@ dev.off()
 reshID <- 110734 # 110734 (Tønsberg)  	#Må sendes med til funksjon
 setwd('C:/RegistreGIT/nger/inst/')
 setwd('~/nger/inst/')
-data('NGERtulledata', package = 'nger')
 
 AVN <- read.table('C:/Registerdata/nger/allevarnum2022-11-10.csv', sep = ';',
                       header = T,encoding = 'UTF-8')
@@ -80,22 +79,22 @@ enhetsUtvalg <- 1
 RegData <- NGERPreprosess(NGERRegDataSQL(datoFra = '2021-01-01', datoTil = '2021-10-31'))
 
 table(RegData$Opf0Status, useNA = 'a')
-#Alle med Opf0Status=NA har også NA for 'Opf0metode', 'Opf0BesvarteProm', 'Opf0Komplikasjoner'
-RegData[is.na(RegData$Opf0Status), c('Opf0metode', 'Opf0BesvarteProm', 'Opf0Komplikasjoner')]
+#Alle med Opf0Status=NA har også NA for 'Opf0metode', 'Opf0UtfViaEprom', 'Opf0Komplikasjoner'
+RegData[is.na(RegData$Opf0Status), c('Opf0metode', '', 'Opf0Komplikasjoner')]
 prop.table(table(RegData$Opf0Komplikasjoner, useNA = 'a'))
 prop.table(table(RegData$Opf0InfOpSaar, useNA = 'a'))
 
-table(RegData[which(RegData$Opf0Status==1 & RegData$Opf0metode %in% 1:2), c('Opf0Komplikasjoner', 'Opf0BesvarteProm')], useNA = 'a')
+table(RegData[which(RegData$Opf0Status==1 & RegData$Opf0metode %in% 1:2), c('Opf0Komplikasjoner', '')], useNA = 'a')
 
-addmargins(table(RegData[which(RegData$Opf0Status==1), c('Opf0metode', 'Opf0BesvarteProm')], useNA = 'a'))
+addmargins(table(RegData[which(RegData$Opf0Status==1), c('Opf0metode', '')], useNA = 'a'))
 addmargins(table(RegData[which(RegData$Opf0Status==1), c('Opf0metode', 'Opf0Komplikasjoner')], useNA = 'a'))
 addmargins(table(RegData[which(RegData$Opf0Status==1), c('Opf0metode', 'Opf0InfOpSaar')], useNA = 'a'))
 
 
 table(RegData$Opf0metode, useNA = 'a')
 
-sum(RegData$Opf0metode %in% 1:2 | (RegData$Opf0metode == 3 & RegData$Opf0BesvarteProm==1), na.rm = T)
-prop.table(table(RegData$Opf0metode %in% 1:2 | (RegData$Opf0metode == 3 & RegData$Opf0BesvarteProm==1), useNA = 'a'))
+sum(RegData$Opf0metode %in% 1:2 | (RegData$Opf0metode == 3 & RegData$Opf0UtfViaEprom==1), na.rm = T)
+prop.table(table(RegData$Opf0metode %in% 1:2 | (RegData$Opf0metode == 3 & RegData$Opf0UtfViaEprom==1), useNA = 'a'))
 sum(RegData$Opf0Komplikasjoner %in% 0:1)
 
 RegData$Variabel <- 0
@@ -159,7 +158,7 @@ varBort <- c('PasRegDato', 'PersonNr', 'PersonNrType', 'FodselsDato', 'Morsmaal'
            grep('Opf1', names(RegData)), grep('RY1', names(RegData)))
 RegData <- lageTulleData(RegData=0, varBort=varBort, antSh=26, antObs=20000)
 
-save(skjemaoversikt, RegData, file = './data/NGERtulledata.Rdata')
+#save(skjemaoversikt, RegData, file = './data/NGERtulledata.Rdata')
 
 #----------------------------------- PARAMETRE ------------------------------
 RegData <- NGERRegDataSQL()
@@ -352,7 +351,6 @@ NGERFigPrePost(RegData=0, valgtVar='AlleRANDdim',
 #-----------------------------Kvalietsindikatorer------------------------------
 #valgtVar <- 'kvalInd' #RAND0, TSS0, kvalInd
 outfile <- '' #paste0(valgtVar, '_kvalInd.png')
-data("NGERtulledata")
 UtDataFraFig <- NGERFigKvalInd(RegData=0, hentData = 1, datoFra='2017-10-01', valgtVar='kvalInd', OpMetode=99,
                Hastegrad=99, preprosess=1, Ngrense=10, enhetsUtvalg=1, reshID = 8, velgAvd = 0,
                outfile=outfile)

@@ -684,57 +684,7 @@ ui_nger <- function() {
       )
     ), #GjsnGrVar/Tid
 
-    #-------Registeradministrasjon----------
-    tabPanel(p("Registeradministrasjon",
-               title='Registeradministrasjonens side for registreringer og resultater'),
-             value = "Registeradministrasjon",
-             h3('Siden er bare synlig for SC-bruker', align = 'center'),
-             #uiOutput(user$role'),
-
-             tabsetPanel(
-               tabPanel(
-                 h4("Utsending av rapporter"),
-                 sidebarPanel(
-                   rapbase::autoReportOrgInput("NGERutsending"),
-                   rapbase::autoReportInput("NGERutsending"),
-                   br(),
-                   br(),
-
-                    # Kommenter ut når skal i prod:
-                   br(),
-                   br(),
-                   shiny::actionButton(inputId = "run_autoreport",
-                                       label = "Kjør autorapporter"),
-                   shiny::dateInput(inputId = "rapportdato",
-                                    label = "Kjør rapporter med dato:",
-                                    value = Sys.Date(),
-                                    min = Sys.Date(),
-                                    max = Sys.Date() + 366
-                   ),
-                   shiny::checkboxInput(inputId = "dryRun", label = "Send e-post")
-                 ),
-                 mainPanel(
-                   rapbase::autoReportUI("NGERutsending"),
-                   # Kommenter ut når skal i prod:
-                   br(),
-                   br(),
-                   p(em("System message:")),
-                   verbatimTextOutput("sysMessage"),
-                   p(em("Function message:")),
-                   verbatimTextOutput("funMessage")
-                 )
-               ), #Utsending-tab
-               tabPanel(
-                 h4("Eksport av krypterte data"),
-                 sidebarPanel(
-                   rapbase::exportUCInput("ngerExport")
-                 ),
-                 mainPanel(
-                   rapbase::exportGuideUI("ngerExportGuide")
-                   )
-               ) #Eksport-tab
-             ) #tabsetPanel
-    ), #tab SC
+    
     #----------Abonnement-----------------
 
     tabPanel(p("Abonnement",
@@ -775,10 +725,12 @@ server_nger <- function(input, output, session) {
   rapbase::appLogger(session, msg = 'Starter Rapporteket-NGER')
 
     #----------Hente data ----------
-    RegData <- NGERRegDataSQL()
-    errorCondition(dim(RegData)[1]==0, 'ingen data')
+    #RegData <- NGERRegDataSQL()
+    RegDataAlle <- NGERRegDataSQL(medPROM=1, gml=0)
+    errorCondition(dim(RegDataAlle)[1]==0, 'ingen data')
 
-    RegData <- NGERPreprosess(RegData)
+    RegData <- NGERPreprosess(RegDataAlle)
+
     map_avdeling <- data.frame(
       UnitId = unique(RegData$ReshId),
       orgname = RegData$ShNavn[match(unique(RegData$ReshId),
@@ -791,25 +743,6 @@ server_nger <- function(input, output, session) {
     caller = "nger"
   )
 
-  observeEvent(user$role(), {
-    # print(user)
-
-      if (user$role() == 'SC') {
-      showTab(inputId = "hovedark", target = "Registeradministrasjon")
-      shinyjs::show(id = 'velgResh')
-      shinyjs::show(id = 'velgReshReg')
-      shinyjs::show(id = 'velgReshKval')
-      shinyjs::show(id = 'velgSykehusFord')
-      shinyjs::show(id = 'velgSykehusTab')
-    } else {
-      shinyjs::hide(id = 'velgResh')
-      shinyjs::hide(id = 'velgReshReg')
-      shinyjs::hide(id = 'velgReshKval')
-      shinyjs::hide(id = 'velgSykehusFord')
-      shinyjs::hide(id = 'velgSykehusTab')
-      hideTab(inputId = "hovedark", target = "Registeradministrasjon")
-    }
-  })
 
   # widget
   if (paaServer) {
@@ -892,12 +825,17 @@ server_nger <- function(input, output, session) {
 
   # Hente oversikt over hvilke registrereinger som er gjort (opdato og fødselsdato)
   output$velgReshReg <- renderUI({
-    selectInput(inputId = 'velgReshReg', label='Velg sykehus',
-                selected = 0,
-                choices = sykehusValg)
+    if (user$role() == 'SC') {
+      selectInput(inputId = 'velgReshReg', label='Velg sykehus',
+                  selected = 0,
+                  choices = sykehusValg)
+    } else {
+      NULL
+    }
   })
   RegOversikt <- RegData[ , c('FodselsDato', 'OpDato', 'ReshId', 'ShNavn')] #, 'BasisRegStatus'
 
+  # Data til kontroll
   observe({
     RegOversikt <- dplyr::filter(RegOversikt,
                                  as.Date(OpDato) >= input$datovalgReg[1],
@@ -918,11 +856,12 @@ server_nger <- function(input, output, session) {
       content = function(file, filename){write.csv2(tabDataRegKtr, file, row.names = F, na = '')})
   })
 
-  # Egen datadump, LU uten PROM
-  RegDataAlle <- RegData
+  # --------Egen datadump, (NB: LU uten PROM)---------
+  # RegDataAlle <- NGERRegDataSQL(medPROM=1, gml=0)
+  # RegDataAlle <- NGERPreprosess(RegData = RegDataAlle)
   observe({
     DataDump <-
-      NGERUtvalgEnh(RegData = RegDataAlle,
+      NGERUtvalgEnh(RegData = RegData,
                     datoFra = input$datovalgReg[1],
                     datoTil = input$datovalgReg[2],
                     OpMetode = as.numeric(input$opMetodeRegDump),
@@ -941,7 +880,7 @@ server_nger <- function(input, output, session) {
       tabDataDump <- DataDump[ind,]
     } else {
       navn <- names(DataDump)
-      fjernVarInd <- c(grep('Opf0', navn), grep('Opf1', navn),
+      fjernVarInd <- c(grep('Opf0', navn), grep('Opf6', navn),
                        grep('R0', navn), grep('R1', navn), grep('R3', navn),
                        grep('RY1', navn), grep('Tss', navn))
       tabDataDump <-
@@ -954,16 +893,21 @@ server_nger <- function(input, output, session) {
     output$lastNed_dataDump <- downloadHandler(
       filename = function(){'dataDumpNGER.csv'},
       content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, na = '')
-        rapbase::repLogger(session = session, msg = txtLog)
+        rapbase::repLogger2(user = user, msg = txtLog)
         })
   })
   #---------Kvalitetsindikatorer------------
   #KvalInd
 
   output$velgReshKval <- renderUI({
+    if (user$role() == 'SC') {
     selectInput(inputId = 'velgReshKval', label='Velg sykehus',
                 selected = 0,
-                choices = sykehusValg)})
+                choices = sykehusValg)
+    } else {
+      NULL
+    }
+  })
   observe({
     output$kvalInd <- renderPlot({
       NGERFigKvalInd(RegData=RegData, preprosess = 0,
@@ -1148,9 +1092,13 @@ server_nger <- function(input, output, session) {
   })
 
   output$velgSykehusTab <- renderUI({
-    selectInput(inputId = 'velgSykehusTab', label='Velg sykehus',
-                selected = 0,
-                choices = sykehusValg)
+    if (user$role() == 'SC') {
+      selectInput(inputId = 'velgSykehusTab', label='Velg sykehus',
+                  selected = 0,
+                  choices = sykehusValg)
+    } else {
+      NULL
+    }
   })
 
   observe({
@@ -1188,9 +1136,13 @@ server_nger <- function(input, output, session) {
   #---------Fordelinger------------
 
   output$velgSykehusFord <- renderUI({
-    selectInput(inputId = 'velgSykehusFord', label='Velg sykehus',
-                selected = 0,
-                choices = sykehusValg)
+    if (user$role() == 'SC') {
+      selectInput(inputId = 'velgSykehusFord', label='Velg sykehus',
+                  selected = 0,
+                  choices = sykehusValg)
+    } else {
+      NULL
+    }
   })
 
   observe({ #Fordeling
@@ -1628,6 +1580,70 @@ server_nger <- function(input, output, session) {
     user = user
   )
   #-----------Registeradministrasjon-----------
+  observeEvent(user$role(), {
+    if (user$role() == "SC") {
+      message("Adding Registeradministrasjon tab for user with role ", user$role())
+      shiny::insertTab(
+        inputId = "hovedark",
+        tab = tabPanel(p("Registeradministrasjon",
+                    title='Registeradministrasjonens side for registreringer og resultater'),
+                  value = "Registeradministrasjon",
+                  h3('Siden er bare synlig for SC-bruker', align = 'center'),
+                  #uiOutput(user$role'),
+
+                  tabsetPanel(
+                    tabPanel(
+                      h4("Utsending av rapporter"),
+                      sidebarPanel(
+                        rapbase::autoReportOrgInput("NGERutsending"),
+                        rapbase::autoReportInput("NGERutsending"),
+                        br(),
+                        br(),
+
+                        # Kommenter ut når skal i prod:
+                        br(),
+                        br(),
+                        shiny::actionButton(inputId = "run_autoreport",
+                                            label = "Kjør autorapporter"),
+                        shiny::dateInput(inputId = "rapportdato",
+                                        label = "Kjør rapporter med dato:",
+                                        value = Sys.Date(),
+                                        min = Sys.Date(),
+                                        max = Sys.Date() + 366
+                        ),
+                        shiny::checkboxInput(inputId = "dryRun", label = "Send e-post")
+                      ),
+                      mainPanel(
+                        rapbase::autoReportUI("NGERutsending"),
+                        # Kommenter ut når skal i prod:
+                        br(),
+                        br(),
+                        p(em("System message:")),
+                        verbatimTextOutput("sysMessage"),
+                        p(em("Function message:")),
+                        verbatimTextOutput("funMessage")
+                      )
+                    ), #Utsending-tab
+                    tabPanel(
+                      h4("Eksport av krypterte data"),
+                      sidebarPanel(
+                        rapbase::exportUCInput("ngerExport")
+                      ),
+                      mainPanel(
+                        rapbase::exportGuideUI("ngerExportGuide")
+                        )
+                    ) #Eksport-tab
+                  ) #tabsetPanel
+          ),
+          target = "Abonnement",
+          position = "before"
+      )
+      } else {
+        message("Removing Registeradministrasjon tab for user with role ", user$role())
+        shiny::removeTab(inputId = "hovedark", target = "Registeradministrasjon")
+      }
+  })
+
 
   ## liste med metadata for rapport
   reports <- list(
