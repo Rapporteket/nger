@@ -7,10 +7,10 @@
 # Sys.setenv(MYSQL_PASSWORD="root")
 setwd("C:/Users/lro2402unn/RegistreGIT/nger")
 setwd('../data')
-sship::dec("c://Users/lro2402unn/RegistreGIT/data/nger1702cb1d5.sql.gz__20260219_092951.tar.gz",
+sship::dec("c://Users/lro2402unn/RegistreGIT/data/nger136cd92e2.sql.gz__20260409_091146.tar.gz",
            keyfile = "c://Users/lro2402unn/.ssh/id_rsa",
            target_dir = "c://Users/lro2402unn/RegistreGIT/data/.")
-# source c://Users/lro2402unn/RegistreGIT/data/nger1702cb1d5.sql;
+# source c://Users/lro2402unn/RegistreGIT/data/nger136cd92e2.sql;
 
 library(nger)
 source("dev/sysSetenv.R")
@@ -18,11 +18,10 @@ nger::kjor_NGERapp(browser = TRUE)
 
 source("dev/sysSetenv.R")
 RegData <- nger::NGERRegDataSQL(datoFra = '2023-01-01', medPROM = 1)
-
 RegData <- NGERPreprosess(RegData = RegData)
-#ProsedyreGr, Prosedyrer, Diagnoser, DiagnoseGr
-NGERFigAndeler(RegData=RegDataNy, valgtVar='Prosedyrer')
-RegData <- NGERPreprosess(RegDataNy)
+sort(names(RegData))
+"Aar1aar"
+
 
 
 rapbase::runAutoReport(group = "nger",

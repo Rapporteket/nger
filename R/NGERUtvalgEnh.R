@@ -45,8 +45,7 @@
 #'
 NGERUtvalgEnh <- function(RegData, datoFra='2011-01-01', datoTil='3000-12-31', fargepalett='BlaaOff',
                           minald=0, maxald=110, OpMetode=0, AlvorlighetKompl=0, #dagkir=9, # Hastegrad=0,
-                          behNivaa = 0,
-                          enhetsUtvalg=0, velgAvd=0, velgDiag=0, reshID=0)
+                          behNivaa = 0, enhetsUtvalg=0, velgAvd=0, velgDiag=0, reshID=0)
 {
   # Definer intersect-operator
   "%i%" <- intersect
@@ -151,25 +150,11 @@ if (velgDiag !=0) {
     indBehNivaa <- which(RegData$OpBehNivaa == behNivaa)
   } else {indBehNivaa <- 1:Ninn}
 
-  #Hastegrad  1:3 'Elektiv', 'Akutt', 'Ø-hjelp'
-  # indHastegrad <- if (Hastegrad[1] %in% 1:3) {which(RegData$OpKategori %in% as.numeric(Hastegrad))
-  #                 } else {indHastegrad <- 1:Ninn}
-  #Dagkirurgi 0-nei, 1-ja
-  # indDagkir <- if (dagkir %in% 0:1) {
-  #   if (dagkir==0) {which(RegData$OpBehNivaa != 2)}
-  #     if (dagkir==1) {which(RegData$OpBehNivaa == 2)}
-  #   #indDagkir <- if (dagkir %in% 0:1) {which(RegData$OpDagkirurgi == as.numeric(dagkir))
-  # } else {indDagkir <- 1:Ninn}
-
 
   #utvalg:
   indMed <- indAld %i% indDato %i% indMCE %i% indAlvor %i% indDiag  %i% indBehNivaa
-  # %i% indHastegrad %i% indDagkir
-
   RegData <- RegData[indMed,]
-
   N <- dim(RegData)[1]
-
 
   utvalgTxt <- c(paste0('Operasjonsdato: ', if (N>0) {min(RegData$OpDato, na.rm=T)} else {datoFra},
                        ' til ', if (N>0) {max(RegData$OpDato, na.rm=T)} else {datoTil}),
@@ -184,9 +169,6 @@ if (velgDiag !=0) {
                                                   'Robotassisert inngrep',
                                                   'Kolpopeksiene',
                                                   'Hysterektomier')[OpMetode])},
-                 # if (Hastegrad[1] %in% 1:3){
-                 #   paste0('Hastegrad: ',
-                 #          paste0(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','))},
                  if (behNivaa %in% 1:3){paste0('Behandlingsnivå: ',
                                                c('Poliklinisk', 'Dagkirurgi', 'Innlagt')[as.numeric(behNivaa)])},
                  if (AlvorlighetKompl[1] %in% 1:4){

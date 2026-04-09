@@ -8,13 +8,10 @@
 #' @return RegData En data.frame med det preprosesserte datasettet
 #'
 #' @export
-#'
+
 NGERPreprosess <- function(RegData=RegData)
 {
   #Kun ferdigstilte registreringer:
-  #OK
-  if ('BasisRegStatus' %in% (names(RegData))) { RegData <- RegData[RegData$BasisRegStatus==1, ]}
-  #Leveres fortsatt registreringer m/BasisRegStatus=0
   #Opf0Status=1 for alle registreringer i followupsnum
   #OppflgRegStatus:
   # NULL	Oppfølginger finnes ikke for denne typen forløp.
@@ -42,12 +39,9 @@ NGERPreprosess <- function(RegData=RegData)
 
 
   #Vask og nye:
-  #names(RegData)[which(names(RegData)=='PasientAlder')] <- 'Alder'
   RegData$Alder <- (as.Date(RegData$OpDato) - as.Date(RegData$FodselsDato))/365.25
-  # names(RegData)[which(names(RegData)=='CENTREID')] <- 'ReshId'
   names(RegData)[which(names(RegData)=='SykehusNavn')] <- 'ShNavn'
-
-  RegData$ShNavn <- trimws(as.character(RegData$ShNavn)) #Fjerner mellomrom (før) og etter navn
+ RegData$ShNavn <- trimws(as.character(RegData$ShNavn)) #Fjerner mellomrom (før) og etter navn
 
   #Tomme sykehusnavn får resh som navn:
   indTom <- which(is.na(RegData$ShNavn) | RegData$ShNavn == '')

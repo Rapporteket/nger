@@ -75,6 +75,7 @@ hentDataTabell <- function(tabellnavn = "operation",
     tabell <- merge(RAND36_0, RAND36_1, by='ForlopsID',
                     all.x = TRUE, suffixes = c('', '1aar') ) |>
       merge(RAND36_3, by='ForlopsID', all.x = TRUE, suffixes = c('', '3aar'))
+    tabell <- tabell[ ,-grep('Aar', names(tabell))]
     egneVarNavn <- 0
       }
 
@@ -100,7 +101,7 @@ hentDataTabell <- function(tabellnavn = "operation",
 NGERRegDataSQL <- function(datoFra = '2011-01-01', datoTil = Sys.Date(),
                            medPROM=1, gml=0, ...) {
 # Få til å fungere med ny sammenkobling av alle data
-  # legg på datofiltrering
+  # Bare ferdigstilte (STATUS=1) registreringer overføres LapSkjema, HysSkjema, OpSkjema
 
   if (gml==0) {
     # Raskest å hente alle og så filtrere på dato eller filtrere på dato til slutt?
@@ -131,18 +132,13 @@ NGERRegDataSQL <- function(datoFra = '2011-01-01', datoTil = Sys.Date(),
                                 datoTil = datoTil,
                                 qVar = qOp,
                                 egneVarNavn = 1)
-
-    #Fjern var med Ver, CENTREID, UPDATEDBY
-    # ??_SPECIFY??, COMMENT,
-    # txtFjern <-
-#varFjernes <- c(names(grep('Ver'))
-#                RegData <- RegData[ ,-c(grep('_MISS', names(RegData)), grep('_UTFYLT', names(RegData)))]
+    names(OpSkjema)[names(OpSkjema) == "OpForstLukket"] <- 'OpFerdigstilt'
 
     #Laparoskopi
     LapSkjema <-  hentDataTabell(tabellnavn = "laparoscopy",
                                         qVar = '*',
                                         egneVarNavn = 1)
-    # intersect(sort(names(LapSkjema)), sort(names(OpSkjema)))
+
     #Hysteroskopi
     HysSkjema <-  hentDataTabell(tabellnavn = "hysteroscopy",
                                  qVar = '*',
@@ -179,13 +175,13 @@ NGERRegDataSQL <- function(datoFra = '2011-01-01', datoTil = Sys.Date(),
      merge(EnhetsNavn,
            by.x = "CENTREID", by.y = 'ID', all.x = TRUE)
 
+
 if (medPROM == 1) {
     #Oppfølgigsskjema:
     Oppf0Skjema <- hentDataTabell(tabellnavn = "followup",
                                               qVar = '*',
                                               egneVarNavn = 1)
    Oppf0Skjema <- Oppf0Skjema |> dplyr::rename(Opf0metode = FOLLOWUP_TYPE)
-
    # followup.PROM_ANSWERED AS Opf0BesvarteProm, -> Opf0Utf ->Opf0UtfViaEprom
 
    Oppf6Skjema <- hentDataTabell(tabellnavn = "followup6",
@@ -196,6 +192,7 @@ if (medPROM == 1) {
     qProm <- "CENTREID, DISTRIBUTION_RULE, EXPIRY_DATE,
     FORM_ORDER_STATUS_ERROR_CODE, MCEID, NOTIFICATION_CHANNEL, REGISTRATION_TYPE,
     REMINDER_DATE, STATUS, TSRECEIVED, TSSENDT, TSUPDATED"
+
     PromSkjema <- hentDataTabell(tabellnavn = "proms",
                                   qVar = qProm,
                                   egneVarNavn = 0)
@@ -252,11 +249,12 @@ if (medPROM == 1) {
   }
   }
 
-  #Fjern var med Ver, CENTREID, UPDATEDBY
-  # ??_SPECIFY??, COMMENT,
+  #Fjern var
  RegData <- RegData[ ,-c(grep('CENTREID', names(RegData)),
                          grep('COMMENT', names(RegData)),
                          grep('CREATED', names(RegData)),
+                         grep('ForstLukket', names(RegData)),
+                         grep('FORM_COMPLETED_VIA_PROM', names(RegData)),
                          grep('CLOSED', names(RegData)),
                          grep('UPDATED', names(RegData)),
                          grep('_SPECIFY', names(RegData)))]

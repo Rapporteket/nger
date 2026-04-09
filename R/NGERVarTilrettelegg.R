@@ -444,8 +444,8 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
   }
   if (valgtVar == 'RegForsinkelse') {  #Andeler, GjsnGrVar
     #Leveringsdato vil oppdateres ved reåpning og kan derfor ikke brukes. mars19: Toril mener den er pålitelig nok.
-    #17.nov-23: Endrer til OpForstLukket
-    RegData$Diff <- as.numeric(as.Date(RegData$OpForstLukket) - as.Date(RegData$OpDato)) #difftime(RegData$OpDato, RegData$Leveringsdato) #
+    #17.nov-23: Endrer til OpForstLukket som navnes om til OpFerdigstilt
+    RegData$Diff <- as.numeric(as.Date(RegData$OpFerdigstilt) - as.Date(RegData$OpDato)) #difftime(RegData$OpDato, RegData$Leveringsdato) #
     RegData <- RegData[which(RegData$Diff > -1), ]
     tittel <- switch(figurtype,
                      andeler='Tid fra operasjon til ferdigstilt registrering',
@@ -927,7 +927,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
   if (valgtVar=='HysSkadeaarsakIntra') {
     #Hysteroskopi intrapoerative komplikasjoner:
     # Innført 14.nov 2023
-    RegData <- RegData[which(as.Date(RegData$OpForstLukket) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
+    RegData <- RegData[which(as.Date(RegData$OpFerdigstilt) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
     flerevar <- 1
     variable <- c('HysSkadeaarsakStenose', 'HysSkadeaarsakAd', 'HysSkadeaarsakTeknUtst',
                   'HysSkadeaarsakAnatomi', 'HysSkadeaarsakAnnet')
@@ -1079,7 +1079,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData <- RegData[RegData$LapKomplikasjoner %in% 0:1, ]	#
   }
   if (valgtVar== 'LapSkadeIntra') { #
-    RegData <- RegData[which(as.Date(RegData$OpForstLukket) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
+    RegData <- RegData[which(as.Date(RegData$OpFerdigstilt) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
     flerevar <- 1
     variable <- c('LapSkadeTilgang', 'LapSkadeUthent', 'LapSkadeDissek',
                   'LapSkadeForsegl', 'LapSkadeAnnet')
@@ -1089,7 +1089,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
   }
 
   if (valgtVar=='LapSkadeaarsakIntra') {
-    RegData <- RegData[which(as.Date(RegData$OpForstLukket) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
+    RegData <- RegData[which(as.Date(RegData$OpFerdigstilt) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
     flerevar <- 1
     variable <- c('LapSkadeaarsakTeknUtst', 'LapSkadeaarsakAdher', 'LapSkadeaarsakTidlKir',
                   'LapSkadeaarsakAnnet')
