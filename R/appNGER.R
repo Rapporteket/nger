@@ -49,6 +49,7 @@ ui_nger <- function() {
 
     # lag logo og tittel som en del av navbar
     title = rapbase::title(regTitle),
+    header = yearLoadControlUI("yearLoadRefresh"),
     # sett inn tittel også i browser-vindu
     windowTitle = regTitle,
     theme = rapbase::theme(),
@@ -718,529 +719,539 @@ ui_nger <- function() {
 #' @return Server-delen til NGER-appen
 #' @export
 server_nger <- function(input, output, session) {
+  yearLoadControlServer("yearLoadRefresh")
+  observeEvent(shiny::getQueryString(session), once = TRUE, {
 
-  #-- Div serveroppstart----
-  context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-  paaServer <- (context %in% c("DEV", "TEST", "QA","QAC", "PRODUCTION", "PRODUCTIONC")) #rapbase::isRapContext()
-  rapbase::appLogger(session, msg = 'Starter Rapporteket-NGER')
-
-    #----------Hente data ----------
-    #RegData <- NGERRegDataSQL()
-    RegDataAlle <- NGERRegDataSQL(medPROM=1, gml=0)
-    errorCondition(dim(RegDataAlle)[1]==0, 'ingen data')
-
-    RegData <- NGERPreprosess(RegDataAlle)
-
-    map_avdeling <- data.frame(
-      UnitId = unique(RegData$ReshId),
-      orgname = RegData$ShNavn[match(unique(RegData$ReshId),
-                                     RegData$ReshId)])
-
-  user <- rapbase::navbarWidgetServer2(
-    id = "navbar-widget",
-    orgName = "nger",
-    map_orgname = shiny::req(map_avdeling),
-    caller = "nger"
-  )
-
-
-  # widget
-  if (paaServer) {
-    output$appUserName <- renderText(rapbase::getUserFullName(session))
-    output$appOrgName <- renderText(paste0('rolle: ', user$role(), '<br> ReshID: ', user$org()) )}
-
-  # User info in widget
-  userInfo <- rapbase::howWeDealWithPersonalData(session)
-  observeEvent(input$userInfo, {
-    shinyalert::shinyalert("Dette vet Rapporteket om deg:", userInfo,
-                           type = "", imageUrl = "rap/logo.svg",
-                           closeOnEsc = TRUE, closeOnClickOutside = TRUE,
-                           html = TRUE, confirmButtonText = rapbase::noOptOutOk())
-  })
-
-  #Definere utvalgsinnhold
-  sykehusNavn <- sort(unique(RegData$ShNavn), index.return=T)
-  sykehusValgUts <- unique(RegData$ReshId)[sykehusNavn$ix]
-  names(sykehusValgUts) <- sykehusNavn$x #c('Alle',sykehusNavn$x)
-  sykehusValg <- c(0,sykehusValgUts)
-  names(sykehusValg) <- c('Ikke valgt',sykehusNavn$x)
-
-
-  #--------------Startside------------------------------
-
-  output$mndRapp.pdf <- downloadHandler(
-    #filename = function(){ downloadFilename('NGERmaanedsrapport')},
-    filename = function(){ paste0('NGERmndRapp', Sys.time(), '.pdf')},
-    content = function(file){
-      henteSamlerapporter(file, rnwFil="NGERmndRapp.Rnw",
-                          reshID = user$org())
-    })
-
-  output$antRegMnd <- renderPlot({NGERFigAntReg(RegData=RegData, reshID = user$org())
-  }, height=500, width=900
-  )
-
-
-  #----------Registreringsoversikter ----------------------
-
-  observe({
-    tabAntOpphShMndAar <-
-      switch(input$tidsenhetReg,
-             Mnd=tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12,
-                                 OpMetode=as.numeric(input$opMetodeReg),
-                                 velgDiag=as.numeric(input$velgDiagReg)), #input$datovalgTab[2])
-             Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg,
-                                  OpMetode=as.numeric(input$opMetodeReg),
-                                  velgDiag=as.numeric(input$velgDiagReg)))
-    output$tabAntOpphSh <- renderTable(tabAntOpphShMndAar$tabAntAvd, rownames = T, digits=0, spacing="xs")
-    output$lastNed_tabAntOpph <- downloadHandler(
-      filename = function(){paste0('tabAntOpph.csv')},
-      content = function(file, filename){write.csv2(tabAntOpphShMndAar$tabAntAvd, file, row.names = T, na = '')
-      })
-
-    output$undertittelReg <- renderUI({
-      t1 <- 'Tabellen viser operasjoner '
-      tagList(
-        br(),
-        h4(HTML(switch(input$tidsenhetReg,
-                       Mnd = paste0(t1, 'siste 12 måneder før ', input$sluttDatoReg, '<br />'),
-                       Aar = paste0(t1, 'siste 5 år før ', input$sluttDatoReg, '<br />'))),
-           HTML(paste0(tabAntOpphShMndAar$utvalgTxt[-1], '<br />'))
-        ))
-    })
-  }) #observe
-
-  observe({
-    #RegData som har tilknyttede skjema av ulik type
-    AntSkjemaAvHver <- tabAntSkjema(RegData=RegData,
-                                    datoFra = input$datovalgReg[1],
-                                    datoTil=input$datovalgReg[2])
-    output$tabAntSkjema <- renderTable(AntSkjemaAvHver
-                                       ,rownames = T, digits=0, spacing="xs" )
-    output$lastNed_tabAntSkjema <- downloadHandler(
-      filename = function(){'tabAntSkjema.csv'},
-      content = function(file, filename){write.csv2(AntSkjemaAvHver, file, row.names = T, na = '')
-      })
-  })
-
-  # Hente oversikt over hvilke registrereinger som er gjort (opdato og fødselsdato)
-  output$velgReshReg <- renderUI({
-    if (user$role() == 'SC') {
-      selectInput(inputId = 'velgReshReg', label='Velg sykehus',
-                  selected = 0,
-                  choices = sykehusValg)
-    } else {
-      NULL
-    }
-  })
-  RegOversikt <- RegData[ , c('FodselsDato', 'OpDato', 'ReshId', 'ShNavn')] #, 'BasisRegStatus'
-
-  # Data til kontroll
-  observe({
-    RegOversikt <- dplyr::filter(RegOversikt,
-                                 as.Date(OpDato) >= input$datovalgReg[1],
-                                 as.Date(OpDato) <= input$datovalgReg[2])
-
-    if (user$role() == 'SC') {
-      valgtResh <- ifelse(is.null(input$velgReshReg), 0, as.numeric(input$velgReshReg))
-      ind <- if (valgtResh == 0) {1:dim(RegOversikt)[1]
-      } else {which(as.numeric(RegOversikt$ReshId) %in% as.numeric(valgtResh))}
-      tabDataRegKtr <- RegOversikt[ind,]
-
-    }  else {
-      tabDataRegKtr <- RegOversikt[which(RegOversikt$ReshId == user$org()), ]}
-
-
-    output$lastNed_dataTilRegKtr <- downloadHandler(
-      filename = function(){'dataTilKtr.csv'},
-      content = function(file, filename){write.csv2(tabDataRegKtr, file, row.names = F, na = '')})
-  })
-
-  # --------Egen datadump, (NB: LU uten PROM)---------
-  # RegDataAlle <- NGERRegDataSQL(medPROM=1, gml=0)
-  # RegDataAlle <- NGERPreprosess(RegData = RegDataAlle)
-  observe({
-    DataDump <-
-      NGERUtvalgEnh(RegData = RegData,
-                    datoFra = input$datovalgReg[1],
-                    datoTil = input$datovalgReg[2],
-                    OpMetode = as.numeric(input$opMetodeRegDump),
-                    velgDiag = as.numeric(input$diagnoseRegDump),
-                    AlvorlighetKompl = as.numeric(input$alvorlighetKomplDump))$RegData
-    if (input$IntraKomplDump == TRUE) {
-      indIntraKompl <- which((DataDump$LapKomplikasjoner==1) | (DataDump$HysKomplikasjoner==1))
-      DataDump <- DataDump[indIntraKompl, ]}
-
-    if (user$role() =='SC') {
-      valgtResh <- ifelse(is.null(input$velgReshReg),
-                          0, as.numeric(input$velgReshReg))
-      ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
-      } else {
-        which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
-      tabDataDump <- DataDump[ind,]
-    } else {
-      navn <- names(DataDump)
-      fjernVarInd <- c(grep('Opf0', navn), grep('Opf6', navn),
-                       grep('R0', navn), grep('R1', navn), grep('R3', navn),
-                       grep('RY1', navn), grep('Tss', navn))
-      tabDataDump <-
-        DataDump[which(DataDump$ReshId == user$org()), -fjernVarInd]
-
-    } #Tar bort PROM/PREM til egen avdeling
-    txtLog <- paste0('Datadump for NGER: ',
-                     'tidsperiode ', input$datovalgReg[1], '_', input$datovalgReg[2])
-
-    output$lastNed_dataDump <- downloadHandler(
-      filename = function(){'dataDumpNGER.csv'},
-      content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, na = '')
-        rapbase::repLogger2(user = user, msg = txtLog)
-        })
-  })
-  #---------Kvalitetsindikatorer------------
-  #KvalInd
-
-  output$velgReshKval <- renderUI({
-    if (user$role() == 'SC') {
-    selectInput(inputId = 'velgReshKval', label='Velg sykehus',
-                selected = 0,
-                choices = sykehusValg)
-    } else {
-      NULL
-    }
-  })
-  observe({
-    output$kvalInd <- renderPlot({
-      NGERFigKvalInd(RegData=RegData, preprosess = 0,
-                     valgtVar=input$valgtVarKval,
-                     datoFra=input$datovalgKval[1],
-                     datoTil=input$datovalgKval[2],
-                     reshID = user$org(),
-                     minald=as.numeric(input$alderKval[1]),
-                     maxald=as.numeric(input$alderKval[2]),
-                     OpMetode = as.numeric(input$opMetodeKval),
-                     behNivaa = as.numeric(input$behNivaaKval),
-                     velgDiag = as.numeric(input$velgDiagKval),
-                     AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
-                     enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
-                     velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
-                     session = session)
-    }, height=800, width=800)
-
-    output$LastNedFigKval <- downloadHandler(
-      filename = function(){
-        paste0('FigKval_',input$valgtVarKval, Sys.time(), '.', input$bildeformatKval)
-      },
-      content = function(file){
-        NGERFigKvalInd(RegData=RegData, preprosess = 0,
-                       valgtVar=input$valgtVarKval,
-                       datoFra=input$datovalgKval[1],
-                       datoTil=input$datovalgKval[2],
-                       reshID = user$org(),
-                       minald=as.numeric(input$alderKval[1]),
-                       maxald=as.numeric(input$alderKval[2]),
-                       OpMetode = as.numeric(input$opMetodeKval),
-                       behNivaa = as.numeric(input$behNivaaKval),
-                       velgDiag = as.numeric(input$velgDiagKval),
-                       AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
-                       enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
-                       velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
-                       session = session,
-                       outfile = file)
-      })
-
-
-    UtDataKvalInd <-
-      NGERFigKvalInd(RegData=RegData, preprosess = 0,
-                     valgtVar=input$valgtVarKval,
-                     datoFra=input$datovalgKval[1],
-                     datoTil=input$datovalgKval[2],
-                     reshID = user$org(),
-                     minald=as.numeric(input$alderKval[1]),
-                     maxald=as.numeric(input$alderKval[2]),
-                     OpMetode = as.numeric(input$opMetodeKval),
-                     behNivaa = as.numeric(input$behNivaaKval),
-                     velgDiag = as.numeric(input$velgDiagKval),
-                     AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
-                     enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
-                     velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
-                     session = session)
-
-    tabKvalInd <- lagTabavFig(UtDataFraFig = UtDataKvalInd) #lagTabavFigAndeler
-
-    output$tittelKvalInd <- renderUI({
-      tagList(
-        h3(UtDataKvalInd$tittel),
-        h5(HTML(paste0(UtDataKvalInd$utvalgTxt, '<br />')))
-      )}) #, align='center'
-
-    output$kvalIndTab <- function() {
-      antKol <- ncol(tabKvalInd)
-      kableExtra::kable(tabKvalInd, format = 'html'
-                        , full_width=F
-                        , digits = c(0,1,0,1)[1:antKol]
-      ) %>%
-        kableExtra::add_header_above(c(" "=1, 'Egen enhet/gruppe' = 2, 'Resten' = 2)[1:(antKol/2+1)]) %>%
-        kableExtra::column_spec(column = 1, width_min = '7em') %>%
-        kableExtra::column_spec(column = 2:(ncol(tabKvalInd)+1), width = '7em') %>%
-        kableExtra::row_spec(0, bold = T)
-    }
-
-    output$lastNed_tabKvalInd <- downloadHandler(
-      filename = function(){paste0(input$valgtVarKval, '_kvalInd.csv')},
-      content = function(file, filename){write.csv2(tabKvalInd, file, row.names = T, na = '')
-      })
-  }) #observe Kvalitetsind
-
-  #--RAND013:
-  output$kvalRAND013 <- renderPlot({
-    NGERFigPrePost(RegData=RegData, preprosess = 0,
-                   valgtVar=input$valgtVarRAND013,
-                   datoFra=input$datovalgKval[1],
-                   datoTil=input$datovalgKval[2],
-                   minald=as.numeric(input$alderKval[1]),
-                   maxald=as.numeric(input$alderKval[2]),
-                   OpMetode = as.numeric(input$opMetodeKval),
-                   behNivaa = as.numeric(input$behNivaaKval),
-                   velgDiag = as.numeric(input$velgDiagKval),
-                   AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
-                   session = session)
-  }, height=800, width=800)
-
-  output$LastNedFigRAND013 <- downloadHandler(
-    filename = function(){
-      paste0('FigRAND013_',input$valgtVarRAND013, Sys.time(), '.', input$bildeformatKval)
-    },
-    content = function(file){
-      NGERFigPrePost(RegData=RegData, preprosess = 0,
-                     valgtVar=input$valgtVarRAND013,
-                     datoFra=input$datovalgKval[1],
-                     datoTil=input$datovalgKval[2],
-                     minald=as.numeric(input$alderKval[1]),
-                     maxald=as.numeric(input$alderKval[2]),
-                     OpMetode = as.numeric(input$opMetodeKval),
-                     behNivaa = as.numeric(input$behNivaaKval),
-                     velgDiag = as.numeric(input$velgDiagKval),
-                     AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
-                     session = session,
-                     outfile = file)
-    })
-
-  #RAND, alle dim
-  output$kvalRANDdim <- renderPlot({
-    NGERFigPrePost(RegData=RegData, preprosess = 0,
-                   valgtVar='AlleRANDdim',
-                   datoFra=input$datovalgKval[1],
-                   datoTil=input$datovalgKval[2],
-                   enhetsUtvalg=as.numeric(input$enhetsUtvalgKvalRAND),
-                   reshID = user$org(),
-                   velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
-                   minald=as.numeric(input$alderKval[1]),
-                   maxald=as.numeric(input$alderKval[2]),
-                   OpMetode = as.numeric(input$opMetodeKval),
-                   behNivaa = as.numeric(input$behNivaaKval),
-                   velgDiag = as.numeric(input$velgDiagKval),
-                   AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
-                   session = session)
-  }, height=800, width=800)
-
-  output$LastNedFigRANDdim <- downloadHandler(
-    filename = function(){
-      paste0('FigRANDdim_', Sys.time(), '.', input$bildeformatKval)
-    },
-    content = function(file){
-      NGERFigPrePost(RegData=RegData, preprosess = 0,
-                     valgtVar='AlleRANDdim',
-                     datoFra=input$datovalgKval[1],
-                     datoTil=input$datovalgKval[2],
-                     enhetsUtvalg=as.numeric(input$enhetsUtvalgKvalRAND),
-                     reshID = user$org(),
-                     velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
-                     minald=as.numeric(input$alderKval[1]),
-                     maxald=as.numeric(input$alderKval[2]),
-                     OpMetode = as.numeric(input$opMetodeKval),
-                     behNivaa = as.numeric(input$behNivaaKval),
-                     velgDiag = as.numeric(input$velgDiagKval),
-                     AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
-                     session = session,
-                     outfile = file)
-    })
-
-  #----------Tabelloversikter ----------------------
-  observe({
-    tabInstrumentbruk <- instrumentbruk(RegData = RegData,
-                                        datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2])
-    output$tabInstrBruk <- renderTable(tabInstrumentbruk, rownames = T, digits=0, spacing="xs")
-    output$lastNed_tabInstrBruk <- downloadHandler(
-      filename = function(){paste0('tabInstrumentbruk.csv')},
-      content = function(file, filename){write.csv2(tabInstrumentbruk, file, row.names = T, na = '')})
-    LapKomplData <- tabKomplLap(RegData=RegData,
-                                reshID=user$org(),
-                                datoFra = input$datovalgTab[1],
-                                datoTil = input$datovalgTab[2])
-
-    output$tittelLapKompl <- renderUI(tagList(
-      h4('Hyppighet (%) av laparoskopiske komplikasjoner. '),
-      h4(paste0('Totalt ble det utført ', LapKomplData$AntLap, ' laparoskopier i tidsperioden.'))))
-    output$LapKompl <- renderTable(LapKomplData$AndelLapKomplTab,
-                                   rownames = T,
-                                   digits=1,
-                                   spacing="xs") #,caption = tabtxtLapKompl)
-    output$lastNed_tabLapKompl <-  downloadHandler(
-      filename = function(){paste0('tabLapKompl.csv')},
-      content = function(file, filename){write.csv2(LapKomplData$AntLap, file, row.names = T, na = '')})
-    #,caption = tabtxtLapKompl)
-  })
-
-  output$velgSykehusTab <- renderUI({
-    if (user$role() == 'SC') {
-      selectInput(inputId = 'velgSykehusTab', label='Velg sykehus',
-                  selected = 0,
-                  choices = sykehusValg)
-    } else {
-      NULL
-    }
-  })
-
-  observe({
-    tabNokkelHys <- tabNokkelHys(RegData = RegData,
-                                 datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2],
-                                 reshID = user$org(),
-                                 velgAvd = ifelse(is.null(input$velgSykehusTab),
-                                                  user$org(), as.numeric(input$velgSykehusTab)),
-                                 enhetsUtvalg = input$enhetsUtvalgTab)
-    output$tabNokkelHys <- renderTable(tabNokkelHys, rownames = T, align = 'r', #c('l', 'r', 'r', 'r', 'r', 'r'),
-                                       spacing="xs")
-
-    output$lastNed_tabNokkelHys <-  downloadHandler(
-      filename = function(){paste0('tabNokkelHys.csv')},
-      content = function(file, filename){write.csv2(tabNokkelHys, file, row.names = T, na = '')})
-
-  })
-
-  observe({
-    tabNokkelLap <- tabNokkelLap(RegData = RegData,
-                                 datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2],
-                                 reshID = user$org(),
-                                 velgAvd=ifelse(is.null(input$velgSykehusTab), user$org(), as.numeric(input$velgSykehusTab)),
-                                 enhetsUtvalg = input$enhetsUtvalgTab)
-    output$tabNokkelLap <- renderTable(tabNokkelLap, rownames = T, align = 'r',
-                                       spacing="xs")
-
-    output$lastNed_tabNokkelLap <-  downloadHandler(
-      filename = function(){paste0('tabNokkelLap.csv')},
-      content = function(file, filename){write.csv2(tabNokkelLap, file, row.names = T, na = '')})
-
-  })
-
-
-  #---------Fordelinger------------
-
-  output$velgSykehusFord <- renderUI({
-    if (user$role() == 'SC') {
-      selectInput(inputId = 'velgSykehusFord', label='Velg sykehus',
-                  selected = 0,
-                  choices = sykehusValg)
-    } else {
-      NULL
-    }
-  })
-
-  observe({ #Fordeling
-    output$fordelinger <- renderPlot({
-      NGERFigAndeler(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
-                     datoFra=input$datovalg[1], datoTil=input$datovalg[2],
-                     reshID = user$org(),
-                     minald=as.numeric(input$alder[1]),
-                     maxald=as.numeric(input$alder[2]),
-                     OpMetode = as.numeric(input$opMetode),
-                     behNivaa = as.numeric(input$behNivaa),
-                     velgDiag = as.numeric(input$velgDiag),
-                     AlvorlighetKompl = as.numeric(input$alvorlighetKompl),
-                     enhetsUtvalg=as.numeric(input$enhetsUtvalg),
-                     velgAvd=ifelse(is.null(input$velgSykehusFord), 0, input$velgSykehusFord),
-                     session = session)
-    }, height=800, width=800 #height = function() {session$clientData$output_fordelinger_width}
+    qs <- shiny::getQueryString(session)
+    sinceDate <- if (!is.null(qs$since)) qs$since
+      else paste0(as.numeric(format(Sys.Date()-90, "%Y")), "-01-01")
+    shiny::updateSelectInput(
+      session,
+      "sinceYear",
+      selected = sinceDate |> as.Date() |> format("%Y")
+    )
+    
+    range_inputs <- c(
+      "datovalgReg", #Registreringsoversikter
+      "datovalgKval", #Kvalitetsindikatorer
+      "datovalgTab", #Tabelloversikter
+      "datovalg", #Fordelinger
+      "datovalgAndel", #Andeler
+      "datovalgGjsn" #Gjennomsnitt
     )
 
-    output$LastNedFigFord <- downloadHandler(
-      filename = function(){
-        paste0('FigFord_', input$valgtVar, Sys.time(), '.', input$bildeformatFord)
-      },
-      content = function(file){
-        NGERFigAndeler(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
-                       datoFra=input$datovalg[1], datoTil=input$datovalg[2],
-                       reshID = user$org(),
-                       minald=as.numeric(input$alder[1]),
-                       maxald=as.numeric(input$alder[2]),
-                       OpMetode = as.numeric(input$opMetode),
-                       behNivaa = as.numeric(input$behNivaa),
-                       velgDiag = as.numeric(input$velgDiag),
-                       AlvorlighetKompl = as.numeric(input$alvorlighetKompl),
-                       enhetsUtvalg=as.numeric(input$enhetsUtvalg),
-                       velgAvd=ifelse(is.null(input$velgSykehusFord), 0, input$velgSykehusFord),
-                       session = session,
-                       outfile = file)
-      })
-
-
-    #RegData må hentes ut fra valgtVar
-    UtDataFord <-
-      NGERFigAndeler(RegData=RegData, preprosess = 0, valgtVar=input$valgtVar,
-                     datoFra=input$datovalg[1], datoTil=input$datovalg[2],
-                     reshID = user$org(),
-                     minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
-                     OpMetode = as.numeric(input$opMetode),
-                     behNivaa = as.numeric(input$behNivaa),
-                     velgDiag = as.numeric(input$velgDiag),
-                     AlvorlighetKompl = as.numeric(input$alvorlighetKompl),
-                     enhetsUtvalg=as.numeric(input$enhetsUtvalg),
-                     velgAvd=ifelse(is.null(input$velgSykehusFord), 0, input$velgSykehusFord),
-                     session = session)
-    tabFord <- lagTabavFig(UtDataFraFig = UtDataFord) #lagTabavFigAndeler
-    output$tittelFord <- renderUI({
-      tagList(
-        h3(UtDataFord$tittel),
-        h5(HTML(paste0(UtDataFord$utvalgTxt, '<br />')))
-      )}) #, align='center'
-
-    output$fordelingTab <- function() {
-      antKol <- ncol(tabFord)
-      kableExtra::kable(tabFord, format = 'html'
-                        , full_width=F
-                        , digits = c(0,1,0,1)[1:antKol]
-      ) %>%
-        kableExtra::add_header_above(c(" "=1, 'Egen enhet/gruppe' = 2, 'Resten' = 2)[1:(antKol/2+1)]) %>%
-        kableExtra::column_spec(column = 1, width_min = '7em') %>%
-        kableExtra::column_spec(column = 2:(ncol(tabFord)+1), width = '7em') %>%
-        kableExtra::row_spec(0, bold = T)
+    # update range inputs
+    for (id in range_inputs) {
+      updateDateRangeInput(session, id, min = sinceDate)
     }
 
-    output$lastNed_tabFord <- downloadHandler(
-      filename = function(){paste0(input$valgtVar, '_fordeling.csv')},
-      content = function(file, filename){write.csv2(tabFord, file, row.names = T, na = '')
+
+
+    #-- Div serveroppstart----
+    context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
+    paaServer <- (context %in% c("DEV", "TEST", "QA","QAC", "PRODUCTION", "PRODUCTIONC")) #rapbase::isRapContext()
+    rapbase::appLogger(session, msg = 'Starter Rapporteket-NGER')
+
+      #----------Hente data ----------
+      #RegData <- NGERRegDataSQL()
+      RegDataAlle <- NGERRegDataSQL(datoFra = sinceDate, medPROM=1, gml=0)
+      errorCondition(dim(RegDataAlle)[1]==0, 'ingen data')
+
+      RegData <- NGERPreprosess(RegDataAlle)
+
+      map_avdeling <- data.frame(
+        UnitId = unique(RegData$ReshId),
+        orgname = RegData$ShNavn[match(unique(RegData$ReshId),
+                                      RegData$ReshId)])
+
+    user <- rapbase::navbarWidgetServer2(
+      id = "navbar-widget",
+      orgName = "nger",
+      map_orgname = shiny::req(map_avdeling),
+      caller = "nger"
+    )
+
+
+    # widget
+    if (paaServer) {
+      output$appUserName <- renderText(rapbase::getUserFullName(session))
+      output$appOrgName <- renderText(paste0('rolle: ', user$role(), '<br> ReshID: ', user$org()) )}
+
+    # User info in widget
+    userInfo <- rapbase::howWeDealWithPersonalData(session)
+    observeEvent(input$userInfo, {
+      shinyalert::shinyalert("Dette vet Rapporteket om deg:", userInfo,
+                            type = "", imageUrl = "rap/logo.svg",
+                            closeOnEsc = TRUE, closeOnClickOutside = TRUE,
+                            html = TRUE, confirmButtonText = rapbase::noOptOutOk())
+    })
+
+    #Definere utvalgsinnhold
+    sykehusNavn <- sort(unique(RegData$ShNavn), index.return=T)
+    sykehusValgUts <- unique(RegData$ReshId)[sykehusNavn$ix]
+    names(sykehusValgUts) <- sykehusNavn$x #c('Alle',sykehusNavn$x)
+    sykehusValg <- c(0,sykehusValgUts)
+    names(sykehusValg) <- c('Ikke valgt',sykehusNavn$x)
+
+
+    #--------------Startside------------------------------
+
+    output$mndRapp.pdf <- downloadHandler(
+      #filename = function(){ downloadFilename('NGERmaanedsrapport')},
+      filename = function(){ paste0('NGERmndRapp', Sys.time(), '.pdf')},
+      content = function(file){
+        henteSamlerapporter(file, rnwFil="NGERmndRapp.Rnw",
+                            reshID = user$org())
       })
-  }) #observe Fordeling
+
+    output$antRegMnd <- renderPlot({NGERFigAntReg(RegData=RegData, reshID = user$org())
+    }, height=500, width=900
+    )
 
 
-  #--------------Andeler-----------------------------------
-  output$andelerGrVar <- renderPlot({
-    NGERFigAndelerGrVar(
-      RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
-      datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
-      minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
-      OpMetode = as.numeric(input$opMetodeAndel),
-      behNivaa = as.numeric(input$behNivaaAndel),
-      velgDiag = as.numeric(input$velgDiagAndel),
-      AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
-      session=session)
-  }, height = 800, width=700 #height = function() {session$clientData$output_andelerGrVarFig_width} #})
-  )
+    #----------Registreringsoversikter ----------------------
 
-  output$LastNedFigAndelGrVar <- downloadHandler(
-    filename = function(){
-      paste0('FigAndelSh_', input$valgtVarAndel, Sys.time(), '.', input$bildeformatAndel)
-    },
-    content = function(file){
+    observe({
+      tabAntOpphShMndAar <-
+        switch(input$tidsenhetReg,
+              Mnd=tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12,
+                                  OpMetode=as.numeric(input$opMetodeReg),
+                                  velgDiag=as.numeric(input$velgDiagReg)), #input$datovalgTab[2])
+              Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg,
+                                    OpMetode=as.numeric(input$opMetodeReg),
+                                    velgDiag=as.numeric(input$velgDiagReg)))
+      output$tabAntOpphSh <- renderTable(tabAntOpphShMndAar$tabAntAvd, rownames = T, digits=0, spacing="xs")
+      output$lastNed_tabAntOpph <- downloadHandler(
+        filename = function(){paste0('tabAntOpph.csv')},
+        content = function(file, filename){write.csv2(tabAntOpphShMndAar$tabAntAvd, file, row.names = T, na = '')
+        })
+
+      output$undertittelReg <- renderUI({
+        t1 <- 'Tabellen viser operasjoner '
+        tagList(
+          br(),
+          h4(HTML(switch(input$tidsenhetReg,
+                        Mnd = paste0(t1, 'siste 12 måneder før ', input$sluttDatoReg, '<br />'),
+                        Aar = paste0(t1, 'siste 5 år før ', input$sluttDatoReg, '<br />'))),
+            HTML(paste0(tabAntOpphShMndAar$utvalgTxt[-1], '<br />'))
+          ))
+      })
+    }) #observe
+
+    observe({
+      #RegData som har tilknyttede skjema av ulik type
+      AntSkjemaAvHver <- tabAntSkjema(RegData=RegData,
+                                      datoFra = input$datovalgReg[1],
+                                      datoTil=input$datovalgReg[2])
+      output$tabAntSkjema <- renderTable(AntSkjemaAvHver
+                                        ,rownames = T, digits=0, spacing="xs" )
+      output$lastNed_tabAntSkjema <- downloadHandler(
+        filename = function(){'tabAntSkjema.csv'},
+        content = function(file, filename){write.csv2(AntSkjemaAvHver, file, row.names = T, na = '')
+        })
+    })
+
+    # Hente oversikt over hvilke registrereinger som er gjort (opdato og fødselsdato)
+    output$velgReshReg <- renderUI({
+      if (user$role() == 'SC') {
+        selectInput(inputId = 'velgReshReg', label='Velg sykehus',
+                    selected = 0,
+                    choices = sykehusValg)
+      } else {
+        NULL
+      }
+    })
+    RegOversikt <- RegData[ , c('FodselsDato', 'OpDato', 'ReshId', 'ShNavn')] #, 'BasisRegStatus'
+
+    # Data til kontroll
+    observe({
+      RegOversikt <- dplyr::filter(RegOversikt,
+                                  as.Date(OpDato) >= input$datovalgReg[1],
+                                  as.Date(OpDato) <= input$datovalgReg[2])
+
+      if (user$role() == 'SC') {
+        valgtResh <- ifelse(is.null(input$velgReshReg), 0, as.numeric(input$velgReshReg))
+        ind <- if (valgtResh == 0) {1:dim(RegOversikt)[1]
+        } else {which(as.numeric(RegOversikt$ReshId) %in% as.numeric(valgtResh))}
+        tabDataRegKtr <- RegOversikt[ind,]
+
+      }  else {
+        tabDataRegKtr <- RegOversikt[which(RegOversikt$ReshId == user$org()), ]}
+
+
+      output$lastNed_dataTilRegKtr <- downloadHandler(
+        filename = function(){'dataTilKtr.csv'},
+        content = function(file, filename){write.csv2(tabDataRegKtr, file, row.names = F, na = '')})
+    })
+
+    # --------Egen datadump, (NB: LU uten PROM)---------
+    # RegDataAlle <- NGERRegDataSQL(medPROM=1, gml=0)
+    # RegDataAlle <- NGERPreprosess(RegData = RegDataAlle)
+    observe({
+      DataDump <-
+        NGERUtvalgEnh(RegData = RegData,
+                      datoFra = input$datovalgReg[1],
+                      datoTil = input$datovalgReg[2],
+                      OpMetode = as.numeric(input$opMetodeRegDump),
+                      velgDiag = as.numeric(input$diagnoseRegDump),
+                      AlvorlighetKompl = as.numeric(input$alvorlighetKomplDump))$RegData
+      if (input$IntraKomplDump == TRUE) {
+        indIntraKompl <- which((DataDump$LapKomplikasjoner==1) | (DataDump$HysKomplikasjoner==1))
+        DataDump <- DataDump[indIntraKompl, ]}
+
+      if (user$role() =='SC') {
+        valgtResh <- ifelse(is.null(input$velgReshReg),
+                            0, as.numeric(input$velgReshReg))
+        ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
+        } else {
+          which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
+        tabDataDump <- DataDump[ind,]
+      } else {
+        navn <- names(DataDump)
+        fjernVarInd <- c(grep('Opf0', navn), grep('Opf6', navn),
+                        grep('R0', navn), grep('R1', navn), grep('R3', navn),
+                        grep('RY1', navn), grep('Tss', navn))
+        tabDataDump <-
+          DataDump[which(DataDump$ReshId == user$org()), -fjernVarInd]
+
+      } #Tar bort PROM/PREM til egen avdeling
+      txtLog <- paste0('Datadump for NGER: ',
+                      'tidsperiode ', input$datovalgReg[1], '_', input$datovalgReg[2])
+
+      output$lastNed_dataDump <- downloadHandler(
+        filename = function(){'dataDumpNGER.csv'},
+        content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, na = '')
+          rapbase::repLogger2(user = user, msg = txtLog)
+          })
+    })
+    #---------Kvalitetsindikatorer------------
+    #KvalInd
+
+    output$velgReshKval <- renderUI({
+      if (user$role() == 'SC') {
+      selectInput(inputId = 'velgReshKval', label='Velg sykehus',
+                  selected = 0,
+                  choices = sykehusValg)
+      } else {
+        NULL
+      }
+    })
+    observe({
+      output$kvalInd <- renderPlot({
+        NGERFigKvalInd(RegData=RegData, preprosess = 0,
+                      valgtVar=input$valgtVarKval,
+                      datoFra=input$datovalgKval[1],
+                      datoTil=input$datovalgKval[2],
+                      reshID = user$org(),
+                      minald=as.numeric(input$alderKval[1]),
+                      maxald=as.numeric(input$alderKval[2]),
+                      OpMetode = as.numeric(input$opMetodeKval),
+                      behNivaa = as.numeric(input$behNivaaKval),
+                      velgDiag = as.numeric(input$velgDiagKval),
+                      AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
+                      enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
+                      velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
+                      session = session)
+      }, height=800, width=800)
+
+      output$LastNedFigKval <- downloadHandler(
+        filename = function(){
+          paste0('FigKval_',input$valgtVarKval, Sys.time(), '.', input$bildeformatKval)
+        },
+        content = function(file){
+          NGERFigKvalInd(RegData=RegData, preprosess = 0,
+                        valgtVar=input$valgtVarKval,
+                        datoFra=input$datovalgKval[1],
+                        datoTil=input$datovalgKval[2],
+                        reshID = user$org(),
+                        minald=as.numeric(input$alderKval[1]),
+                        maxald=as.numeric(input$alderKval[2]),
+                        OpMetode = as.numeric(input$opMetodeKval),
+                        behNivaa = as.numeric(input$behNivaaKval),
+                        velgDiag = as.numeric(input$velgDiagKval),
+                        AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
+                        enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
+                        velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
+                        session = session,
+                        outfile = file)
+        })
+
+
+      UtDataKvalInd <-
+        NGERFigKvalInd(RegData=RegData, preprosess = 0,
+                      valgtVar=input$valgtVarKval,
+                      datoFra=input$datovalgKval[1],
+                      datoTil=input$datovalgKval[2],
+                      reshID = user$org(),
+                      minald=as.numeric(input$alderKval[1]),
+                      maxald=as.numeric(input$alderKval[2]),
+                      OpMetode = as.numeric(input$opMetodeKval),
+                      behNivaa = as.numeric(input$behNivaaKval),
+                      velgDiag = as.numeric(input$velgDiagKval),
+                      AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
+                      enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
+                      velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
+                      session = session)
+
+      tabKvalInd <- lagTabavFig(UtDataFraFig = UtDataKvalInd) #lagTabavFigAndeler
+
+      output$tittelKvalInd <- renderUI({
+        tagList(
+          h3(UtDataKvalInd$tittel),
+          h5(HTML(paste0(UtDataKvalInd$utvalgTxt, '<br />')))
+        )}) #, align='center'
+
+      output$kvalIndTab <- function() {
+        antKol <- ncol(tabKvalInd)
+        kableExtra::kable(tabKvalInd, format = 'html'
+                          , full_width=F
+                          , digits = c(0,1,0,1)[1:antKol]
+        ) %>%
+          kableExtra::add_header_above(c(" "=1, 'Egen enhet/gruppe' = 2, 'Resten' = 2)[1:(antKol/2+1)]) %>%
+          kableExtra::column_spec(column = 1, width_min = '7em') %>%
+          kableExtra::column_spec(column = 2:(ncol(tabKvalInd)+1), width = '7em') %>%
+          kableExtra::row_spec(0, bold = T)
+      }
+
+      output$lastNed_tabKvalInd <- downloadHandler(
+        filename = function(){paste0(input$valgtVarKval, '_kvalInd.csv')},
+        content = function(file, filename){write.csv2(tabKvalInd, file, row.names = T, na = '')
+        })
+    }) #observe Kvalitetsind
+
+    #--RAND013:
+    output$kvalRAND013 <- renderPlot({
+      NGERFigPrePost(RegData=RegData, preprosess = 0,
+                    valgtVar=input$valgtVarRAND013,
+                    datoFra=input$datovalgKval[1],
+                    datoTil=input$datovalgKval[2],
+                    minald=as.numeric(input$alderKval[1]),
+                    maxald=as.numeric(input$alderKval[2]),
+                    OpMetode = as.numeric(input$opMetodeKval),
+                    behNivaa = as.numeric(input$behNivaaKval),
+                    velgDiag = as.numeric(input$velgDiagKval),
+                    AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
+                    session = session)
+    }, height=800, width=800)
+
+    output$LastNedFigRAND013 <- downloadHandler(
+      filename = function(){
+        paste0('FigRAND013_',input$valgtVarRAND013, Sys.time(), '.', input$bildeformatKval)
+      },
+      content = function(file){
+        NGERFigPrePost(RegData=RegData, preprosess = 0,
+                      valgtVar=input$valgtVarRAND013,
+                      datoFra=input$datovalgKval[1],
+                      datoTil=input$datovalgKval[2],
+                      minald=as.numeric(input$alderKval[1]),
+                      maxald=as.numeric(input$alderKval[2]),
+                      OpMetode = as.numeric(input$opMetodeKval),
+                      behNivaa = as.numeric(input$behNivaaKval),
+                      velgDiag = as.numeric(input$velgDiagKval),
+                      AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
+                      session = session,
+                      outfile = file)
+      })
+
+    #RAND, alle dim
+    output$kvalRANDdim <- renderPlot({
+      NGERFigPrePost(RegData=RegData, preprosess = 0,
+                    valgtVar='AlleRANDdim',
+                    datoFra=input$datovalgKval[1],
+                    datoTil=input$datovalgKval[2],
+                    enhetsUtvalg=as.numeric(input$enhetsUtvalgKvalRAND),
+                    reshID = user$org(),
+                    velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
+                    minald=as.numeric(input$alderKval[1]),
+                    maxald=as.numeric(input$alderKval[2]),
+                    OpMetode = as.numeric(input$opMetodeKval),
+                    behNivaa = as.numeric(input$behNivaaKval),
+                    velgDiag = as.numeric(input$velgDiagKval),
+                    AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
+                    session = session)
+    }, height=800, width=800)
+
+    output$LastNedFigRANDdim <- downloadHandler(
+      filename = function(){
+        paste0('FigRANDdim_', Sys.time(), '.', input$bildeformatKval)
+      },
+      content = function(file){
+        NGERFigPrePost(RegData=RegData, preprosess = 0,
+                      valgtVar='AlleRANDdim',
+                      datoFra=input$datovalgKval[1],
+                      datoTil=input$datovalgKval[2],
+                      enhetsUtvalg=as.numeric(input$enhetsUtvalgKvalRAND),
+                      reshID = user$org(),
+                      velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
+                      minald=as.numeric(input$alderKval[1]),
+                      maxald=as.numeric(input$alderKval[2]),
+                      OpMetode = as.numeric(input$opMetodeKval),
+                      behNivaa = as.numeric(input$behNivaaKval),
+                      velgDiag = as.numeric(input$velgDiagKval),
+                      AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
+                      session = session,
+                      outfile = file)
+      })
+
+    #----------Tabelloversikter ----------------------
+    observe({
+      tabInstrumentbruk <- instrumentbruk(RegData = RegData,
+                                          datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2])
+      output$tabInstrBruk <- renderTable(tabInstrumentbruk, rownames = T, digits=0, spacing="xs")
+      output$lastNed_tabInstrBruk <- downloadHandler(
+        filename = function(){paste0('tabInstrumentbruk.csv')},
+        content = function(file, filename){write.csv2(tabInstrumentbruk, file, row.names = T, na = '')})
+      LapKomplData <- tabKomplLap(RegData=RegData,
+                                  reshID=user$org(),
+                                  datoFra = input$datovalgTab[1],
+                                  datoTil = input$datovalgTab[2])
+
+      output$tittelLapKompl <- renderUI(tagList(
+        h4('Hyppighet (%) av laparoskopiske komplikasjoner. '),
+        h4(paste0('Totalt ble det utført ', LapKomplData$AntLap, ' laparoskopier i tidsperioden.'))))
+      output$LapKompl <- renderTable(LapKomplData$AndelLapKomplTab,
+                                    rownames = T,
+                                    digits=1,
+                                    spacing="xs") #,caption = tabtxtLapKompl)
+      output$lastNed_tabLapKompl <-  downloadHandler(
+        filename = function(){paste0('tabLapKompl.csv')},
+        content = function(file, filename){write.csv2(LapKomplData$AntLap, file, row.names = T, na = '')})
+      #,caption = tabtxtLapKompl)
+    })
+
+    output$velgSykehusTab <- renderUI({
+      if (user$role() == 'SC') {
+        selectInput(inputId = 'velgSykehusTab', label='Velg sykehus',
+                    selected = 0,
+                    choices = sykehusValg)
+      } else {
+        NULL
+      }
+    })
+
+    observe({
+      tabNokkelHys <- tabNokkelHys(RegData = RegData,
+                                  datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2],
+                                  reshID = user$org(),
+                                  velgAvd = ifelse(is.null(input$velgSykehusTab),
+                                                    user$org(), as.numeric(input$velgSykehusTab)),
+                                  enhetsUtvalg = input$enhetsUtvalgTab)
+      output$tabNokkelHys <- renderTable(tabNokkelHys, rownames = T, align = 'r', #c('l', 'r', 'r', 'r', 'r', 'r'),
+                                        spacing="xs")
+
+      output$lastNed_tabNokkelHys <-  downloadHandler(
+        filename = function(){paste0('tabNokkelHys.csv')},
+        content = function(file, filename){write.csv2(tabNokkelHys, file, row.names = T, na = '')})
+
+    })
+
+    observe({
+      tabNokkelLap <- tabNokkelLap(RegData = RegData,
+                                  datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2],
+                                  reshID = user$org(),
+                                  velgAvd=ifelse(is.null(input$velgSykehusTab), user$org(), as.numeric(input$velgSykehusTab)),
+                                  enhetsUtvalg = input$enhetsUtvalgTab)
+      output$tabNokkelLap <- renderTable(tabNokkelLap, rownames = T, align = 'r',
+                                        spacing="xs")
+
+      output$lastNed_tabNokkelLap <-  downloadHandler(
+        filename = function(){paste0('tabNokkelLap.csv')},
+        content = function(file, filename){write.csv2(tabNokkelLap, file, row.names = T, na = '')})
+
+    })
+
+
+    #---------Fordelinger------------
+
+    output$velgSykehusFord <- renderUI({
+      if (user$role() == 'SC') {
+        selectInput(inputId = 'velgSykehusFord', label='Velg sykehus',
+                    selected = 0,
+                    choices = sykehusValg)
+      } else {
+        NULL
+      }
+    })
+
+    observe({ #Fordeling
+      output$fordelinger <- renderPlot({
+        NGERFigAndeler(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
+                      datoFra=input$datovalg[1], datoTil=input$datovalg[2],
+                      reshID = user$org(),
+                      minald=as.numeric(input$alder[1]),
+                      maxald=as.numeric(input$alder[2]),
+                      OpMetode = as.numeric(input$opMetode),
+                      behNivaa = as.numeric(input$behNivaa),
+                      velgDiag = as.numeric(input$velgDiag),
+                      AlvorlighetKompl = as.numeric(input$alvorlighetKompl),
+                      enhetsUtvalg=as.numeric(input$enhetsUtvalg),
+                      velgAvd=ifelse(is.null(input$velgSykehusFord), 0, input$velgSykehusFord),
+                      session = session)
+      }, height=800, width=800 #height = function() {session$clientData$output_fordelinger_width}
+      )
+
+      output$LastNedFigFord <- downloadHandler(
+        filename = function(){
+          paste0('FigFord_', input$valgtVar, Sys.time(), '.', input$bildeformatFord)
+        },
+        content = function(file){
+          NGERFigAndeler(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
+                        datoFra=input$datovalg[1], datoTil=input$datovalg[2],
+                        reshID = user$org(),
+                        minald=as.numeric(input$alder[1]),
+                        maxald=as.numeric(input$alder[2]),
+                        OpMetode = as.numeric(input$opMetode),
+                        behNivaa = as.numeric(input$behNivaa),
+                        velgDiag = as.numeric(input$velgDiag),
+                        AlvorlighetKompl = as.numeric(input$alvorlighetKompl),
+                        enhetsUtvalg=as.numeric(input$enhetsUtvalg),
+                        velgAvd=ifelse(is.null(input$velgSykehusFord), 0, input$velgSykehusFord),
+                        session = session,
+                        outfile = file)
+        })
+
+
+      #RegData må hentes ut fra valgtVar
+      UtDataFord <-
+        NGERFigAndeler(RegData=RegData, preprosess = 0, valgtVar=input$valgtVar,
+                      datoFra=input$datovalg[1], datoTil=input$datovalg[2],
+                      reshID = user$org(),
+                      minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
+                      OpMetode = as.numeric(input$opMetode),
+                      behNivaa = as.numeric(input$behNivaa),
+                      velgDiag = as.numeric(input$velgDiag),
+                      AlvorlighetKompl = as.numeric(input$alvorlighetKompl),
+                      enhetsUtvalg=as.numeric(input$enhetsUtvalg),
+                      velgAvd=ifelse(is.null(input$velgSykehusFord), 0, input$velgSykehusFord),
+                      session = session)
+      tabFord <- lagTabavFig(UtDataFraFig = UtDataFord) #lagTabavFigAndeler
+      output$tittelFord <- renderUI({
+        tagList(
+          h3(UtDataFord$tittel),
+          h5(HTML(paste0(UtDataFord$utvalgTxt, '<br />')))
+        )}) #, align='center'
+
+      output$fordelingTab <- function() {
+        antKol <- ncol(tabFord)
+        kableExtra::kable(tabFord, format = 'html'
+                          , full_width=F
+                          , digits = c(0,1,0,1)[1:antKol]
+        ) %>%
+          kableExtra::add_header_above(c(" "=1, 'Egen enhet/gruppe' = 2, 'Resten' = 2)[1:(antKol/2+1)]) %>%
+          kableExtra::column_spec(column = 1, width_min = '7em') %>%
+          kableExtra::column_spec(column = 2:(ncol(tabFord)+1), width = '7em') %>%
+          kableExtra::row_spec(0, bold = T)
+      }
+
+      output$lastNed_tabFord <- downloadHandler(
+        filename = function(){paste0(input$valgtVar, '_fordeling.csv')},
+        content = function(file, filename){write.csv2(tabFord, file, row.names = T, na = '')
+        })
+    }) #observe Fordeling
+
+
+    #--------------Andeler-----------------------------------
+    output$andelerGrVar <- renderPlot({
       NGERFigAndelerGrVar(
         RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
         datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
@@ -1249,31 +1260,29 @@ server_nger <- function(input, output, session) {
         behNivaa = as.numeric(input$behNivaaAndel),
         velgDiag = as.numeric(input$velgDiagAndel),
         AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
-        session=session,
-        outfile = file)
-    })
+        session=session)
+    }, height = 800, width=700 #height = function() {session$clientData$output_andelerGrVarFig_width} #})
+    )
+
+    output$LastNedFigAndelGrVar <- downloadHandler(
+      filename = function(){
+        paste0('FigAndelSh_', input$valgtVarAndel, Sys.time(), '.', input$bildeformatAndel)
+      },
+      content = function(file){
+        NGERFigAndelerGrVar(
+          RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
+          datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
+          minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
+          OpMetode = as.numeric(input$opMetodeAndel),
+          behNivaa = as.numeric(input$behNivaaAndel),
+          velgDiag = as.numeric(input$velgDiagAndel),
+          AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
+          session=session,
+          outfile = file)
+      })
 
 
-  output$andelTid <- renderPlot({
-    NGERFigAndelTid(
-      RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
-      reshID=user$org(),
-      datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
-      minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
-      OpMetode = as.numeric(input$opMetodeAndel),
-      behNivaa = as.numeric(input$behNivaaAndel),
-      velgDiag = as.numeric(input$velgDiagAndel),
-      AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
-      tidsenhet = input$tidsenhetAndel,
-      enhetsUtvalg = input$enhetsUtvalgAndel,
-      session=session)
-  }, height = 300, width = 1000
-  )
-  output$LastNedFigAndelTid <- downloadHandler(
-    filename = function(){
-      paste0('FigAndelTid_', input$valgtVarAndel, Sys.time(), '.', input$bildeformatAndel)
-    },
-    content = function(file){
+    output$andelTid <- renderPlot({
       NGERFigAndelTid(
         RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
         reshID=user$org(),
@@ -1285,111 +1294,112 @@ server_nger <- function(input, output, session) {
         AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
         tidsenhet = input$tidsenhetAndel,
         enhetsUtvalg = input$enhetsUtvalgAndel,
-        session=session,
-        outfile = file)
-    })
-
-  observe({
-    #AndelTid
-    AndelerTid <- NGERFigAndelTid(
-      RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
-      reshID=user$org(),
-      datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
-      minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
-      OpMetode = as.numeric(input$opMetodeAndel),
-      behNivaa = as.numeric(input$behNivaaAndel),
-      velgDiag = as.numeric(input$velgDiagAndel),
-      AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
-      tidsenhet = input$tidsenhetAndel,
-      enhetsUtvalg = input$enhetsUtvalgAndel,
-      session=session) #,lagFig=0)
-
-    tabAndelTid <- lagTabavFig(UtDataFraFig = AndelerTid, figurtype = 'andelTid')
-
-
-    output$andelTidTab <- function() {
-      antKol <- ncol(tabAndelTid)
-      kableExtra::kable(tabAndelTid, format = 'html'
-                        , full_width=F
-                        , digits = c(0,1,0,1)[1:antKol]
-      ) %>%
-        kableExtra::add_header_above(c(" "=1, 'Egen enhet/gruppe' = 2, 'Resten' = 2)[1:(antKol/2+1)]) %>%
-        kableExtra::column_spec(column = 1, width_min = '7em') %>%
-        kableExtra::column_spec(column = 2:(antKol+1), width = '7em') %>%
-        kableExtra::row_spec(0, bold = T)
-    }
-    output$lastNed_tabAndelTid <- downloadHandler(
+        session=session)
+    }, height = 300, width = 1000
+    )
+    output$LastNedFigAndelTid <- downloadHandler(
       filename = function(){
-        paste0(input$valgtVar, '_andelTid.csv')
+        paste0('FigAndelTid_', input$valgtVarAndel, Sys.time(), '.', input$bildeformatAndel)
       },
-      content = function(file, filename){
-        write.csv2(tabAndelTid, file, row.names = T, na = '')
+      content = function(file){
+        NGERFigAndelTid(
+          RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
+          reshID=user$org(),
+          datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
+          minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
+          OpMetode = as.numeric(input$opMetodeAndel),
+          behNivaa = as.numeric(input$behNivaaAndel),
+          velgDiag = as.numeric(input$velgDiagAndel),
+          AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
+          tidsenhet = input$tidsenhetAndel,
+          enhetsUtvalg = input$enhetsUtvalgAndel,
+          session=session,
+          outfile = file)
       })
 
-
-    #AndelGrVar
-    AndelerShus <-
-      NGERFigAndelerGrVar(
+    observe({
+      #AndelTid
+      AndelerTid <- NGERFigAndelTid(
         RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
+        reshID=user$org(),
         datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
         minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
         OpMetode = as.numeric(input$opMetodeAndel),
         behNivaa = as.numeric(input$behNivaaAndel),
         velgDiag = as.numeric(input$velgDiagAndel),
         AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
-        session=session) #, lagFig = 0))
-    tabAndelerShus <- cbind(Antall=AndelerShus$Ngr,
-                            Andeler = AndelerShus$AggVerdier$Hoved)
+        tidsenhet = input$tidsenhetAndel,
+        enhetsUtvalg = input$enhetsUtvalgAndel,
+        session=session) #,lagFig=0)
 
-    output$andelerGrVarTab <- function() {
-      antKol <- ncol(tabAndelerShus)
-      kableExtra::kable(tabAndelerShus, format = 'html'
-                        #, full_width=T
-                        , digits = c(0,1) #,0,1)[1:antKol]
-      ) %>%
-        kableExtra::column_spec(column = 1, width_min = '5em') %>%
-        kableExtra::column_spec(column = 2:(antKol+1), width = '4em') %>%
-        kableExtra::row_spec(0, bold = T)
-    }
-    output$lastNed_tabAndelGrVar <- downloadHandler(
-      filename = function(){
-        paste0(input$valgtVar, '_andelGrVar.csv')
-      },
-      content = function(file, filename){
-        write.csv2(tabAndelerShus, file, row.names = T, na = '')
-      })
-
-    output$tittelAndel <- renderUI({
-      tagList(
-        h3(AndelerShus$tittel),
-        h5(HTML(paste0(AndelerShus$utvalgTxt, '<br />')))
-      )}) #, align='center'
-  }) #observe
+      tabAndelTid <- lagTabavFig(UtDataFraFig = AndelerTid, figurtype = 'andelTid')
 
 
+      output$andelTidTab <- function() {
+        antKol <- ncol(tabAndelTid)
+        kableExtra::kable(tabAndelTid, format = 'html'
+                          , full_width=F
+                          , digits = c(0,1,0,1)[1:antKol]
+        ) %>%
+          kableExtra::add_header_above(c(" "=1, 'Egen enhet/gruppe' = 2, 'Resten' = 2)[1:(antKol/2+1)]) %>%
+          kableExtra::column_spec(column = 1, width_min = '7em') %>%
+          kableExtra::column_spec(column = 2:(antKol+1), width = '7em') %>%
+          kableExtra::row_spec(0, bold = T)
+      }
+      output$lastNed_tabAndelTid <- downloadHandler(
+        filename = function(){
+          paste0(input$valgtVar, '_andelTid.csv')
+        },
+        content = function(file, filename){
+          write.csv2(tabAndelTid, file, row.names = T, na = '')
+        })
 
 
-  #---------Gjennomsnitt------------
-  observe({ #Sykehusvise gjennomsnitt, figur og tabell
-    output$gjsnGrVar <- renderPlot(
-      NGERFigGjsnGrVar(
-        RegData=RegData, preprosess = 0, valgtVar=input$valgtVarGjsn,
-        datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
-        minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
-        valgtMaal = input$sentralmaal,
-        OpMetode = as.numeric(input$opMetodeGjsn),
-        behNivaa = as.numeric(input$behNivaaGjsn),
-        velgDiag = as.numeric(input$velgDiagGjsn),
-        AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn),
-        session = session
-      ),
-      width = 700, height = 800)
+      #AndelGrVar
+      AndelerShus <-
+        NGERFigAndelerGrVar(
+          RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
+          datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
+          minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
+          OpMetode = as.numeric(input$opMetodeAndel),
+          behNivaa = as.numeric(input$behNivaaAndel),
+          velgDiag = as.numeric(input$velgDiagAndel),
+          AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
+          session=session) #, lagFig = 0))
+      tabAndelerShus <- cbind(Antall=AndelerShus$Ngr,
+                              Andeler = AndelerShus$AggVerdier$Hoved)
 
-    output$LastNedFigGjsnGrVar <- downloadHandler(
-      filename = function(){
-        paste0('FigGjsnSh_', input$valgtVarGjsn,Sys.time(), '.', input$bildeformatGjsn)
-      },
-      content = function(file){
+      output$andelerGrVarTab <- function() {
+        antKol <- ncol(tabAndelerShus)
+        kableExtra::kable(tabAndelerShus, format = 'html'
+                          #, full_width=T
+                          , digits = c(0,1) #,0,1)[1:antKol]
+        ) %>%
+          kableExtra::column_spec(column = 1, width_min = '5em') %>%
+          kableExtra::column_spec(column = 2:(antKol+1), width = '4em') %>%
+          kableExtra::row_spec(0, bold = T)
+      }
+      output$lastNed_tabAndelGrVar <- downloadHandler(
+        filename = function(){
+          paste0(input$valgtVar, '_andelGrVar.csv')
+        },
+        content = function(file, filename){
+          write.csv2(tabAndelerShus, file, row.names = T, na = '')
+        })
+
+      output$tittelAndel <- renderUI({
+        tagList(
+          h3(AndelerShus$tittel),
+          h5(HTML(paste0(AndelerShus$utvalgTxt, '<br />')))
+        )}) #, align='center'
+    }) #observe
+
+
+
+
+    #---------Gjennomsnitt------------
+    observe({ #Sykehusvise gjennomsnitt, figur og tabell
+      output$gjsnGrVar <- renderPlot(
         NGERFigGjsnGrVar(
           RegData=RegData, preprosess = 0, valgtVar=input$valgtVarGjsn,
           datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
@@ -1399,80 +1409,79 @@ server_nger <- function(input, output, session) {
           behNivaa = as.numeric(input$behNivaaGjsn),
           velgDiag = as.numeric(input$velgDiagGjsn),
           AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn),
-          session = session,
-          outfile = file)
-      })
+          session = session
+        ),
+        width = 700, height = 800)
+
+      output$LastNedFigGjsnGrVar <- downloadHandler(
+        filename = function(){
+          paste0('FigGjsnSh_', input$valgtVarGjsn,Sys.time(), '.', input$bildeformatGjsn)
+        },
+        content = function(file){
+          NGERFigGjsnGrVar(
+            RegData=RegData, preprosess = 0, valgtVar=input$valgtVarGjsn,
+            datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
+            minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
+            valgtMaal = input$sentralmaal,
+            OpMetode = as.numeric(input$opMetodeGjsn),
+            behNivaa = as.numeric(input$behNivaaGjsn),
+            velgDiag = as.numeric(input$velgDiagGjsn),
+            AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn),
+            session = session,
+            outfile = file)
+        })
 
 
-    UtDataGjsnGrVar <- NGERFigGjsnGrVar(
-      RegData=RegData, preprosess = 0, valgtVar=input$valgtVarGjsn,
-      datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
-      minald=as.numeric(input$alderGjsn[1]),
-      maxald=as.numeric(input$alderGjsn[2]),
-      valgtMaal = input$sentralmaal,
-      OpMetode = as.numeric(input$opMetodeGjsn),
-      behNivaa = as.numeric(input$behNivaaGjsn),
-      velgDiag = as.numeric(input$velgDiagGjsn),
-      AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn),
-      session = session)
-    output$tittelGjsn <- renderUI({
-      tagList(
-        h3(UtDataGjsnGrVar$tittel),
-        h5(HTML(paste0(UtDataGjsnGrVar$utvalgTxt, '<br />')))
-      )}) #, align='center'
-
-    tabGjsnGrVar <- cbind('Antall' = UtDataGjsnGrVar$Ngr$Hoved,
-                          'Sentralmål' = UtDataGjsnGrVar$AggVerdier$Hoved)
-    colnames(tabGjsnGrVar)[2] <- ifelse(input$sentralmaal == 'Med', 'Median', 'Gjennomsnitt')
-
-    output$gjsnGrVarTab <- function() {
-      kableExtra::kable(tabGjsnGrVar, format = 'html'
-                        , full_width=F
-                        , digits = c(0,1) #,1,1)[1:antKol]
-      ) %>%
-        kableExtra::column_spec(column = 1, width_min = '7em') %>%
-        kableExtra::column_spec(column = 2:3, width = '7em') %>%
-        kableExtra::row_spec(0, bold = T)
-    }
-
-    output$lastNed_gjsnGrVarTab <- downloadHandler(
-      filename = function(){
-        paste0(input$valgtVarGjsn, '_tabGjsnSh .csv')
-      },
-      content = function(file, filename){
-        write.csv2(tabGjsnGrVar, file, row.names = T, na = '')
-      })
-
-    output$titteltabGjsnGrVar <- renderUI({
-      tagList(
-        h3(tabGjsnGrVar$tittel),
-        h5(HTML(paste0(tabGjsnGrVar$utvalgTxt, '<br />')))
-      )}) #, align='center'
-
-
-
-    #------gjsnTid
-
-    output$gjsnTid <- renderPlot(
-      NGERFigGjsnTid(
-        RegData=RegData, reshID=user$org(), preprosess = 0, valgtVar=input$valgtVarGjsn,
+      UtDataGjsnGrVar <- NGERFigGjsnGrVar(
+        RegData=RegData, preprosess = 0, valgtVar=input$valgtVarGjsn,
         datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
-        minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
-        valgtMaal = input$sentralmaal, enhetsUtvalg =  as.numeric(input$enhetsUtvalgGjsn),
+        minald=as.numeric(input$alderGjsn[1]),
+        maxald=as.numeric(input$alderGjsn[2]),
+        valgtMaal = input$sentralmaal,
         OpMetode = as.numeric(input$opMetodeGjsn),
         behNivaa = as.numeric(input$behNivaaGjsn),
         velgDiag = as.numeric(input$velgDiagGjsn),
         AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn),
-        tidsenhet = input$tidsenhetGjsn,
-        session = session
-      ),
-      width = 1000, height = 300)
+        session = session)
+      output$tittelGjsn <- renderUI({
+        tagList(
+          h3(UtDataGjsnGrVar$tittel),
+          h5(HTML(paste0(UtDataGjsnGrVar$utvalgTxt, '<br />')))
+        )}) #, align='center'
 
-    output$LastNedFigGjsnTid <- downloadHandler(
-      filename = function(){
-        paste0('FigGjsnTid_', input$valgtVarGjsn, Sys.time(), '.', input$bildeformatGjsn)
-      },
-      content = function(file){
+      tabGjsnGrVar <- cbind('Antall' = UtDataGjsnGrVar$Ngr$Hoved,
+                            'Sentralmål' = UtDataGjsnGrVar$AggVerdier$Hoved)
+      colnames(tabGjsnGrVar)[2] <- ifelse(input$sentralmaal == 'Med', 'Median', 'Gjennomsnitt')
+
+      output$gjsnGrVarTab <- function() {
+        kableExtra::kable(tabGjsnGrVar, format = 'html'
+                          , full_width=F
+                          , digits = c(0,1) #,1,1)[1:antKol]
+        ) %>%
+          kableExtra::column_spec(column = 1, width_min = '7em') %>%
+          kableExtra::column_spec(column = 2:3, width = '7em') %>%
+          kableExtra::row_spec(0, bold = T)
+      }
+
+      output$lastNed_gjsnGrVarTab <- downloadHandler(
+        filename = function(){
+          paste0(input$valgtVarGjsn, '_tabGjsnSh .csv')
+        },
+        content = function(file, filename){
+          write.csv2(tabGjsnGrVar, file, row.names = T, na = '')
+        })
+
+      output$titteltabGjsnGrVar <- renderUI({
+        tagList(
+          h3(tabGjsnGrVar$tittel),
+          h5(HTML(paste0(tabGjsnGrVar$utvalgTxt, '<br />')))
+        )}) #, align='center'
+
+
+
+      #------gjsnTid
+
+      output$gjsnTid <- renderPlot(
         NGERFigGjsnTid(
           RegData=RegData, reshID=user$org(), preprosess = 0, valgtVar=input$valgtVarGjsn,
           datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
@@ -1483,207 +1492,228 @@ server_nger <- function(input, output, session) {
           velgDiag = as.numeric(input$velgDiagGjsn),
           AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn),
           tidsenhet = input$tidsenhetGjsn,
-          session = session,
-          outfile = file)
-      })
+          session = session
+        ),
+        width = 1000, height = 300)
 
-    UtDataGjsnTid <- NGERFigGjsnTid(
-      RegData=RegData, reshID = user$org(), preprosess = 0,
-      valgtVar=input$valgtVarGjsn,
-      datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
-      minald=as.numeric(input$alderGjsn[1]),
-      maxald=as.numeric(input$alderGjsn[2]),
-      valgtMaal = input$sentralmaal,
-      enhetsUtvalg =  as.numeric(input$enhetsUtvalgGjsn),
-      OpMetode = as.numeric(input$opMetodeGjsn),
-      behNivaa = as.numeric(input$behNivaaGjsn),
-      velgDiag = as.numeric(input$velgDiagGjsn),
-      AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn),
-      tidsenhet = input$tidsenhetGjsn, lagFigur = 0,
-      session = session)
+      output$LastNedFigGjsnTid <- downloadHandler(
+        filename = function(){
+          paste0('FigGjsnTid_', input$valgtVarGjsn, Sys.time(), '.', input$bildeformatGjsn)
+        },
+        content = function(file){
+          NGERFigGjsnTid(
+            RegData=RegData, reshID=user$org(), preprosess = 0, valgtVar=input$valgtVarGjsn,
+            datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
+            minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
+            valgtMaal = input$sentralmaal, enhetsUtvalg =  as.numeric(input$enhetsUtvalgGjsn),
+            OpMetode = as.numeric(input$opMetodeGjsn),
+            behNivaa = as.numeric(input$behNivaaGjsn),
+            velgDiag = as.numeric(input$velgDiagGjsn),
+            AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn),
+            tidsenhet = input$tidsenhetGjsn,
+            session = session,
+            outfile = file)
+        })
 
-    tabGjsnTid <- t(UtDataGjsnTid$AggVerdier)
-    grtxt <-UtDataGjsnTid$grtxt
-    if ((min(nchar(grtxt)) == 5) & (max(nchar(grtxt)) == 5)) {
-      grtxt <- paste(substr(grtxt, 1,3), substr(grtxt, 4,5))}
-    rownames(tabGjsnTid) <- grtxt
+      UtDataGjsnTid <- NGERFigGjsnTid(
+        RegData=RegData, reshID = user$org(), preprosess = 0,
+        valgtVar=input$valgtVarGjsn,
+        datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
+        minald=as.numeric(input$alderGjsn[1]),
+        maxald=as.numeric(input$alderGjsn[2]),
+        valgtMaal = input$sentralmaal,
+        enhetsUtvalg =  as.numeric(input$enhetsUtvalgGjsn),
+        OpMetode = as.numeric(input$opMetodeGjsn),
+        behNivaa = as.numeric(input$behNivaaGjsn),
+        velgDiag = as.numeric(input$velgDiagGjsn),
+        AlvorlighetKompl = as.numeric(input$alvorlighetKomplGjsn),
+        tidsenhet = input$tidsenhetGjsn, lagFigur = 0,
+        session = session)
 
-    antKol <- ncol(tabGjsnTid)
-    navnKol <- colnames(tabGjsnTid)
-    if (antKol==6) {colnames(tabGjsnTid) <- c(navnKol[1:3], navnKol[1:3])}
+      tabGjsnTid <- t(UtDataGjsnTid$AggVerdier)
+      grtxt <-UtDataGjsnTid$grtxt
+      if ((min(nchar(grtxt)) == 5) & (max(nchar(grtxt)) == 5)) {
+        grtxt <- paste(substr(grtxt, 1,3), substr(grtxt, 4,5))}
+      rownames(tabGjsnTid) <- grtxt
 
-    output$gjsnTidTab <- function() {
-      kableExtra::kable(tabGjsnTid, format = 'html'
-                        , full_width=F
-                        , digits = 1 #c(0,1,1,1)[1:antKol]
-      ) %>%
-        kableExtra::add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
-        kableExtra::column_spec(column = 1, width_min = '7em') %>%
-        kableExtra::column_spec(column = 2:(antKol+1), width = '7em') %>%
-        kableExtra::row_spec(0, bold = T)
-    }
+      antKol <- ncol(tabGjsnTid)
+      navnKol <- colnames(tabGjsnTid)
+      if (antKol==6) {colnames(tabGjsnTid) <- c(navnKol[1:3], navnKol[1:3])}
 
-    output$lastNed_gjsnTidTab <- downloadHandler(
-      filename = function(){
-        paste0(input$valgtVarGjsn, '_tabGjsnTid .csv')
-      },
-      content = function(file, filename){
-        write.csv2(tabGjsnTid, file, row.names = T, na = '')
-      })
-
-  }) #observe gjsnGrVar
-
-
-  #------------------ Abonnement ----------------------------------------------
-
-  orgs <- as.list(sykehusValgUts)
-
-  paramNamesAbb <- shiny::reactive(c("reshID"))
-  paramValuesAbb <- shiny::reactive(user$org())
-
-  rapbase::autoReportServer(
-    id = "ngerAbb",
-    registryName = "nger",
-    type = "subscription",
-    paramNames = paramNamesAbb,
-    paramValues = paramValuesAbb,
-    reports = list(
-      MndRapp = list(
-        synopsis = "NGER: Månedsrapport, abonnement",
-        fun = "abonnementNGER",
-        paramNames = c('rnwFil', 'reshID'),
-        paramValues = c('NGERmndRapp.Rnw', "user$org()")
-      )
-    ),
-    orgs = orgs,
-    user = user
-  )
-  #-----------Registeradministrasjon-----------
-  observeEvent(user$role(), {
-    if (user$role() == "SC") {
-      message("Adding Registeradministrasjon tab for user with role ", user$role())
-      shiny::insertTab(
-        inputId = "hovedark",
-        tab = tabPanel(p("Registeradministrasjon",
-                    title='Registeradministrasjonens side for registreringer og resultater'),
-                  value = "Registeradministrasjon",
-                  h3('Siden er bare synlig for SC-bruker', align = 'center'),
-                  #uiOutput(user$role'),
-
-                  tabsetPanel(
-                    tabPanel(
-                      h4("Utsending av rapporter"),
-                      sidebarPanel(
-                        rapbase::autoReportOrgInput("NGERutsending"),
-                        rapbase::autoReportInput("NGERutsending"),
-                        br(),
-                        br(),
-
-                        # Kommenter ut når skal i prod:
-                        br(),
-                        br(),
-                        shiny::actionButton(inputId = "run_autoreport",
-                                            label = "Kjør autorapporter"),
-                        shiny::dateInput(inputId = "rapportdato",
-                                        label = "Kjør rapporter med dato:",
-                                        value = Sys.Date(),
-                                        min = Sys.Date(),
-                                        max = Sys.Date() + 366
-                        ),
-                        shiny::checkboxInput(inputId = "dryRun", label = "Send e-post")
-                      ),
-                      mainPanel(
-                        rapbase::autoReportUI("NGERutsending"),
-                        # Kommenter ut når skal i prod:
-                        br(),
-                        br(),
-                        p(em("System message:")),
-                        verbatimTextOutput("sysMessage"),
-                        p(em("Function message:")),
-                        verbatimTextOutput("funMessage")
-                      )
-                    ), #Utsending-tab
-                    tabPanel(
-                      h4("Eksport av krypterte data"),
-                      sidebarPanel(
-                        rapbase::exportUCInput("ngerExport")
-                      ),
-                      mainPanel(
-                        rapbase::exportGuideUI("ngerExportGuide")
-                        )
-                    ) #Eksport-tab
-                  ) #tabsetPanel
-          ),
-          target = "Abonnement",
-          position = "before"
-      )
-      } else {
-        message("Removing Registeradministrasjon tab for user with role ", user$role())
-        shiny::removeTab(inputId = "hovedark", target = "Registeradministrasjon")
+      output$gjsnTidTab <- function() {
+        kableExtra::kable(tabGjsnTid, format = 'html'
+                          , full_width=F
+                          , digits = 1 #c(0,1,1,1)[1:antKol]
+        ) %>%
+          kableExtra::add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
+          kableExtra::column_spec(column = 1, width_min = '7em') %>%
+          kableExtra::column_spec(column = 2:(antKol+1), width = '7em') %>%
+          kableExtra::row_spec(0, bold = T)
       }
-  })
+
+      output$lastNed_gjsnTidTab <- downloadHandler(
+        filename = function(){
+          paste0(input$valgtVarGjsn, '_tabGjsnTid .csv')
+        },
+        content = function(file, filename){
+          write.csv2(tabGjsnTid, file, row.names = T, na = '')
+        })
+
+    }) #observe gjsnGrVar
 
 
-  ## liste med metadata for rapport
-  reports <- list(
-    MndRapp = list(
-      synopsis = "Rapporteket-NGER: Månedsrapport",
-      fun = "abonnementNGER",
-      paramNames = c('rnwFil', "reshID"),
-      paramValues = c('NGERmndRapp.Rnw', 0)
-    ),
-    SamleRapp = list(
-      synopsis = "Rapporteket-NGER: Rapport, div. resultater",
-      fun = "abonnementNGER",
-      paramNames = c('rnwFil', "reshID"),
-      paramValues = c('NGERSamleRapp.Rnw', 0)
+    #------------------ Abonnement ----------------------------------------------
+
+    orgs <- as.list(sykehusValgUts)
+
+    paramNamesAbb <- shiny::reactive(c("reshID"))
+    paramValuesAbb <- shiny::reactive(user$org())
+
+    rapbase::autoReportServer(
+      id = "ngerAbb",
+      registryName = "nger",
+      type = "subscription",
+      paramNames = paramNamesAbb,
+      paramValues = paramValuesAbb,
+      reports = list(
+        MndRapp = list(
+          synopsis = "NGER: Månedsrapport, abonnement",
+          fun = "abonnementNGER",
+          paramNames = c('rnwFil', 'reshID'),
+          paramValues = c('NGERmndRapp.Rnw', "user$org()")
+        )
+      ),
+      orgs = orgs,
+      user = user
     )
-  )
+    #-----------Registeradministrasjon-----------
+    observeEvent(user$role(), {
+      if (user$role() == "SC") {
+        message("Adding Registeradministrasjon tab for user with role ", user$role())
+        shiny::insertTab(
+          inputId = "hovedark",
+          tab = tabPanel(p("Registeradministrasjon",
+                      title='Registeradministrasjonens side for registreringer og resultater'),
+                    value = "Registeradministrasjon",
+                    h3('Siden er bare synlig for SC-bruker', align = 'center'),
+                    #uiOutput(user$role'),
 
-  org <- rapbase::autoReportOrgServer("NGERutsending", orgs)
-  # oppdatere reaktive parametre, for å få inn valgte verdier (overskrive de i report-lista)
-  paramNames <- shiny::reactive("reshID")
-  paramValues <- shiny::reactive(org$value())
-  vis_rapp <- shiny::reactiveVal(FALSE)
-  shiny::observeEvent(user$role(), {
-    vis_rapp(user$role() == "SC")
-  })
+                    tabsetPanel(
+                      tabPanel(
+                        h4("Utsending av rapporter"),
+                        sidebarPanel(
+                          rapbase::autoReportOrgInput("NGERutsending"),
+                          rapbase::autoReportInput("NGERutsending"),
+                          br(),
+                          br(),
 
-  rapbase::autoReportServer(
-    id = "NGERutsending",
-    registryName = "nger",
-    type = "dispatchment",
-    org = org$value,
-    paramNames = paramNames,
-    paramValues = paramValues,
-    reports = reports,
-    orgs = orgs,
-    eligible = vis_rapp,
-    user = user
-  )
-
-# Kommenter ut når skal i prod !
-  kjor_autorapport <- shiny::observeEvent(input$run_autoreport, {
-    dato <- input$rapportdato
-    dryRun <- !(input$dryRun)
-    withCallingHandlers({
-      shinyjs::html("sysMessage", "")
-      shinyjs::html("funMessage", "")
-      shinyjs::html("funMessage",
-                    rapbase::runAutoReport(group = "nger",
-                                           dato = dato, dryRun = dryRun))
-    },
-    message = function(m) {
-      shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
+                          # Kommenter ut når skal i prod:
+                          br(),
+                          br(),
+                          shiny::actionButton(inputId = "run_autoreport",
+                                              label = "Kjør autorapporter"),
+                          shiny::dateInput(inputId = "rapportdato",
+                                          label = "Kjør rapporter med dato:",
+                                          value = Sys.Date(),
+                                          min = Sys.Date(),
+                                          max = Sys.Date() + 366
+                          ),
+                          shiny::checkboxInput(inputId = "dryRun", label = "Send e-post")
+                        ),
+                        mainPanel(
+                          rapbase::autoReportUI("NGERutsending"),
+                          # Kommenter ut når skal i prod:
+                          br(),
+                          br(),
+                          p(em("System message:")),
+                          verbatimTextOutput("sysMessage"),
+                          p(em("Function message:")),
+                          verbatimTextOutput("funMessage")
+                        )
+                      ), #Utsending-tab
+                      tabPanel(
+                        h4("Eksport av krypterte data"),
+                        sidebarPanel(
+                          rapbase::exportUCInput("ngerExport")
+                        ),
+                        mainPanel(
+                          rapbase::exportGuideUI("ngerExportGuide")
+                          )
+                      ) #Eksport-tab
+                    ) #tabsetPanel
+            ),
+            target = "Abonnement",
+            position = "before"
+        )
+        } else {
+          message("Removing Registeradministrasjon tab for user with role ", user$role())
+          shiny::removeTab(inputId = "hovedark", target = "Registeradministrasjon")
+        }
     })
-  })
 
-  #----------- Eksport ----------------
-  registryName <- "nger"
-  ## brukerkontroller
-  rapbase::exportUCServer("ngerExport", registryName)
-  ## veileding
-  rapbase::exportGuideServer("ngerExportGuide", registryName)
+
+    ## liste med metadata for rapport
+    reports <- list(
+      MndRapp = list(
+        synopsis = "Rapporteket-NGER: Månedsrapport",
+        fun = "abonnementNGER",
+        paramNames = c('rnwFil', "reshID"),
+        paramValues = c('NGERmndRapp.Rnw', 0)
+      ),
+      SamleRapp = list(
+        synopsis = "Rapporteket-NGER: Rapport, div. resultater",
+        fun = "abonnementNGER",
+        paramNames = c('rnwFil', "reshID"),
+        paramValues = c('NGERSamleRapp.Rnw', 0)
+      )
+    )
+
+    org <- rapbase::autoReportOrgServer("NGERutsending", orgs)
+    # oppdatere reaktive parametre, for å få inn valgte verdier (overskrive de i report-lista)
+    paramNames <- shiny::reactive("reshID")
+    paramValues <- shiny::reactive(org$value())
+    vis_rapp <- shiny::reactiveVal(FALSE)
+    shiny::observeEvent(user$role(), {
+      vis_rapp(user$role() == "SC")
+    })
+
+    rapbase::autoReportServer(
+      id = "NGERutsending",
+      registryName = "nger",
+      type = "dispatchment",
+      org = org$value,
+      paramNames = paramNames,
+      paramValues = paramValues,
+      reports = reports,
+      orgs = orgs,
+      eligible = vis_rapp,
+      user = user
+    )
+
+  # Kommenter ut når skal i prod !
+    kjor_autorapport <- shiny::observeEvent(input$run_autoreport, {
+      dato <- input$rapportdato
+      dryRun <- !(input$dryRun)
+      withCallingHandlers({
+        shinyjs::html("sysMessage", "")
+        shinyjs::html("funMessage", "")
+        shinyjs::html("funMessage",
+                      rapbase::runAutoReport(group = "nger",
+                                            dato = dato, dryRun = dryRun))
+      },
+      message = function(m) {
+        shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
+      })
+    })
+
+    #----------- Eksport ----------------
+    registryName <- "nger"
+    ## brukerkontroller
+    rapbase::exportUCServer("ngerExport", registryName)
+    ## veileding
+    rapbase::exportGuideServer("ngerExportGuide", registryName)
+
+  })
 } #server
 # Run the application
 #shinyApp(ui = ui, server = server)
