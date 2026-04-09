@@ -9,13 +9,10 @@ ui_nger <- function() {
 
   library(nger)
 
-  startDato <- paste0(as.numeric(format(Sys.Date()-100, "%Y")), '-01-01') #'2019-01-01' #Sys.Date()-364
-  context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-
+  startDato <- paste0(as.numeric(format(Sys.Date()-100, "%Y")), '-01-01')
   regTitle = 'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER'
 
   #-----Definere utvalgsinnhold
-
   enhetsUtvalg <- c("Egen mot resten av landet"=1,
                     "Hele landet"=0,
                     "Egen enhet"=2)
@@ -78,14 +75,8 @@ ui_nger <- function() {
              mainPanel(width = 8,
                        tags$head(tags$link(rel="shortcut icon", href="rap/favicon.ico")),
 
-                       if (context %in% c("DEV", "TEST", "QA", "PRODUCTION", "QAC", "PRODUCTIONC")) {
-                         rapbase::navbarWidgetInput("navbar-widget", selectOrganization = TRUE)
-                       },
+                       rapbase::navbarWidgetInput("navbar-widget", selectOrganization = TRUE),
 
-                       # rapbase::appNavbarUserWidget(user = uiOutput("appUserName"),
-                       #                              organization = uiOutput("appOrgName")
-                       #                              , addUserInfo = TRUE
-                       # ),
                        h4('Du er nå inne på Rapporteket for NGER. Rapporteket er registerets resultattjeneste.
                             Disse sidene inneholder en samling av figurer og tabeller som viser resultater fra registeret.
                             På hver av sidene kan man gjøre utvalg i menyene til venstre. Alle resultater er basert
@@ -684,7 +675,7 @@ ui_nger <- function() {
       )
     ), #GjsnGrVar/Tid
 
-    
+
     #----------Abonnement-----------------
 
     tabPanel(p("Abonnement",
@@ -720,13 +711,12 @@ ui_nger <- function() {
 server_nger <- function(input, output, session) {
 
   #-- Div serveroppstart----
-  context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-  paaServer <- (context %in% c("DEV", "TEST", "QA","QAC", "PRODUCTION", "PRODUCTIONC")) #rapbase::isRapContext()
   rapbase::appLogger(session, msg = 'Starter Rapporteket-NGER')
 
     #----------Hente data ----------
-    #RegData <- NGERRegDataSQL()
-    RegDataAlle <- NGERRegDataSQL(medPROM=1, gml=0)
+
+    datoFraLasteData <- paste0(as.numeric(format(Sys.Date()-735, "%Y")), '-01-01')
+    RegDataAlle <- NGERRegDataSQL(datoFra = datoFraLasteData, medPROM=1, gml=0)
     errorCondition(dim(RegDataAlle)[1]==0, 'ingen data')
 
     RegData <- NGERPreprosess(RegDataAlle)
@@ -745,9 +735,8 @@ server_nger <- function(input, output, session) {
 
 
   # widget
-  if (paaServer) {
     output$appUserName <- renderText(rapbase::getUserFullName(session))
-    output$appOrgName <- renderText(paste0('rolle: ', user$role(), '<br> ReshID: ', user$org()) )}
+    output$appOrgName <- renderText(paste0('rolle: ', user$role(), '<br> ReshID: ', user$org()) )
 
   # User info in widget
   userInfo <- rapbase::howWeDealWithPersonalData(session)

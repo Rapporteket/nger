@@ -17,18 +17,16 @@ source("dev/sysSetenv.R")
 nger::kjor_NGERapp(browser = TRUE)
 
 source("dev/sysSetenv.R")
-RegData <- nger::NGERRegDataSQL(datoFra = '2023-01-01', medPROM = 1)
+RegData <- nger::NGERRegDataSQL(datoFra = '2020-01-01', medPROM = 1)
 RegData <- NGERPreprosess(RegData = RegData)
-sort(names(RegData))
-"Aar1aar"
 
-
+unique(RegData[order(RegData$ShNavn),c("ShNavn","ReshId")])
 
 rapbase::runAutoReport(group = "nger",
                        dato = Sys.Date()+1, dryRun = TRUE)
 
 
-
+På Rapporteket holder det med data fra 2020
 rm('RegData')
 
 devtools::install("../rapbase/.")
