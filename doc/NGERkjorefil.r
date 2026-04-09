@@ -153,7 +153,7 @@ skjemaoversikt<- lageTulleData(RegData=skjemaoversikt, antSh=26, antObs=20000)
 varBort <- c('PasRegDato', 'PersonNr', 'PersonNrType', 'FodselsDato', 'Morsmaal', 'MorsmaalAnnet',
            'Tss2ScoreAVG', 'AvdRESHYY', 'ShNavn', 'PasientIDYY', 'PostNr', 'PostSted', 'Kommune', 'Kommunenr',
            'Fylke', 'Fylkenr', 'KryptertFnr', 'Fodselsdato', 'NorsktalendeYY', 'SivilStatusYY', 'UtdanningSSB',
-           'AvdodYY', 'InnDato', 'Mnd', 'Kvartal', 'Halvaar', 'Aar',
+           'AvdodYY', 'OpDato', 'Mnd', 'Kvartal', 'Halvaar', 'Aar',
            'SykehusNavn', 'AvdRESH',
            grep('Opf1', names(RegData)), grep('RY1', names(RegData)))
 RegData <- lageTulleData(RegData=0, varBort=varBort, antSh=26, antObs=20000)
@@ -217,7 +217,7 @@ UtDataFraFig <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtV
   minald=minald, maxald=maxald, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad, velgDiag = velgDiag,
 	velgAvd = velgAvd)
 
-ind <- which(RegData$InnDato<as.Date('2017-01-01') & RegData$InnDato>as.Date('2015-12-31'))
+ind <- which(RegData$OpDato<as.Date('2017-01-01') & RegData$OpDato>as.Date('2015-12-31'))
 
 #Teste variable
 variable <- c('Alder','HysGjforingsGrad', 'HysKomplikasjoner','KomplPostopType',

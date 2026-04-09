@@ -1,6 +1,6 @@
 #' Fil som inneholder funksjoner for å lage tabeller, i første rekke tellinger av personer
 
-#' RegData må inneholde InnDato og Aar.
+#' RegData må inneholde OpDato og Aar.
 #' -tabAntOpphSh12mnd: Antall opphold per måned og enhet siste 12 måneder fram til datoTil.
 #' -tabAntOpphSh5Aar:Antall opphold per år og enhet siste 5 år (inkl. inneværende år) fram til datoTil.
 #' Antall opphold siste X (antMnd) mnd
@@ -16,12 +16,12 @@ tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0,
   gyldigResh <- reshID!=0 & !is.na(match(reshID, RegData$ReshId))
   if (gyldigResh) {RegData <- RegData[which(RegData$ReshId==reshID), ]}
       datoFra <- lubridate::floor_date(as.Date(datoTil)- months(antMnd, abbreviate = T), unit='month')
-      aggVar <-  c('ShNavn', 'InnDato')
+      aggVar <-  c('ShNavn', 'OpDato')
       Utvalg <- NGERUtvalgEnh(RegData=RegData, OpMetode = OpMetode, velgDiag=velgDiag)
       RegData <- Utvalg$RegData
-      RegDataDum <- RegData[RegData$InnDato <= as.Date(datoTil, tz='UTC')
-                              & RegData$InnDato > as.Date(datoFra, tz='UTC'), aggVar]
-      RegDataDum$Maaned1 <- lubridate::floor_date(RegDataDum$InnDato, 'month')
+      RegDataDum <- RegData[RegData$OpDato <= as.Date(datoTil, tz='UTC')
+                              & RegData$OpDato > as.Date(datoFra, tz='UTC'), aggVar]
+      RegDataDum$Maaned1 <- lubridate::floor_date(RegDataDum$OpDato, 'month')
       tabAvdMnd1 <- table(RegDataDum[ , c('ShNavn', 'Maaned1')])
       colnames(tabAvdMnd1) <- format(lubridate::ymd(colnames(tabAvdMnd1)), '%b %y') #month(lubridate::ymd(colnames(tabAvdMnd1)), label = T)
       if (reshID==0){
@@ -61,7 +61,7 @@ tabAntSkjemaGml <- function(skjemaoversikt, datoFra = '2019-01-01', datoTil=Sys.
   skjemanavn <- c('Operasjon','Laparoskopi','Hysteroskopi', 'Oppfølging', 'RAND36', 'TSS2', 'RAND36, 1år')
 
 
-  indDato <- which(as.Date(skjemaoversikt$InnDato) >= datoFra & as.Date(skjemaoversikt$InnDato) <= datoTil)
+  indDato <- which(as.Date(skjemaoversikt$OpDato) >= datoFra & as.Date(skjemaoversikt$OpDato) <= datoTil)
   indSkjemastatus <- which(skjemaoversikt$SkjemaStatus==skjemastatus)
   skjemaoversikt <- skjemaoversikt[intersect(indDato, indSkjemastatus),]
 
@@ -81,7 +81,7 @@ tabAntSkjema <- function(RegData, datoFra = '2019-01-01', datoTil=Sys.Date()){
 #  TSS2 har ingen egen metode-variabel. Teller alle som har fått beregnet en Tss2Score.
 #  For oppfølging en måned etter: Opf0metode = 1 | Opfmetode=2 | (Opf0metode=3 &  Opf0UtfViaEprom=1)
 
-  indDato <- which(as.Date(RegData$InnDato) >= datoFra & as.Date(RegData$InnDato) <= datoTil)
+  indDato <- which(as.Date(RegData$OpDato) >= datoFra & as.Date(RegData$OpDato) <= datoTil)
   RegData <- RegData[indDato, ]
   RegData$ShNavn <- as.factor(RegData$ShNavn)
 

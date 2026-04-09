@@ -3,7 +3,7 @@
 \name{tabAntOpphShMnd}
 \alias{tabAntOpphShMnd}
 \title{Fil som inneholder funksjoner for å lage tabeller, i første rekke tellinger av personer
-RegData må inneholde InnDato og Aar.
+RegData må inneholde OpDato og Aar.
 -tabAntOpphSh12mnd: Antall opphold per måned og enhet siste 12 måneder fram til datoTil.
 -tabAntOpphSh5Aar:Antall opphold per år og enhet siste 5 år (inkl. inneværende år) fram til datoTil.
 Antall opphold siste X (antMnd) mnd}
@@ -29,7 +29,7 @@ Div tabeller
 }
 \description{
 Fil som inneholder funksjoner for å lage tabeller, i første rekke tellinger av personer
-RegData må inneholde InnDato og Aar.
+RegData må inneholde OpDato og Aar.
 -tabAntOpphSh12mnd: Antall opphold per måned og enhet siste 12 måneder fram til datoTil.
 -tabAntOpphSh5Aar:Antall opphold per år og enhet siste 5 år (inkl. inneværende år) fram til datoTil.
 Antall opphold siste X (antMnd) mnd

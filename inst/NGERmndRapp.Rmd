@@ -26,7 +26,7 @@ resh_id <- params$reshId
 shtxt <- as.character(nger_data$ShNavn[match(resh_id, nger_data$ReshId)])
 reg_data_eget <- nger_data[which(nger_data$ReshId == resh_id), ]
 max_dato_eget <- format.Date(
-  max(reg_data_eget$InnDato), format = "%d.%m.%Y", tz = "UTC"
+  max(reg_data_eget$OpDato), format = "%d.%m.%Y", tz = "UTC"
 )
 ```
 

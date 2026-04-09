@@ -194,7 +194,7 @@ Neget <- length(indEget)
 Norsk Gynekologisk Endoskopiregister startet elektronisk registrering i 2013. Tabell \ref{tab:RegistrenrendeAvd}
 viser antall registreringer siste 5 år.
 Denne samlerapporten er hovedsakelig basert på registreringer som er lagret og ferdigstilt i NGER for operasjoner
-utført i perioden \Sexpr{min(RegData$InnDato)} til \Sexpr{max(RegData$InnDato)}.
+utført i perioden \Sexpr{min(RegData$OpDato)} til \Sexpr{max(RegData$OpDato)}.
 
 
 

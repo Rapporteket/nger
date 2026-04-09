@@ -36,7 +36,7 @@ datoFra <- as.Date(paste0(1900+dato$year-1,'-', dato$mon+1, '-', '01'))
 tidsenhet <- 'Mnd'
 shtxt <- as.character(NGERData$ShNavn[match(reshID, NGERData$ReshId)])
 RegDataEget <- NGERData[which(NGERData$ReshId==reshID), ]
-maxDatoEget <- format.Date(max(RegDataEget$InnDato), format='%d.%m.%Y', tz='UTC')
+maxDatoEget <- format.Date(max(RegDataEget$OpDato), format='%d.%m.%Y', tz='UTC')
 @
 
 

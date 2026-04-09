@@ -8,12 +8,10 @@
 #' @return RegData En data.frame med det preprosesserte datasettet
 #'
 #' @export
-#'
+
 NGERPreprosess <- function(RegData=RegData)
 {
   #Kun ferdigstilte registreringer:
-  #OK
-  if ('BasisRegStatus' %in% (names(RegData))) { RegData <- RegData[RegData$BasisRegStatus==1, ]}#Leveres fortsatt registreringer m/BasisRegStatus=0
   #Opf0Status=1 for alle registreringer i followupsnum
   #OppflgRegStatus:
   # NULL	Oppfølginger finnes ikke for denne typen forløp.
@@ -32,32 +30,23 @@ NGERPreprosess <- function(RegData=RegData)
 
 
   #Riktig format på datovariable:
-  RegData$InnDato <- as.Date(RegData$OpDato, format="%Y-%m-%d")
+  RegData$OpDato <- as.Date(RegData$OpDato, format="%Y-%m-%d")
   RegData$MndNum <- as.POSIXlt(RegData$OpDato, format="%Y-%m-%d")$mon +1
   RegData$Kvartal <- ceiling(RegData$MndNum/3)
   RegData$Halvaar <- ceiling(RegData$MndNum/6)
   RegData$Aar <- 1900 + as.POSIXlt(RegData$OpDato, format="%Y-%m-%d")$year #strptime(RegData$Innleggelsestidspunkt, format="%Y")$year
-  RegData$MndAar <- format(RegData$InnDato, '%b%y')
+  RegData$MndAar <- format(RegData$OpDato, '%b%y')
 
 
   #Vask og nye:
-  #names(RegData)[which(names(RegData)=='PasientAlder')] <- 'Alder'
   RegData$Alder <- (as.Date(RegData$OpDato) - as.Date(RegData$FodselsDato))/365.25
-  names(RegData)[which(names(RegData)=='AvdRESH')] <- 'ReshId' #Change var name
-  names(RegData)[which(names(RegData)=='CENTREID')] <- 'ReshId'
   names(RegData)[which(names(RegData)=='SykehusNavn')] <- 'ShNavn'
-
-  RegData$ShNavn <- trimws(as.character(RegData$ShNavn)) #Fjerner mellomrom (før) og etter navn
-
-  #108698 (Kongsvinger Innland) endres til Kongsvinger 4215373
-#ahs  ind <- which(RegData$ReshId == 108698)
-#ahs  RegData$ShNavn[ind] <- RegData$ShNavn[match(4215373, RegData$ReshId)] #which(RegData$ReshId==4215373)][1]
-#ahs  RegData$ReshId[ind] <- 4215373
+ RegData$ShNavn <- trimws(as.character(RegData$ShNavn)) #Fjerner mellomrom (før) og etter navn
 
   #Tomme sykehusnavn får resh som navn:
   indTom <- which(is.na(RegData$ShNavn) | RegData$ShNavn == '')
   if (length(indTom) > 0) {
-  RegData$ShNavn[indTom] <- RegData$ReshId[indTom]}
+    RegData$ShNavn[indTom] <- RegData$ReshId[indTom]}
 
   #Sjekker om alle resh har egne enhetsnavn
   dta <- unique(RegData[ ,c('ReshId', 'ShNavn')])
@@ -97,7 +86,6 @@ NGERPreprosess <- function(RegData=RegData)
 
 indRobot <- which(RegData[ ,c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3', 'LapProsedyre4')] == 'ZXC96',
                   arr.ind = TRUE)[,1]
-# test <- which(RegData$LapRobotKirurgi==1)
 RegData$LapRobotKirurgi[indRobot] <- 1
 
   }

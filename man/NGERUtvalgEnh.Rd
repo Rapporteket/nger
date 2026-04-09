@@ -6,7 +6,7 @@
 \usage{
 NGERUtvalgEnh(
   RegData,
-  datoFra = "2016-01-01",
+  datoFra = "2011-01-01",
   datoTil = "3000-12-31",
   fargepalett = "BlaaOff",
   minald = 0,
