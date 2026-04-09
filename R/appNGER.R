@@ -5,6 +5,10 @@
 #'
 #' @return Brukergrensesnittet (ui) til nger-appen
 #' @export
+
+
+
+
 ui_nger <- function() {
 
   library(nger)
@@ -28,7 +32,8 @@ ui_nger <- function() {
                 'Lap. subtotal hysterektomi (LCC11)'=5,
                 'Lap. ass. vag. hysterektomi (LCD11)'=6,
                 'Alle hysterektomier' = 9,
-                'Robotassisert inngrep' = 7,
+                'Lap. inngrep med robotass.' = 7,
+                'Lap. inngrep uten robotass.' = 10,
                 'Kolpopeksiene' = 8)
 
   alvorKompl <- c("Lite alvorlig"=1,
@@ -120,7 +125,7 @@ ui_nger <- function() {
 
                conditionalPanel(
                  condition = "input.ark == 'Antall operasjoner'",
-                 dateInput(inputId = 'sluttDatoReg', label = 'Velg sluttdato', language="nb",
+                 dateInput(inputId = 'sluttDatoReg', label = 'Velg sluttdato (kun for månedsvisning)', language="nb",
                            value = Sys.Date(), max = Sys.Date() ),
                  selectInput(inputId = "tidsenhetReg", label="Velg tidsenhet",
                              choices = rev(c('År'= 'Aar', 'Måned'='Mnd'))),
@@ -777,8 +782,11 @@ server_nger <- function(input, output, session) {
       switch(input$tidsenhetReg,
              Mnd=tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12,
                                  OpMetode=as.numeric(input$opMetodeReg),
-                                 velgDiag=as.numeric(input$velgDiagReg)), #input$datovalgTab[2])
-             Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg,
+                                 velgDiag=as.numeric(input$velgDiagReg)),
+             # Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg,
+             #                      OpMetode=as.numeric(input$opMetodeReg),
+             #                      velgDiag=as.numeric(input$velgDiagReg))
+             Aar=tabAntOpphShAar(RegData=RegData, #datoTil=input$sluttDatoReg,
                                   OpMetode=as.numeric(input$opMetodeReg),
                                   velgDiag=as.numeric(input$velgDiagReg)))
     output$tabAntOpphSh <- renderTable(tabAntOpphShMndAar$tabAntAvd, rownames = T, digits=0, spacing="xs")
@@ -793,7 +801,7 @@ server_nger <- function(input, output, session) {
         br(),
         h4(HTML(switch(input$tidsenhetReg,
                        Mnd = paste0(t1, 'siste 12 måneder før ', input$sluttDatoReg, '<br />'),
-                       Aar = paste0(t1, 'siste 5 år før ', input$sluttDatoReg, '<br />'))),
+                       Aar = paste0(t1, 'siste år ', '<br />'))),
            HTML(paste0(tabAntOpphShMndAar$utvalgTxt[-1], '<br />'))
         ))
     })
@@ -822,40 +830,25 @@ server_nger <- function(input, output, session) {
       NULL
     }
   })
-  RegOversikt <- RegData[ , c('FodselsDato', 'OpDato', 'ReshId', 'ShNavn')] #, 'BasisRegStatus'
 
-  # Data til kontroll
-  observe({
-    RegOversikt <- dplyr::filter(RegOversikt,
-                                 as.Date(OpDato) >= input$datovalgReg[1],
-                                 as.Date(OpDato) <= input$datovalgReg[2])
-
-    if (user$role() == 'SC') {
-      valgtResh <- ifelse(is.null(input$velgReshReg), 0, as.numeric(input$velgReshReg))
-      ind <- if (valgtResh == 0) {1:dim(RegOversikt)[1]
-      } else {which(as.numeric(RegOversikt$ReshId) %in% as.numeric(valgtResh))}
-      tabDataRegKtr <- RegOversikt[ind,]
-
-    }  else {
-      tabDataRegKtr <- RegOversikt[which(RegOversikt$ReshId == user$org()), ]}
-
-
-    output$lastNed_dataTilRegKtr <- downloadHandler(
-      filename = function(){'dataTilKtr.csv'},
-      content = function(file, filename){write.csv2(tabDataRegKtr, file, row.names = F, na = '')})
-  })
 
   # --------Egen datadump, (NB: LU uten PROM)---------
   # RegDataAlle <- NGERRegDataSQL(medPROM=1, gml=0)
   # RegDataAlle <- NGERPreprosess(RegData = RegDataAlle)
   observe({
-    DataDump <-
-      NGERUtvalgEnh(RegData = RegData,
-                    datoFra = input$datovalgReg[1],
-                    datoTil = input$datovalgReg[2],
-                    OpMetode = as.numeric(input$opMetodeRegDump),
-                    velgDiag = as.numeric(input$diagnoseRegDump),
-                    AlvorlighetKompl = as.numeric(input$alvorlighetKomplDump))$RegData
+    DataDump1 <- NGERRegDataSQL(datoFra = input$datovalgReg[1],
+                               datoTil = input$datovalgReg[2])
+    DataDump <- NGERUtvalgEnh(RegData = DataDump1,
+                              OpMetode = as.numeric(input$opMetodeRegDump),
+                              velgDiag = as.numeric(input$diagnoseRegDump),
+                              AlvorlighetKompl = as.numeric(input$alvorlighetKomplDump))$RegData
+      print(input$input$opMetodeRegDump)
+    print(input$input$diagnoseRegDump)
+    print(input$input$alvorlighetKomplDump)
+    print(dim(DataDump1)[1])
+    print(dim(DataDump)[1])
+
+
     if (input$IntraKomplDump == TRUE) {
       indIntraKompl <- which((DataDump$LapKomplikasjoner==1) | (DataDump$HysKomplikasjoner==1))
       DataDump <- DataDump[indIntraKompl, ]}
@@ -864,18 +857,39 @@ server_nger <- function(input, output, session) {
       valgtResh <- ifelse(is.null(input$velgReshReg),
                           0, as.numeric(input$velgReshReg))
       ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
-      } else {
-        which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
+      } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
       tabDataDump <- DataDump[ind,]
     } else {
       navn <- names(DataDump)
       fjernVarInd <- c(grep('Opf0', navn), grep('Opf6', navn),
                        grep('R0', navn), grep('R1', navn), grep('R3', navn),
                        grep('RY1', navn), grep('Tss', navn))
+      print(valgtResh)
       tabDataDump <-
         DataDump[which(DataDump$ReshId == user$org()), -fjernVarInd]
 
     } #Tar bort PROM/PREM til egen avdeling
+print(dim(tabDataDump)[1])
+
+    # Data til kontroll
+    RegOversikt <- tabDataDump[ , c('FodselsDato', 'OpDato', 'ReshId', 'ShNavn')]
+    # if (user$role() == 'SC') {
+    #   valgtResh <- ifelse(is.null(input$velgReshReg), 0, as.numeric(input$velgReshReg))
+    #   ind <- if (valgtResh == 0) {1:dim(RegOversikt)[1]
+    #   } else {which(as.numeric(RegOversikt$ReshId) %in% as.numeric(valgtResh))}
+    #   tabDataRegKtr <- RegOversikt[ind,]
+    #
+    # }  else {
+    #   tabDataRegKtr <- RegOversikt[which(RegOversikt$ReshId == user$org()), ]}
+
+
+    output$lastNed_dataTilRegKtr <- downloadHandler(
+      filename = function(){'dataTilKtr.csv'},
+      content = function(file, filename){write.csv2(RegOversikt, file, row.names = F, na = '')})
+      # content = function(file, filename){write.csv2(tabDataRegKtr, file, row.names = F, na = '')})
+
+
+
     txtLog <- paste0('Datadump for NGER: ',
                      'tidsperiode ', input$datovalgReg[1], '_', input$datovalgReg[2])
 

@@ -26,7 +26,6 @@ rapbase::runAutoReport(group = "nger",
                        dato = Sys.Date()+1, dryRun = TRUE)
 
 
-På Rapporteket holder det med data fra 2020
 rm('RegData')
 
 devtools::install("../rapbase/.")
