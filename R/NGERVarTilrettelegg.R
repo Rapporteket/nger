@@ -38,6 +38,13 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
 
   #-------------------------------------
   RegData$Variabel <- 0
+  # Definisjon av komplikasjonsvariaber. Variablene leveres av HN-IKT
+  # Opf0Reoperasjon = Opf0ReopLaparoskopi + Opf0ReopHysteroskopi + Opf0ReopLaparotomi	 + Opf0ReopVaginal + ..Annet
+  # Opf0KomplBlodning =	Opf0BlodningAbdom	Opf0BlodningVaginal	Opf0BlodningIntraabdominal
+  # Opf0KomplOrgan =	Opf0OrganTarm	Opf0OrganBlare	Opf0OrganUreter	Opf0OrganKar	Opf0OrganAnnen
+
+
+
 
   TSS0var <- c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',	'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')
   Rand0var <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
