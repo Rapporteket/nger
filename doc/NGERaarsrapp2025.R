@@ -4,7 +4,7 @@ source("dev/sysSetenv.R")
 
 # Inndata til funksjon:
 library(nger)
-datoFra <- '2022-01-01' #Ønsker utvikling siste 4 år
+datoFra <- '2019-01-01' #Ønsker utvikling siste 4 år
 rappAar <- 2025
 datoFra1aar <- paste0(rappAar, '-01-01')
 datoTil <- paste0(rappAar, '-12-31')
@@ -14,7 +14,7 @@ datoTil1Yoppf <- paste0(rappAar-1, '-12-31')
 NGERData <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil))
 NGERData1aar <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra1aar, datoTil = datoTil))
 
-setwd('../Aarsrapp/NGER' ) #"P:/Registerinfo og historie/NGER/aarsrapp/")
+setwd('../Aarsrapp/NGER' )
 
 #------------------------------ Fordelingsfigurer --------------------------
 # 'Opf0AlvorlighetsGrad' (alvorlighetsgrad 1-4)
@@ -165,8 +165,8 @@ NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='OpBehNivaa',
                     OpMetode=1, outfile='OpDagkirurgi_LapShus.pdf')
 
 #--Hysteroskopi
-variabler <- c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad', 'Opf0AlvorlighetsGrad1', 'KomplPostopAlvor',
-               'Opf0Reoperasjon')
+variabler <- c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad',
+               'Opf0AlvorlighetsGrad1', 'KomplPostopAlvor', 'Opf0Reoperasjon')
 for (valgtVar in variabler) {
   outfile <- paste0(valgtVar, '_HystShus.pdf')
   NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar,
@@ -176,12 +176,10 @@ for (valgtVar in variabler) {
 NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0,
                     valgtVar='Poliklin',  OpMetode=2, outfile='Poliklin_HystShus.pdf')
 
-
-#TLH
-  NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='OpBMI',
+NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='OpBMI',
                       OpMetode=4, outfile='OpBMI_TLHShus.pdf')
 
-  NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='Opf0KomplAlvorInfeksjon',
+NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='Opf0KomplAlvorInfeksjon',
                       OpMetode=4, outfile='Opf0KomplAlvorInfeksjon_TLHShus.pdf')
 
 #------------------------------ Sentralmål per sykehus --------------------------
@@ -213,20 +211,18 @@ for (valgtVar in c('kvalInd')) {
 
 
 
-
-
-
-
  #---------FORTSETT HER!!------------
+ names(NGERData)[names(NGERData) == 'RScorePhys'] <- 'R0ScorePhys'
+
  for (valgtVar in RANDvar) {
  NGERFigPrePost(RegData=NGERData, valgtVar=valgtVar,
-                datoFra='2019-01-01', datoTil='2020-12-31',
+                datoFra='2019-01-01', datoTil=datoTil1Yoppf,
                 outfile=paste0(valgtVar,'_0_1_3.pdf'))
  }
 
 
  NGERFigPrePost(RegData=NGERData, valgtVar='AlleRANDdim',
-                datoFra='2019-01-01', datoTil='2020-12-31',
+                datoFra='2019-01-01', datoTil=datoTil1Yoppf,
                 outfile='RANDdim_0_1_3.pdf')
 
  #------------------------------ Sentralmål / år --------------------------
