@@ -95,10 +95,18 @@ NGERUtvalgEnh <- function(RegData, datoFra='2011-01-01', datoTil='3000-12-31', f
               '9' = unique(c(which(RegData$LapProsedyre1 %in% hysterektomikoder),
                            which(RegData$LapProsedyre2 %in% hysterektomikoder),
                            which(RegData$LapProsedyre3 %in% hysterektomikoder),
-                           which(RegData$LapProsedyre4 %in% hysterektomikoder)))
+                           which(RegData$LapProsedyre4 %in% hysterektomikoder))),
+              '10' = which(RegData$LapRobotKirurgi == 0)
       )
   }
-
+    opMetodeTxt <- c('Laparoskopi', 'Hysteroskopi', 'Begge',
+                     'Tot. lap. hysterektomi (LCD01/LCD04)',
+                     'Lap. subtotal hysterektomi (LCC11)',
+                     'Lap. ass. vag. hysterektomi (LCD11)',
+                     'Lap.inngr m/robotass.',
+                     'Kolpopeksiene',
+                     'Hysterektomier',
+                     'Lap.inngr u/robotass.')
 
 if (velgDiag !=0) {
   indDiag <- NULL
@@ -145,7 +153,6 @@ if (velgDiag !=0) {
       which(RegData$Opf0Status == 1)} else {indAlvor <- 1:Ninn}
 
   # OpBehNivaa      #1-Poliklinisk, 2-Dagkirurgi, 3-Inneliggende
-    # tittel <-  'Behandlingsnivå'
   if (behNivaa %in% 1:3) {
     indBehNivaa <- which(RegData$OpBehNivaa == behNivaa)
   } else {indBehNivaa <- 1:Ninn}
@@ -162,13 +169,7 @@ if (velgDiag !=0) {
                     {paste0('Pasienter fra ', if (N>0) {min(RegData$Alder, na.rm=T)} else {minald},
                         ' til ', if (N>0) {max(RegData$Alder, na.rm=T)} else {maxald}, ' år')},
                  if (OpMetode %in% c(1:9)){paste0('Operasjonstype: ',
-                                                c('Laparoskopi', 'Hysteroskopi', 'Begge',
-                                                  'Tot. lap. hysterektomi (LCD01/LCD04)',
-                                                  'Lap. subtotal hysterektomi (LCC11)',
-                                                  'Lap. ass. vag. hysterektomi (LCD11)',
-                                                  'Robotassisert inngrep',
-                                                  'Kolpopeksiene',
-                                                  'Hysterektomier')[OpMetode])},
+                                                  opMetodeTxt[OpMetode])},
                  if (behNivaa %in% 1:3){paste0('Behandlingsnivå: ',
                                                c('Poliklinisk', 'Dagkirurgi', 'Innlagt')[as.numeric(behNivaa)])},
                  if (AlvorlighetKompl[1] %in% 1:4){

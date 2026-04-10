@@ -5,6 +5,10 @@
 #'
 #' @return Brukergrensesnittet (ui) til nger-appen
 #' @export
+
+
+
+
 ui_nger <- function() {
 
   library(nger)
@@ -20,7 +24,7 @@ ui_nger <- function() {
   names(diagnoser) <- c('Alle', 'Godartede ovarialcyster', 'Endometriose, livmorvegg', 'Endo u livmorvegg',
                         'Onkologi', 'Generell gynekologi', 'Gravide', 'Komplikasjoner', 'Infertilitet')
 
-  opMetode <- c('Alle'=0,
+  opMetodeValg <- c('Alle'=0,
                 'Laparoskopi'=1,
                 'Hysteroskopi'=2,
                 # 'Begge'=3,
@@ -28,7 +32,8 @@ ui_nger <- function() {
                 'Lap. subtotal hysterektomi (LCC11)'=5,
                 'Lap. ass. vag. hysterektomi (LCD11)'=6,
                 'Alle hysterektomier' = 9,
-                'Robotassisert inngrep' = 7,
+                'Lap. inngrep med robotass.' = 7,
+                'Lap. inngrep uten robotass.' = 10,
                 'Kolpopeksiene' = 8)
 
   alvorKompl <- c("Lite alvorlig"=1,
@@ -120,12 +125,12 @@ ui_nger <- function() {
 
                conditionalPanel(
                  condition = "input.ark == 'Antall operasjoner'",
-                 dateInput(inputId = 'sluttDatoReg', label = 'Velg sluttdato', language="nb",
+                 dateInput(inputId = 'sluttDatoReg', label = 'Velg sluttdato (kun for månedsvisning)', language="nb",
                            value = Sys.Date(), max = Sys.Date() ),
                  selectInput(inputId = "tidsenhetReg", label="Velg tidsenhet",
                              choices = rev(c('År'= 'Aar', 'Måned'='Mnd'))),
                  selectInput(inputId = 'opMetodeReg', label='Operasjonstype',
-                             choices = opMetode
+                             choices = opMetodeValg
                  ),
                  selectInput(inputId = 'velgDiagReg', label='Diagnose',
                              choices = diagnoser
@@ -140,10 +145,10 @@ ui_nger <- function() {
                conditionalPanel(
                  condition = "input.ark == 'Last ned egne data' | 'Nøkkeltall, Hys' ",
                  uiOutput('velgReshReg'),
-                 selectInput(inputId = 'opMetodeRegDump', label='Operasjonstype (kun datadump)',
-                             choices = opMetode
+                 selectInput(inputId = 'opMetodeRegDump', label='Operasjonstype',
+                             choices = opMetodeValg
                  ),
-                 selectInput(inputId = 'diagnoseRegDump', label='Diagnose (kun datadump)',
+                 selectInput(inputId = 'diagnoseRegDump', label='Diagnose',
                              choices = diagnoser
                  ),
                  selectInput(inputId = 'alvorlighetKomplDump',
@@ -248,7 +253,7 @@ ui_nger <- function() {
                           sliderInput(inputId="alderKval", label = "Alder", min = 0,
                                       max = 110, value = c(0, 110)),
                           selectInput(inputId = 'opMetodeKval', label='Operasjonstype',
-                                      choices = opMetode
+                                      choices = opMetodeValg
                           ),
                           selectInput(inputId = 'velgDiagKval', label='Diagnose',
                                       choices = diagnoser
@@ -427,7 +432,7 @@ ui_nger <- function() {
                     choices = enhetsUtvalg
         ),
         selectInput(inputId = 'opMetode', label='Operasjonstype',
-                    choices = opMetode
+                    choices = opMetodeValg
         ),
         selectInput(inputId = 'velgDiag', label='Diagnose',
                     choices = diagnoser
@@ -518,7 +523,7 @@ ui_nger <- function() {
                sliderInput(inputId="alderAndel", label = "Alder", min = 0,
                            max = 110, value = c(0, 110)),
                selectInput(inputId = 'opMetodeAndel', label='Operasjonstype',
-                           choices = opMetode
+                           choices = opMetodeValg
                ),
                selectInput(inputId = 'velgDiagAndel', label='Diagnose',
                            choices = diagnoser
@@ -613,7 +618,7 @@ ui_nger <- function() {
                    selectInput(inputId = "sentralmaal", label="Velg gjennomsnitt/median ",
                                choices = c("Gjennomsnitt"='gjsn', "Median"='med')),
                    selectInput(inputId = 'opMetodeGjsn', label='Operasjonstype',
-                               choices = opMetode
+                               choices = opMetodeValg
                    ),
                    selectInput(inputId = 'velgDiagGjsn', label='Diagnose',
                                choices = diagnoser
@@ -777,8 +782,8 @@ server_nger <- function(input, output, session) {
       switch(input$tidsenhetReg,
              Mnd=tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12,
                                  OpMetode=as.numeric(input$opMetodeReg),
-                                 velgDiag=as.numeric(input$velgDiagReg)), #input$datovalgTab[2])
-             Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg,
+                                 velgDiag=as.numeric(input$velgDiagReg)),
+             Aar=tabAntOpphShAar(RegData=RegData, #datoTil=input$sluttDatoReg,
                                   OpMetode=as.numeric(input$opMetodeReg),
                                   velgDiag=as.numeric(input$velgDiagReg)))
     output$tabAntOpphSh <- renderTable(tabAntOpphShMndAar$tabAntAvd, rownames = T, digits=0, spacing="xs")
@@ -793,7 +798,7 @@ server_nger <- function(input, output, session) {
         br(),
         h4(HTML(switch(input$tidsenhetReg,
                        Mnd = paste0(t1, 'siste 12 måneder før ', input$sluttDatoReg, '<br />'),
-                       Aar = paste0(t1, 'siste 5 år før ', input$sluttDatoReg, '<br />'))),
+                       Aar = paste0(t1, 'siste år ', '<br />'))),
            HTML(paste0(tabAntOpphShMndAar$utvalgTxt[-1], '<br />'))
         ))
     })
@@ -822,40 +827,33 @@ server_nger <- function(input, output, session) {
       NULL
     }
   })
-  RegOversikt <- RegData[ , c('FodselsDato', 'OpDato', 'ReshId', 'ShNavn')] #, 'BasisRegStatus'
 
-  # Data til kontroll
-  observe({
-    RegOversikt <- dplyr::filter(RegOversikt,
-                                 as.Date(OpDato) >= input$datovalgReg[1],
-                                 as.Date(OpDato) <= input$datovalgReg[2])
-
-    if (user$role() == 'SC') {
-      valgtResh <- ifelse(is.null(input$velgReshReg), 0, as.numeric(input$velgReshReg))
-      ind <- if (valgtResh == 0) {1:dim(RegOversikt)[1]
-      } else {which(as.numeric(RegOversikt$ReshId) %in% as.numeric(valgtResh))}
-      tabDataRegKtr <- RegOversikt[ind,]
-
-    }  else {
-      tabDataRegKtr <- RegOversikt[which(RegOversikt$ReshId == user$org()), ]}
-
-
-    output$lastNed_dataTilRegKtr <- downloadHandler(
-      filename = function(){'dataTilKtr.csv'},
-      content = function(file, filename){write.csv2(tabDataRegKtr, file, row.names = F, na = '')})
-  })
 
   # --------Egen datadump, (NB: LU uten PROM)---------
-  # RegDataAlle <- NGERRegDataSQL(medPROM=1, gml=0)
-  # RegDataAlle <- NGERPreprosess(RegData = RegDataAlle)
-  observe({
-    DataDump <-
-      NGERUtvalgEnh(RegData = RegData,
-                    datoFra = input$datovalgReg[1],
-                    datoTil = input$datovalgReg[2],
-                    OpMetode = as.numeric(input$opMetodeRegDump),
-                    velgDiag = as.numeric(input$diagnoseRegDump),
-                    AlvorlighetKompl = as.numeric(input$alvorlighetKomplDump))$RegData
+
+
+  # observe({
+  #   req(input$ark == 'Last ned egne data')
+  #   RegDataAlle <- NGERRegDataSQL(medPROM=1, gml=0)
+  #   RegDataAlle <- NGERPreprosess(RegData = RegDataAlle)
+  # })
+
+    # DataDump1 <- NGERPreprosess(NGERRegDataSQL(datoFra = input$datovalgReg[1],
+    #                            datoTil = input$datovalgReg[2]))
+    observe({
+      req(input$ark == 'Last ned egne data')
+      RegDataAlle <-  if (user$role() =='SC') {
+        NGERPreprosess(RegData = NGERRegDataSQL(
+                                    datoFra = input$datovalgReg[1],
+                                    datoTil = input$datovalgReg[2]))}
+      else {NGERPreprosess(RegData = NGERRegDataSQL(medPROM = 0,
+                                    datoFra = input$datovalgReg[1],
+                                    datoTil = input$datovalgReg[2]))}
+    DataDump <- NGERUtvalgEnh(RegData = RegDataAlle,
+                              OpMetode = as.numeric(input$opMetodeRegDump),
+                              velgDiag = as.numeric(input$diagnoseRegDump),
+                              AlvorlighetKompl = as.numeric(input$alvorlighetKomplDump))$RegData
+
     if (input$IntraKomplDump == TRUE) {
       indIntraKompl <- which((DataDump$LapKomplikasjoner==1) | (DataDump$HysKomplikasjoner==1))
       DataDump <- DataDump[indIntraKompl, ]}
@@ -864,18 +862,18 @@ server_nger <- function(input, output, session) {
       valgtResh <- ifelse(is.null(input$velgReshReg),
                           0, as.numeric(input$velgReshReg))
       ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
-      } else {
-        which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
+      } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
       tabDataDump <- DataDump[ind,]
-    } else {
-      navn <- names(DataDump)
-      fjernVarInd <- c(grep('Opf0', navn), grep('Opf6', navn),
-                       grep('R0', navn), grep('R1', navn), grep('R3', navn),
-                       grep('RY1', navn), grep('Tss', navn))
-      tabDataDump <-
-        DataDump[which(DataDump$ReshId == user$org()), -fjernVarInd]
+    }  else {
+    #   navn <- names(DataDump)
+    #   fjernVarInd <- c(grep('Opf0', navn), grep('Opf6', navn),
+    #                    grep('R0', navn), grep('R1', navn), grep('R3', navn),
+    #                    grep('RY1', navn), grep('Tss', navn))
+    #
+      tabDataDump <- DataDump[which(DataDump$ReshId == user$org()), ] # , -fjernVarInd]
+    #
+     } #Tar bort PROM/PREM til egen avdeling
 
-    } #Tar bort PROM/PREM til egen avdeling
     txtLog <- paste0('Datadump for NGER: ',
                      'tidsperiode ', input$datovalgReg[1], '_', input$datovalgReg[2])
 
@@ -883,7 +881,16 @@ server_nger <- function(input, output, session) {
       filename = function(){'dataDumpNGER.csv'},
       content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, na = '')
         rapbase::repLogger2(user = user, msg = txtLog)
-        })
+      })
+
+        # Data til kontroll
+    RegOversikt <- tabDataDump[ , c('FodselsDato', 'OpDato', 'ReshId', 'ShNavn')]
+
+    output$lastNed_dataTilRegKtr <- downloadHandler(
+      filename = function(){'dataTilKtr.csv'},
+      content = function(file, filename){write.csv2(RegOversikt, file, row.names = F, na = '')})
+
+
   })
   #---------Kvalitetsindikatorer------------
   #KvalInd

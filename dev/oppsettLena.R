@@ -16,6 +16,11 @@ library(nger)
 source("dev/sysSetenv.R")
 nger::kjor_NGERapp(browser = TRUE)
 
+
+shiny::shinyApp(
+  ui = nger::ui_ngerOK,
+  server = nger::server_ngerOK)
+
 source("dev/sysSetenv.R")
 RegData <- nger::NGERRegDataSQL(datoFra = '2020-01-01', medPROM = 1)
 RegData <- NGERPreprosess(RegData = RegData)
@@ -26,7 +31,6 @@ rapbase::runAutoReport(group = "nger",
                        dato = Sys.Date()+1, dryRun = TRUE)
 
 
-På Rapporteket holder det med data fra 2020
 rm('RegData')
 
 devtools::install("../rapbase/.")

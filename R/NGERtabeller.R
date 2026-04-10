@@ -30,23 +30,22 @@ tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0,
       #return(tabAvdMnd1)
 	return(list(tabAntAvd=tabAvdMnd1, utvalgTxt = Utvalg$utvalgTxt))
 }
-#tabAntOpphShMnd(RegData, datoTil=Sys.Date(), antMnd=3)
 
 
-#' Antall opphold siste 5 år
+#' Antall opphold per år
 #' @export
-tabAntOpphSh5Aar <- function(RegData, datoTil=Sys.Date(),
+tabAntOpphShAar <- function(RegData, # datoTil=Sys.Date(),
                              OpMetode=99, velgDiag=0){
-      AarNaa <- as.numeric(format.Date(datoTil, "%Y"))
+      #AarNaa <- as.numeric(format.Date(datoTil, "%Y"))
 
       Utvalg <- NGERUtvalgEnh(RegData=RegData, OpMetode = OpMetode, velgDiag=velgDiag)
       RegData <- Utvalg$RegData
-      tabAvdAarN <- addmargins(table(RegData[which(RegData$Aar %in% (AarNaa-4):AarNaa), c('ShNavn','Aar')]))
+     # tabAvdAarN <- addmargins(table(RegData[which(RegData$Aar %in% (AarNaa-4):AarNaa), c('ShNavn','Aar')]))
+      tabAvdAarN <- addmargins(table(RegData[, c('ShNavn','Aar')]))
       rownames(tabAvdAarN)[dim(tabAvdAarN)[1] ]<- 'TOTALT, alle enheter:'
-      colnames(tabAvdAarN)[dim(tabAvdAarN)[2] ]<- 'Siste 5 år'
+      colnames(tabAvdAarN)[dim(tabAvdAarN)[2] ]<- 'Siste år'
       tabAvdAarN <- xtable::xtable(tabAvdAarN)
       return(list(tabAntAvd=tabAvdAarN, utvalgTxt = Utvalg$utvalgTxt))
-      #return(tabAvdAarN)
 }
 
 

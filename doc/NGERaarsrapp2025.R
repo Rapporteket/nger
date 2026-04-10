@@ -211,7 +211,6 @@ for (valgtVar in c('kvalInd')) {
 
 
 
- #---------FORTSETT HER!!------------
  names(NGERData)[names(NGERData) == 'RScorePhys'] <- 'R0ScorePhys'
 
  for (valgtVar in RANDvar) {
@@ -239,8 +238,8 @@ library(xtable)
 library(nger)
 RegData <- NGERData
 
-#Antall registreringer siste 5 år
-tabOpph <- tabAntOpphSh5Aar(RegData=RegData, datoTil=datoTil)$tabAntAvd
+#Antall registreringer siste  år
+tabOpph <- tabAntOpphShAar(RegData=RegData, datoTil=datoTil)$tabAntAvd
 AarNaa <- as.numeric(format.Date(datoTil, "%Y"))
 tabAvdAarN <- addmargins(table(RegData[which(RegData$Aar %in% (AarNaa-4):AarNaa), c('ShNavn','Aar')]), margin = 1)
 xtable::xtable(tabAvdAarN, digits=0, align=c('l', rep('r',ncol(tabAvdAarN))),
