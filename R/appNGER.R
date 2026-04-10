@@ -24,7 +24,7 @@ ui_nger <- function() {
   names(diagnoser) <- c('Alle', 'Godartede ovarialcyster', 'Endometriose, livmorvegg', 'Endo u livmorvegg',
                         'Onkologi', 'Generell gynekologi', 'Gravide', 'Komplikasjoner', 'Infertilitet')
 
-  opMetode <- c('Alle'=0,
+  opMetodeValg <- c('Alle'=0,
                 'Laparoskopi'=1,
                 'Hysteroskopi'=2,
                 # 'Begge'=3,
@@ -130,7 +130,7 @@ ui_nger <- function() {
                  selectInput(inputId = "tidsenhetReg", label="Velg tidsenhet",
                              choices = rev(c('År'= 'Aar', 'Måned'='Mnd'))),
                  selectInput(inputId = 'opMetodeReg', label='Operasjonstype',
-                             choices = opMetode
+                             choices = opMetodeValg
                  ),
                  selectInput(inputId = 'velgDiagReg', label='Diagnose',
                              choices = diagnoser
@@ -146,7 +146,7 @@ ui_nger <- function() {
                  condition = "input.ark == 'Last ned egne data' | 'Nøkkeltall, Hys' ",
                  uiOutput('velgReshReg'),
                  selectInput(inputId = 'opMetodeRegDump', label='Operasjonstype (kun datadump)',
-                             choices = opMetode
+                             choices = opMetodeValg
                  ),
                  selectInput(inputId = 'diagnoseRegDump', label='Diagnose (kun datadump)',
                              choices = diagnoser
@@ -253,7 +253,7 @@ ui_nger <- function() {
                           sliderInput(inputId="alderKval", label = "Alder", min = 0,
                                       max = 110, value = c(0, 110)),
                           selectInput(inputId = 'opMetodeKval', label='Operasjonstype',
-                                      choices = opMetode
+                                      choices = opMetodeValg
                           ),
                           selectInput(inputId = 'velgDiagKval', label='Diagnose',
                                       choices = diagnoser
@@ -432,7 +432,7 @@ ui_nger <- function() {
                     choices = enhetsUtvalg
         ),
         selectInput(inputId = 'opMetode', label='Operasjonstype',
-                    choices = opMetode
+                    choices = opMetodeValg
         ),
         selectInput(inputId = 'velgDiag', label='Diagnose',
                     choices = diagnoser
@@ -523,7 +523,7 @@ ui_nger <- function() {
                sliderInput(inputId="alderAndel", label = "Alder", min = 0,
                            max = 110, value = c(0, 110)),
                selectInput(inputId = 'opMetodeAndel', label='Operasjonstype',
-                           choices = opMetode
+                           choices = opMetodeValg
                ),
                selectInput(inputId = 'velgDiagAndel', label='Diagnose',
                            choices = diagnoser
@@ -618,7 +618,7 @@ ui_nger <- function() {
                    selectInput(inputId = "sentralmaal", label="Velg gjennomsnitt/median ",
                                choices = c("Gjennomsnitt"='gjsn', "Median"='med')),
                    selectInput(inputId = 'opMetodeGjsn', label='Operasjonstype',
-                               choices = opMetode
+                               choices = opMetodeValg
                    ),
                    selectInput(inputId = 'velgDiagGjsn', label='Diagnose',
                                choices = diagnoser
@@ -783,9 +783,6 @@ server_nger <- function(input, output, session) {
              Mnd=tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12,
                                  OpMetode=as.numeric(input$opMetodeReg),
                                  velgDiag=as.numeric(input$velgDiagReg)),
-             # Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg,
-             #                      OpMetode=as.numeric(input$opMetodeReg),
-             #                      velgDiag=as.numeric(input$velgDiagReg))
              Aar=tabAntOpphShAar(RegData=RegData, #datoTil=input$sluttDatoReg,
                                   OpMetode=as.numeric(input$opMetodeReg),
                                   velgDiag=as.numeric(input$velgDiagReg)))
