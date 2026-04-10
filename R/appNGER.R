@@ -145,10 +145,10 @@ ui_nger <- function() {
                conditionalPanel(
                  condition = "input.ark == 'Last ned egne data' | 'Nøkkeltall, Hys' ",
                  uiOutput('velgReshReg'),
-                 selectInput(inputId = 'opMetodeRegDump', label='Operasjonstype (kun datadump)',
+                 selectInput(inputId = 'opMetodeRegDump', label='Operasjonstype',
                              choices = opMetodeValg
                  ),
-                 selectInput(inputId = 'diagnoseRegDump', label='Diagnose (kun datadump)',
+                 selectInput(inputId = 'diagnoseRegDump', label='Diagnose',
                              choices = diagnoser
                  ),
                  selectInput(inputId = 'alvorlighetKomplDump',
@@ -830,21 +830,29 @@ server_nger <- function(input, output, session) {
 
 
   # --------Egen datadump, (NB: LU uten PROM)---------
-  # RegDataAlle <- NGERRegDataSQL(medPROM=1, gml=0)
-  # RegDataAlle <- NGERPreprosess(RegData = RegDataAlle)
-  observe({
-    DataDump1 <- NGERRegDataSQL(datoFra = input$datovalgReg[1],
-                               datoTil = input$datovalgReg[2])
-    DataDump <- NGERUtvalgEnh(RegData = DataDump1,
+
+
+  # observe({
+  #   req(input$ark == 'Last ned egne data')
+  #   RegDataAlle <- NGERRegDataSQL(medPROM=1, gml=0)
+  #   RegDataAlle <- NGERPreprosess(RegData = RegDataAlle)
+  # })
+
+    # DataDump1 <- NGERPreprosess(NGERRegDataSQL(datoFra = input$datovalgReg[1],
+    #                            datoTil = input$datovalgReg[2]))
+    observe({
+      req(input$ark == 'Last ned egne data')
+      RegDataAlle <-  if (user$role() =='SC') {
+        NGERPreprosess(RegData = NGERRegDataSQL(
+                                    datoFra = input$datovalgReg[1],
+                                    datoTil = input$datovalgReg[2]))}
+      else {NGERPreprosess(RegData = NGERRegDataSQL(medPROM = 0,
+                                    datoFra = input$datovalgReg[1],
+                                    datoTil = input$datovalgReg[2]))}
+    DataDump <- NGERUtvalgEnh(RegData = RegDataAlle,
                               OpMetode = as.numeric(input$opMetodeRegDump),
                               velgDiag = as.numeric(input$diagnoseRegDump),
                               AlvorlighetKompl = as.numeric(input$alvorlighetKomplDump))$RegData
-      print(input$input$opMetodeRegDump)
-    print(input$input$diagnoseRegDump)
-    print(input$input$alvorlighetKomplDump)
-    print(dim(DataDump1)[1])
-    print(dim(DataDump)[1])
-
 
     if (input$IntraKomplDump == TRUE) {
       indIntraKompl <- which((DataDump$LapKomplikasjoner==1) | (DataDump$HysKomplikasjoner==1))
@@ -856,36 +864,15 @@ server_nger <- function(input, output, session) {
       ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
       } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
       tabDataDump <- DataDump[ind,]
-    } else {
-      navn <- names(DataDump)
-      fjernVarInd <- c(grep('Opf0', navn), grep('Opf6', navn),
-                       grep('R0', navn), grep('R1', navn), grep('R3', navn),
-                       grep('RY1', navn), grep('Tss', navn))
-      print(valgtResh)
-      tabDataDump <-
-        DataDump[which(DataDump$ReshId == user$org()), -fjernVarInd]
-
-    } #Tar bort PROM/PREM til egen avdeling
-print(dim(tabDataDump)[1])
-
-    # Data til kontroll
-    RegOversikt <- tabDataDump[ , c('FodselsDato', 'OpDato', 'ReshId', 'ShNavn')]
-    # if (user$role() == 'SC') {
-    #   valgtResh <- ifelse(is.null(input$velgReshReg), 0, as.numeric(input$velgReshReg))
-    #   ind <- if (valgtResh == 0) {1:dim(RegOversikt)[1]
-    #   } else {which(as.numeric(RegOversikt$ReshId) %in% as.numeric(valgtResh))}
-    #   tabDataRegKtr <- RegOversikt[ind,]
+    }  else {
+    #   navn <- names(DataDump)
+    #   fjernVarInd <- c(grep('Opf0', navn), grep('Opf6', navn),
+    #                    grep('R0', navn), grep('R1', navn), grep('R3', navn),
+    #                    grep('RY1', navn), grep('Tss', navn))
     #
-    # }  else {
-    #   tabDataRegKtr <- RegOversikt[which(RegOversikt$ReshId == user$org()), ]}
-
-
-    output$lastNed_dataTilRegKtr <- downloadHandler(
-      filename = function(){'dataTilKtr.csv'},
-      content = function(file, filename){write.csv2(RegOversikt, file, row.names = F, na = '')})
-      # content = function(file, filename){write.csv2(tabDataRegKtr, file, row.names = F, na = '')})
-
-
+      tabDataDump <- DataDump[which(DataDump$ReshId == user$org()), ] # , -fjernVarInd]
+    #
+     } #Tar bort PROM/PREM til egen avdeling
 
     txtLog <- paste0('Datadump for NGER: ',
                      'tidsperiode ', input$datovalgReg[1], '_', input$datovalgReg[2])
@@ -894,7 +881,16 @@ print(dim(tabDataDump)[1])
       filename = function(){'dataDumpNGER.csv'},
       content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, na = '')
         rapbase::repLogger2(user = user, msg = txtLog)
-        })
+      })
+
+        # Data til kontroll
+    RegOversikt <- tabDataDump[ , c('FodselsDato', 'OpDato', 'ReshId', 'ShNavn')]
+
+    output$lastNed_dataTilRegKtr <- downloadHandler(
+      filename = function(){'dataTilKtr.csv'},
+      content = function(file, filename){write.csv2(RegOversikt, file, row.names = F, na = '')})
+
+
   })
   #---------Kvalitetsindikatorer------------
   #KvalInd
