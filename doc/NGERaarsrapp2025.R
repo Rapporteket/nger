@@ -131,17 +131,6 @@ NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf0AlvorlighetsGrad
 
 #------------------------------ Andeler per sykehus --------------------------
 #------------------------------ (AndelGrVar) --------------------------
-# 'Fedme (BMI>30)' = 'OpBMI',
-# 'Dagkirurgiske inngrep' = 'OpBehNivaa',
-# 'Komplikasjoner under operasjon' = 'KomplIntra', (Laparoskopi, valgte sykehus..)
-# 'Postop. komplikasjon: Alle' = 'KomplPostop', (Alle, valgte sykehus)
-# 'TSS2: Møtet med gyn. avd. var svært godt' = 'Tss2Mott',
-# 'TSS2: Behandlingsopplegg/-innhold passet svært bra' = 'Tss2Behandling',
-# 'TSS2: Behandlerne lyttet- og forsto i svært stor grad' = 'Tss2Lytte',
-# 'TSS2: Pasienten hadde svært stor tillit til sine behandlere' = 'Tss2Behandlere',
-# 'TSS2: Pasient og behandlere svært enige om målsetn. for behandlinga' = 'Tss2Enighet',
-# 'TSS2: Positiv oppfatning om gyn. avd.' = 'Tss2Generelt'
-# 'Registreringsforsinkelse' = 'RegForsinkelse',Mer enn 4 uker fra op. til reg.
 
 variabler <- c('OpBMI', 'KomplPostop', 'Opf0KomplAlvorInfeksjon', 'RegForsinkelse',
                'Tss2Mott', 'Tss2Behandling', 'Tss2Lytte', 'Tss2Behandlere',
@@ -193,10 +182,14 @@ for (valgtVar in c('Alder', 'OpBMI', 'Tss2Sumskaar')) {
 
 
 for (OpMetode in c(1,2,4)) {
-  outfile <- paste0('OpTid_', c('Lap','Hyst','', 'TLH')[OpMetode] ,'ShGjsn.pdf')
+  outfile <- paste0('OpTid_', c('Lap','Hyst','', 'TLH')[OpMetode] ,'GjsnSh.pdf')
   NGERFigGjsnGrVar(RegData=NGERData1aar, valgtVar='OpTid', preprosess = 0,
                    OpMetode = OpMetode, outfile=outfile)
 }
+
+NGERFigGjsnGrVar(RegData=NGERData1aar, valgtVar='Alder', preprosess = 0,
+                 OpMetode = OpMetode, outfile='Alder_TLHGjsnSh.pdf')
+
 
 #KvalInd
 for (valgtVar in c('kvalInd')) {
@@ -211,6 +204,7 @@ for (valgtVar in c('kvalInd')) {
 
 
 
+ #---------FORTSETT HER!!------------
  names(NGERData)[names(NGERData) == 'RScorePhys'] <- 'R0ScorePhys'
 
  for (valgtVar in RANDvar) {
@@ -238,8 +232,8 @@ library(xtable)
 library(nger)
 RegData <- NGERData
 
-#Antall registreringer siste  år
-tabOpph <- tabAntOpphShAar(RegData=RegData, datoTil=datoTil)$tabAntAvd
+#Antall registreringer siste 5 år
+tabOpph <- tabAntOpphSh5Aar(RegData=RegData, datoTil=datoTil)$tabAntAvd
 AarNaa <- as.numeric(format.Date(datoTil, "%Y"))
 tabAvdAarN <- addmargins(table(RegData[which(RegData$Aar %in% (AarNaa-4):AarNaa), c('ShNavn','Aar')]), margin = 1)
 xtable::xtable(tabAvdAarN, digits=0, align=c('l', rep('r',ncol(tabAvdAarN))),

@@ -22,8 +22,13 @@ shiny::shinyApp(
   server = nger::server_ngerOK)
 
 source("dev/sysSetenv.R")
-RegData <- nger::NGERRegDataSQL(datoFra = '2020-01-01', medPROM = 1)
-RegData <- NGERPreprosess(RegData = RegData)
+RegDataRaa <- nger::NGERRegDataSQL(datoFra = '2025-01-01', datoTil = '2025-12-31' ,medPROM = 0)
+RegData <- NGERPreprosess(RegData = RegDataRaa)
+
+table(RegDataRaa$LapRobotKirurgi, useNA = 'a')
+table(RegData$LapRobotKirurgi, useNA = 'a')
+
+
 
 unique(RegData[order(RegData$ShNavn),c("ShNavn","ReshId")])
 

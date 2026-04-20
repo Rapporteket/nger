@@ -80,7 +80,7 @@ NGERUtvalgEnh <- function(RegData, datoFra='2011-01-01', datoTil='3000-12-31', f
   #Operasjonstype:
   indMCE <- if (OpMetode %in% c(1:3)){which(RegData$OpMetode %in% c(OpMetode,3))
     } else {indMCE <- 1:Ninn}
-  if (OpMetode %in% c(4:9)) {
+  if (OpMetode %in% c(4:10)) {
       ProsLap <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3', 'LapProsedyre4')
       hysterektomikoder <- c('LCC10', 'LCC11', 'LCC20', 'LCD00', 'LCD01', 'LCD04',
                              'LCD10','LCD11', 'LCD31', 'LCD30', 'LCD40', 'LCD96', 'LCD97')
@@ -100,13 +100,13 @@ NGERUtvalgEnh <- function(RegData, datoFra='2011-01-01', datoTil='3000-12-31', f
       )
   }
     opMetodeTxt <- c('Laparoskopi', 'Hysteroskopi', 'Begge',
-                     'Tot. lap. hysterektomi (LCD01/LCD04)',
-                     'Lap. subtotal hysterektomi (LCC11)',
-                     'Lap. ass. vag. hysterektomi (LCD11)',
-                     'Lap.inngr m/robotass.',
-                     'Kolpopeksiene',
-                     'Hysterektomier',
-                     'Lap.inngr u/robotass.')
+                     'Tot. lap. hysterektomi (LCD01/LCD04)', #4
+                     'Lap. subtotal hysterektomi (LCC11)',  #5
+                     'Lap. ass. vag. hysterektomi (LCD11)', #6
+                     'Lap.inngr m/robotass.', #7
+                     'Kolpopeksiene', #8
+                     'Hysterektomier', #9
+                     'Lap.inngr u/robotass.')  #10
 
 if (velgDiag !=0) {
   indDiag <- NULL
