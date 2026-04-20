@@ -11,9 +11,10 @@
 #'                 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
 #'                 5: LCC11 (laparoskopisk subtotal hysterektomi)
 #'                 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
-#'                 7: Robotassisert inngrep
+#'                 7: Lap m/robot
 #'                 8: Kolpopeksiene
 #'                 9: Hysterectomier (alle)
+#'                10: Lap u/robot
 #' @param velgDiag 0: Alle
 #'                 1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
 #'                 2: Endometriose, livmorvegg (N80.0)
@@ -168,7 +169,7 @@ if (velgDiag !=0) {
                  if ((minald>0) | (maxald<110))
                     {paste0('Pasienter fra ', if (N>0) {min(RegData$Alder, na.rm=T)} else {minald},
                         ' til ', if (N>0) {max(RegData$Alder, na.rm=T)} else {maxald}, ' år')},
-                 if (OpMetode %in% c(1:9)){paste0('Operasjonstype: ',
+                 if (OpMetode %in% c(1:10)){paste0('Operasjonstype: ',
                                                   opMetodeTxt[OpMetode])},
                  if (behNivaa %in% 1:3){paste0('Behandlingsnivå: ',
                                                c('Poliklinisk', 'Dagkirurgi', 'Innlagt')[as.numeric(behNivaa)])},
