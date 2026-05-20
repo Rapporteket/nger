@@ -4,7 +4,7 @@ source("dev/sysSetenv.R")
 
 # Inndata til funksjon:
 library(nger)
-datoFra <- '2019-01-01' #Ønsker utvikling siste 4 år
+datoFra <- '2019-01-01' #Ønsker utvikling siste 4 år, men ok å ha med flere :-)
 rappAar <- 2025
 datoFra1aar <- paste0(rappAar, '-01-01')
 datoTil <- paste0(rappAar, '-12-31')
@@ -22,7 +22,7 @@ setwd('../Aarsrapp/NGER' )
 
 variabler <- c('OpBMI', 'HysGjforingsGrad','HysKomplikasjoner',
               'LapKomplIntra', 'LapTeknikk',
-              'Opf0AlvorlighetsGrad', 'ProsViktigLap', 'ProsViktigHys',
+              'Opf0AlvorlighetsGrad',
               'RegForsinkelse', 'Tss2Generelt')
 # 'LapKomplikasjoner'->'LapKomplIntra',
 
@@ -30,6 +30,11 @@ for (valgtVar in variabler) {
 	outfile <- paste0(valgtVar, '_ford.pdf')
 	NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar, outfile=outfile)
 }
+
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='ProsViktigLap', OpMetode = 1,
+               outfile='ProsViktigLap_fordLap.pdf')
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='ProsViktigHys', OpMetode = 2,
+               outfile='ProsViktigHys_fordHys.pdf')
 
 NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Diagnoser', OpMetode = 1,
                outfile='Diagnoser_fordLap.pdf')
@@ -135,6 +140,11 @@ NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf0AlvorlighetsGrad
 variabler <- c('OpBMI', 'KomplPostop', 'Opf0KomplAlvorInfeksjon', 'RegForsinkelse',
                'Tss2Mott', 'Tss2Behandling', 'Tss2Lytte', 'Tss2Behandlere',
                'Tss2Enighet', 'Tss2Generelt')
+
+FigAndelSh_Opf0Status.pdf Responsrate på enhetsnivå
+FigAndelSh_RegForsinkelse
+
+variabler <- 'Opf0Status'
 for (valgtVar in variabler) {
   outfile <- paste0(valgtVar, '_Shus.pdf')
   NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar,  outfile=outfile)

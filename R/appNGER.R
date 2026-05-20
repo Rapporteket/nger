@@ -720,7 +720,7 @@ server_nger <- function(input, output, session) {
 
     #----------Hente data ----------
 
-    datoFraLasteData <- paste0(as.numeric(format(Sys.Date()-735, "%Y")), '-01-01')
+    datoFraLasteData <- paste0(as.numeric(format(Sys.Date(), "%Y"))-6, '-01-01')
     RegDataAlle <- NGERRegDataSQL(datoFra = datoFraLasteData, medPROM=1, gml=0)
     errorCondition(dim(RegDataAlle)[1]==0, 'ingen data')
 
