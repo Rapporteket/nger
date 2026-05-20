@@ -42,4 +42,4 @@ devtools::install("../rapbase/.")
 devtools::install(upgrade = FALSE, dependencies = FALSE)
 
 
-remotes::install_github('Rapporteket/rapbase@standardEmail')
+remotes::install_github('Rapporteket/rapbase')
