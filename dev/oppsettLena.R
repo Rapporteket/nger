@@ -7,10 +7,10 @@
 # Sys.setenv(MYSQL_PASSWORD="root")
 setwd("C:/Users/lro2402unn/RegistreGIT/nger")
 setwd('../data')
-sship::dec("c://Users/lro2402unn/RegistreGIT/data/nger136cd92e2.sql.gz__20260409_091146.tar.gz",
+sship::dec("c://Users/lro2402unn/RegistreGIT/data/nger15712bcbf.sql.gz__20260520_121221.tar.gz",
            keyfile = "c://Users/lro2402unn/.ssh/id_rsa",
            target_dir = "c://Users/lro2402unn/RegistreGIT/data/.")
-# source c://Users/lro2402unn/RegistreGIT/data/nger136cd92e2.sql;
+# source c://Users/lro2402unn/RegistreGIT/data/nger15712bcbf.sql.gz__20260520_121221.sql;
 
 library(nger)
 source("dev/sysSetenv.R")
@@ -22,8 +22,13 @@ shiny::shinyApp(
   server = nger::server_ngerOK)
 
 source("dev/sysSetenv.R")
-RegData <- nger::NGERRegDataSQL(datoFra = '2020-01-01', medPROM = 1)
-RegData <- NGERPreprosess(RegData = RegData)
+RegDataRaa <- nger::NGERRegDataSQL(datoFra = '2025-01-01', datoTil = '2025-12-31' ,medPROM = 0)
+RegData <- NGERPreprosess(RegData = RegDataRaa)
+
+table(RegDataRaa$LapRobotKirurgi, useNA = 'a')
+table(RegData$LapRobotKirurgi, useNA = 'a')
+
+
 
 unique(RegData[order(RegData$ShNavn),c("ShNavn","ReshId")])
 
@@ -37,4 +42,4 @@ devtools::install("../rapbase/.")
 devtools::install(upgrade = FALSE, dependencies = FALSE)
 
 
-remotes::install_github('Rapporteket/rapbase@standardEmail')
+remotes::install_github('Rapporteket/rapbase')

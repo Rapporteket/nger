@@ -11,13 +11,19 @@
 #'                 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
 #'                 5: LCC11 (laparoskopisk subtotal hysterektomi)
 #'                 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
-#'                 7: Robotassisert inngrep
+#'                 7: Lap m/robot
 #'                 8: Kolpopeksiene
 #'                 9: Hysterectomier (alle)
+#'                10: Lap u/robot
 #' @param velgDiag 0: Alle
-#'                 1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
+#'                 1: Godartede ovarialcyster
 #'                 2: Endometriose, livmorvegg (N80.0)
-#'                 3: Endometriose, unntatt livmorvegg.
+#'                 3: Endometriose utenom livmorvegg.
+#'                 4: Onkologi
+#'                 5: Generell gynekologi
+#'                 6: Gravide
+#'                 7: Komplikasjoner
+#'                 8: Infertilitet
 #' @param Hastegrad Hastegrad av operasjon - fjernes jan-25
 #'                1: Elektiv
 #'                2: Akutt
@@ -80,7 +86,7 @@ NGERUtvalgEnh <- function(RegData, datoFra='2011-01-01', datoTil='3000-12-31', f
   #Operasjonstype:
   indMCE <- if (OpMetode %in% c(1:3)){which(RegData$OpMetode %in% c(OpMetode,3))
     } else {indMCE <- 1:Ninn}
-  if (OpMetode %in% c(4:9)) {
+  if (OpMetode %in% c(4:10)) {
       ProsLap <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3', 'LapProsedyre4')
       hysterektomikoder <- c('LCC10', 'LCC11', 'LCC20', 'LCD00', 'LCD01', 'LCD04',
                              'LCD10','LCD11', 'LCD31', 'LCD30', 'LCD40', 'LCD96', 'LCD97')
@@ -100,13 +106,13 @@ NGERUtvalgEnh <- function(RegData, datoFra='2011-01-01', datoTil='3000-12-31', f
       )
   }
     opMetodeTxt <- c('Laparoskopi', 'Hysteroskopi', 'Begge',
-                     'Tot. lap. hysterektomi (LCD01/LCD04)',
-                     'Lap. subtotal hysterektomi (LCC11)',
-                     'Lap. ass. vag. hysterektomi (LCD11)',
-                     'Lap.inngr m/robotass.',
-                     'Kolpopeksiene',
-                     'Hysterektomier',
-                     'Lap.inngr u/robotass.')
+                     'Tot. lap. hysterektomi (LCD01/LCD04)', #4
+                     'Lap. subtotal hysterektomi (LCC11)',  #5
+                     'Lap. ass. vag. hysterektomi (LCD11)', #6
+                     'Lap.inngr m/robotass.', #7
+                     'Kolpopeksiene', #8
+                     'Hysterektomier', #9
+                     'Lap.inngr u/robotass.')  #10
 
 if (velgDiag !=0) {
   indDiag <- NULL
@@ -168,7 +174,7 @@ if (velgDiag !=0) {
                  if ((minald>0) | (maxald<110))
                     {paste0('Pasienter fra ', if (N>0) {min(RegData$Alder, na.rm=T)} else {minald},
                         ' til ', if (N>0) {max(RegData$Alder, na.rm=T)} else {maxald}, ' år')},
-                 if (OpMetode %in% c(1:9)){paste0('Operasjonstype: ',
+                 if (OpMetode %in% c(1:10)){paste0('Operasjonstype: ',
                                                   opMetodeTxt[OpMetode])},
                  if (behNivaa %in% 1:3){paste0('Behandlingsnivå: ',
                                                c('Poliklinisk', 'Dagkirurgi', 'Innlagt')[as.numeric(behNivaa)])},

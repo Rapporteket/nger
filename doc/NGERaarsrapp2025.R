@@ -4,7 +4,7 @@ source("dev/sysSetenv.R")
 
 # Inndata til funksjon:
 library(nger)
-datoFra <- '2019-01-01' #Ønsker utvikling siste 4 år
+datoFra <- '2019-01-01' #Ønsker utvikling siste 4 år, men ok å ha med flere :-)
 rappAar <- 2025
 datoFra1aar <- paste0(rappAar, '-01-01')
 datoTil <- paste0(rappAar, '-12-31')
@@ -22,14 +22,24 @@ setwd('../Aarsrapp/NGER' )
 
 variabler <- c('OpBMI', 'HysGjforingsGrad','HysKomplikasjoner',
               'LapKomplIntra', 'LapTeknikk',
-              'Opf0AlvorlighetsGrad', 'ProsViktigLap', 'ProsViktigHys',
+              'Opf0AlvorlighetsGrad',
               'RegForsinkelse', 'Tss2Generelt')
-# 'LapKomplikasjoner'->'LapKomplIntra',
 
 for (valgtVar in variabler) {
 	outfile <- paste0(valgtVar, '_ford.pdf')
 	NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar, outfile=outfile)
 }
+
+
+NGERFigAndeler(RegData=NGERData1aar[which(NGERData1aar$LapKomplikasjoner==1), ],
+               preprosess=0, valgtVar='LapKomplIntra',
+               outfile='LapKomplIntra_fordKomplIntra.pdf')
+
+
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='ProsViktigLap', OpMetode = 1,
+               outfile='ProsViktigLap_fordLap.pdf')
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='ProsViktigHys', OpMetode = 2,
+               outfile='ProsViktigHys_fordHys.pdf')
 
 NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Diagnoser', OpMetode = 1,
                outfile='Diagnoser_fordLap.pdf')
@@ -75,6 +85,27 @@ NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Alder', OpMetode = 
                outfile='Alder_fordHys.pdf')
 NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Alder', OpMetode = 4,
                outfile='Alder_fordTLH.pdf')
+
+
+#----------   NYE figurer   -------------------------------
+#Fordeling Diagnoser Hyppigst Lap.inngr m/robotass
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Diagnoser', OpMetode = 7,
+               outfile='Diagnoser_fordLapRob.pdf')
+
+#Fordeling Diagnoser Hyppigst Lap.inngr m/robotass, onkoloigi
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Diagnoser',
+               OpMetode = 7, velgDiag = 4,
+               outfile='Diagnoser_fordLapRobOnk.pdf')
+
+#Fordeling Prosedyrer Hyppigst Lap.inngr m/robotass
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Prosedyrer',
+               OpMetode = 7, outfile='Prosedyrer_fordLapRob.pdf')
+
+#Fordeling Postoperative komplikasjoener middels, alvorlige, dødlige Robotassistert
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Prosedyrer',
+               OpMetode = 7, AlvorlighetKompl = c(2:4),
+               outfile='Prosedyrer_fordLapRobAlv234.pdf')
+
 
 
 #----------------Kvalitetsindikatorsamlinger----------------
@@ -131,21 +162,12 @@ NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf0AlvorlighetsGrad
 
 #------------------------------ Andeler per sykehus --------------------------
 #------------------------------ (AndelGrVar) --------------------------
-# 'Fedme (BMI>30)' = 'OpBMI',
-# 'Dagkirurgiske inngrep' = 'OpBehNivaa',
-# 'Komplikasjoner under operasjon' = 'KomplIntra', (Laparoskopi, valgte sykehus..)
-# 'Postop. komplikasjon: Alle' = 'KomplPostop', (Alle, valgte sykehus)
-# 'TSS2: Møtet med gyn. avd. var svært godt' = 'Tss2Mott',
-# 'TSS2: Behandlingsopplegg/-innhold passet svært bra' = 'Tss2Behandling',
-# 'TSS2: Behandlerne lyttet- og forsto i svært stor grad' = 'Tss2Lytte',
-# 'TSS2: Pasienten hadde svært stor tillit til sine behandlere' = 'Tss2Behandlere',
-# 'TSS2: Pasient og behandlere svært enige om målsetn. for behandlinga' = 'Tss2Enighet',
-# 'TSS2: Positiv oppfatning om gyn. avd.' = 'Tss2Generelt'
-# 'Registreringsforsinkelse' = 'RegForsinkelse',Mer enn 4 uker fra op. til reg.
 
-variabler <- c('OpBMI', 'KomplPostop', 'Opf0KomplAlvorInfeksjon', 'RegForsinkelse',
+variabler <- c('OpBMI', 'KomplPostop', 'Opf0KomplAlvorInfeksjon',
+               'RegForsinkelse', 'Opf0Status',
                'Tss2Mott', 'Tss2Behandling', 'Tss2Lytte', 'Tss2Behandlere',
                'Tss2Enighet', 'Tss2Generelt')
+
 for (valgtVar in variabler) {
   outfile <- paste0(valgtVar, '_Shus.pdf')
   NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar,  outfile=outfile)
@@ -163,6 +185,15 @@ for (valgtVar in variabler) {
 
 NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='OpBehNivaa',
                     OpMetode=1, outfile='OpDagkirurgi_LapShus.pdf')
+
+
+# Andel sykehus Lap.inngr m/robotass Postoperative komplikasjoener
+# Andel sykehus Lap.inngr m/robotass Peroperative komplikasjoener
+NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='KomplPostop',
+                    OpMetode=7, outfile='KomplPostop_LapMrobShus.pdf')
+NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='KomplIntra',
+                    OpMetode=7, outfile='KomplIntra_LapMrobShus.pdf')
+
 
 #--Hysteroskopi
 variabler <- c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad',
@@ -193,10 +224,14 @@ for (valgtVar in c('Alder', 'OpBMI', 'Tss2Sumskaar')) {
 
 
 for (OpMetode in c(1,2,4)) {
-  outfile <- paste0('OpTid_', c('Lap','Hyst','', 'TLH')[OpMetode] ,'ShGjsn.pdf')
+  outfile <- paste0('OpTid_', c('Lap','Hyst','', 'TLH')[OpMetode] ,'GjsnSh.pdf')
   NGERFigGjsnGrVar(RegData=NGERData1aar, valgtVar='OpTid', preprosess = 0,
                    OpMetode = OpMetode, outfile=outfile)
 }
+
+NGERFigGjsnGrVar(RegData=NGERData1aar, valgtVar='Alder', preprosess = 0,
+                 OpMetode = OpMetode, outfile='Alder_TLHGjsnSh.pdf')
+
 
 #KvalInd
 for (valgtVar in c('kvalInd')) {
@@ -211,6 +246,7 @@ for (valgtVar in c('kvalInd')) {
 
 
 
+ #---------FORTSETT HER!!------------
  names(NGERData)[names(NGERData) == 'RScorePhys'] <- 'R0ScorePhys'
 
  for (valgtVar in RANDvar) {
@@ -238,8 +274,8 @@ library(xtable)
 library(nger)
 RegData <- NGERData
 
-#Antall registreringer siste  år
-tabOpph <- tabAntOpphShAar(RegData=RegData, datoTil=datoTil)$tabAntAvd
+#Antall registreringer siste 5 år
+tabOpph <- tabAntOpphSh5Aar(RegData=RegData, datoTil=datoTil)$tabAntAvd
 AarNaa <- as.numeric(format.Date(datoTil, "%Y"))
 tabAvdAarN <- addmargins(table(RegData[which(RegData$Aar %in% (AarNaa-4):AarNaa), c('ShNavn','Aar')]), margin = 1)
 xtable::xtable(tabAvdAarN, digits=0, align=c('l', rep('r',ncol(tabAvdAarN))),
