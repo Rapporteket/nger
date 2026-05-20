@@ -14,7 +14,7 @@ Depends:
     R (>= 3.5.0)
 Remotes: 
       Rapporteket/rapFigurer,
-      Rapporteket/rapbase@main
+      Rapporteket/rapbase
 Imports:
     devtools,
     digest,
@@ -26,7 +26,7 @@ Imports:
     dplyr,
     plyr,
     tidyr,
-    rapbase,
+    rapbase (>= 3.6.0),
     rapFigurer,
     remotes,
     rlang,
