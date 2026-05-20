@@ -24,12 +24,17 @@ variabler <- c('OpBMI', 'HysGjforingsGrad','HysKomplikasjoner',
               'LapKomplIntra', 'LapTeknikk',
               'Opf0AlvorlighetsGrad',
               'RegForsinkelse', 'Tss2Generelt')
-# 'LapKomplikasjoner'->'LapKomplIntra',
 
 for (valgtVar in variabler) {
 	outfile <- paste0(valgtVar, '_ford.pdf')
 	NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar, outfile=outfile)
 }
+
+
+NGERFigAndeler(RegData=NGERData1aar[which(NGERData1aar$LapKomplikasjoner==1), ],
+               preprosess=0, valgtVar='LapKomplIntra',
+               outfile='LapKomplIntra_fordKomplIntra.pdf')
+
 
 NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='ProsViktigLap', OpMetode = 1,
                outfile='ProsViktigLap_fordLap.pdf')
@@ -80,6 +85,27 @@ NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Alder', OpMetode = 
                outfile='Alder_fordHys.pdf')
 NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Alder', OpMetode = 4,
                outfile='Alder_fordTLH.pdf')
+
+
+#----------   NYE figurer   -------------------------------
+#Fordeling Diagnoser Hyppigst Lap.inngr m/robotass
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Diagnoser', OpMetode = 7,
+               outfile='Diagnoser_fordLapRob.pdf')
+
+#Fordeling Diagnoser Hyppigst Lap.inngr m/robotass, onkoloigi
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Diagnoser',
+               OpMetode = 7, velgDiag = 4,
+               outfile='Diagnoser_fordLapRobOnk.pdf')
+
+#Fordeling Prosedyrer Hyppigst Lap.inngr m/robotass
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Prosedyrer',
+               OpMetode = 7, outfile='Prosedyrer_fordLapRob.pdf')
+
+#Fordeling Postoperative komplikasjoener middels, alvorlige, dødlige Robotassistert
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Prosedyrer',
+               OpMetode = 7, AlvorlighetKompl = c(2:4),
+               outfile='Prosedyrer_fordLapRobAlv234.pdf')
+
 
 
 #----------------Kvalitetsindikatorsamlinger----------------
@@ -137,14 +163,11 @@ NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf0AlvorlighetsGrad
 #------------------------------ Andeler per sykehus --------------------------
 #------------------------------ (AndelGrVar) --------------------------
 
-variabler <- c('OpBMI', 'KomplPostop', 'Opf0KomplAlvorInfeksjon', 'RegForsinkelse',
+variabler <- c('OpBMI', 'KomplPostop', 'Opf0KomplAlvorInfeksjon',
+               'RegForsinkelse', 'Opf0Status',
                'Tss2Mott', 'Tss2Behandling', 'Tss2Lytte', 'Tss2Behandlere',
                'Tss2Enighet', 'Tss2Generelt')
 
-FigAndelSh_Opf0Status.pdf Responsrate på enhetsnivå
-FigAndelSh_RegForsinkelse
-
-variabler <- 'Opf0Status'
 for (valgtVar in variabler) {
   outfile <- paste0(valgtVar, '_Shus.pdf')
   NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar,  outfile=outfile)
@@ -162,6 +185,15 @@ for (valgtVar in variabler) {
 
 NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='OpBehNivaa',
                     OpMetode=1, outfile='OpDagkirurgi_LapShus.pdf')
+
+
+# Andel sykehus Lap.inngr m/robotass Postoperative komplikasjoener
+# Andel sykehus Lap.inngr m/robotass Peroperative komplikasjoener
+NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='KomplPostop',
+                    OpMetode=7, outfile='KomplPostop_LapMrobShus.pdf')
+NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='KomplIntra',
+                    OpMetode=7, outfile='KomplIntra_LapMrobShus.pdf')
+
 
 #--Hysteroskopi
 variabler <- c('KomplIntra','KomplPostop', 'Opf0AlvorlighetsGrad',
