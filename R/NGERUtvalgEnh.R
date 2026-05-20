@@ -16,9 +16,14 @@
 #'                 9: Hysterectomier (alle)
 #'                10: Lap u/robot
 #' @param velgDiag 0: Alle
-#'                 1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
+#'                 1: Godartede ovarialcyster
 #'                 2: Endometriose, livmorvegg (N80.0)
-#'                 3: Endometriose, unntatt livmorvegg.
+#'                 3: Endometriose utenom livmorvegg.
+#'                 4: Onkologi
+#'                 5: Generell gynekologi
+#'                 6: Gravide
+#'                 7: Komplikasjoner
+#'                 8: Infertilitet
 #' @param Hastegrad Hastegrad av operasjon - fjernes jan-25
 #'                1: Elektiv
 #'                2: Akutt
