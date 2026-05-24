@@ -19,4 +19,7 @@ rmarkdown::render(
   output_format = "pdf_document"
 )
 
+devtools::install(".", upgrade = FALSE)
+source("dev/sysSetenv.R")
 nger::kjor_NGERapp(browser = TRUE)
+
