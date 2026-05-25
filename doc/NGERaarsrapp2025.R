@@ -13,8 +13,67 @@ datoTil1Yoppf <- paste0(rappAar-1, '-12-31')
 
 NGERData <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil))
 NGERData1aar <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra1aar, datoTil = datoTil))
+NGERData <- NGERData1aar
+#setwd('../Aarsrapp/NGER' )
 
-setwd('../Aarsrapp/NGER' )
+#----------Oppfølging, 6 mnd-------------------
+NGERData <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra1aar, datoTil = datoTil))
+NGERData1aar <- NGERData
+
+
+NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf6mVagRupt',
+                outfile='Opf6mVagRuptTid.pdf', tidsenhet='Mnd')
+NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0,
+                    valgtVar='Opf6mVagRupt',  outfile='Opf6mVagRuptSh.pdf')
+
+NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf6mKomplikasjoner',
+                outfile='Opf6mKomplikasjonerTid.pdf', tidsenhet='Mnd')
+NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0,
+                    valgtVar='Opf6mKomplikasjoner',  outfile='Opf6mKomplikasjonerSh.pdf')
+
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Opf6mKomplikasjonerType',
+               outfile='Opf6mKomplikasjonerType_ford.pdf')
+
+NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf6mReoperasjon',
+                outfile='Opf6mReoperasjonTid.pdf', tidsenhet='Mnd')
+NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0,
+                    valgtVar='Opf6mReoperasjon',  outfile='Opf6mReoperasjonSh.pdf')
+
+NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf6mKomplInfeksjon',
+                outfile='Opf6mKomplInfeksjonTid.pdf', tidsenhet='Mnd')
+NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0,
+                    valgtVar='Opf6mKomplInfeksjon',  outfile='Opf6mKomplInfeksjonSh.pdf')
+
+
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Opf6mAlvorlighetsGrad',
+               outfile='Opf6mAlvorlighetsGrad_ford.pdf')
+
+NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0,
+                    valgtVar='Opf6mBaktVaginose',  outfile='Opf6mBaktVaginoseSh.pdf')
+
+
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='ettervirkn6mnd',
+               outfile='ettervirkn6mnd_ford.pdf')
+
+NGERFigGjsnGrVar(RegData=NGERData1aar, preprosess = 0, valgtVar='Opf6mDagerSyk',
+                 outfile='Opf6mDagerSykSh.pdf')
+NGERFigGjsnTid(RegData=NGERData1aar, preprosess = 0, valgtVar='Opf6mDagerSyk',
+               tidsenhet = 'Mnd', outfile='Opf6mDagerSykTid.pdf')
+
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Opf6mSykemeldt',
+               outfile='Opf6mSykemeldt_ford.pdf')
+
+NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='Opf6mPoliklinisk',
+                    outfile='Opf6mPolikliniskSh.pdf')
+NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf6mPoliklinisk',
+                tidsenhet='Mnd', outfile = 'Opf6mPolikliniskTid.pdf')
+
+NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='Opf6mInnlagt',
+                    outfile='Opf6mInnlagtSh.pdf')
+NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf6mInnlagt',
+                tidsenhet='Mnd', outfile = 'Opf6mInnlagtTid.pdf')
+
+
 
 #------------------------------ Fordelingsfigurer --------------------------
 # 'Opf0AlvorlighetsGrad' (alvorlighetsgrad 1-4)
@@ -87,7 +146,6 @@ NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Alder', OpMetode = 
                outfile='Alder_fordTLH.pdf')
 
 
-#----------   NYE figurer   -------------------------------
 #Fordeling Diagnoser Hyppigst Lap.inngr m/robotass
 NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Diagnoser', OpMetode = 7,
                outfile='Diagnoser_fordLapRob.pdf')
@@ -102,9 +160,9 @@ NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Prosedyrer',
                OpMetode = 7, outfile='Prosedyrer_fordLapRob.pdf')
 
 #Fordeling Postoperative komplikasjoener middels, alvorlige, dødlige Robotassistert
-NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Prosedyrer',
-               OpMetode = 7, AlvorlighetKompl = c(2:4),
-               outfile='Prosedyrer_fordLapRobAlv234.pdf')
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='KomplPostopType',
+               OpMetode = 7, AlvorlighetKompl = c(2:4), enhetsUtvalg = 0,
+               outfile='KomplPostopType_fordLapRobAlv234.pdf')
 
 
 
@@ -299,12 +357,22 @@ xtable::xtable(tab, align=c('l', rep('r',ncol(tab))), digits=0,
 #   ggtitle("Eksempel")
 
 
+ind <- which((NGERData1aar$LapKomplikasjoner==1) | (RegData$HysKomplikasjoner==1))
+indHys <- which(ind & which(RegData$OpMetode==2))
+Warning message:
+  In ind & which(RegData$OpMetode == 2) :
+  longer object length is not a multiple of shorter object length
+> indHys <- intersect(ind, which(RegData$OpMetode==2))
+> indBareHys <- which(RegData$HysKomplikasjoner==1)
+
+663, bare hys
+632, både lap og hys
 
 #--------------------Data til interaktive nettsider (behandlingskvalitet) ------------------
 #KomplIntra, KomplPostop, KomplPostopAlvor
 #OpMetode  1: Laparoskopi #2: Hysteroskopi,
 library(nger)
-setwd('../Aarsrapp/NGER')
+setwd('../Aarsrapp/Behandlingskvalitet')
 RegData <- NGERPreprosess(RegData = NGERRegDataSQL(datoFra = '2019-01-01'))
 
 # nyResh <- setdiff(sort(unique(RegData$ReshId)), names(nyID))
@@ -364,8 +432,8 @@ test <- unique(RegData[ ,c('ShNavn', "ReshId")])
 max(table(test$ShNavn))
 
 #----------------Dekningsgrad
-setwd('../Aarsrapp/NETTsider/')
-AllePublInd <- read.csv(file = 'NGERallePubl.csv')
+setwd('../Aarsrapp/Behandlingskvalitet')
+AllePublInd <- read.csv(file = 'NGERdataTilSKDE_FlereInd.csv')
 DGpubl <- AllePublInd[which(AllePublInd$ind_id == 'nger_dg'), ]
 DeknGrad <- read.table(file = "clipboard",
                       sep = "\t", header=TRUE)
@@ -379,3 +447,8 @@ DG$ind_id <- 'nger_dg'
 DGalleAar <- rbind(DGpubl,
                    DG[,names(DGpubl)])
 write.table(DGalleAar, file = 'NGER_DGalleAar.csv', sep = ';', row.names = F)
+
+#Bare tilrettelegge ny dekn.grad
+DeknGradSISTE <- read.csv2(file = "NGERdg_2024og2025.csv", header=TRUE)
+DeknGradSISTE$orgnr <- as.character(nyID[as.character(DeknGradSISTE$resh)])
+write.table(DeknGradSISTE, file = 'NGERdg_2024og2025org.csv', sep = ';', row.names = F)
