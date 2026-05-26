@@ -1,6 +1,6 @@
 
 #--------------------------------Data og parametrekobling--------------------------
-source("dev/sysSetenv.R")
+source("C:/Users/lro2402unn/RegistreGIT/nger/dev/sysSetenv.R")
 
 # Inndata til funksjon:
 library(nger)
@@ -357,22 +357,13 @@ xtable::xtable(tab, align=c('l', rep('r',ncol(tab))), digits=0,
 #   ggtitle("Eksempel")
 
 
-ind <- which((NGERData1aar$LapKomplikasjoner==1) | (RegData$HysKomplikasjoner==1))
-indHys <- which(ind & which(RegData$OpMetode==2))
-Warning message:
-  In ind & which(RegData$OpMetode == 2) :
-  longer object length is not a multiple of shorter object length
-> indHys <- intersect(ind, which(RegData$OpMetode==2))
-> indBareHys <- which(RegData$HysKomplikasjoner==1)
-
-663, bare hys
-632, både lap og hys
-
 #--------------------Data til interaktive nettsider (behandlingskvalitet) ------------------
 #KomplIntra, KomplPostop, KomplPostopAlvor
 #OpMetode  1: Laparoskopi #2: Hysteroskopi,
+
 library(nger)
 setwd('../Aarsrapp/Behandlingskvalitet')
+source("C:/Users/lro2402unn/RegistreGIT/nger/dev/sysSetenv.R")
 RegData <- NGERPreprosess(RegData = NGERRegDataSQL(datoFra = '2019-01-01'))
 
 # nyResh <- setdiff(sort(unique(RegData$ReshId)), names(nyID))
