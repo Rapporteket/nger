@@ -247,8 +247,10 @@ NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='OpBehNivaa',
 
 # Andel sykehus Lap.inngr m/robotass Postoperative komplikasjoener
 # Andel sykehus Lap.inngr m/robotass Peroperative komplikasjoener
-NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='KomplPostop',
-                    OpMetode=7, outfile='KomplPostop_LapMrobShus.pdf')
+NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='KomplPostopAlvor',
+                    OpMetode=7, outfile='KomplPostopAlvor_LapMrobShus.pdf')
+
+
 NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='KomplIntra',
                     OpMetode=7, outfile='KomplIntra_LapMrobShus.pdf')
 
