@@ -507,7 +507,6 @@ ui_nger <- function() {
                              'Oppf. 6 mnd.: Komplikasjoner' = 'Opf6mKomplikasjoner',
                              'Oppf. 6 mnd.: Reoperasjon' = 'Opf6mReoperasjon',
                              'Oppf. 6 mnd.: Infeksjon' = 'Opf6mKomplInfeksjon',
-                             'Oppf. 6 mnd.: Bakteriell vaginose' = 'Opf6mBaktVaginose',
                              'Oppf. 6 mnd.: Beh. kompl. poliklinisk' = 'Opf6mPoliklinisk',
                              'Oppf. 6 mnd.: Beh. kompl. ved innleggelse' = 'Opf6mInnlagt',
                              'Pasienter med høyere utdanning' = 'Utdanning',

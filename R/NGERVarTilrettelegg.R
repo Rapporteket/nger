@@ -66,7 +66,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
 
   if (valgtVar=='Opf6mKomplikasjonerType') { #fordeling,
     #Postoperative komplikasjoner. Bare registreringer hvor Opf0Komplikasjoner er 0 el. 1
-    tittel <- 'Postoperative komplikasjoner'
+    tittel <- 'Postoperative komplikasjoner, 6 mnd. etter'
     RegData <- RegData[which(RegData$Opf6mKomplikasjoner %in% 0:1), ]
     grtxt <- c('Vag.ruptur', 'Reoperasjon','Infeksjon')
     variable <- c('Opf6mVagRupt', 'Opf6mReoperasjon', 'Opf6mKomplInfeksjon')
@@ -80,7 +80,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
   if (valgtVar=='Opf6mVagRupt') {   #AndelSh/Tid
     RegData <- RegData[which(RegData$Opf6mUtfylt == 1), ] #evt. Opf6mKomplikasjoner %in% 0:1
     RegData$Variabel[RegData$Opf6mVagRupt==1] <- 1
-    tittel <- 'Har du blitt behandlet for Vaginaltoppsruptur?'
+    tittel <- 'Har du blitt behandlet for vaginaltoppsruptur?'
     varTxt <- 'rupturer'
     sortAvtagende <- FALSE
   }
@@ -111,14 +111,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
     xAkseTxt <- 'Andel operasjoner (%)'
   }
 
-  if (valgtVar=='Opf6mBaktVaginose') {   #AndelSh/Tid
-    RegData <- RegData[which(RegData$Opf6mBaktVaginose %in% 0:1), ] # evt. Opf6mUtfylt == 1), ]
-    RegData$Variabel[RegData$Opf6mKomplInfeksjon==1] <- 1
-    tittel <- 'Behandlet for bakteriell vaginose?'
-    varTxt <- 'vaginoser'
-    sortAvtagende <- FALSE
-  }
-  if (valgtVar == 'ettervirkn6mnd'){ #fordeling
+  if (valgtVar == 'Opf6mEttervirkninger'){ #fordeling
     tittel <- 'Ettervirkninger innen 6 mnd'
     RegData <- RegData[which(RegData$Opf6mBaktVaginose %in% 0:1), ]
     grtxt <- c('Vaginose', 'Sopp', 'Utflod', 'Kløe',

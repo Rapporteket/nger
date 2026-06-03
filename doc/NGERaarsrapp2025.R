@@ -14,64 +14,61 @@ datoTil1Yoppf <- paste0(rappAar-1, '-12-31')
 NGERData <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil))
 NGERData1aar <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra1aar, datoTil = datoTil))
 NGERData <- NGERData1aar
-#setwd('../Aarsrapp/NGER' )
+setwd('../Aarsrapp/NGER' )
 
 #----------Oppfølging, 6 mnd-------------------
-NGERData <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra1aar, datoTil = datoTil))
-NGERData1aar <- NGERData
+# NGERData <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra1aar, datoTil = datoTil))
+# NGERData1aar <- NGERData
 
 
-NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf6mVagRupt',
-                outfile='Opf6mVagRuptTid.pdf', tidsenhet='Mnd')
+# NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf6mVagRupt',
+#                 outfile='Opf6mVagRuptTid.pdf', tidsenhet='Mnd')
 NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0,
                     valgtVar='Opf6mVagRupt',  outfile='Opf6mVagRuptSh.pdf')
 
-NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf6mKomplikasjoner',
-                outfile='Opf6mKomplikasjonerTid.pdf', tidsenhet='Mnd')
+# NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf6mKomplikasjoner',
+#                 outfile='Opf6mKomplikasjonerTid.pdf', tidsenhet='Mnd')
 NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0,
                     valgtVar='Opf6mKomplikasjoner',  outfile='Opf6mKomplikasjonerSh.pdf')
 
 NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Opf6mKomplikasjonerType',
                outfile='Opf6mKomplikasjonerType_ford.pdf')
 
-NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf6mReoperasjon',
-                outfile='Opf6mReoperasjonTid.pdf', tidsenhet='Mnd')
-NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0,
-                    valgtVar='Opf6mReoperasjon',  outfile='Opf6mReoperasjonSh.pdf')
+NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Opf6mEttervirkninger',
+               outfile='Opf6mEttervirkninger_ford.pdf')
 
-NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf6mKomplInfeksjon',
-                outfile='Opf6mKomplInfeksjonTid.pdf', tidsenhet='Mnd')
-NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0,
-                    valgtVar='Opf6mKomplInfeksjon',  outfile='Opf6mKomplInfeksjonSh.pdf')
+# NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf6mReoperasjon',
+#                 outfile='Opf6mReoperasjonTid.pdf', tidsenhet='Mnd')
+# NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0,
+#                     valgtVar='Opf6mReoperasjon',  outfile='Opf6mReoperasjonSh.pdf')
+#
+# NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf6mKomplInfeksjon',
+#                 outfile='Opf6mKomplInfeksjonTid.pdf', tidsenhet='Mnd')
+# NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0,
+#                     valgtVar='Opf6mKomplInfeksjon',  outfile='Opf6mKomplInfeksjonSh.pdf')
+#
+#
+# NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Opf6mAlvorlighetsGrad',
+#                outfile='Opf6mAlvorlighetsGrad_ford.pdf')
+#
 
-
-NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Opf6mAlvorlighetsGrad',
-               outfile='Opf6mAlvorlighetsGrad_ford.pdf')
-
-NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0,
-                    valgtVar='Opf6mBaktVaginose',  outfile='Opf6mBaktVaginoseSh.pdf')
-
-
-NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='ettervirkn6mnd',
-               outfile='ettervirkn6mnd_ford.pdf')
-
-NGERFigGjsnGrVar(RegData=NGERData1aar, preprosess = 0, valgtVar='Opf6mDagerSyk',
-                 outfile='Opf6mDagerSykSh.pdf')
-NGERFigGjsnTid(RegData=NGERData1aar, preprosess = 0, valgtVar='Opf6mDagerSyk',
-               tidsenhet = 'Mnd', outfile='Opf6mDagerSykTid.pdf')
-
-NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Opf6mSykemeldt',
-               outfile='Opf6mSykemeldt_ford.pdf')
-
-NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='Opf6mPoliklinisk',
-                    outfile='Opf6mPolikliniskSh.pdf')
-NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf6mPoliklinisk',
-                tidsenhet='Mnd', outfile = 'Opf6mPolikliniskTid.pdf')
-
-NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='Opf6mInnlagt',
-                    outfile='Opf6mInnlagtSh.pdf')
-NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf6mInnlagt',
-                tidsenhet='Mnd', outfile = 'Opf6mInnlagtTid.pdf')
+# NGERFigGjsnGrVar(RegData=NGERData1aar, preprosess = 0, valgtVar='Opf6mDagerSyk',
+#                  outfile='Opf6mDagerSykSh.pdf')
+# NGERFigGjsnTid(RegData=NGERData1aar, preprosess = 0, valgtVar='Opf6mDagerSyk',
+#                tidsenhet = 'Mnd', outfile='Opf6mDagerSykTid.pdf')
+#
+# NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Opf6mSykemeldt',
+#                outfile='Opf6mSykemeldt_ford.pdf')
+#
+# NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='Opf6mPoliklinisk',
+#                     outfile='Opf6mPolikliniskSh.pdf')
+# NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf6mPoliklinisk',
+#                 tidsenhet='Mnd', outfile = 'Opf6mPolikliniskTid.pdf')
+#
+# NGERFigAndelerGrVar(RegData=NGERData1aar, preprosess=0, valgtVar='Opf6mInnlagt',
+#                     outfile='Opf6mInnlagtSh.pdf')
+# NGERFigAndelTid(RegData=NGERData, preprosess = 0, valgtVar='Opf6mInnlagt',
+#                 tidsenhet='Mnd', outfile = 'Opf6mInnlagtTid.pdf')
 
 
 
