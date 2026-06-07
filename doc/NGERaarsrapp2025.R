@@ -13,7 +13,6 @@ datoTil1Yoppf <- paste0(rappAar-1, '-12-31')
 
 NGERData <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil))
 NGERData1aar <- NGERPreprosess(NGERRegDataSQL(datoFra = datoFra1aar, datoTil = datoTil))
-NGERData <- NGERData1aar
 setwd('../Aarsrapp/NGER' )
 
 #----------Oppfølging, 6 mnd-------------------
