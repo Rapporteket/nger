@@ -44,14 +44,125 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
   # Opf0KomplOrgan =	Opf0OrganTarm	Opf0OrganBlare	Opf0OrganUreter	Opf0OrganKar	Opf0OrganAnnen
 
 
-
-
   TSS0var <- c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',	'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')
   Rand0var <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
                 'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')
   if (valgtVar %in% c(TSS0var, Rand0var)) {
    RegData <- RegData[RegData$OpDato >= '2016-01-01', ]}
 
+  #------------------- 6-månederskontroll
+  # Har du etter din operasjon vært behandlet i spesialisthelsetjenesten/ på sykehus for komplikasjon?
+  #   Opf6mKomplikasjoner
+  # Fig. Tilsv. Postoperative komplikasjoner (opf0) Både fordelingsfigur og andelsfig
+  # COMPLICATIONS_RUPTUR	COMPLICATIONS_REOP	COMPLICATIONS_INFECTION
+
+  if (valgtVar=='Opf6mKomplikasjoner') { #andelGrVar, andelTid
+    # Andel postoperative komplikasjoner
+    RegData <- RegData[which(RegData$Opf6mKomplikasjoner %in% 0:1), ]
+    RegData$Variabel[RegData$Opf6mKomplikasjoner==1] <- 1
+    varTxt <- 'komplikasjoner'
+    tittel <- 'Komplikasjoner, 6 mnd. etter'
+  }
+
+  if (valgtVar=='Opf6mKomplikasjonerType') { #fordeling,
+    #Postoperative komplikasjoner. Bare registreringer hvor Opf0Komplikasjoner er 0 el. 1
+    tittel <- 'Postoperative komplikasjoner, 6 mnd. etter'
+    RegData <- RegData[which(RegData$Opf6mKomplikasjoner %in% 0:1), ]
+    grtxt <- c('Vag.ruptur', 'Reoperasjon','Infeksjon')
+    variable <- c('Opf6mVagRupt', 'Opf6mReoperasjon', 'Opf6mKomplInfeksjon')
+    xAkseTxt <- 'Andel operasjoner (%)'
+    ind1 <- which(RegData[ ,variable] == 1, arr.ind=T) #Ja i alle variable
+    RegData[ ,variable] <- 0
+    RegData[ ,variable][ind1] <- 1
+    flerevar <- 1
+  }
+
+  if (valgtVar=='Opf6mVagRupt') {   #AndelSh/Tid
+    RegData <- RegData[which(RegData$Opf6mUtfylt == 1), ] #evt. Opf6mKomplikasjoner %in% 0:1
+    RegData$Variabel[RegData$Opf6mVagRupt==1] <- 1
+    tittel <- 'Har du blitt behandlet for vaginaltoppsruptur?'
+    varTxt <- 'rupturer'
+    sortAvtagende <- FALSE
+  }
+
+
+  if (valgtVar=='Opf6mReoperasjon') {   #AndelSh/Tid
+    RegData <- RegData[which(RegData$Opf6mKomplikasjoner %in% 0:1), ] # evt. Opf6mUtfylt == 1), ]
+    RegData$Variabel[RegData$Opf6mReoperasjon==1] <- 1
+    tittel <- 'Har du blitt operert på nytt?'
+    varTxt <- 'reoperasjoner'
+    sortAvtagende <- FALSE
+  }
+
+  if (valgtVar=='Opf6mKomplInfeksjon') {   #AndelSh/Tid
+    RegData <- RegData[which(RegData$Opf6mKomplikasjoner %in% 0:1), ] # evt. Opf6mUtfylt == 1), ]
+    RegData$Variabel[RegData$Opf6mKomplInfeksjon==1] <- 1
+    tittel <- 'Antibiotikabehandlet infeksjon etter operasjonen?'
+    varTxt <- 'infeksjoner'
+    sortAvtagende <- FALSE
+  }
+
+
+  if (valgtVar=='Opf6mAlvorlighetsGrad') { #fordeling,
+    tittel <- 'Alvorlighet av komplikasjoner, 6mnd etter'
+    RegData <- RegData[which(RegData$Opf6mKomplikasjoner == 1), ]
+    grtxt <- c('Lite alvorlig', 'Middels alvorlig', 'Alvorlig', 'Dødelig')
+    RegData$VariabelGr <- factor(RegData$Opf6mAlvorlighetsGrad, levels=1:4, labels = grtxt)
+    xAkseTxt <- 'Andel operasjoner (%)'
+  }
+
+  if (valgtVar == 'Opf6mEttervirkninger'){ #fordeling
+    tittel <- 'Ettervirkninger innen 6 mnd'
+    RegData <- RegData[which(RegData$Opf6mBaktVaginose %in% 0:1), ]
+    grtxt <- c('Vaginose', 'Sopp', 'Utflod', 'Kløe',
+               'Svie', 'Tørrhet')
+    variable <- c('Opf6mBaktVaginose', 'Opf6mSoppinf','Opf6mUtflod', 'Opf6mKloe',
+                  'Opf6mSvie', 'Opf6mTorrhet')
+    xAkseTxt <- 'Andel operasjoner (%)'
+    ind1 <- which(RegData[ ,variable] == 1, arr.ind=T) #Ja i alle variable
+    RegData[ ,variable] <- 0
+    RegData[ ,variable][ind1] <- 1
+    flerevar <- 1
+  }
+
+  if (valgtVar == 'Opf6mDagerSyk') {   #Gjsn
+    tittel <- 'sykemeldingsdager totalt' #, Slå sammen undervekt, fedme 2 og 3.
+    RegData <- RegData[which(RegData$Opf6mDagerSyk>0), ]
+    xAkseTxt <- 'dager'
+    RegData$Variabel <- RegData$Opf6mDagerSyk
+    sortAvtagende <- FALSE
+  }
+  if (valgtVar=='Opf6mSykemeldt') { #fordeling,
+    tittel <- 'Lengde av sykemelding'
+    RegData <- RegData[which(RegData$Opf6mSykemeldt >=0), ]
+    gr <- 0:3
+    grtxt <- c('Ingen', '1-2u', '3-4u', '5+ u')
+    RegData$VariabelGr <- factor(RegData$Opf6mSykemeldt, levels=gr, labels = grtxt)
+    xAkseTxt <- 'Andel operasjoner (%)'
+  }
+
+
+
+if (valgtVar=='Opf6mPoliklinisk') { #AndelSh/Tid,
+  RegData <- RegData[which(RegData$Opf6mPoliklinisk %in% 0:1), ] # evt. Opf6mUtfylt == 1), ]
+  RegData$Variabel[RegData$Opf6mPoliklinisk==1] <- 1
+  tittel <- 'Komplikasjon beh. poliklinisk'
+  varTxt <- 'kompl. pol.'
+  sortAvtagende <- FALSE
+}
+if (valgtVar=='Opf6mInnlagt') { #AndelSh/Tid,
+  RegData <- RegData[which(RegData$Opf6mInnlagt %in% 0:1), ] # evt. Opf6mUtfylt == 1), ]
+  RegData$Variabel[which(RegData$Opf6mInnlagt==1)] <- 1
+  tittel <- 'Komplikasjon beh. med innleggelse'
+  varTxt <- 'kompl. innl.'
+  sortAvtagende <- FALSE
+}
+
+
+which(RegData$Opf6mPoliklinisk==1 & RegData$Opf6mInnlagt==1)
+table(RegData$Opf6mInnlagt)
+
+  #-----------------------------------------------------------------------
 
   if (valgtVar=='Alder') {	#Andeler, , #andelGrVar, GjsnGrVar, GjsnTid
     RegData <- RegData[which(RegData$Alder>=0), ]    #Tar bort alder<0
@@ -137,6 +248,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
 	varTxt <- 'komplikasjoner'
     tittel <- 'Komplikasjoner, postoperativt'
   }
+
   if (valgtVar=='Opf0AlvorlighetsGrad') {   #fordeling
     #Postoperative komplikasjoner
     #Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
@@ -160,10 +272,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
     grtxt <- c('Ingen kompl.', 'Lite alvorlig', 'Middels alvorlig', 'Alvorlig', 'Dødelig')
     koder <- 1:4
     retn <- 'H'
-     #if (figurtype %in% c('andelGrVar', 'andelTid')) { #Bare denne type fig
-      #Andel av postoperative komplikasjoner som var moderate 2 eller alvorlige (3 og 4)
-    #Ha med denne?  RegData <- RegData[which(RegData$Opf0Komplikasjoner %in% 0:1), ]
-      RegData$Variabel[which(RegData$Opf0AlvorlighetsGrad %in% 2:4)] <- 1
+    RegData$Variabel[which(RegData$Opf0AlvorlighetsGrad %in% 2:4)] <- 1
 	  varTxt <- 'komplikasjoner grad 2-4'
       tittel <- 'Postop. komplikasjon, moderat/alvorlig'
       sortAvtagende <- F

@@ -3,56 +3,7 @@
 #' Denne funksjonen lager et søylediagram som viser andeler (fordeling) av valgt variabel
 #' filtrert på de utvalg som er gjort.
 #'
-#' Argumentet \emph{valgtVar} har følgende valgmuligheter:
-#'    \itemize{
-#'     \item Alder: Pasientens alder, 5-årige aldersgrupper
-#'     \item Diagnoser: Hyppigst forekommende diagnoser
-#'     \item HysGjforingsGrad: Gjennomføringsgrad av hysteroskopi
-#'    		Koder:	1-Fullstendig, 2-Ufullstendig, 3-Mislykket
-#'     \item HysKomplikasjoner: Hysteroskopi intrapoerative komplikasjoner
-#'     \item KomplPostop: Postoperative komplikasjoner
-#'     \item KomplPostUtd: Postoperative komplikasjoner for ulike utdanningsgrupper
-#'     \item KomplReopUtd: Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper
-#'     \item LapKomplikasjoner: Laparoskopiske intrapoerative komplikasjoner
-#'     \item LapEkstrautstyr: Laparoskopisk ekstrautstyr - Kommer, NY variabel: koagulasjon og klipping
-#'     \item LapNumHjelpeinnstikk: Antall hjelpeinnstikk
-#'     \item LapTeknikk: Laparoskopisk tilgang, teknikk og metode (Tidl LapTilgangsMetode)
-#'     \item Norsktalende: Pasientens norskkunnskaper
-#'     \item OpAnestesi: Anestesitype
-#'     \item OpASA: ASA-grad
-#'     \item OpBMI: BMI-kategori
-#'     \item Opf0AlvorlighetsGrad: Alvorlighetsgrad, postoperative komplikasjoner
-#'			  Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
-#'		 \item Opf0KomplInfeksjon: Type infeksjoner
-#'		 \item Opf0metode: Opfølgingsmetode
-#'     \item OpBehNivaa: Behandlingsnivå
-#'     \item OpIVaktTid: Operasjon i legens vakttid
-#'     \item OpKategori: Hastegrad av operasjon
-#'     \item OpMetode: Operasjonsmetode
-#'     \item OpTid: Operasjonstid (minutter)
-#'     \item OpTidlVagInngrep: Tidligere vaginale inngrep
-#'     \item OpTidlLapsko: Tidligere laparoskopi
-#'     \item OpTidlLaparotomi: Tidligere laparotomi
-#'     \item OpType: Primæroperasjon eller reoperasjon
-#'     \item R0ScoreEmo:
-#'     \item R0ScoreEnergy:
-#'     \item R0ScoreGeneral:
-#'     \item R0ScorePain:
-#'     \item R0ScorePhys:
-#'     \item R0ScoreRoleLmtPhy:
-#'     \item R0ScoreRoleLmtEmo:
-#'     \item R0ScoreSosial:
-#'     \item RegForsinkelse: MANGLER BEREGNINGSVARIABEL Tid fra operasjon til ferdigstilt registrering
-#'     \item Prosedyrer: Hyppigst forekommende prosedyrer
-#'     \item SivilStatus: Sivilstand
-#'     \item Tss2Mott: Hvordan du ble mottatt på avd.
-#'     \item Tss2Behandling:
-#'     \item Tss2Lytte:
-#'     \item Tss2Behandlere:
-#'     \item Tss2Enighet:
-#'     \item Tss2Generelt:
-#'     \item Utdanning: Pasientens utdanning (1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent)
-#'    }
+#' Argumentet \emph{valgtVar} har mange valgmuligheter
 #'
 #' @param RegData En dataramme med alle nødvendige variabler fra registeret
 #' @param valgtVar Hvilken variabel som skal visualiseres

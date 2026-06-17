@@ -167,7 +167,9 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, aggData=0,
 
   filUt <- paste0('NGER', ifelse(filUt=='dummy',  valgtVar, filUt),'.csv')
   figurtype <- ifelse(valgtVar=='Tss2Sumskaar', 'gjsnGrVar', 'andelGrVar')
-  NGERVarSpes <- NGERVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = figurtype)
+  NGERVarSpes <- NGERVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, OpMetode = OpMetode,
+                                     figurtype = figurtype)
+
   RegData <- NGERUtvalgEnh(RegData=NGERVarSpes$RegData, OpMetode = OpMetode,
                            datoFra = datoFra, datoTil = datoTil,
                            )$RegData
