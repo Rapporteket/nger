@@ -39,7 +39,7 @@
 
 
 
-NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
+NGERFigAndelerGrVarGG <- function(RegData=0, valgtVar='Alder',
                                 datoFra='2013-01-01', datoTil='3000-12-31',
                                 velgAvd=0, minald=0, maxald=130,
                                 OpMetode=99, # Hastegrad='',
@@ -47,8 +47,8 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
                                 Ngrense=10, reshID=0, outfile='',
                                 velgDiag=0, preprosess=1, hentData=0, ...
                                 ) {
-  
-  
+
+
   ## Hvis spørring skjer fra R på server. ######################
   if(hentData == 1){
     RegData <- NGERRegDataSQL(datoFra = datoFra, datoTil = datoTil)
@@ -67,10 +67,10 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
 
   grtxt <- NGERVarSpes$grtxt
   tittel <- NGERVarSpes$tittel
-  
+
   KvalIndGrenser <- NGERVarSpes$KvalIndGrenser
   sortAvtagende <- NGERVarSpes$sortAvtagende
-  
+
   grVar <- 'ShNavn'
 
   NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, OpMetode=OpMetode
@@ -94,33 +94,33 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
                                     outfile = outfile)
 
 
-  
-  
+
+
 
   return(invisible(FigDataParam))
 
                                 }
 
 
-PlotAndelerGrVar <- function(RegData, 
-                            Variabel,  
+PlotAndelerGrVar <- function(RegData,
+                            Variabel,
                             grVar ='ShNavn',
-                            hovedgrTxt = '', 
-                            KvalIndGrenser = NA, 
-                            tittel = 'tittel', 
+                            hovedgrTxt = '',
+                            KvalIndGrenser = NA,
+                            tittel = 'tittel',
                             utvalgTxt = '',
                             Ngrense = 10,
-                            titleSize = 20, 
-                            subtitleSize = 15, 
-                            legendSize = 12, 
-                            axisTextSize = 10, 
+                            titleSize = 20,
+                            subtitleSize = 15,
+                            legendSize = 12,
+                            axisTextSize = 10,
                             bestKvalInd = 'lav', # 'høy' for omvendt rekkfølge på indikatorfarger
                             nTicks = 5,
                             fargepalett = 'BlaaOff',
                             grtxt = '',
                             outfile='') {
   library(ggplot2)
-  
+
   FigTypUt <- rapFigurer::figtype(outfile, fargepalett=fargepalett)	#height=3*800,
   farger <- FigTypUt$farger
 
@@ -180,7 +180,7 @@ PlotAndelerGrVar <- function(RegData,
                        utvalgTxt=utvalgTxt,
                        fargepalett=fargepalett,
                        hovedgrTxt=hovedgrTxt)
-  
+
   if (all(is.na(Ngr))) {
 
     tekst <- "Ingen registrerte data for dette utvalget"
@@ -242,7 +242,7 @@ PlotAndelerGrVar <- function(RegData,
     levels = ggDataFrame$gruppeNavn
   )
   nLevels <- length(levels(ggDataFrame$gruppeNavn))
-  
+
   # 3) Gjennomsnittslinje
   gjennomsnittY <- AggVerdier$Tot[1]
 
@@ -302,7 +302,7 @@ PlotAndelerGrVar <- function(RegData,
       ) +
       scale_fill_identity()
   }
-  
+
   # Stolper, linjer og tekst
   p <- p +
     geom_col(fill = farger[3], width = 0.65) +
@@ -331,7 +331,7 @@ PlotAndelerGrVar <- function(RegData,
       color = farger[1],
       hjust = -0.2
     ) +
-    
+
     # Plot stolper horisontalt
     coord_flip() +
 
@@ -365,6 +365,6 @@ PlotAndelerGrVar <- function(RegData,
       plot.margin = margin(t = 10, r = 20, b = 10, l = 10)
     )
   }
-  
+
   p
 }
