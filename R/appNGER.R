@@ -48,10 +48,10 @@ ui_nger <- function() {
     id = 'hovedark',
 
     # lag logo og tittel som en del av navbar
-    title = rapbase::title(regTitle),
+    title = rapbase::regTitle(regTitle),
     # sett inn tittel også i browser-vindu
     windowTitle = regTitle,
-    theme = rapbase::theme(),
+    theme = rapbase::rapTheme(),
 
 
 
@@ -684,7 +684,7 @@ ui_nger <- function() {
       )
     ), #GjsnGrVar/Tid
 
-    
+
     #----------Abonnement-----------------
 
     tabPanel(p("Abonnement",
