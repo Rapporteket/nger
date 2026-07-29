@@ -34,7 +34,8 @@ ui_nger <- function() {
                 'Alle hysterektomier' = 9,
                 'Lap. inngrep med robotass.' = 7,
                 'Lap. inngrep uten robotass.' = 10,
-                'Kolpopeksiene' = 8)
+                'Kolpopeksiene' = 8,
+                'Lap., vaginal tilgang' = 11)
 
   alvorKompl <- c("Lite alvorlig"=1,
                   "Middels alvorlig"=2,
@@ -731,7 +732,7 @@ server_nger <- function(input, output, session) {
 
     #----------Hente data ----------
 
-    datoFraLasteData <- paste0(as.numeric(format(Sys.Date(), "%Y"))-6, '-01-01')
+    datoFraLasteData <- paste0(as.numeric(format(Sys.Date(), "%Y"))-5, '-01-01')
     RegDataAlle <- NGERRegDataSQL(datoFra = datoFraLasteData, medPROM=1, gml=0)
     errorCondition(dim(RegDataAlle)[1]==0, 'ingen data')
 

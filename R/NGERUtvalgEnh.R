@@ -15,6 +15,7 @@
 #'                 8: Kolpopeksiene
 #'                 9: Hysterectomier (alle)
 #'                10: Lap u/robot
+#'                11: Laparoskopi med vaginal tilgang
 #' @param velgDiag 0: Alle
 #'                 1: Godartede ovarialcyster
 #'                 2: Endometriose, livmorvegg (N80.0)
@@ -84,13 +85,13 @@ NGERUtvalgEnh <- function(RegData, datoFra='2011-01-01', datoTil='3000-12-31', f
   #Utvalg på dato:
   indDato <- which(as.Date(RegData$OpDato) >= datoFra & as.Date(RegData$OpDato) <= datoTil)  #as.Date(datoFra)
   #Operasjonstype:
-  indMCE <- if (OpMetode %in% c(1:3)){which(RegData$OpMetode %in% c(OpMetode,3))
-    } else {indMCE <- 1:Ninn}
-  if (OpMetode %in% c(4:10)) {
+  indOpMet <- if (OpMetode %in% c(1:3)){which(RegData$OpMetode %in% c(OpMetode,3))
+    } else {indOpMet <- 1:Ninn}
+  if (OpMetode %in% c(4:11)) {
       ProsLap <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3', 'LapProsedyre4')
       hysterektomikoder <- c('LCC10', 'LCC11', 'LCC20', 'LCD00', 'LCD01', 'LCD04',
                              'LCD10','LCD11', 'LCD31', 'LCD30', 'LCD40', 'LCD96', 'LCD97')
-      indMCE <- switch(as.character(OpMetode),
+      indOpMet <- switch(as.character(OpMetode),
               '4' = unique(c(which(RegData[,ProsLap] == 'LCD01', arr.ind = TRUE)[,1],
                                          which(RegData[,ProsLap] == 'LCD04', arr.ind = TRUE)[,1])), #LCD01 + LCD04: total laparoskopisk hysterektomi
               '5' = which(RegData[,ProsLap] == 'LCC11', arr.ind = TRUE)[,1], #LCC11: laparoskopisk subtotal hysterektomi)
@@ -102,9 +103,12 @@ NGERUtvalgEnh <- function(RegData, datoFra='2011-01-01', datoTil='3000-12-31', f
                            which(RegData$LapProsedyre2 %in% hysterektomikoder),
                            which(RegData$LapProsedyre3 %in% hysterektomikoder),
                            which(RegData$LapProsedyre4 %in% hysterektomikoder))),
-              '10' = which(RegData$LapRobotKirurgi == 0)
-      )
-  }
+              '10' = which(RegData$LapRobotKirurgi == 0),
+              '11' = intersect(which(RegData[,ProsLap] == 'LCD97', arr.ind = TRUE)[,1],
+                               which(RegData$LapTilgang == 3))
+              )
+      }
+
     opMetodeTxt <- c('Laparoskopi', 'Hysteroskopi', 'Begge',
                      'Tot. lap. hysterektomi (LCD01/LCD04)', #4
                      'Lap. subtotal hysterektomi (LCC11)',  #5
@@ -112,7 +116,8 @@ NGERUtvalgEnh <- function(RegData, datoFra='2011-01-01', datoTil='3000-12-31', f
                      'Lap.inngr m/robotass.', #7
                      'Kolpopeksiene', #8
                      'Hysterektomier', #9
-                     'Lap.inngr u/robotass.')  #10
+                     'Lap.inngr u/robotass.',  #10
+                     'Lap., vag. tilg.') #11
 
 if (velgDiag !=0) {
   indDiag <- NULL
@@ -165,7 +170,7 @@ if (velgDiag !=0) {
 
 
   #utvalg:
-  indMed <- indAld %i% indDato %i% indMCE %i% indAlvor %i% indDiag  %i% indBehNivaa
+  indMed <- indAld %i% indDato %i% indOpMet %i% indAlvor %i% indDiag  %i% indBehNivaa
   RegData <- RegData[indMed,]
   N <- dim(RegData)[1]
 
