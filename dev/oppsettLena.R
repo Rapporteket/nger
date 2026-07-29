@@ -7,10 +7,10 @@
 # Sys.setenv(MYSQL_PASSWORD="root")
 setwd("C:/Users/lro2402unn/RegistreGIT/nger")
 setwd('../data')
-sship::dec("c://Users/lro2402unn/RegistreGIT/data/nger156afbf9d.sql.gz__20260603_110331.tar.gz",
+sship::dec("c://Users/lro2402unn/RegistreGIT/data/nger15f1192c2.sql.gz__20260728_134517.tar.gz",
            keyfile = "c://Users/lro2402unn/.ssh/id_rsa",
            target_dir = "c://Users/lro2402unn/RegistreGIT/data/.")
-# source c://Users/lro2402unn/RegistreGIT/data/nger156afbf9d.sql;
+# source c://Users/lro2402unn/RegistreGIT/data/nger15f1192c2.sql;
 
 library(nger)
 source("dev/sysSetenv.R")
@@ -24,6 +24,10 @@ shiny::shinyApp(
 source("dev/sysSetenv.R")
 RegDataRaa <- nger::NGERRegDataSQL(datoFra = '2025-01-01', datoTil = '2025-12-31' ,medPROM = 0)
 RegData <- NGERPreprosess(RegData = RegDataRaa)
+
+Utv <- NGERUtvalgEnh(RegData = RegData, OpMetode = 11)
+Utv$utvalgTxt
+dim(Utv$RegData)
 
 table(RegDataRaa$LapRobotKirurgi, useNA = 'a')
 table(RegData$LapRobotKirurgi, useNA = 'a')
