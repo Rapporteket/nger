@@ -22,7 +22,7 @@ shiny::shinyApp(
   server = nger::server_ngerOK)
 
 source("dev/sysSetenv.R")
-RegDataRaa <- nger::NGERRegDataSQL(datoFra = '2025-01-01', datoTil = '2025-12-31' ,medPROM = 0)
+RegDataRaa <- nger::NGERRegDataSQL(datoFra = '2025-01-01', datoTil = '2026-12-31' ,medPROM = 1)
 RegData <- NGERPreprosess(RegData = RegDataRaa)
 
 Utv <- NGERUtvalgEnh(RegData = RegData, OpMetode = 11)
