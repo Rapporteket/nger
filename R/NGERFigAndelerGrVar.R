@@ -8,38 +8,48 @@
 #'  HysKomplikasjoner, LapKomplikasjoner, OpMetode, OpAntibProfylakse, OpASA, OpBMI, Opf0Status.
 #'  Det benyttes også andre variable til utvalg osv.
 #'
-#' Argumentet \emph{valgtVar} har følgende valgmuligheter:
-#'    \itemize{
-#'		\item Alder: Andel pasienter over 70 år.
-#'		\item KomplIntra: Komplikasjoner under operasjon (intraoperativt)
-#'		\item KomplPostop: Postoperative komplikasjoner
-#'		\item OpAntibProfylakse: Fått antibiotikaprofylakse
-#'		\item OpASA: ASA-grad > II
-#'		\item OpBMI: Pasienter med fedme (BMI>30)
-#'		\item KomplPostopAlvor: Alvorlige komplikasjoner (grad 3 og 4)
-#'		\item Opf0KomplBlodning: Postop. komplikasjon: Blødning
-#'		\item Opf0KomplUtstyr: Postop. komplikasjon: Problemer med ustyr
-#'		\item Opf0KomplInfeksjon: Postop. komplikasjon: Infeksjon
-#'		\item Opf0KomplOrgan: Postop. komplikasjon: Organskade
-#'		\item Opf0Reoperasjon: Reoperasjon som følge av komplikasjon
-#'		\item Opf0Status: Fått postoperativ oppfølging
-#'    \item RegForsinkelse: Mer enn XX (1mnd?) fra operasjon til ferdigstilt registrering
-#'    \item Tss2Mott: Møtet med gynekologisk avdeling var mindre godt
-#'    \item Tss2Behandling: Behandlingens opplegg og innhold passet ikke pasienten
-#'    \item Tss2Lytte: Pasientens behandlere lyttet- og forsto ikke det som ble tatt opp
-#'    \item Tss2Behandlere: Pasienten hadde ikke tillit til sine behandlere
-#'    \item Tss2Enighet: Pasient og behandlere ikke enige om målsetn. for behandlinga
-#'    \item Tss2Generelt: Negativ eller svært negativ oppfatning om gyn. avd.
-#'		\item Utdanning: Pasienter med høyere utdanning
-#'    }
-#'
 #' @inheritParams NGERFigAndeler
 #' @inheritParams NGERUtvalgEnh
 #' @export
-
-
-
 NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
+                                datoFra='2013-01-01', datoTil='3000-12-31',
+                                velgAvd=0, minald=0, maxald=130,
+                                OpMetode=99, # Hastegrad='',
+                                AlvorlighetKompl='', behNivaa = 0,
+                                Ngrense=10, reshID=0, outfile='',
+                                velgDiag=0, preprosess=1, hentData=0, ...
+) {
+
+  FigDataParam <- NGERAndelerGrVarBeregn(RegData=RegData, valgtVar='Alder',
+                                         datoFra=datoFra, datoTil=datoTil,
+                                         velgAvd=velgAvd, minald=minald, maxald=maxald,
+                                         OpMetode=99, Hastegrad='',
+                                         AlvorlighetKompl='', behNivaa = 0,
+                                         Ngrense=Ngrense, reshID=reshID,
+                                         outfile=outfile,
+                                         velgDiag=velgDiag,
+                                         preprosess=0)
+  PlotAndelerGrVar(RegData,
+                   hovedgrTxt = FigDataParam$hovedgrTxt,
+                   grVar = FigDataParam$grVar,
+                   GrNavnSort = FigDataParam$GrNavnSort,
+                   andeltxt = FigDataParam$andeltxt,
+                   N = FigDataParam$N,
+                   KvalIndGrenser = FigDataParam$KvalIndGrenser,
+                   tittel = FigDataParam$tittel,
+                   utvalgTxt = FigDataParam$utvalgTxt,
+                   Ngrense = FigDataParam$Ngrense,
+                   AggVerdier = FigDataParam$AggVerdier,
+                   Ngr = FigDataParam$Ngr,
+                   fargepalett = FigDataParam$fargepalett,
+                   outfile = outfile)
+}
+
+
+
+
+#NGERFigAndelerGrVar
+NGERAndelerGrVarBeregn <- function(RegData=0, valgtVar='Alder',
                                 datoFra='2013-01-01', datoTil='3000-12-31',
                                 velgAvd=0, minald=0, maxald=130,
                                 OpMetode=99, # Hastegrad='',
@@ -67,89 +77,18 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
 
   #grtxt <- NGERVarSpes$grtxt
   tittel <- NGERVarSpes$tittel
-
   KvalIndGrenser <- NGERVarSpes$KvalIndGrenser
   sortAvtagende <- NGERVarSpes$sortAvtagende
-
   grVar <- 'ShNavn'
 
-  NGERUtvalg <- NGERUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, OpMetode=OpMetode
+  NGERUtvalg <- NGERUtvalgEnh(RegData=RegData,
+                              datoFra=datoFra, datoTil=datoTil, OpMetode=OpMetode
                               ,minald=minald, maxald=maxald,
                               AlvorlighetKompl=AlvorlighetKompl, behNivaa = behNivaa,
                               velgAvd=velgAvd, velgDiag=velgDiag)
   RegData <- NGERUtvalg$RegData
   utvalgTxt <- NGERUtvalg$utvalgTxt
-
-  #--------------------------FIGUR---------------------------------------------------
-
-  FigDataParam <- PlotAndelerGrVar(RegData, Variabel = RegData$Variabel,
-                                    hovedgrTxt = NGERUtvalg$hovedgrTxt,
-                                    grVar = grVar,
-                                    KvalIndGrenser = NGERVarSpes$KvalIndGrenser,
-                                    tittel = tittel,
-                                    utvalgTxt = utvalgTxt,
-                                    Ngrense = Ngrense,
-                                    fargepalett = NGERUtvalg$fargepalett,
-                                    #grtxt = grtxt,
-                                    outfile = outfile)
-
-
-
-
-
-  return(invisible(FigDataParam))
-
-                                }
-
-
-#' Andel per enhet (eller annen grupperingsvariabel)
-#'
-#' @param RegData dataramme
-#' @param Variabel var
-#' @param grVar grvar
-#' @param hovedgrTxt hovedtxt
-#' @param KvalIndGrenser KIgrenser
-#' @param tittel tittel
-#' @inheritParams NGERVarTilrettelegg
-#' @inheritParams NGERUtvalgEnh
-#' @param Ngrense minste gruppeantall som vises
-#' @param titleSize titleSize
-#' @param subtitleSize subtitleSize
-#' @param legendSize legendSize
-#' @param axisTextSize axisTextSize
-#' @param bestKvalInd bestKvalInd
-#' @param  nTicks nTicks
-#' @param fargepalett fargepalett
-#' @param outfile filtype ut
-#'
-#' @return
-#' @export
-#'
-#' @examples
-PlotAndelerGrVar <- function(RegData,
-                            Variabel,
-                            grVar ='ShNavn',
-                            hovedgrTxt = '',
-                            KvalIndGrenser = NA,
-                            tittel = 'tittel',
-                            utvalgTxt = '',
-                            Ngrense = 10,
-                            titleSize = 20,
-                            subtitleSize = 15,
-                            legendSize = 12,
-                            axisTextSize = 10,
-                            bestKvalInd = 'lav', # 'høy' for omvendt rekkfølge på indikatorfarger
-                            nTicks = 5,
-                            fargepalett = 'BlaaOff',
-                            #grtxt = '',
-                            outfile='') {
-  library(ggplot2)
-
-  FigTypUt <- rapFigurer::figtype(outfile, fargepalett=fargepalett)	#height=3*800,
-  farger <- FigTypUt$farger
-
   dummy0 <- NA  # -0.001
-
   N <- nrow(RegData)
 
   # Gruppestørrelser og summer per gruppe (robust ved N == 0)
@@ -173,7 +112,8 @@ PlotAndelerGrVar <- function(RegData,
   }
 
   # Sorter synkende ( NA havner sist)
-  sortInd <- order(AndelerGr, decreasing = TRUE, na.last = TRUE)
+  sortInd <- order(AndelerGr, decreasing = NGERVarSpes$sortAvtagende,
+                   na.last = TRUE)
 
   # Tekst for N per gruppe (med <Ngrense for små grupper)
   Ngrtxt <- as.character(Ngr)
@@ -195,16 +135,93 @@ PlotAndelerGrVar <- function(RegData,
     andeltxt[(AntGr + 1):(AntGr + length(indGrUt))] <- ""
   }
 
-  FigDataParam <- list(AggVerdier=AggVerdier,
-                       N=N, #Nfig,
-                       Ngr=Ngr[sortInd],
-                       KvalIndGrenser <- KvalIndGrenser,
-                       #grtxt=grtxt,
-                       tittel=tittel,
-                       utvalgTxt=utvalgTxt,
-                       fargepalett=fargepalett,
-                       hovedgrTxt=hovedgrTxt)
 
+  FigDataParam <- list(RegData=RegData,
+                       hovedgrTxt = NGERUtvalg$hovedgrTxt,
+                       grVar = grVar,
+                       KvalIndGrenser = NGERVarSpes$KvalIndGrenser,
+                       tittel = tittel,
+                       utvalgTxt = utvalgTxt,
+                       Ngrense = Ngrense,
+                       AggVerdier=AggVerdier,
+                       andeltxt = andeltxt,
+                       N=N,
+                       Ngr=Ngr[sortInd],
+                       GrNavnSort=GrNavnSort,
+                       #outfile = outfile,
+                       fargepalett = NGERUtvalg$fargepalett
+                       )
+
+  # PlotAndelerGrVar(RegData,
+  #                  #Variabel = RegData$Variabel,
+  #                  hovedgrTxt = NGERUtvalg$hovedgrTxt,
+  #                  grVar = grVar,
+  #                  KvalIndGrenser = NGERVarSpes$KvalIndGrenser,
+  #                  tittel = tittel,
+  #                  utvalgTxt = utvalgTxt,
+  #                  Ngrense = Ngrense,
+  #                  AggVerdier = AggVerdier,
+  #                  fargepalett = NGERUtvalg$fargepalett,
+  #                  outfile = outfile)
+
+
+  return(invisible(FigDataParam))
+  }
+
+
+
+
+#' Andel per enhet (eller annen grupperingsvariabel)
+#'
+#' @param RegData dataramme
+#' @param AggVerdier aggregerte tall
+#' @param grVar grvar
+#' @param hovedgrTxt hovedtxt
+#' @param KvalIndGrenser KIgrenser
+#' @param tittel tittel
+#' @inheritParams NGERVarTilrettelegg
+#' @inheritParams NGERUtvalgEnh
+#' @param Ngrense minste gruppeantall som vises
+#' @param titleSize titleSize
+#' @param subtitleSize subtitleSize
+#' @param legendSize legendSize
+#' @param axisTextSize axisTextSize
+#' @param bestKvalInd bestKvalInd
+#' @param  nTicks nTicks
+#' @param fargepalett fargepalett
+#' @param outfile filtype ut
+#'
+#' @return Figur
+#' @export
+#'
+PlotAndelerGrVar <- function(RegData,
+                            # Variabel,
+                            AggVerdier,
+                            Ngr,
+                            N,
+                            GrNavnSort,
+                            andeltxt,
+                            grVar ='ShNavn',
+                            hovedgrTxt = '',
+                            KvalIndGrenser = NA,
+                            tittel = 'tittel',
+                            utvalgTxt = '',
+                            Ngrense = 10,
+                            titleSize = 20,
+                            subtitleSize = 15,
+                            legendSize = 12,
+                            axisTextSize = 10,
+                            bestKvalInd = 'lav', # 'høy' for omvendt rekkfølge på indikatorfarger
+                            nTicks = 5,
+                            fargepalett = 'BlaaOff',
+                            #grtxt = '',
+                            outfile='') {
+  library(ggplot2)
+
+  FigTypUt <- rapFigurer::figtype(outfile, fargepalett=fargepalett)	#height=3*800,
+  farger <- FigTypUt$farger
+
+  # Her starter selve figuren
   if (all(is.na(Ngr))) {
 
     tekst <- "Ingen registrerte data for dette utvalget"

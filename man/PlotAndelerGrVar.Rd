@@ -2,11 +2,11 @@
 % Please edit documentation in R/NGERFigAndelerGrVar.R
 \name{PlotAndelerGrVar}
 \alias{PlotAndelerGrVar}
-\title{Title}
+\title{Andel per enhet (eller annen grupperingsvariabel)}
 \usage{
 PlotAndelerGrVar(
   RegData,
-  Variabel,
+  AggVerdier,
   grVar = "ShNavn",
   hovedgrTxt = "",
   KvalIndGrenser = NA,
@@ -26,7 +26,7 @@ PlotAndelerGrVar(
 \arguments{
 \item{RegData}{dataramme}
 
-\item{Variabel}{var}
+\item{AggVerdier}{aggregerte tall}
 
 \item{grVar}{grvar}
 
@@ -34,10 +34,26 @@ PlotAndelerGrVar(
 
 \item{KvalIndGrenser}{KIgrenser}
 
-\item{fargepalett}{Hvilken fargepalett skal brukes i figurer (Default: BlaaRapp)}
+\item{tittel}{tittel}
 
-\item{outfile}{}
+\item{Ngrense}{minste gruppeantall som vises}
+
+\item{titleSize}{titleSize}
+
+\item{subtitleSize}{subtitleSize}
+
+\item{legendSize}{legendSize}
+
+\item{axisTextSize}{axisTextSize}
+
+\item{bestKvalInd}{bestKvalInd}
+
+\item{nTicks}{nTicks}
+
+\item{fargepalett}{fargepalett}
+
+\item{outfile}{filtype ut}
 }
 \description{
-Title
+Andel per enhet (eller annen grupperingsvariabel)
 }

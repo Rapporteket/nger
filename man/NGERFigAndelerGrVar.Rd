@@ -94,29 +94,4 @@ Variable funksjonen benytter: Alder (beregnes), Opf0Komplikasjoner, Opf0Reoperas
  Opf0KomplInfeksjon, Opf0KomplOrganUtdanning, KomplPostopAlvor
  HysKomplikasjoner, LapKomplikasjoner, OpMetode, OpAntibProfylakse, OpASA, OpBMI, Opf0Status.
  Det benyttes også andre variable til utvalg osv.
-
-Argumentet \emph{valgtVar} har følgende valgmuligheter:
-   \itemize{
-	\item Alder: Andel pasienter over 70 år.
-	\item KomplIntra: Komplikasjoner under operasjon (intraoperativt)
-	\item KomplPostop: Postoperative komplikasjoner
-	\item OpAntibProfylakse: Fått antibiotikaprofylakse
-	\item OpASA: ASA-grad > II
-	\item OpBMI: Pasienter med fedme (BMI>30)
-	\item KomplPostopAlvor: Alvorlige komplikasjoner (grad 3 og 4)
-	\item Opf0KomplBlodning: Postop. komplikasjon: Blødning
-	\item Opf0KomplUtstyr: Postop. komplikasjon: Problemer med ustyr
-	\item Opf0KomplInfeksjon: Postop. komplikasjon: Infeksjon
-	\item Opf0KomplOrgan: Postop. komplikasjon: Organskade
-	\item Opf0Reoperasjon: Reoperasjon som følge av komplikasjon
-	\item Opf0Status: Fått postoperativ oppfølging
-   \item RegForsinkelse: Mer enn XX (1mnd?) fra operasjon til ferdigstilt registrering
-   \item Tss2Mott: Møtet med gynekologisk avdeling var mindre godt
-   \item Tss2Behandling: Behandlingens opplegg og innhold passet ikke pasienten
-   \item Tss2Lytte: Pasientens behandlere lyttet- og forsto ikke det som ble tatt opp
-   \item Tss2Behandlere: Pasienten hadde ikke tillit til sine behandlere
-   \item Tss2Enighet: Pasient og behandlere ikke enige om målsetn. for behandlinga
-   \item Tss2Generelt: Negativ eller svært negativ oppfatning om gyn. avd.
-	\item Utdanning: Pasienter med høyere utdanning
-   }
 }
