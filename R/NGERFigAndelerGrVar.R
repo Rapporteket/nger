@@ -39,7 +39,7 @@
 
 
 
-NGERFigAndelerGrVarGG <- function(RegData=0, valgtVar='Alder',
+NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
                                 datoFra='2013-01-01', datoTil='3000-12-31',
                                 velgAvd=0, minald=0, maxald=130,
                                 OpMetode=99, # Hastegrad='',
@@ -65,7 +65,7 @@ NGERFigAndelerGrVarGG <- function(RegData=0, valgtVar='Alder',
                                      OpMetode=OpMetode , figurtype='andelGrVar')
   RegData <- NGERVarSpes$RegData
 
-  grtxt <- NGERVarSpes$grtxt
+  #grtxt <- NGERVarSpes$grtxt
   tittel <- NGERVarSpes$tittel
 
   KvalIndGrenser <- NGERVarSpes$KvalIndGrenser
@@ -90,7 +90,7 @@ NGERFigAndelerGrVarGG <- function(RegData=0, valgtVar='Alder',
                                     utvalgTxt = utvalgTxt,
                                     Ngrense = Ngrense,
                                     fargepalett = NGERUtvalg$fargepalett,
-                                    grtxt = grtxt,
+                                    #grtxt = grtxt,
                                     outfile = outfile)
 
 
@@ -102,6 +102,30 @@ NGERFigAndelerGrVarGG <- function(RegData=0, valgtVar='Alder',
                                 }
 
 
+#' Andel per enhet (eller annen grupperingsvariabel)
+#'
+#' @param RegData dataramme
+#' @param Variabel var
+#' @param grVar grvar
+#' @param hovedgrTxt hovedtxt
+#' @param KvalIndGrenser KIgrenser
+#' @param tittel tittel
+#' @inheritParams NGERVarTilrettelegg
+#' @inheritParams NGERUtvalgEnh
+#' @param Ngrense minste gruppeantall som vises
+#' @param titleSize titleSize
+#' @param subtitleSize subtitleSize
+#' @param legendSize legendSize
+#' @param axisTextSize axisTextSize
+#' @param bestKvalInd bestKvalInd
+#' @param  nTicks nTicks
+#' @param fargepalett fargepalett
+#' @param outfile filtype ut
+#'
+#' @return
+#' @export
+#'
+#' @examples
 PlotAndelerGrVar <- function(RegData,
                             Variabel,
                             grVar ='ShNavn',
@@ -117,7 +141,7 @@ PlotAndelerGrVar <- function(RegData,
                             bestKvalInd = 'lav', # 'høy' for omvendt rekkfølge på indikatorfarger
                             nTicks = 5,
                             fargepalett = 'BlaaOff',
-                            grtxt = '',
+                            #grtxt = '',
                             outfile='') {
   library(ggplot2)
 
@@ -175,7 +199,7 @@ PlotAndelerGrVar <- function(RegData,
                        N=N, #Nfig,
                        Ngr=Ngr[sortInd],
                        KvalIndGrenser <- KvalIndGrenser,
-                       grtxt=grtxt,
+                       #grtxt=grtxt,
                        tittel=tittel,
                        utvalgTxt=utvalgTxt,
                        fargepalett=fargepalett,

@@ -43,19 +43,26 @@ NGERFigGjsnTid(
 hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 
 \item{OpMetode}{1: Laparoskopi
-2: Hysteroskopi
-3: Begge # 21.okt. 2022: Fjernes som eget valg. Blir med i både laparoskopi og hysteroskopi
-4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
-5: LCC11 (laparoskopisk subtotal hysterektomi)
-6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
-7: Robotassisert inngrep
-8: Kolpopeksiene
-9: Hysterectomier (alle)}
+ 2: Hysteroskopi
+ 3: Begge # 21.okt. 2022: Fjernes som eget valg. Blir med i både laparoskopi og hysteroskopi
+ 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
+ 5: LCC11 (laparoskopisk subtotal hysterektomi)
+ 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
+ 7: Lap m/robot
+ 8: Kolpopeksiene
+ 9: Hysterectomier (alle)
+10: Lap u/robot
+11: Laparoskopi med vaginal tilgang}
 
 \item{velgDiag}{0: Alle
-1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
+1: Godartede ovarialcyster
 2: Endometriose, livmorvegg (N80.0)
-3: Endometriose, unntatt livmorvegg.}
+3: Endometriose utenom livmorvegg.
+4: Onkologi
+5: Generell gynekologi
+6: Gravide
+7: Komplikasjoner
+8: Infertilitet}
 
 \item{behNivaa}{Behandlingsvivå: 1-Poliklinisk, 2-Dagkirurgi, 3-Inneliggende}
 

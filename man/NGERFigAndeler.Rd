@@ -49,14 +49,16 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 2: Egen enhet}
 
 \item{OpMetode}{1: Laparoskopi
-2: Hysteroskopi
-3: Begge # 21.okt. 2022: Fjernes som eget valg. Blir med i både laparoskopi og hysteroskopi
-4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
-5: LCC11 (laparoskopisk subtotal hysterektomi)
-6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
-7: Robotassisert inngrep
-8: Kolpopeksiene
-9: Hysterectomier (alle)}
+ 2: Hysteroskopi
+ 3: Begge # 21.okt. 2022: Fjernes som eget valg. Blir med i både laparoskopi og hysteroskopi
+ 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
+ 5: LCC11 (laparoskopisk subtotal hysterektomi)
+ 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
+ 7: Lap m/robot
+ 8: Kolpopeksiene
+ 9: Hysterectomier (alle)
+10: Lap u/robot
+11: Laparoskopi med vaginal tilgang}
 
 \item{AlvorlighetKompl}{Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
 Angis som en vektor av tall som tekst, f.eks. c('1','2')
@@ -71,9 +73,14 @@ Angis som en vektor av tall som tekst, f.eks. c('1','2')
 IKKE tatt høyde for sammenlikning mot "resten".}
 
 \item{velgDiag}{0: Alle
-1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
+1: Godartede ovarialcyster
 2: Endometriose, livmorvegg (N80.0)
-3: Endometriose, unntatt livmorvegg.}
+3: Endometriose utenom livmorvegg.
+4: Onkologi
+5: Generell gynekologi
+6: Gravide
+7: Komplikasjoner
+8: Infertilitet}
 
 \item{hentData}{Gjør spørring mot database
 0: Nei, RegData gis som input til funksjonen (Standard)
@@ -91,54 +98,5 @@ Denne funksjonen lager et søylediagram som viser andeler (fordeling) av valgt v
 filtrert på de utvalg som er gjort.
 }
 \details{
-Argumentet \emph{valgtVar} har følgende valgmuligheter:
-   \itemize{
-    \item Alder: Pasientens alder, 5-årige aldersgrupper
-    \item Diagnoser: Hyppigst forekommende diagnoser
-    \item HysGjforingsGrad: Gjennomføringsgrad av hysteroskopi
-   		Koder:	1-Fullstendig, 2-Ufullstendig, 3-Mislykket
-    \item HysKomplikasjoner: Hysteroskopi intrapoerative komplikasjoner
-    \item KomplPostop: Postoperative komplikasjoner
-    \item KomplPostUtd: Postoperative komplikasjoner for ulike utdanningsgrupper
-    \item KomplReopUtd: Andel reoperasjoner som følge av komplikasjon for ulike utdanningsgrupper
-    \item LapKomplikasjoner: Laparoskopiske intrapoerative komplikasjoner
-    \item LapEkstrautstyr: Laparoskopisk ekstrautstyr - Kommer, NY variabel: koagulasjon og klipping
-    \item LapNumHjelpeinnstikk: Antall hjelpeinnstikk
-    \item LapTeknikk: Laparoskopisk tilgang, teknikk og metode (Tidl LapTilgangsMetode)
-    \item Norsktalende: Pasientens norskkunnskaper
-    \item OpAnestesi: Anestesitype
-    \item OpASA: ASA-grad
-    \item OpBMI: BMI-kategori
-    \item Opf0AlvorlighetsGrad: Alvorlighetsgrad, postoperative komplikasjoner
-		  Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
-	 \item Opf0KomplInfeksjon: Type infeksjoner
-	 \item Opf0metode: Opfølgingsmetode
-    \item OpBehNivaa: Behandlingsnivå
-    \item OpIVaktTid: Operasjon i legens vakttid
-    \item OpKategori: Hastegrad av operasjon
-    \item OpMetode: Operasjonsmetode
-    \item OpTid: Operasjonstid (minutter)
-    \item OpTidlVagInngrep: Tidligere vaginale inngrep
-    \item OpTidlLapsko: Tidligere laparoskopi
-    \item OpTidlLaparotomi: Tidligere laparotomi
-    \item OpType: Primæroperasjon eller reoperasjon
-    \item R0ScoreEmo:
-    \item R0ScoreEnergy:
-    \item R0ScoreGeneral:
-    \item R0ScorePain:
-    \item R0ScorePhys:
-    \item R0ScoreRoleLmtPhy:
-    \item R0ScoreRoleLmtEmo:
-    \item R0ScoreSosial:
-    \item RegForsinkelse: MANGLER BEREGNINGSVARIABEL Tid fra operasjon til ferdigstilt registrering
-    \item Prosedyrer: Hyppigst forekommende prosedyrer
-    \item SivilStatus: Sivilstand
-    \item Tss2Mott: Hvordan du ble mottatt på avd.
-    \item Tss2Behandling:
-    \item Tss2Lytte:
-    \item Tss2Behandlere:
-    \item Tss2Enighet:
-    \item Tss2Generelt:
-    \item Utdanning: Pasientens utdanning (1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent)
-   }
+Argumentet \emph{valgtVar} har mange valgmuligheter
 }
