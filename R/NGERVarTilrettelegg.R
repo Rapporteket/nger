@@ -625,7 +625,7 @@ table(RegData$Opf6mInnlagt)
     gr <- c(0,1,7,14,30,90,365,5000) #gr <- c(seq(0, 90, 10), 1000)
     RegData$VariabelGr <- cut(RegData$Diff, breaks = gr, include.lowest = TRUE, right = TRUE)
     grtxt <- c('<= 1', '(1-7]', '(7-14]', '(14-30]', '(30-90]', '(90-365]', '>365')
-    #grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-2)], '>90')
+    sortAvtagende <- FALSE
     cexgr <- 0.9
   }
 

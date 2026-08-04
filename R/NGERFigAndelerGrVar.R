@@ -20,7 +20,7 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
                                 velgDiag=0, preprosess=1, hentData=0, ...
 ) {
 
-  FigDataParam <- NGERAndelerGrVarBeregn(RegData=RegData, valgtVar='Alder',
+  FigDataParam <- NGERAndelerGrVarBeregn(RegData=RegData, valgtVar=valgtVar,
                                          datoFra=datoFra, datoTil=datoTil,
                                          velgAvd=velgAvd, minald=minald, maxald=maxald,
                                          OpMetode=99, Hastegrad='',

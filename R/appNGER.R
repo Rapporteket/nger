@@ -629,7 +629,7 @@ ui_nger <- function() {
                    #8 hoveddimensjoner av Rand, TSS2spm + sumskår
                    selectInput(
                      inputId = "valgtVarGjsn", label="Velg variabel",
-                     selected = c('TSS2, sumskår' = 'Tss2Sumskaar'),
+                     selected = c('Operasjonstid (minutter)' = 'OpTid'),
                      choices = c('Alder' = 'Alder',
                                  'BMI' = 'OpBMI',
                                  'Operasjonstid (minutter)' = 'OpTid',
@@ -1383,7 +1383,8 @@ server_nger <- function(input, output, session) {
 
     #AndelGrVar
     AndelerShus <-
-      NGERFigAndelerGrVar(
+      #NGERFigAndelerGrVar(
+      NGERAndelerGrVarBeregn(
         RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
         datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
         minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
