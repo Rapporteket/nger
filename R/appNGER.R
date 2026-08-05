@@ -205,8 +205,8 @@ ui_nger <- function() {
 
 
     #-----Kvalitetsindikatorer------------
-    tabPanel(p("Kvalitetsindikatorer", title = 'Prosessindikatorer, RAND36, TSS2'),
-             h3('Registerets kvalitetsindikatorer', align='center'),
+    tabPanel(p("Prosessindikatorer, TSS og RAND", title = 'Prosessindikatorer, RAND36'),
+             h3('Registerets kvalitetsindikatorer og RAND', align='center'),
              sidebarPanel(width=3,
                           h3('Utvalg'),
                           #Bare fig og tab
@@ -214,10 +214,12 @@ ui_nger <- function() {
                                            selectInput(
                                              inputId = "valgtVarKval", label="Velg variabel",
                                              choices = c('Prosessindikatorer' = 'kvalInd',
-                                                         'TSS2, oppfølging' = 'TSS0',
-                                                         'RAND36, v/operasjon' = 'RAND0',
+                                                      #   "PREM: Fikk du tilfredsstillende hjelp og beh. på avd.?" = 'PREMTilfreds'
+                                                         'TSS2, oppfølging' = 'TSS0'
+                                                         ,'RAND36, v/operasjon' = 'RAND0',
                                                          'RAND36, ett år etter' = 'RAND1',
-                                                         'RAND36, tre år etter' = 'RAND3')
+                                                         'RAND36, tre år etter' = 'RAND3'
+                                                          )
                                            ),
                                            selectInput(inputId = 'enhetsUtvalgKval',
                                                        label='Egen enhet og/eller landet',
@@ -285,6 +287,7 @@ ui_nger <- function() {
                                     tableOutput('kvalIndTab'),
                                     downloadButton(outputId = 'lastNed_tabKvalInd', label='Last ned')
                            ),
+                           #Flyttes?
                            tabPanel('RAND, alle år',
                                     br(),
                                     plotOutput('kvalRAND013', height="auto"),
@@ -295,7 +298,8 @@ ui_nger <- function() {
                                     plotOutput('kvalRANDdim', height="auto"),
                                     downloadButton(outputId = 'LastNedFigRANDdim', label='Last ned')
                            )
-               ))
+               )
+               )
 
     ), #tab Kvalitetsindikatorer
 
@@ -379,6 +383,7 @@ ui_nger <- function() {
                       'Hysteroskopi: Årsak til ufullstendig' = 'HysUfullAarsak',
                       'Hysteroskopi: Medvirkende årsak til komplikasjon' = 'HysSkadeaarsakIntra',
                       'Hysteroskopi: Tiltak ved komplikasjon' = 'HysKomplTiltak',
+                      'Hvor fikk du behandling?' = 'Opf0hvor',
                       'Infeksjoner, type' = 'Opf0KomplInfeksjon',
                       'Infeksjoner, type (alvorlig/middels)' = 'Opf0KomplAlvorInfeksjon',
                       'Komplikasjoner, postoperativt' = 'KomplPostopType',

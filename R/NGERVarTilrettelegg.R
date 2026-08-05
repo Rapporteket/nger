@@ -897,7 +897,19 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
   #Vi sender tilbake alle variable som indikatorvariable, dvs. med 0,1,NA
   #(Alternativt kan vi gjøre beregninga her og sende tilbake teller og nevner for den sammensatte variabelen)
 
-  if (valgtVar %in% c('Diagnoser', 'DiagnoseGr')) { #Tilfelle hvor man heller endrer format på variablene...?
+
+#FIGURER SATT SAMMEN AV FLERE VARIABLE, ULIKT TOTALUTVALG
+if (valgtVar %in% c('Diagnoser', 'DiagnoseGr', 'KomplPostopType', 'KomplAlvorPostopType',
+                    'HysKomplikasjoner', 'LapKomplikasjoner',
+                    'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr',
+                    'LapKomplIntra', 'LapTeknikk', 'Prosedyrer',
+                    'ProsedyreGr', 'ProsViktigLap', 'ProsViktigHys')){
+  flerevar <- 1
+  retn <- 'H'}
+
+#c('Diagnoser', 'DiagnoseGr', 'Prosedyrer', 'ProsedyreGr','ProsViktigLap', 'ProsViktigHys'))
+
+if (valgtVar %in% c('Diagnoser', 'DiagnoseGr')) { #Tilfelle hvor man heller endrer format på variablene...?
     #Tar unique for hver rad. Antar dette er for å ta høyde for at sm. diag oppf. flere ganger.
     tittel <- 'Hyppigst forekommende diagnoser'
     diagLap <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3')
@@ -1062,15 +1074,6 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     }
     RegData <- data.frame(RegData,nymatr)
   }
-
-  #FIGURER SATT SAMMEN AV FLERE VARIABLE, ULIKT TOTALUTVALG
-  if (valgtVar %in% c('Diagnoser', 'DiagnoseGr', 'KomplPostopType', 'KomplAlvorPostopType',
-                      'HysKomplikasjoner', 'LapKomplikasjoner',
-                      'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr',
-                      'LapKomplIntra', 'LapTeknikk', 'Prosedyrer', 'ProsedyreGr',
-                      'ProsViktigLap', 'ProsViktigHys')){
-    flerevar <- 1
-    retn <- 'H'}
 
 
   if (valgtVar=='HysKomplikasjoner') {
@@ -1306,7 +1309,19 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData[ ,variable[4:7]][ind1tilg] <- 1
   }
 
-    if (valgtVar == 'Opf0KomplInfeksjon') {   #Andeler, andelGrVar, andelTid
+if (valgtVar=='Opf0hvor') {
+  flerevar <- 1
+  variable <- c('Opf0FastlegeVakt',	#Fastlege/legevakt
+                'Opf0PolAkutt',	#På sykehus poliklinikk/akuttmottak
+                'Opf0Innlagt'	#Innlagt på sykehus
+  )
+  grtxt <- c('Lege/-vakt', 'Pol/akutt', 'Innlagt')
+  tittel <- 'Hvor fikk du behandling?'
+  #RegData <- RegData[which(RegData$Opf0Komplikasjoner %in% 0:1), ]
+  xAkseTxt <- 'Andel operasjoner (%)'
+}
+
+if (valgtVar == 'Opf0KomplInfeksjon') {   #Andeler, andelGrVar, andelTid
     retn <- 'H'
     flerevar <- 1
     #Opf0metode in 1:2 #9 angir "ikke mulig"
