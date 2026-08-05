@@ -134,7 +134,7 @@ lagTabavFig <- function(UtDataFraFig, figurtype='andeler'){ #lagTabavFigAndeler
     if (medSml==1) {
       colnames(tab) <-  c(kolnavn, paste0(smltxt, c(', Antall', ', Andel (%)')))}
     }
-
+# print(UtDataFraFig$grtxt)
   rownames(tab) <- UtDataFraFig$grtxt
   return(tab)
 }

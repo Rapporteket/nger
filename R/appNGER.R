@@ -205,8 +205,8 @@ ui_nger <- function() {
 
 
     #-----Kvalitetsindikatorer------------
-    tabPanel(p("Kvalitetsindikatorer", title = 'Prosessindikatorer, RAND36, TSS2'),
-             h3('Registerets kvalitetsindikatorer', align='center'),
+    tabPanel(p("Prosessindikatorer, TSS og RAND", title = 'Prosessindikatorer, RAND36'),
+             h3('Registerets kvalitetsindikatorer og RAND', align='center'),
              sidebarPanel(width=3,
                           h3('Utvalg'),
                           #Bare fig og tab
@@ -214,10 +214,12 @@ ui_nger <- function() {
                                            selectInput(
                                              inputId = "valgtVarKval", label="Velg variabel",
                                              choices = c('Prosessindikatorer' = 'kvalInd',
-                                                         'TSS2, oppfølging' = 'TSS0',
-                                                         'RAND36, v/operasjon' = 'RAND0',
+                                                      #   "PREM: Fikk du tilfredsstillende hjelp og beh. på avd.?" = 'PREMTilfreds'
+                                                         'TSS2, oppfølging' = 'TSS0'
+                                                         ,'RAND36, v/operasjon' = 'RAND0',
                                                          'RAND36, ett år etter' = 'RAND1',
-                                                         'RAND36, tre år etter' = 'RAND3')
+                                                         'RAND36, tre år etter' = 'RAND3'
+                                                          )
                                            ),
                                            selectInput(inputId = 'enhetsUtvalgKval',
                                                        label='Egen enhet og/eller landet',
@@ -285,6 +287,7 @@ ui_nger <- function() {
                                     tableOutput('kvalIndTab'),
                                     downloadButton(outputId = 'lastNed_tabKvalInd', label='Last ned')
                            ),
+                           #Flyttes?
                            tabPanel('RAND, alle år',
                                     br(),
                                     plotOutput('kvalRAND013', height="auto"),
@@ -295,7 +298,8 @@ ui_nger <- function() {
                                     plotOutput('kvalRANDdim', height="auto"),
                                     downloadButton(outputId = 'LastNedFigRANDdim', label='Last ned')
                            )
-               ))
+               )
+               )
 
     ), #tab Kvalitetsindikatorer
 
@@ -379,6 +383,7 @@ ui_nger <- function() {
                       'Hysteroskopi: Årsak til ufullstendig' = 'HysUfullAarsak',
                       'Hysteroskopi: Medvirkende årsak til komplikasjon' = 'HysSkadeaarsakIntra',
                       'Hysteroskopi: Tiltak ved komplikasjon' = 'HysKomplTiltak',
+                      'Hvor fikk du behandling?' = 'Opf0hvor',
                       'Infeksjoner, type' = 'Opf0KomplInfeksjon',
                       'Infeksjoner, type (alvorlig/middels)' = 'Opf0KomplAlvorInfeksjon',
                       'Komplikasjoner, postoperativt' = 'KomplPostopType',
@@ -397,6 +402,19 @@ ui_nger <- function() {
                       'Oppf. 6 mnd.: Alvorlighetsgrad' = 'Opf6mAlvorlighetsGrad',
                       'Oppf. 6 mnd.: Ettervirkninger' = 'ettervirkn6mnd',
                       'Oppf. 6 mnd.: Sykemeldt'= 'Opf6mSykemeldt',
+                       "PREM: Snakket behandlerne til deg slik at du forsto dem?" = 'PREMSnakke',
+                       "PREM: Har du tillit til behandlernes faglige dyktighet?" = 'PREMDyktig',
+                       "PREM: Har du tillit til det øvrige personalets faglige dyktighet?" = 'PREMTillit',
+                       "PREM: Fikk du tilstrekkelig informasjon om din diagnose / dine plager?" = 'PREMDiagn',
+                       "PREM: Ble du informert om mulige plager i tiden etter operasjonen" = 'PREMOpr',
+                       "PREM: Synes du dine behandlere la til rette for god dialog?" = 'PREMDialog',
+                       "PREM: Synes du dine behandlere forstod det du tok opp?" = 'PREMForsto',
+                       "PREM: Var du involvert i avgjørelser som angikk din behandling?" = 'PREMInvolvert',
+                       "PREM: Var avdelingens arbeid godt organisert?" = 'PREMOrg',
+                       "PREM: Fikk du tilfredsstillende hjelp og behandling på avd.?" = 'PREMTilfreds',
+                       "PREM: Måtte du vente for å få tilbud ved gynekologisk avdeling?" = 'PREMVente',
+                       "PREM: Mener du at du på noen måte ble feilbehandlet?" = 'PREMFeil',
+                       "PREM: Utbytte av behandlingen på gynekologisk avdeling = 'PREMUtbytte",
                       'Primæroperasjon eller reoperasjon' = 'OpType',
                       'Prosedyrer, hyppigste' = 'Prosedyrer',
                       'Prosegrupper, hyppigste' = 'ProsedyreGr',
@@ -511,6 +529,19 @@ ui_nger <- function() {
                              'Oppf. 6 mnd.: Beh. kompl. poliklinisk' = 'Opf6mPoliklinisk',
                              'Oppf. 6 mnd.: Beh. kompl. ved innleggelse' = 'Opf6mInnlagt',
                              'Pasienter med høyere utdanning' = 'Utdanning',
+                             "PREM: Snakket behandlerne til deg slik at du forsto dem?" = 'PREMSnakke',
+                             "PREM: Har du tillit til behandlernes faglige dyktighet?" = 'PREMDyktig',
+                             "PREM: Har du tillit til det øvrige personalets faglige dyktighet?" = 'PREMTillit',
+                             "PREM: Fikk du tilstrekkelig informasjon om din diagnose / dine plager?" = 'PREMDiagn',
+                             "PREM: Ble du informert om mulige plager i tiden etter operasjonen" = 'PREMOpr',
+                             "PREM: Synes du dine behandlere la til rette for god dialog?" = 'PREMDialog',
+                             "PREM: Synes du dine behandlere forstod det du tok opp?" = 'PREMForsto',
+                             "PREM: Var du involvert i avgjørelser som angikk din behandling?" = 'PREMInvolvert',
+                             "PREM: Var avdelingens arbeid godt organisert?" = 'PREMOrg',
+                             "PREM: Fikk du tilfredsstillende hjelp og behandling på avd.?" = 'PREMTilfreds',
+                             "PREM: Måtte du vente for å få tilbud ved gynekologisk avdeling?" = 'PREMVente',
+                             "PREM: Mener du at du på noen måte ble feilbehandlet?" = 'PREMFeil',
+                             "PREM: Utbytte av behandlingen på gynekologisk avdeling = 'PREMUtbytte",
                              'Postop. komplikasjon: Alle' = 'KomplPostop',
                              'Postop. komplikasjon: moderate/alvorlige (grad 2-4)' = 'KomplPostopAlvor',
                              'Postop. komplikasjon: Blødning' = 'Opf0KomplBlodning',
@@ -603,7 +634,7 @@ ui_nger <- function() {
                    #8 hoveddimensjoner av Rand, TSS2spm + sumskår
                    selectInput(
                      inputId = "valgtVarGjsn", label="Velg variabel",
-                     selected = c('TSS2, sumskår' = 'Tss2Sumskaar'),
+                     selected = c('Operasjonstid (minutter)' = 'OpTid'),
                      choices = c('Alder' = 'Alder',
                                  'BMI' = 'OpBMI',
                                  'Operasjonstid (minutter)' = 'OpTid',
@@ -972,7 +1003,6 @@ server_nger <- function(input, output, session) {
                      enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
                      velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
                      session = session)
-
     tabKvalInd <- lagTabavFig(UtDataFraFig = UtDataKvalInd) #lagTabavFigAndeler
 
     output$tittelKvalInd <- renderUI({
@@ -1358,7 +1388,8 @@ server_nger <- function(input, output, session) {
 
     #AndelGrVar
     AndelerShus <-
-      NGERFigAndelerGrVar(
+      #NGERFigAndelerGrVar(
+      NGERAndelerGrVarBeregn(
         RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
         datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
         minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),

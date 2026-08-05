@@ -35,9 +35,9 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
   KImaal <- NA
   variable <- 'Ingen'
   tittel <- 'Mangler tittel' #I andelGrVar og GjsnGrVar genereres tittel i beregningsfunksjonen
+  RegData$Variabel <- 0
 
   #-------------------------------------
-  RegData$Variabel <- 0
   # Definisjon av komplikasjonsvariaber. Variablene leveres av HN-IKT
   # Opf0Reoperasjon = Opf0ReopLaparoskopi + Opf0ReopHysteroskopi + Opf0ReopLaparotomi	 + Opf0ReopVaginal + ..Annet
   # Opf0KomplBlodning =	Opf0BlodningAbdom	Opf0BlodningVaginal	Opf0BlodningIntraabdominal
@@ -50,7 +50,56 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
   if (valgtVar %in% c(TSS0var, Rand0var)) {
    RegData <- RegData[RegData$OpDato >= '2016-01-01', ]}
 
-  #------------------- 6-månederskontroll
+  #--------------- PREM-skjema -------------------------------
+  # Innført for operasjoner f.o.m. 1.jan 2026
+
+  if ( substr(valgtVar, 1, 4) == 'PREM') { #andeler, andelGrVar, andelTid
+
+    RegData <- RegData[which(RegData$PREMUtfylt == 1), ]
+    #RegData$Variabel <- RegData[,valgtVar]
+    if (figurtype %in% c('andelGrVar', 'andelTid')) {
+      RegData <- dplyr::filter(RegData, Variabel %in% 0:4 )
+      sortAvtagende <- TRUE
+      OKverdi <- if (valgtVar %in% c('PREMVente', 'PREMFeil')) {0:1} else {3:4}
+      RegData$Variabel[which(RegData[ ,valgtVar] %in% OKverdi)] <- 1
+    }
+
+    tittel <- switch(valgtVar,
+                     PREMSnakke = "Snakket behandlerne til deg slik at du forsto dem?",
+                     PREMDyktig = "Har du tillit til behandlernes faglige dyktighet?",
+                     PREMTillit = "Har du tillit til det øvrige personalets faglige dyktighet?",
+                     PREMDiagn = "Fikk du tilstrekkelig informasjon om din diagnose / dine plager?",
+                     PREMOpr = "Ble du informert om mulige plager i tiden etter operasjonen",
+                     PREMDialog = "Synes du dine behandlere la til rette for god dialog?",
+                     PREMForsto = "Synes du dine behandlere forstod det du tok opp?",
+                     PREMInvolvert = "Var du involvert i avgjørelser som angikk din behandling?",
+                     PREMOrg = "Var avdelingens arbeid godt organisert?",
+                     PREMTilfreds = "Fikk du tilfredsstillende hjelp og behandling på avd.?",
+                     PREMVente = "Måtte du vente for å få tilbud ved gynekologisk avdeling?",
+                     PREMFeil = "Mener du at du på noen måte ble feilbehandlet?",
+                     PREMUtbytte = "Utbytte av behandlingen på gynekologisk avdeling"
+                     )
+
+    grtxt <- c('Ikke i det hele tatt',
+               'I liten grad',
+               'I noen grad',
+               'I stor grad',
+               'I svært stor grad',
+               'Ikke aktuelt')
+
+    if (valgtVar == 'PREMUtbytte'){
+      grtxt <- c('Ikke noe utbytte',
+                 'Lite utbytte',
+                 'En del utbytte',
+                 'Stort utbytte',
+                 'Svært stort utbytte',
+                 'Ikke aktuelt')}
+    RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = c(0:4, 9), labels = grtxt)
+
+  }
+
+
+#------------------- 6-månederskontroll',
   # Har du etter din operasjon vært behandlet i spesialisthelsetjenesten/ på sykehus for komplikasjon?
   #   Opf6mKomplikasjoner
   # Fig. Tilsv. Postoperative komplikasjoner (opf0) Både fordelingsfigur og andelsfig
@@ -576,7 +625,7 @@ table(RegData$Opf6mInnlagt)
     gr <- c(0,1,7,14,30,90,365,5000) #gr <- c(seq(0, 90, 10), 1000)
     RegData$VariabelGr <- cut(RegData$Diff, breaks = gr, include.lowest = TRUE, right = TRUE)
     grtxt <- c('<= 1', '(1-7]', '(7-14]', '(14-30]', '(30-90]', '(90-365]', '>365')
-    #grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-2)], '>90')
+    sortAvtagende <- FALSE
     cexgr <- 0.9
   }
 
@@ -794,7 +843,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData$VariabelGr <- factor(RegData$Tss2Generelt, levels=koder, labels = grtxt) #levels=c(nivaa,9)
     if (figurtype %in% c('andelGrVar', 'andelTid')) {
       RegData$Variabel[which(RegData$Tss2Generelt %in% 3:4)] <- 1
-      KvalIndGrenser <- c(0, 80, 90, 100)
+      # KvalIndGrenser <- c(0, 80, 90, 100) #2026: Ikke lenger kvalitetsindikator
       sortAvtagende <- TRUE
       }
     if (figurtype == 'gjsnGrVar') {
@@ -848,7 +897,19 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
   #Vi sender tilbake alle variable som indikatorvariable, dvs. med 0,1,NA
   #(Alternativt kan vi gjøre beregninga her og sende tilbake teller og nevner for den sammensatte variabelen)
 
-  if (valgtVar %in% c('Diagnoser', 'DiagnoseGr')) { #Tilfelle hvor man heller endrer format på variablene...?
+
+#FIGURER SATT SAMMEN AV FLERE VARIABLE, ULIKT TOTALUTVALG
+if (valgtVar %in% c('Diagnoser', 'DiagnoseGr', 'KomplPostopType', 'KomplAlvorPostopType',
+                    'HysKomplikasjoner', 'LapKomplikasjoner',
+                    'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr',
+                    'LapKomplIntra', 'LapTeknikk', 'Prosedyrer',
+                    'ProsedyreGr', 'ProsViktigLap', 'ProsViktigHys')){
+  flerevar <- 1
+  retn <- 'H'}
+
+#c('Diagnoser', 'DiagnoseGr', 'Prosedyrer', 'ProsedyreGr','ProsViktigLap', 'ProsViktigHys'))
+
+if (valgtVar %in% c('Diagnoser', 'DiagnoseGr')) { #Tilfelle hvor man heller endrer format på variablene...?
     #Tar unique for hver rad. Antar dette er for å ta høyde for at sm. diag oppf. flere ganger.
     tittel <- 'Hyppigst forekommende diagnoser'
     diagLap <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3')
@@ -1013,15 +1074,6 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     }
     RegData <- data.frame(RegData,nymatr)
   }
-
-  #FIGURER SATT SAMMEN AV FLERE VARIABLE, ULIKT TOTALUTVALG
-  if (valgtVar %in% c('Diagnoser', 'DiagnoseGr', 'KomplPostopType', 'KomplAlvorPostopType',
-                      'HysKomplikasjoner', 'LapKomplikasjoner',
-                      'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr',
-                      'LapKomplIntra', 'LapTeknikk', 'Prosedyrer', 'ProsedyreGr',
-                      'ProsViktigLap', 'ProsViktigHys')){
-    flerevar <- 1
-    retn <- 'H'}
 
 
   if (valgtVar=='HysKomplikasjoner') {
@@ -1257,7 +1309,19 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData[ ,variable[4:7]][ind1tilg] <- 1
   }
 
-    if (valgtVar == 'Opf0KomplInfeksjon') {   #Andeler, andelGrVar, andelTid
+if (valgtVar=='Opf0hvor') {
+  flerevar <- 1
+  variable <- c('Opf0FastlegeVakt',	#Fastlege/legevakt
+                'Opf0PolAkutt',	#På sykehus poliklinikk/akuttmottak
+                'Opf0Innlagt'	#Innlagt på sykehus
+  )
+  grtxt <- c('Lege/-vakt', 'Pol/akutt', 'Innlagt')
+  tittel <- 'Hvor fikk du behandling?'
+  #RegData <- RegData[which(RegData$Opf0Komplikasjoner %in% 0:1), ]
+  xAkseTxt <- 'Andel operasjoner (%)'
+}
+
+if (valgtVar == 'Opf0KomplInfeksjon') {   #Andeler, andelGrVar, andelTid
     retn <- 'H'
     flerevar <- 1
     #Opf0metode in 1:2 #9 angir "ikke mulig"

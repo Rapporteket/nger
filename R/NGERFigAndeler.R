@@ -51,7 +51,8 @@ NGERFigAndeler  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil=S
   if (!(valgtVar %in% c('Diagnoser', 'DiagnoseGr', 'Prosedyrer', 'ProsedyreGr','ProsViktigLap', 'ProsViktigHys'))) {
     NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, OpMetode = OpMetode, figurtype='andeler')
     RegData <- NGERVarSpes$RegData
-}
+  }
+  # valgtVar <- 'LapEkstrautstyr' #'Opf0hvor'
   ###Gjør utvalg (NGERUtvalg)
   ###Kjører denne etter variabeldefinisjon for at utvalgTxt skal bli riktig
   #if (enhetsUtvalg=0) {reshID <- 0}

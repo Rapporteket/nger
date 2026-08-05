@@ -12,11 +12,6 @@ mappingEgneNavn <- function(tabell, tabType) {
                           query = "SELECT FIELD_NAME, REGISTRATION_TYPE, USER_SUGGESTION #, USER_DATE
                            FROM friendly_vars")
 
-  # indRydd <- which(friendlyVarTab$USER_SUGGESTION %in% c('VERBOTEN', 'NEINNICHTS'))
-  # if (length(indRydd)>0) {
-  #   friendlyVarTab <- friendlyVarTab[-indRydd, ]}
-  # print(tabType)
-  #friendlyVarTabType <- friendlyVarTab
   indTabType <- which(friendlyVarTab$REGISTRATION_TYPE %in% tabType)
   if (!length(indTabType)==0) {
     friendlyVarTabType <- friendlyVarTab[indTabType,]
@@ -204,6 +199,10 @@ if (medPROM == 1) {
                                  qVar = '*',
                                  egneVarNavn = 1)
 
+    PREMskjema <- hentDataTabell(tabellnavn = "prem",
+                                 qVar = '*',
+                                 egneVarNavn = 1)
+
         # SAMMENSTILL SKJEMA:
     RegData <- RegData |>
       merge(Oppf0Skjema,
@@ -214,7 +213,9 @@ if (medPROM == 1) {
           by.x = "MCEID", by.y = 'ForlopsID', all.x = TRUE,
           suffixes = c("", "_rand"))  |>
       merge(TSS2Skjema,
-            by = "MCEID", all.x = TRUE, suffixes = c("", "_tss2"))
+            by = "MCEID", all.x = TRUE, suffixes = c("", "_tss2")) |>
+      merge(PREMskjema,
+            by = "MCEID", all.x = TRUE, suffixes = c("", "_prem"))
 }
   }
 

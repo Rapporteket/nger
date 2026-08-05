@@ -22,12 +22,37 @@ shiny::shinyApp(
   server = nger::server_ngerOK)
 
 source("dev/sysSetenv.R")
-RegDataRaa <- nger::NGERRegDataSQL(datoFra = '2025-01-01', datoTil = '2025-12-31' ,medPROM = 0)
+RegDataRaa <- nger::NGERRegDataSQL(datoFra = '2026-01-01', datoTil = '2026-12-31' ,medPROM = 1)
 RegData <- NGERPreprosess(RegData = RegDataRaa)
 
-Utv <- NGERUtvalgEnh(RegData = RegData, OpMetode = 11)
-Utv$utvalgTxt
-dim(Utv$RegData)
+NGERFigAndeler(RegData = RegData, valgtVar='Opf0hvor')
+
+AndelerShus <-
+  NGERFigAndelerGrVar(RegData=RegData, preprosess = 0, valgtVar='PREMSnakke')
+tabAndelerShus <- cbind(Antall=AndelerShus$Ngr,
+                        Andeler = AndelerShus$AggVerdier$Hoved)
+
+#output$andelerGrVarTab <- function() {
+  antKol <- ncol(tabAndelerShus)
+  kableExtra::kable(tabAndelerShus, format = 'html'
+                    #, full_width=T
+                    , digits = c(0,1) #,0,1)[1:antKol]
+  ) %>%
+    kableExtra::column_spec(column = 1, width_min = '5em') %>%
+    kableExtra::column_spec(column = 2:(antKol+1), width = '4em') %>%
+    kableExtra::row_spec(0, bold = T)
+
+sf <- NGERVarTilrettelegg(RegData = RegData, valgtVar = 'PREMSnakke', figurtype = 'andelGrVar')
+sf$grtxt
+table(sf$RegData$Variabel, useNA = 'a')
+NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar='PREMSnakke',
+                                   #OpMetode=OpMetode,
+                                   figurtype='andelTid')
+NGERVarSpes$varTxt
+fig <- NGERFigAndelTid(RegData = RegData, valgtVar = 'PREMSnakke', tidsenhet = 'Mnd')
+plot(fig)
+
+
 
 table(RegDataRaa$LapRobotKirurgi, useNA = 'a')
 table(RegData$LapRobotKirurgi, useNA = 'a')
