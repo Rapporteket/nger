@@ -4,7 +4,7 @@
 #' for hvert sykehus og kan ta inn ulike numeriske variable.
 #' Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus
 #'
-#' @inheritParams NGERFigAndeler
+#' @inheritParams NGERFigFordeling
 #' @inheritParams NGERFigAndelerGrVar
 #' @inheritParams NGERUtvalgEnh
 #' @param valgtMaal 'med' = median. Alt annet gir gjennomsnitt

@@ -203,7 +203,7 @@ tapply(RegDatatest$RY1Spm4c, RegDatatest$Aar, FUN = function(x){sum(!is.na(x))})
 #------------------------------ Andeler flere var (tilsvarer Fordelinger)--------------------------
 library(nger)
 RegData <- NGERPreprosess(NGERRegDataSQL()) #datoFra = '2020-01-01')
-NGERFigAndeler(RegData=RegData, preprosess = 0, valgtVar = 'LapSkadeaarsakIntra', Ngrense=0, enhetsUtvalg = 0) #datoFra = '2020-01-01',
+NGERFigFordeling(RegData=RegData, preprosess = 0, valgtVar = 'LapSkadeaarsakIntra', Ngrense=0, enhetsUtvalg = 0) #datoFra = '2020-01-01',
 valgtVar <- 'LapSkadeIntra'	#Må velge... Alder,... Diagnoser, Prosedyrer, , Opf0metode, OpTid, Tss2Sumskaar
 
 outfile <- '' #paste0(valgtVar, '_ford.png')
@@ -212,7 +212,7 @@ test <- RegData[,c("OpAnestesiIngen")]
 #,   "OpAnestesiLok" ,    "OpAnestesiGen"  ,   "OpAnestesiSpinEDA", "OpAnestesiSed"
 
 
-UtDataFraFig <- NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
+UtDataFraFig <- NGERFigFordeling(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
 	reshID=reshID, enhetsUtvalg=enhetsUtvalg, OpMetode = OpMetode, outfile=outfile, preprosess = preprosess,
   minald=minald, maxald=maxald, AlvorlighetKompl=AlvorlighetKompl, Hastegrad=Hastegrad, velgDiag = velgDiag,
 	velgAvd = velgAvd)
@@ -233,7 +233,7 @@ variable <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreE
               'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')
 for (valgtVar in variable) {
 	outfile <- paste0(valgtVar, '_ford.png')
-	NGERFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
+	NGERFigFordeling(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, datoTil=datoTil,
 		reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile,preprosess = 1)
 }
 

@@ -5,7 +5,7 @@
 #'
 #' Detajer: Her bør man liste opp hvilke variable funksjonen benytter...
 #'
-#' @inheritParams NGERFigAndeler
+#' @inheritParams NGERFigFordeling
 #'
 #' @return Søylediagram som viser antall registreringer per måned for valgte 12 måneder
 #'
