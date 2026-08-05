@@ -1185,7 +1185,7 @@ server_nger <- function(input, output, session) {
 
   observe({ #Fordeling
     output$fordelinger <- renderPlot({
-      NGERFigAndeler(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
+      NGERFigFordeling(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
                      datoFra=input$datovalg[1], datoTil=input$datovalg[2],
                      reshID = user$org(),
                      minald=as.numeric(input$alder[1]),
@@ -1205,7 +1205,7 @@ server_nger <- function(input, output, session) {
         paste0('FigFord_', input$valgtVar, Sys.time(), '.', input$bildeformatFord)
       },
       content = function(file){
-        NGERFigAndeler(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
+        NGERFigFordeling(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
                        datoFra=input$datovalg[1], datoTil=input$datovalg[2],
                        reshID = user$org(),
                        minald=as.numeric(input$alder[1]),
@@ -1223,7 +1223,7 @@ server_nger <- function(input, output, session) {
 
     #RegData må hentes ut fra valgtVar
     UtDataFord <-
-      NGERFigAndeler(RegData=RegData, preprosess = 0, valgtVar=input$valgtVar,
+      NGERFigFordeling(RegData=RegData, preprosess = 0, valgtVar=input$valgtVar,
                      datoFra=input$datovalg[1], datoTil=input$datovalg[2],
                      reshID = user$org(),
                      minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),

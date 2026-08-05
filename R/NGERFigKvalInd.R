@@ -10,7 +10,7 @@
 #'     \item kvalInd: Samling av kvalitetsindikatorer
 #'    }
 #'
-#' @inheritParams NGERFigAndeler
+#' @inheritParams NGERFigFordeling
 #' @inheritParams NGERFigAndelerGrVar
 #' @inheritParams NGERUtvalgEnh
 #'

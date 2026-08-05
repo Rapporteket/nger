@@ -7,7 +7,7 @@
 #' @param RegData data
 #' @param personIDvar Variabelen som angir pasientidentifikasjon
 #' @param datoTil sluttdato. Brukes i tabellene AntOpph per 12 mnd og Belegg
-# @inheritParams NGERFigAndeler
+# @inheritParams NGERFigFordeling
 #' @return Div tabeller
 #' @export
 tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0,

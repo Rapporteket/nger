@@ -84,7 +84,7 @@ hentDataTabell <- function(tabellnavn = "operation",
 
 #' Henter NGER-data
 #'
-#' @inheritParams NGERFigAndeler
+#' @inheritParams NGERFigFordeling
 #' @param medPROM: koble på RAND og TSS2-variabler
 #' @param alleData 1- alle variabler med, 0 - utvalgte variabler med
 #'

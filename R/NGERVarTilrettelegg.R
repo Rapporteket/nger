@@ -6,7 +6,7 @@
 #' andre variable. Det er også her man angir aksetekster og titler for den valgte variabelen.
 #' Her kan mye hentes til analysebok
 #'
-#' @inheritParams NGERFigAndeler
+#' @inheritParams NGERFigFordeling
 #' @inheritParams NGERUtvalgEnh
 #' @param figurtype Hvilken figurtype det skal tilrettelegges variable for:
 #'                'andeler', 'andelGrVar', 'andelTid', 'gjsnGrVar', 'gjsnTid'
@@ -213,7 +213,7 @@ table(RegData$Opf6mInnlagt)
 
   #-----------------------------------------------------------------------
 
-  if (valgtVar=='Alder') {	#Andeler, , #andelGrVar, GjsnGrVar, GjsnTid
+  if (valgtVar=='Alder') {	#Fordeling, , #andelGrVar, GjsnGrVar, GjsnTid
     RegData <- RegData[which(RegData$Alder>=0), ]    #Tar bort alder<0
     xAkseTxt <- 'alder (år)'
     tittel <- switch(figurtype,
@@ -244,7 +244,7 @@ table(RegData$Opf6mInnlagt)
   #   tittel <- 'Blodfortynnende medisin før operasjon'
   # }
 
-  if (valgtVar=='HysGjforingsGrad') {   #Andeler
+  if (valgtVar=='HysGjforingsGrad') {   #Fordeling
     #Gjennomføringsgrad av hysteroskopi
     #Kode •	1-Fullstendig, 2-Ufullstendig, 3-Mislykket
     RegData <- RegData[which(RegData$OpMetode %in% 2:3), ] #== 2
@@ -254,7 +254,7 @@ table(RegData$Opf6mInnlagt)
     RegData <- RegData[which(RegData$HysGjforingsGrad %in% koder), ]
     RegData$VariabelGr <- factor(RegData$HysGjforingsGrad, levels=koder, labels = grtxt) #levels=c(nivaa,9)
   }
-  if (valgtVar == 'HysUfullAarsak') {   #Andeler, andelGrVar, andelTid
+  if (valgtVar == 'HysUfullAarsak') {   #Fordeling, andelGrVar, andelTid
     RegData <- RegData[which(RegData$OpMetode %in% 2:3), ]
     RegData <- RegData[which(RegData$HysGjforingsGrad ==2), ]
     variable <- c('HysUfullSmerte', 'HysUfullMisGass', 'HysUfullKompl', 'HysUfullHoyVaeske')
@@ -314,7 +314,7 @@ table(RegData$Opf6mInnlagt)
         tittel <- 'Postoperativ komplikasjon, alle grader'
       }
     }
-  if (valgtVar=='KomplPostopAlvor') {   #Andeler, andelGrVar #Endret fra Opf0AlvorlighetsGrad
+  if (valgtVar=='KomplPostopAlvor') {   #Fordeling, andelGrVar #Endret fra Opf0AlvorlighetsGrad
     #Postoperative komplikasjoner
     #Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
     RegData <- RegData[which(RegData$Opf0Komplikasjoner %in% 0:1), ]
@@ -385,7 +385,7 @@ table(RegData$Opf6mInnlagt)
     '
   }
 
-  if (valgtVar == 'LapNumHjelpeinnstikk') {   #Andeler
+  if (valgtVar == 'LapNumHjelpeinnstikk') {   #Fordeling
     # Velge antall fra 0 til 6
     #IKKE gjort noen utvalg. (StatusLap==1?, LapHjelpeinnstikk==1?)
     tittel <- 'Antall hjelpeinnstikk, laparoskopi'
@@ -393,7 +393,7 @@ table(RegData$Opf6mInnlagt)
     RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = grtxt)
   }
 
-  if (valgtVar == 'Norsktalende') {   #Andeler
+  if (valgtVar == 'Norsktalende') {   #Fordeling
     # 0:Nei, 1:Ja, 2:Delvis, 9:Ukjent
     tittel <- 'Pasient forstår og gjør seg forstått på norsk'
     grtxt <- c('Nei', 'Ja', 'Delvis', 'Ukjent')
@@ -401,7 +401,7 @@ table(RegData$Opf6mInnlagt)
     RegData <- RegData[which(RegData$Norsktalende %in% koder), ]
     RegData$VariabelGr <- factor(RegData$Norsktalende, levels=koder, labels = grtxt) #levels=c(nivaa,9)
   }
- if (valgtVar == 'OpAnestesi') {   #Andeler, andelGrVar, andelTid
+ if (valgtVar == 'OpAnestesi') {   #Fordeling, andelGrVar, andelTid
     # 1-Ingen, 2-Lokal, 3-Generell, 4-Spinal, 5-Annet
     # Nov23: Endret til avkrysningsbokser:
     variable <- c('OpAnestesiIngen', 'OpAnestesiLok', 'OpAnestesiGen', 'OpAnestesiSpinEDA', 'OpAnestesiSed')
@@ -427,7 +427,7 @@ table(RegData$Opf6mInnlagt)
     tittel <- 'Andel som får antibiotikaprofylakse'
   }
 
-  if (valgtVar == 'OpASA') {   #Andeler, andelGrVar, andelTid
+  if (valgtVar == 'OpASA') {   #Fordeling, andelGrVar, andelTid
     koder <- 1:5
     grtxt <- c('I:Ingen','II:Moderat', 'III:Alvorlig', 'IV:Livstruende', 'V:Døende')
     subtxt <- 'Sykdomsgrad'
@@ -442,8 +442,8 @@ table(RegData$Opf6mInnlagt)
     RegData$Variabel[which(RegData[ ,valgtVar] > 2)] <- 1
   }
 
-  if (valgtVar == 'OpBehNivaa') {   #Andeler, AndelGrVar, AndelTid
-#  if (valgtVar == 'OpDagkirurgi') {   #Andeler, AndelGrVar, AndelTid #0: Nei, 1: Ja Manglende:Ukjent
+  if (valgtVar == 'OpBehNivaa') {   #Fordeling, AndelGrVar, AndelTid
+#  if (valgtVar == 'OpDagkirurgi') {   #Fordeling, AndelGrVar, AndelTid #0: Nei, 1: Ja Manglende:Ukjent
    #1-Poliklinisk, 2-Dagkirurgi, 3-Inneliggende
     tittel <-  'Behandlingsnivå' # 'Dagkirurgiske Inngrep'
     if (figurtype %in% c('andelGrVar','andelTid')) {tittel <- 'Dagkirurgiske Inngrep'}
@@ -456,7 +456,7 @@ table(RegData$Opf6mInnlagt)
   }
 
   if (valgtVar == 'Poliklin') {  #AndelGrVar, AndelTid
-    #  if (valgtVar == 'OpDagkirurgi') {   #Andeler, AndelGrVar, AndelTid #0: Nei, 1: Ja Manglende:Ukjent
+    #  if (valgtVar == 'OpDagkirurgi') {   #Fordeling, AndelGrVar, AndelTid #0: Nei, 1: Ja Manglende:Ukjent
     #1-Poliklinisk, 2-Dagkirurgi, 3-Inneliggende
     tittel <-  'Poliklinisk'
     RegData <- RegData[which(RegData$OpBehNivaa %in% 1:3), ]
@@ -464,7 +464,7 @@ table(RegData$Opf6mInnlagt)
     RegData$Variabel[RegData$OpBehNivaa ==1] <- 1
   }
 
-  if (valgtVar == 'OpIVaktTid') {   #Andeler
+  if (valgtVar == 'OpIVaktTid') {   #Fordeling
     #0: Nei, 1: Ja Manglende:Ukjent
     tittel <- 'Operasjon i vakttid'
     grtxt <- c('Nei', 'Ja')
@@ -472,7 +472,7 @@ table(RegData$Opf6mInnlagt)
     RegData <- RegData[which(RegData[ ,valgtVar] %in% koder), ]
     RegData$VariabelGr <- factor(RegData$OpIVaktTid, levels=koder, labels = grtxt) #levels=c(nivaa,9)
   }
-  if (valgtVar == 'OpKategori') {   #Andeler
+  if (valgtVar == 'OpKategori') {   #Fordeling
     RegData$Variabel <- 99
     # 1:Elektiv, 2:Akutt, 3:Øyeblikkelig hjelp
     tittel <- 'Operasjonskategori'
@@ -482,7 +482,7 @@ table(RegData$Opf6mInnlagt)
     RegData$Variabel[indVar] <- RegData[indVar, valgtVar]
     RegData$VariabelGr <- factor(RegData$Variabel, levels=koder, labels = grtxt) #levels=c(nivaa,9)
   }
-  if (valgtVar == 'OpMetode') {   #Andeler
+  if (valgtVar == 'OpMetode') {   #Fordeling
     #1:Laparoskopi, 2:Hysteroskopi, 3:Begge
     tittel <- 'Operasjonsmetode'
     koder <- 1:3
@@ -491,7 +491,7 @@ table(RegData$Opf6mInnlagt)
     RegData <- RegData[RegData$OpMetode %in% koder, ]
     RegData$VariabelGr <- factor(RegData$OpMetode, levels=koder, labels = grtxt) #levels=c(nivaa,9)
   }
-  if (valgtVar %in% c('OpTidlVagInngrep', 'OpTidlLapsko', 'OpTidlLaparotomi')) {   #Andeler
+  if (valgtVar %in% c('OpTidlVagInngrep', 'OpTidlLapsko', 'OpTidlLaparotomi')) {   #Fordeling
     # 0: Nei, 1: Ja, 9: Vet ikke
     RegData$Variabel <- 99
     tittel <- sprintf('Tidligere %s', switch(as.character(valgtVar),
@@ -505,7 +505,7 @@ table(RegData$Opf6mInnlagt)
     RegData$VariabelGr <- factor(RegData$Variabel, levels=c(koder,99), labels = grtxt) #levels=c(nivaa,9)
   }
 
-  if (valgtVar == 'OpType') {   #Andeler
+  if (valgtVar == 'OpType') {   #Fordeling
     # 1:Primærinngrep, 2:Reoperasjon
     RegData$Variabel <- 99
     tittel <- 'Operasjonstype'
@@ -517,7 +517,7 @@ table(RegData$Opf6mInnlagt)
     RegData$VariabelGr <- factor(RegData$Variabel, levels=koder, labels = grtxt) #levels=c(nivaa,9)
   }
 
-  if (valgtVar == 'SivilStatus') {   #Andeler
+  if (valgtVar == 'SivilStatus') {   #Fordeling
     #    # 1:Enslig, 2:Særboer, 3:Samboer, 4:Gift, 5:Skilt, 6:Enke, 9:Ukjent
     tittel <- 'Sivilstatus'
     grtxt <- c('Enslig', 'Særboer', 'Samboer', 'Gift', 'Skilt', 'Enke', 'Ukjent')
@@ -529,7 +529,7 @@ table(RegData$Opf6mInnlagt)
 
   ### Numeriske variable:
 
-  if (valgtVar == 'OpBMI') {   #Andeler, #andelGrVar, andelTid
+  if (valgtVar == 'OpBMI') {   #Fordeling, #andelGrVar, andelTid
     tittel <- 'BMI-kategorier' #, Slå sammen undervekt, fedme 2 og 3.
     gr <- c(-1, 0, 18.5, 25, 30, 35, 1000)
     ind <- which(RegData$OpBMI>0)
@@ -552,7 +552,7 @@ table(RegData$Opf6mInnlagt)
     RegData$Variabel <- RegData$OpBMI}
   }
 
-  if (valgtVar == 'Opf0metode') {   #Andeler, andelGrVar - fjernet
+  if (valgtVar == 'Opf0metode') {   #Fordeling, andelGrVar - fjernet
     # Oppfølging 1:Post, 2:telefon, 3:ePROM, 4:ikke mulig
     tittel <- 'Oppfølgingsmetode for PROM-skjema'
     gr <- c(1,2,3,9)
@@ -585,7 +585,7 @@ table(RegData$Opf6mInnlagt)
   # KAN SAMMENLIGNE MED RESULTAT OFR SVAR PÅ FØRSTE SPØRSMÅL I OPPF. SKJEMA
   #Lag figur for ett års oppfølging
 
-  if (valgtVar == 'OpTid') {   #Andeler, andelTid, andelGrVar, gjsnGrVar,
+  if (valgtVar == 'OpTid') {   #Fordeling, andelTid, andelGrVar, gjsnGrVar,
     #0-20, 21-40, 41-60, 61-80, 81-100, 101-120, 121-140, 141-160, 161-180, 181-200, 201-220, 221-240, > 240
     tittel <- 'Operasjonstid'
     gr <- c(seq(0, 180, 20), 1000) #c(seq(0, 180, 30), 1000) #
@@ -607,7 +607,7 @@ table(RegData$Opf6mInnlagt)
       tittel <- 'Operasjonstid over 60 minutter'
     }
   }
-  if (valgtVar == 'RegForsinkelse') {  #Andeler, GjsnGrVar
+  if (valgtVar == 'RegForsinkelse') {  #Fordeling, GjsnGrVar
     #Leveringsdato vil oppdateres ved reåpning og kan derfor ikke brukes. mars19: Toril mener den er pålitelig nok.
     #17.nov-23: Endrer til OpForstLukket som navnes om til OpFerdigstilt
     RegData$Diff <- as.numeric(as.Date(RegData$OpFerdigstilt) - as.Date(RegData$OpDato)) #difftime(RegData$OpDato, RegData$Leveringsdato) #
@@ -629,7 +629,7 @@ table(RegData$Opf6mInnlagt)
     cexgr <- 0.9
   }
 
-  if (valgtVar == 'R0ScorePhys') {  #Andeler, #GjsnGrVar, GjsnTid
+  if (valgtVar == 'R0ScorePhys') {  #Fordeling, #GjsnGrVar, GjsnTid
     #Verdier: 0:5:100
     RegData$Variabel <- RegData$R0ScorePhys
     RegData <- RegData[which(RegData$R0ScorePhys > -1), ]
@@ -640,7 +640,7 @@ table(RegData$Opf6mInnlagt)
     RegData$VariabelGr <- cut(RegData$R0ScorePhys, breaks = gr, include.lowest = TRUE, right = TRUE)
     grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-1)])
   }
-  if (valgtVar == 'R0ScoreRoleLmtPhy') { #Andeler, #GjsnGrVar
+  if (valgtVar == 'R0ScoreRoleLmtPhy') { #Fordeling, #GjsnGrVar
     #Verdier: 0:25:100
     RegData$Variabel <- RegData[ ,valgtVar]
     RegData <- RegData[which(RegData$Variabel > -1), ]
@@ -651,7 +651,7 @@ table(RegData$Opf6mInnlagt)
     subtxt <- 'sumskår (høyest er best)'
     RegData$VariabelGr <- factor(RegData$Variabel, levels=grtxt) #cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
   }
-  if (valgtVar == 'R0ScoreRoleLmtEmo') {  #Andeler, #GjsnGrVar
+  if (valgtVar == 'R0ScoreRoleLmtEmo') {  #Fordeling, #GjsnGrVar
     #Verdier: 0:33.3:100
     RegData <- RegData[which(RegData[,valgtVar] > -1), ]
     RegData$Variabel <- RegData[ ,valgtVar]
@@ -675,7 +675,7 @@ table(RegData$Opf6mInnlagt)
     grtxt <- levels(RegData$VariabelGr)
     subtxt <- 'sumskår (høyest er best)'
   }
-  if (valgtVar == 'R0ScoreEmo') { #Andeler#Gjsn
+  if (valgtVar == 'R0ScoreEmo') { #Fordeling#Gjsn
     #Verdier: 0:4:100
     RegData <- RegData[which(RegData[,valgtVar] > -1), ]
     RegData$Variabel <- RegData[ ,valgtVar]
@@ -686,7 +686,7 @@ table(RegData$Opf6mInnlagt)
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
     grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-1)])
   }
-  if (valgtVar == 'R0ScoreSosial') { #Andeler#Gjsn
+  if (valgtVar == 'R0ScoreSosial') { #Fordeling#Gjsn
     #Verdier: 0:12.5:100
     RegData <- RegData[which(RegData[,valgtVar] > -1), ]
     RegData$Variabel <- RegData[ ,valgtVar]
@@ -699,7 +699,7 @@ table(RegData$Opf6mInnlagt)
     grtxt <- levels(RegData$VariabelGr)
     #grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-1)])
   }
-  if (valgtVar == 'R0ScorePain') { #Andeler#GjsnGrVar
+  if (valgtVar == 'R0ScorePain') { #Fordeling#GjsnGrVar
     #Verdier: 0:2.5?:100
     RegData <- RegData[which(RegData[,valgtVar] > -1), ]
     RegData$Variabel <- RegData[ ,valgtVar]
@@ -711,7 +711,7 @@ table(RegData$Opf6mInnlagt)
     RegData$VariabelGr <- cut(RegData[ ,valgtVar], breaks = gr, include.lowest = TRUE, right = TRUE)
     grtxt <- levels(RegData$VariabelGr)
   }
-  if (valgtVar %in% c('R0ScoreGeneral','R1ScoreGeneral', 'R3ScoreGeneral')) { #Andeler, #GjsnGrVar
+  if (valgtVar %in% c('R0ScoreGeneral','R1ScoreGeneral', 'R3ScoreGeneral')) { #Fordeling, #GjsnGrVar
     #Verdier: 0:5:100
     RegData$Variabel <- RegData[ ,valgtVar]
     tittel <- paste0('Generell helsetilstand ',
@@ -729,7 +729,7 @@ table(RegData$Opf6mInnlagt)
   }
 
   #Tss2Type  FOLLOWUP_TYPE	Oppfølgingsmetode	["Oppfølging pr post/brev","Oppfølging pr telefonintervju", e-prom, "Oppfølging ikke mulig"]
-  if (valgtVar == 'Tss2Mott') {   #Andeler, andelGrVar, andelTid
+  if (valgtVar == 'Tss2Mott') {   #Fordeling, andelGrVar, andelTid
     #Spm.1, Sverige
     #0:Mindre godt, 1:Ingen mening, 2:Ganske godt, 3:Svært godt
     tittel <- switch(figurtype,
@@ -749,7 +749,7 @@ table(RegData$Opf6mInnlagt)
         RegData$Variabel <- RegData$Tss2Mott}
   }
 
-  if (valgtVar == 'Tss2Behandling') {   #Andeler#andelGrVar
+  if (valgtVar == 'Tss2Behandling') {   #Fordeling#andelGrVar
     #Spm.2, Sverige
     #0:Passet ikke, 1:Verken eller, 2:Ganske bra, 3:Svært bra
     tittel <- switch(figurtype,
@@ -769,7 +769,7 @@ table(RegData$Opf6mInnlagt)
       RegData$Variabel <- RegData$Tss2Behandling}
   }
 
-  if (valgtVar == 'Tss2Lytte') {   #Andeler, #andelGrVar
+  if (valgtVar == 'Tss2Lytte') {   #Fordeling, #andelGrVar
     #Spm.3, Sverige
     #0:Nei, 1:Ja, til en viss grad, 2:Ja, i ganske stor grad, 3:Ja, i svært stor grad
     tittel <- switch(figurtype,
@@ -788,7 +788,7 @@ table(RegData$Opf6mInnlagt)
     if (figurtype == 'gjsnGrVar') {
       RegData$Variabel <- RegData$Tss2Lytte}
   }
-  if (valgtVar == 'Tss2Behandlere') {   #Andeler, andelGrVar
+  if (valgtVar == 'Tss2Behandlere') {   #Fordeling, andelGrVar
     #Spm.4, Sverige
     #0:Nei, 1:Ja, til en viss grad, 2:Ja, i ganske stor grad, 3:Ja, i svært stor grad
     tittel <- switch(figurtype,
@@ -807,7 +807,7 @@ table(RegData$Opf6mInnlagt)
       if (figurtype == 'gjsnGrVar') {
         RegData$Variabel <- RegData$Tss2Behandlere}
   }
-if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
+if (valgtVar == 'Tss2Enighet') {   #Fordeling, #andelGrVar
   #Spm.5, Sverige
   #0:Nei, 1:Ja, til en viss grad, 2:Ja, i ganske stor grad, 3:Ja, i svært stor grad
     tittel <- switch(figurtype,
@@ -827,7 +827,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
       RegData$Variabel <- RegData$Tss2Enighet}
 }
 
-  if (valgtVar == 'Tss2Generelt') {   #Andeler, andelGrVar
+  if (valgtVar == 'Tss2Generelt') {   #Fordeling, andelGrVar
     #Spm.6, Sverige
     #0:Svært negativ, 1:Negativ, 2:Nøytral, 3:Positiv, 4:Svært positiv
     tittel <- switch(figurtype,
@@ -850,7 +850,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
       RegData$Variabel <- RegData$Tss2Generelt-1}
   }
 
-  if (valgtVar == 'Tss2Sumskaar') {   #Andeler, #gjsn
+  if (valgtVar == 'Tss2Sumskaar') {   #Fordeling, #gjsn
     #Stort sett: 0:Nei, 1:Ja, til en viss grad, 2:Ja, i ganske stor grad, 3:Ja, i svært stor grad
     #Alle variable må besvares for å kunne ferdigstille skjema.
     RegData <- RegData[which(RegData$Tss2Type %in% 1:3), ] #3:eprom fra 2021
@@ -866,7 +866,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     tittel <- 'TSS2, gjennomsnittlig sumskår'
   }
 
-  if (valgtVar == 'Utdanning') {   #Andeler
+  if (valgtVar == 'Utdanning') {   #Fordeling
     # 1:Grunnskole, 2:VG, 3:Fagskole, 4:Universitet<4 år, 5:Universitet>4 år, 6:Ukjent
     #PasientSkjema. Andel med Utdanning 4 el 5
 
@@ -1321,7 +1321,7 @@ if (valgtVar=='Opf0hvor') {
   xAkseTxt <- 'Andel operasjoner (%)'
 }
 
-if (valgtVar == 'Opf0KomplInfeksjon') {   #Andeler, andelGrVar, andelTid
+if (valgtVar == 'Opf0KomplInfeksjon') {   #Fordeling, andelGrVar, andelTid
     retn <- 'H'
     flerevar <- 1
     #Opf0metode in 1:2 #9 angir "ikke mulig"
@@ -1337,7 +1337,7 @@ if (valgtVar == 'Opf0KomplInfeksjon') {   #Andeler, andelGrVar, andelTid
     RegData$Variabel[which(RegData$Opf0KomplInfeksjon == 1)] <- 1
   }
 
-  if (valgtVar == 'Opf0KomplAlvorInfeksjon') {   #Andeler, andelGrVar, andelTid
+  if (valgtVar == 'Opf0KomplAlvorInfeksjon') {   #Fordeling, andelGrVar, andelTid
     retn <- 'H'
     flerevar <- 1
     #Opf0metode in 1:2 #9 angir "ikke mulig"
