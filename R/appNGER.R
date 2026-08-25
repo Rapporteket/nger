@@ -517,12 +517,12 @@ ui_nger <- function() {
                              'Behandl, dagkir' = 'OpBehNivaa',
                              'Behandl, poliklinisk' = 'Poliklin',
                              'Fedme (BMI>30)' = 'OpBMI',
-                             'Komplikasjoner under operasjon' = 'KomplIntra',
+                             # 'Komplikasjoner under operasjon' = 'KomplIntra',
                              'Konvertert til laparotomi' = 'LapKonvertert',
                              'Konvertert til laparotomi, ikke forventet' = 'LapKonvertertUventet',
-                             'Kval.ind: Intraop. komplikasjoner [velg lap/hys]' = 'KomplIntra',
-                             'Kval.ind: Postop. komplikasjon: moderate/alvorlige (grad 2-4), [velg lap/hys]' = 'KomplPostopAlvor',
-                             "Kval.ind: Fikk du tilfredsstillende hjelp og behandling på avd.?" = 'PREMTilfreds',
+                             'Kval.ind: Intraop. komplikasjoner (velg lap/hys)' = 'KomplIntra',
+                             'Kval.ind: Postop. komplikasjon, grad 2-4, (velg lap/hys)' = 'KomplPostopAlvor', #: moderate/alvorlige
+                             'Kval.ind: Fikk du tilfredsstillende hjelp og behandling på avd.?' = 'PREMTilfreds',
                              # 'Lokalbedøvelse' = 'OpAnestesi', fjernet nov23
                              'Operasjonstid (minutter)' = 'OpTid',
                              'Oppf. 6 mnd.: Vaginalruptur' = 'Opf6mVagRupt',
