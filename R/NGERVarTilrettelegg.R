@@ -96,10 +96,15 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
                  'Ikke aktuelt')}
     RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = c(0:4, 9), labels = grtxt)
 
+    if (valgtVar == 'PREMTilfreds'){
+      KvalIndGrenser <- c(0, 80, 90, 100)
+      bestKvalInd <- 'hoy'
+    }
+
   }
 
 
-#------------------- 6-månederskontroll',
+#------------------- 6-månederskontroll --------------
   # Har du etter din operasjon vært behandlet i spesialisthelsetjenesten/ på sykehus for komplikasjon?
   #   Opf6mKomplikasjoner
   # Fig. Tilsv. Postoperative komplikasjoner (opf0) Både fordelingsfigur og andelsfig
@@ -1376,8 +1381,10 @@ if (valgtVar == 'Opf0KomplInfeksjon') {   #Fordeling, andelGrVar, andelTid
 
 
   UtData <- list(RegData=RegData, grtxt=grtxt, cexgr=cexgr, varTxt=varTxt, xAkseTxt=xAkseTxt,
-                 subtxt=subtxt, KvalIndGrenser=KvalIndGrenser, KImaal=KImaal, retn=retn,
-                 tittel=tittel, flerevar=flerevar, variable=variable, sortAvtagende=sortAvtagende)
+                 tittel=tittel, subtxt=subtxt, retn=retn,
+                 KvalIndGrenser=KvalIndGrenser, # bestKvalInd = bestKvalInd,
+                 KImaal=KImaal, sortAvtagende=sortAvtagende,
+                 flerevar=flerevar, variable=variable)
   #RegData inneholder nå variablene 'Variabel' og 'VariabelGr'
   return(invisible(UtData))
 

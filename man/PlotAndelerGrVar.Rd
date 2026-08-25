@@ -7,6 +7,10 @@
 PlotAndelerGrVar(
   RegData,
   AggVerdier,
+  Ngr,
+  N,
+  GrNavnSort,
+  andeltxt,
   grVar = "ShNavn",
   hovedgrTxt = "",
   KvalIndGrenser = NA,
@@ -17,7 +21,7 @@ PlotAndelerGrVar(
   subtitleSize = 15,
   legendSize = 12,
   axisTextSize = 10,
-  bestKvalInd = "lav",
+  sortAvtagende = TRUE,
   nTicks = 5,
   fargepalett = "BlaaOff",
   outfile = ""
@@ -46,13 +50,14 @@ PlotAndelerGrVar(
 
 \item{axisTextSize}{axisTextSize}
 
-\item{bestKvalInd}{bestKvalInd}
-
 \item{nTicks}{nTicks}
 
 \item{fargepalett}{fargepalett}
 
 \item{outfile}{filtype ut}
+}
+\value{
+Figur
 }
 \description{
 Andel per enhet (eller annen grupperingsvariabel)

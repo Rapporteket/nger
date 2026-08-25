@@ -204,8 +204,8 @@ ui_nger <- function() {
     ), #tab Registreringsoversikter
 
 
-    #-----Kvalitetsindikatorer------------
-    tabPanel(p("Prosessindikatorer, TSS og RAND", title = 'Prosessindikatorer, RAND36'),
+    #-----Resultatind, TSS og RAND ------------
+    tabPanel(p("Resultatindikatorer, TSS og RAND", title = 'Resultatindikatorer, RAND36'),
              h3('Registerets kvalitetsindikatorer og RAND', align='center'),
              sidebarPanel(width=3,
                           h3('Utvalg'),
@@ -213,7 +213,7 @@ ui_nger <- function() {
                           conditionalPanel(condition = "input.kvalIndark == 'Figur' || input.kvalIndark == 'Tabell' ",
                                            selectInput(
                                              inputId = "valgtVarKval", label="Velg variabel",
-                                             choices = c('Prosessindikatorer' = 'kvalInd',
+                                             choices = c('Resultatindikatorer' = 'kvalInd',
                                                       #   "PREM: Fikk du tilfredsstillende hjelp og beh. på avd.?" = 'PREMTilfreds'
                                                          'TSS2, oppfølging' = 'TSS0'
                                                          ,'RAND36, v/operasjon' = 'RAND0',
@@ -411,10 +411,10 @@ ui_nger <- function() {
                        "PREM: Synes du dine behandlere forstod det du tok opp?" = 'PREMForsto',
                        "PREM: Var du involvert i avgjørelser som angikk din behandling?" = 'PREMInvolvert',
                        "PREM: Var avdelingens arbeid godt organisert?" = 'PREMOrg',
-                       "PREM: Fikk du tilfredsstillende hjelp og behandling på avd.?" = 'PREMTilfreds',
+                       "PREM: Fikk du tilfredsstillende hjelp og behandling på avd.? (kval.ind)" = 'PREMTilfreds',
                        "PREM: Måtte du vente for å få tilbud ved gynekologisk avdeling?" = 'PREMVente',
                        "PREM: Mener du at du på noen måte ble feilbehandlet?" = 'PREMFeil',
-                       "PREM: Utbytte av behandlingen på gynekologisk avdeling = 'PREMUtbytte",
+                       "PREM: Utbytte av behandlingen på gynekologisk avdeling" = 'PREMUtbytte',
                       'Primæroperasjon eller reoperasjon' = 'OpType',
                       'Prosedyrer, hyppigste' = 'Prosedyrer',
                       'Prosegrupper, hyppigste' = 'ProsedyreGr',
@@ -541,7 +541,7 @@ ui_nger <- function() {
                              "PREM: Fikk du tilfredsstillende hjelp og behandling på avd.?" = 'PREMTilfreds',
                              "PREM: Måtte du vente for å få tilbud ved gynekologisk avdeling?" = 'PREMVente',
                              "PREM: Mener du at du på noen måte ble feilbehandlet?" = 'PREMFeil',
-                             "PREM: Utbytte av behandlingen på gynekologisk avdeling = 'PREMUtbytte",
+                             "PREM: (Kval.ind) Utbytte av behandlingen på gyn. avd." = 'PREMUtbytte',
                              'Postop. komplikasjon: Alle' = 'KomplPostop',
                              'Postop. komplikasjon: moderate/alvorlige (grad 2-4)' = 'KomplPostopAlvor',
                              'Postop. komplikasjon: Blødning' = 'Opf0KomplBlodning',
