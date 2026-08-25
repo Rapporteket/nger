@@ -25,7 +25,13 @@ source("dev/sysSetenv.R")
 RegDataRaa <- nger::NGERRegDataSQL(datoFra = '2026-01-01', datoTil = '2026-12-31' ,medPROM = 1)
 RegData <- NGERPreprosess(RegData = RegDataRaa)
 
-NGERFigAndelerGrVar(RegData=RegData, valgtVar='PREMUtbytte', preprosess=0,
+HysKomplikasjoner
+LapKomplIntra
+(KomplIntra)
+KomplPostopAlvor
+PREMTilfreds
+NGERFigAndelerGrVar(RegData=RegData, valgtVar='HysKomplikasjoner', preprosess=0,
+                    #OpMetode = 2,
                     reshID=reshID, outfile = '')
 print(p)
 knitr::knit2pdf('../inst/NGERmndRapp.Rnw')

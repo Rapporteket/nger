@@ -23,12 +23,13 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
   FigDataParam <- NGERAndelerGrVarBeregn(RegData=RegData, valgtVar=valgtVar,
                                          datoFra=datoFra, datoTil=datoTil,
                                          velgAvd=velgAvd, minald=minald, maxald=maxald,
-                                         OpMetode=99, Hastegrad='',
-                                         AlvorlighetKompl='', behNivaa = 0,
+                                         OpMetode=OpMetode, Hastegrad='',
+                                         AlvorlighetKompl='', behNivaa = behNivaa,
                                          Ngrense=Ngrense, reshID=reshID,
                                          outfile=outfile,
                                          velgDiag=velgDiag,
                                          preprosess=0)
+
   PlotAndelerGrVar(RegData,
                    hovedgrTxt = FigDataParam$hovedgrTxt,
                    grVar = FigDataParam$grVar,
@@ -82,8 +83,8 @@ NGERAndelerGrVarBeregn <- function(RegData=0, valgtVar='Alder',
   grVar <- 'ShNavn'
 
   NGERUtvalg <- NGERUtvalgEnh(RegData=RegData,
-                              datoFra=datoFra, datoTil=datoTil, OpMetode=OpMetode
-                              ,minald=minald, maxald=maxald,
+                              datoFra=datoFra, datoTil=datoTil, OpMetode=OpMetode,
+                              minald=minald, maxald=maxald,
                               AlvorlighetKompl=AlvorlighetKompl, behNivaa = behNivaa,
                               velgAvd=velgAvd, velgDiag=velgDiag)
   RegData <- NGERUtvalg$RegData

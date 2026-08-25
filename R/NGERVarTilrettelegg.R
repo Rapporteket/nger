@@ -1095,6 +1095,7 @@ if (valgtVar %in% c('Diagnoser', 'DiagnoseGr')) { #Tilfelle hvor man heller endr
                'Væske', 'Blødning', 'Via falsa[14/11-23]', 'Gassemboli[14/11-23]')
     tittel <- 'Intraoperative komplikasjoner ved hysteroskopi'
     RegData <- RegData[RegData$HysKomplikasjoner %in% 0:1,]	#Velger ikke ut på OpMetode=2 siden ønsker også de som har begge
+    KvalIndGrenser <- c(0, 2, 4, 100)
   }
 
   if (valgtVar=='HysSkadeaarsakIntra') {
@@ -1249,8 +1250,10 @@ if (valgtVar %in% c('Diagnoser', 'DiagnoseGr')) { #Tilfelle hvor man heller endr
     variable <- c('LapKomplAnnet', 'LapKomplUreter', 'LapKomplTarm', 'LapKomplBlaere', 'LapKomplKar')
     grtxt <- c('Annet', 'Ureter', 'Tarm', 'Blære', 'Kar')
     tittel <- 'Laparoskopiske intraoperative komplikasjoner' # 'Intraabdominelle komplikasjoner ved laparoskopi'
-    RegData <- RegData[RegData$LapKomplikasjoner %in% 0:1, ]	#
+    #RegData <- RegData[RegData$LapKomplikasjoner %in% 0:1, ]	#
+    #KvalIndGrenser <- c(0, 2, 4, 100)
   }
+
   if (valgtVar== 'LapSkadeIntra') { #
     RegData <- RegData[which(as.Date(RegData$OpFerdigstilt) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
     flerevar <- 1

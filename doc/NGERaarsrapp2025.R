@@ -400,10 +400,10 @@ KomplPostopAlvorHys <- dataTilOffVisning(RegData=RegData, valgtVar = 'KomplPosto
 #                                  indID = 'nger_pasient_tilfredshet',
 #                                  filUt='Tss2Sumskaar')
 
-PasTilfr <- dataTilOffVisning(RegData=RegData,
-                                  valgtVar = 'Tss2Generelt',
+PasTilfr <- dataTilOffVisning(RegData=RegData, # Endret kode 25.aug 2026
+                                  valgtVar = 'PREMTilfreds', # 'Tss2Generelt',
                                   lastNedFil = lastNedFil,
-                                  indID = 'nger_pasient_tilfredshet', #SJEKK OM DENNE MÅ ENDRES
+                                  indID = 'nger_pasient_tilfredshet',
                                   filUt='PasTilfr')
 
 dataTilSKDE_Flere <- rbind(KomplIntraLap,
