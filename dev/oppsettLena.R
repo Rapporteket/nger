@@ -16,6 +16,9 @@ library(nger)
 source("dev/sysSetenv.R")
 nger::kjor_NGERapp(browser = TRUE)
 
+Oppf6Skjema <- hentDataTabell(tabellnavn = "followup6",
+                              qVar = '*',
+                              egneVarNavn = 1)
 
 shiny::shinyApp(
   ui = nger::ui_ngerOK,
