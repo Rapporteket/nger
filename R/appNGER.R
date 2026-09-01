@@ -5,17 +5,18 @@
 #'
 #' @return Brukergrensesnittet (ui) til nger-appen
 #' @export
+
+
+
+
 ui_nger <- function() {
 
   library(nger)
 
-  startDato <- paste0(as.numeric(format(Sys.Date()-100, "%Y")), '-01-01') #'2019-01-01' #Sys.Date()-364
-  context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-
+  startDato <- paste0(as.numeric(format(Sys.Date()-100, "%Y")), '-01-01')
   regTitle = 'NORSK GYNEKOLOGISK ENDOSKOPIREGISTER'
 
   #-----Definere utvalgsinnhold
-
   enhetsUtvalg <- c("Egen mot resten av landet"=1,
                     "Hele landet"=0,
                     "Egen enhet"=2)
@@ -23,7 +24,7 @@ ui_nger <- function() {
   names(diagnoser) <- c('Alle', 'Godartede ovarialcyster', 'Endometriose, livmorvegg', 'Endo u livmorvegg',
                         'Onkologi', 'Generell gynekologi', 'Gravide', 'Komplikasjoner', 'Infertilitet')
 
-  opMetode <- c('Alle'=0,
+  opMetodeValg <- c('Alle'=0,
                 'Laparoskopi'=1,
                 'Hysteroskopi'=2,
                 # 'Begge'=3,
@@ -31,8 +32,10 @@ ui_nger <- function() {
                 'Lap. subtotal hysterektomi (LCC11)'=5,
                 'Lap. ass. vag. hysterektomi (LCD11)'=6,
                 'Alle hysterektomier' = 9,
-                'Robotassisert inngrep' = 7,
-                'Kolpopeksiene' = 8)
+                'Lap. inngrep med robotass.' = 7,
+                'Lap. inngrep uten robotass.' = 10,
+                'Kolpopeksiene' = 8,
+                'Lap., vaginal tilgang' = 11)
 
   alvorKompl <- c("Lite alvorlig"=1,
                   "Middels alvorlig"=2,
@@ -48,10 +51,10 @@ ui_nger <- function() {
     id = 'hovedark',
 
     # lag logo og tittel som en del av navbar
-    title = rapbase::title(regTitle),
+    title = rapbase::regTitle(regTitle),
     # sett inn tittel også i browser-vindu
     windowTitle = regTitle,
-    theme = rapbase::theme(),
+    theme = rapbase::rapTheme(),
 
 
 
@@ -78,14 +81,8 @@ ui_nger <- function() {
              mainPanel(width = 8,
                        tags$head(tags$link(rel="shortcut icon", href="rap/favicon.ico")),
 
-                       if (context %in% c("DEV", "TEST", "QA", "PRODUCTION", "QAC", "PRODUCTIONC")) {
-                         rapbase::navbarWidgetInput("navbar-widget", selectOrganization = TRUE)
-                       },
+                       rapbase::navbarWidgetInput("navbar-widget", selectOrganization = TRUE),
 
-                       # rapbase::appNavbarUserWidget(user = uiOutput("appUserName"),
-                       #                              organization = uiOutput("appOrgName")
-                       #                              , addUserInfo = TRUE
-                       # ),
                        h4('Du er nå inne på Rapporteket for NGER. Rapporteket er registerets resultattjeneste.
                             Disse sidene inneholder en samling av figurer og tabeller som viser resultater fra registeret.
                             På hver av sidene kan man gjøre utvalg i menyene til venstre. Alle resultater er basert
@@ -129,12 +126,12 @@ ui_nger <- function() {
 
                conditionalPanel(
                  condition = "input.ark == 'Antall operasjoner'",
-                 dateInput(inputId = 'sluttDatoReg', label = 'Velg sluttdato', language="nb",
+                 dateInput(inputId = 'sluttDatoReg', label = 'Velg sluttdato (kun for månedsvisning)', language="nb",
                            value = Sys.Date(), max = Sys.Date() ),
                  selectInput(inputId = "tidsenhetReg", label="Velg tidsenhet",
                              choices = rev(c('År'= 'Aar', 'Måned'='Mnd'))),
                  selectInput(inputId = 'opMetodeReg', label='Operasjonstype',
-                             choices = opMetode
+                             choices = opMetodeValg
                  ),
                  selectInput(inputId = 'velgDiagReg', label='Diagnose',
                              choices = diagnoser
@@ -149,10 +146,10 @@ ui_nger <- function() {
                conditionalPanel(
                  condition = "input.ark == 'Last ned egne data' | 'Nøkkeltall, Hys' ",
                  uiOutput('velgReshReg'),
-                 selectInput(inputId = 'opMetodeRegDump', label='Operasjonstype (kun datadump)',
-                             choices = opMetode
+                 selectInput(inputId = 'opMetodeRegDump', label='Operasjonstype',
+                             choices = opMetodeValg
                  ),
-                 selectInput(inputId = 'diagnoseRegDump', label='Diagnose (kun datadump)',
+                 selectInput(inputId = 'diagnoseRegDump', label='Diagnose',
                              choices = diagnoser
                  ),
                  selectInput(inputId = 'alvorlighetKomplDump',
@@ -208,8 +205,8 @@ ui_nger <- function() {
 
 
     #-----Kvalitetsindikatorer------------
-    tabPanel(p("Kvalitetsindikatorer", title = 'Prosessindikatorer, RAND36, TSS2'),
-             h3('Registerets kvalitetsindikatorer', align='center'),
+    tabPanel(p("Prosessindikatorer, TSS og RAND", title = 'Prosessindikatorer, RAND36'),
+             h3('Registerets kvalitetsindikatorer og RAND', align='center'),
              sidebarPanel(width=3,
                           h3('Utvalg'),
                           #Bare fig og tab
@@ -217,10 +214,12 @@ ui_nger <- function() {
                                            selectInput(
                                              inputId = "valgtVarKval", label="Velg variabel",
                                              choices = c('Prosessindikatorer' = 'kvalInd',
-                                                         'TSS2, oppfølging' = 'TSS0',
-                                                         'RAND36, v/operasjon' = 'RAND0',
+                                                      #   "PREM: Fikk du tilfredsstillende hjelp og beh. på avd.?" = 'PREMTilfreds'
+                                                         'TSS2, oppfølging' = 'TSS0'
+                                                         ,'RAND36, v/operasjon' = 'RAND0',
                                                          'RAND36, ett år etter' = 'RAND1',
-                                                         'RAND36, tre år etter' = 'RAND3')
+                                                         'RAND36, tre år etter' = 'RAND3'
+                                                          )
                                            ),
                                            selectInput(inputId = 'enhetsUtvalgKval',
                                                        label='Egen enhet og/eller landet',
@@ -257,7 +256,7 @@ ui_nger <- function() {
                           sliderInput(inputId="alderKval", label = "Alder", min = 0,
                                       max = 110, value = c(0, 110)),
                           selectInput(inputId = 'opMetodeKval', label='Operasjonstype',
-                                      choices = opMetode
+                                      choices = opMetodeValg
                           ),
                           selectInput(inputId = 'velgDiagKval', label='Diagnose',
                                       choices = diagnoser
@@ -288,6 +287,7 @@ ui_nger <- function() {
                                     tableOutput('kvalIndTab'),
                                     downloadButton(outputId = 'lastNed_tabKvalInd', label='Last ned')
                            ),
+                           #Flyttes?
                            tabPanel('RAND, alle år',
                                     br(),
                                     plotOutput('kvalRAND013', height="auto"),
@@ -298,7 +298,8 @@ ui_nger <- function() {
                                     plotOutput('kvalRANDdim', height="auto"),
                                     downloadButton(outputId = 'LastNedFigRANDdim', label='Last ned')
                            )
-               ))
+               )
+               )
 
     ), #tab Kvalitetsindikatorer
 
@@ -382,6 +383,7 @@ ui_nger <- function() {
                       'Hysteroskopi: Årsak til ufullstendig' = 'HysUfullAarsak',
                       'Hysteroskopi: Medvirkende årsak til komplikasjon' = 'HysSkadeaarsakIntra',
                       'Hysteroskopi: Tiltak ved komplikasjon' = 'HysKomplTiltak',
+                      'Hvor fikk du behandling?' = 'Opf0hvor',
                       'Infeksjoner, type' = 'Opf0KomplInfeksjon',
                       'Infeksjoner, type (alvorlig/middels)' = 'Opf0KomplAlvorInfeksjon',
                       'Komplikasjoner, postoperativt' = 'KomplPostopType',
@@ -396,6 +398,23 @@ ui_nger <- function() {
                       'Operasjon i legens vakttid' = 'OpIVaktTid',
                       'Operasjonsmetode' = 'OpMetode',
                       'Operasjonstid (minutter)' = 'OpTid',
+                      'Oppf. 6 mnd.: Postop.kompl.' = 'Opf6mKomplikasjonerType',
+                      'Oppf. 6 mnd.: Alvorlighetsgrad' = 'Opf6mAlvorlighetsGrad',
+                      'Oppf. 6 mnd.: Ettervirkninger' = 'ettervirkn6mnd',
+                      'Oppf. 6 mnd.: Sykemeldt'= 'Opf6mSykemeldt',
+                       "PREM: Snakket behandlerne til deg slik at du forsto dem?" = 'PREMSnakke',
+                       "PREM: Har du tillit til behandlernes faglige dyktighet?" = 'PREMDyktig',
+                       "PREM: Har du tillit til det øvrige personalets faglige dyktighet?" = 'PREMTillit',
+                       "PREM: Fikk du tilstrekkelig informasjon om din diagnose / dine plager?" = 'PREMDiagn',
+                       "PREM: Ble du informert om mulige plager i tiden etter operasjonen" = 'PREMOpr',
+                       "PREM: Synes du dine behandlere la til rette for god dialog?" = 'PREMDialog',
+                       "PREM: Synes du dine behandlere forstod det du tok opp?" = 'PREMForsto',
+                       "PREM: Var du involvert i avgjørelser som angikk din behandling?" = 'PREMInvolvert',
+                       "PREM: Var avdelingens arbeid godt organisert?" = 'PREMOrg',
+                       "PREM: Fikk du tilfredsstillende hjelp og behandling på avd.?" = 'PREMTilfreds',
+                       "PREM: Måtte du vente for å få tilbud ved gynekologisk avdeling?" = 'PREMVente',
+                       "PREM: Mener du at du på noen måte ble feilbehandlet?" = 'PREMFeil',
+                       "PREM: Utbytte av behandlingen på gynekologisk avdeling = 'PREMUtbytte",
                       'Primæroperasjon eller reoperasjon' = 'OpType',
                       'Prosedyrer, hyppigste' = 'Prosedyrer',
                       'Prosegrupper, hyppigste' = 'ProsedyreGr',
@@ -436,7 +455,7 @@ ui_nger <- function() {
                     choices = enhetsUtvalg
         ),
         selectInput(inputId = 'opMetode', label='Operasjonstype',
-                    choices = opMetode
+                    choices = opMetodeValg
         ),
         selectInput(inputId = 'velgDiag', label='Diagnose',
                     choices = diagnoser
@@ -503,7 +522,26 @@ ui_nger <- function() {
                              'Konvertert til laparotomi, ikke forventet' = 'LapKonvertertUventet',
                              # 'Lokalbedøvelse' = 'OpAnestesi', fjernet nov23
                              'Operasjonstid (minutter)' = 'OpTid',
+                             'Oppf. 6 mnd.: Vaginalruptur' = 'Opf6mVagRupt',
+                             'Oppf. 6 mnd.: Komplikasjoner' = 'Opf6mKomplikasjoner',
+                             'Oppf. 6 mnd.: Reoperasjon' = 'Opf6mReoperasjon',
+                             'Oppf. 6 mnd.: Infeksjon' = 'Opf6mKomplInfeksjon',
+                             'Oppf. 6 mnd.: Beh. kompl. poliklinisk' = 'Opf6mPoliklinisk',
+                             'Oppf. 6 mnd.: Beh. kompl. ved innleggelse' = 'Opf6mInnlagt',
                              'Pasienter med høyere utdanning' = 'Utdanning',
+                             "PREM: Snakket behandlerne til deg slik at du forsto dem?" = 'PREMSnakke',
+                             "PREM: Har du tillit til behandlernes faglige dyktighet?" = 'PREMDyktig',
+                             "PREM: Har du tillit til det øvrige personalets faglige dyktighet?" = 'PREMTillit',
+                             "PREM: Fikk du tilstrekkelig informasjon om din diagnose / dine plager?" = 'PREMDiagn',
+                             "PREM: Ble du informert om mulige plager i tiden etter operasjonen" = 'PREMOpr',
+                             "PREM: Synes du dine behandlere la til rette for god dialog?" = 'PREMDialog',
+                             "PREM: Synes du dine behandlere forstod det du tok opp?" = 'PREMForsto',
+                             "PREM: Var du involvert i avgjørelser som angikk din behandling?" = 'PREMInvolvert',
+                             "PREM: Var avdelingens arbeid godt organisert?" = 'PREMOrg',
+                             "PREM: Fikk du tilfredsstillende hjelp og behandling på avd.?" = 'PREMTilfreds',
+                             "PREM: Måtte du vente for å få tilbud ved gynekologisk avdeling?" = 'PREMVente',
+                             "PREM: Mener du at du på noen måte ble feilbehandlet?" = 'PREMFeil',
+                             "PREM: Utbytte av behandlingen på gynekologisk avdeling = 'PREMUtbytte",
                              'Postop. komplikasjon: Alle' = 'KomplPostop',
                              'Postop. komplikasjon: moderate/alvorlige (grad 2-4)' = 'KomplPostopAlvor',
                              'Postop. komplikasjon: Blødning' = 'Opf0KomplBlodning',
@@ -527,7 +565,7 @@ ui_nger <- function() {
                sliderInput(inputId="alderAndel", label = "Alder", min = 0,
                            max = 110, value = c(0, 110)),
                selectInput(inputId = 'opMetodeAndel', label='Operasjonstype',
-                           choices = opMetode
+                           choices = opMetodeValg
                ),
                selectInput(inputId = 'velgDiagAndel', label='Diagnose',
                            choices = diagnoser
@@ -596,10 +634,11 @@ ui_nger <- function() {
                    #8 hoveddimensjoner av Rand, TSS2spm + sumskår
                    selectInput(
                      inputId = "valgtVarGjsn", label="Velg variabel",
-                     selected = c('TSS2, sumskår' = 'Tss2Sumskaar'),
+                     selected = c('Operasjonstid (minutter)' = 'OpTid'),
                      choices = c('Alder' = 'Alder',
                                  'BMI' = 'OpBMI',
                                  'Operasjonstid (minutter)' = 'OpTid',
+                                 'Oppf. 6 mnd.: sykemelding' = 'Opf6mDagerSyk',
                                  'Registreringsforsinkelse' = 'RegForsinkelse',
                                  'RAND36 Fysisk funksjon' = 'R0ScorePhys',
                                  'RAND36 Begrenses av fysisk helse' = 'R0ScoreRoleLmtPhy',
@@ -622,7 +661,7 @@ ui_nger <- function() {
                    selectInput(inputId = "sentralmaal", label="Velg gjennomsnitt/median ",
                                choices = c("Gjennomsnitt"='gjsn', "Median"='med')),
                    selectInput(inputId = 'opMetodeGjsn', label='Operasjonstype',
-                               choices = opMetode
+                               choices = opMetodeValg
                    ),
                    selectInput(inputId = 'velgDiagGjsn', label='Diagnose',
                                choices = diagnoser
@@ -684,57 +723,7 @@ ui_nger <- function() {
       )
     ), #GjsnGrVar/Tid
 
-    #-------Registeradministrasjon----------
-    tabPanel(p("Registeradministrasjon",
-               title='Registeradministrasjonens side for registreringer og resultater'),
-             value = "Registeradministrasjon",
-             h3('Siden er bare synlig for SC-bruker', align = 'center'),
-             #uiOutput(user$role'),
 
-             tabsetPanel(
-               tabPanel(
-                 h4("Utsending av rapporter"),
-                 sidebarPanel(
-                   rapbase::autoReportOrgInput("NGERutsending"),
-                   rapbase::autoReportInput("NGERutsending"),
-                   br(),
-                   br(),
-
-                    # Kommenter ut når skal i prod:
-                   br(),
-                   br(),
-                   shiny::actionButton(inputId = "run_autoreport",
-                                       label = "Kjør autorapporter"),
-                   shiny::dateInput(inputId = "rapportdato",
-                                    label = "Kjør rapporter med dato:",
-                                    value = Sys.Date(),
-                                    min = Sys.Date(),
-                                    max = Sys.Date() + 366
-                   ),
-                   shiny::checkboxInput(inputId = "dryRun", label = "Send e-post")
-                 ),
-                 mainPanel(
-                   rapbase::autoReportUI("NGERutsending"),
-                   # Kommenter ut når skal i prod:
-                   br(),
-                   br(),
-                   p(em("System message:")),
-                   verbatimTextOutput("sysMessage"),
-                   p(em("Function message:")),
-                   verbatimTextOutput("funMessage")
-                 )
-               ), #Utsending-tab
-               tabPanel(
-                 h4("Eksport av krypterte data"),
-                 sidebarPanel(
-                   rapbase::exportUCInput("ngerExport")
-                 ),
-                 mainPanel(
-                   rapbase::exportGuideUI("ngerExportGuide")
-                   )
-               ) #Eksport-tab
-             ) #tabsetPanel
-    ), #tab SC
     #----------Abonnement-----------------
 
     tabPanel(p("Abonnement",
@@ -770,15 +759,16 @@ ui_nger <- function() {
 server_nger <- function(input, output, session) {
 
   #-- Div serveroppstart----
-  context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-  paaServer <- (context %in% c("DEV", "TEST", "QA","QAC", "PRODUCTION", "PRODUCTIONC")) #rapbase::isRapContext()
   rapbase::appLogger(session, msg = 'Starter Rapporteket-NGER')
 
     #----------Hente data ----------
-    RegData <- NGERRegDataSQL()
-    errorCondition(dim(RegData)[1]==0, 'ingen data')
 
-    RegData <- NGERPreprosess(RegData)
+    datoFraLasteData <- paste0(as.numeric(format(Sys.Date(), "%Y"))-5, '-01-01')
+    RegDataAlle <- NGERRegDataSQL(datoFra = datoFraLasteData, medPROM=1, gml=0)
+    errorCondition(dim(RegDataAlle)[1]==0, 'ingen data')
+
+    RegData <- NGERPreprosess(RegDataAlle)
+
     map_avdeling <- data.frame(
       UnitId = unique(RegData$ReshId),
       orgname = RegData$ShNavn[match(unique(RegData$ReshId),
@@ -791,30 +781,10 @@ server_nger <- function(input, output, session) {
     caller = "nger"
   )
 
-  observeEvent(user$role(), {
-    # print(user)
-
-      if (user$role() == 'SC') {
-      showTab(inputId = "hovedark", target = "Registeradministrasjon")
-      shinyjs::show(id = 'velgResh')
-      shinyjs::show(id = 'velgReshReg')
-      shinyjs::show(id = 'velgReshKval')
-      shinyjs::show(id = 'velgSykehusFord')
-      shinyjs::show(id = 'velgSykehusTab')
-    } else {
-      shinyjs::hide(id = 'velgResh')
-      shinyjs::hide(id = 'velgReshReg')
-      shinyjs::hide(id = 'velgReshKval')
-      shinyjs::hide(id = 'velgSykehusFord')
-      shinyjs::hide(id = 'velgSykehusTab')
-      hideTab(inputId = "hovedark", target = "Registeradministrasjon")
-    }
-  })
 
   # widget
-  if (paaServer) {
     output$appUserName <- renderText(rapbase::getUserFullName(session))
-    output$appOrgName <- renderText(paste0('rolle: ', user$role(), '<br> ReshID: ', user$org()) )}
+    output$appOrgName <- renderText(paste0('rolle: ', user$role(), '<br> ReshID: ', user$org()) )
 
   # User info in widget
   userInfo <- rapbase::howWeDealWithPersonalData(session)
@@ -855,8 +825,8 @@ server_nger <- function(input, output, session) {
       switch(input$tidsenhetReg,
              Mnd=tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12,
                                  OpMetode=as.numeric(input$opMetodeReg),
-                                 velgDiag=as.numeric(input$velgDiagReg)), #input$datovalgTab[2])
-             Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg,
+                                 velgDiag=as.numeric(input$velgDiagReg)),
+             Aar=tabAntOpphShAar(RegData=RegData, #datoTil=input$sluttDatoReg,
                                   OpMetode=as.numeric(input$opMetodeReg),
                                   velgDiag=as.numeric(input$velgDiagReg)))
     output$tabAntOpphSh <- renderTable(tabAntOpphShMndAar$tabAntAvd, rownames = T, digits=0, spacing="xs")
@@ -871,7 +841,7 @@ server_nger <- function(input, output, session) {
         br(),
         h4(HTML(switch(input$tidsenhetReg,
                        Mnd = paste0(t1, 'siste 12 måneder før ', input$sluttDatoReg, '<br />'),
-                       Aar = paste0(t1, 'siste 5 år før ', input$sluttDatoReg, '<br />'))),
+                       Aar = paste0(t1, 'siste år ', '<br />'))),
            HTML(paste0(tabAntOpphShMndAar$utvalgTxt[-1], '<br />'))
         ))
     })
@@ -892,42 +862,41 @@ server_nger <- function(input, output, session) {
 
   # Hente oversikt over hvilke registrereinger som er gjort (opdato og fødselsdato)
   output$velgReshReg <- renderUI({
-    selectInput(inputId = 'velgReshReg', label='Velg sykehus',
-                selected = 0,
-                choices = sykehusValg)
-  })
-  RegOversikt <- RegData[ , c('FodselsDato', 'OpDato', 'ReshId', 'ShNavn')] #, 'BasisRegStatus'
-
-  observe({
-    RegOversikt <- dplyr::filter(RegOversikt,
-                                 as.Date(OpDato) >= input$datovalgReg[1],
-                                 as.Date(OpDato) <= input$datovalgReg[2])
-
     if (user$role() == 'SC') {
-      valgtResh <- ifelse(is.null(input$velgReshReg), 0, as.numeric(input$velgReshReg))
-      ind <- if (valgtResh == 0) {1:dim(RegOversikt)[1]
-      } else {which(as.numeric(RegOversikt$ReshId) %in% as.numeric(valgtResh))}
-      tabDataRegKtr <- RegOversikt[ind,]
-
-    }  else {
-      tabDataRegKtr <- RegOversikt[which(RegOversikt$ReshId == user$org()), ]}
-
-
-    output$lastNed_dataTilRegKtr <- downloadHandler(
-      filename = function(){'dataTilKtr.csv'},
-      content = function(file, filename){write.csv2(tabDataRegKtr, file, row.names = F, na = '')})
+      selectInput(inputId = 'velgReshReg', label='Velg sykehus',
+                  selected = 0,
+                  choices = sykehusValg)
+    } else {
+      NULL
+    }
   })
 
-  # Egen datadump, LU uten PROM
-  RegDataAlle <- RegData
-  observe({
-    DataDump <-
-      NGERUtvalgEnh(RegData = RegDataAlle,
-                    datoFra = input$datovalgReg[1],
-                    datoTil = input$datovalgReg[2],
-                    OpMetode = as.numeric(input$opMetodeRegDump),
-                    velgDiag = as.numeric(input$diagnoseRegDump),
-                    AlvorlighetKompl = as.numeric(input$alvorlighetKomplDump))$RegData
+
+  # --------Egen datadump, (NB: LU uten PROM)---------
+
+
+  # observe({
+  #   req(input$ark == 'Last ned egne data')
+  #   RegDataAlle <- NGERRegDataSQL(medPROM=1, gml=0)
+  #   RegDataAlle <- NGERPreprosess(RegData = RegDataAlle)
+  # })
+
+    # DataDump1 <- NGERPreprosess(NGERRegDataSQL(datoFra = input$datovalgReg[1],
+    #                            datoTil = input$datovalgReg[2]))
+    observe({
+      req(input$ark == 'Last ned egne data')
+      RegDataAlle <-  if (user$role() =='SC') {
+        NGERPreprosess(RegData = NGERRegDataSQL(
+                                    datoFra = input$datovalgReg[1],
+                                    datoTil = input$datovalgReg[2]))}
+      else {NGERPreprosess(RegData = NGERRegDataSQL(medPROM = 0,
+                                    datoFra = input$datovalgReg[1],
+                                    datoTil = input$datovalgReg[2]))}
+    DataDump <- NGERUtvalgEnh(RegData = RegDataAlle,
+                              OpMetode = as.numeric(input$opMetodeRegDump),
+                              velgDiag = as.numeric(input$diagnoseRegDump),
+                              AlvorlighetKompl = as.numeric(input$alvorlighetKomplDump))$RegData
+
     if (input$IntraKomplDump == TRUE) {
       indIntraKompl <- which((DataDump$LapKomplikasjoner==1) | (DataDump$HysKomplikasjoner==1))
       DataDump <- DataDump[indIntraKompl, ]}
@@ -936,34 +905,48 @@ server_nger <- function(input, output, session) {
       valgtResh <- ifelse(is.null(input$velgReshReg),
                           0, as.numeric(input$velgReshReg))
       ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
-      } else {
-        which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
+      } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
       tabDataDump <- DataDump[ind,]
-    } else {
-      navn <- names(DataDump)
-      fjernVarInd <- c(grep('Opf0', navn), grep('Opf1', navn),
-                       grep('R0', navn), grep('R1', navn), grep('R3', navn),
-                       grep('RY1', navn), grep('Tss', navn))
-      tabDataDump <-
-        DataDump[which(DataDump$ReshId == user$org()), -fjernVarInd]
+    }  else {
+    #   navn <- names(DataDump)
+    #   fjernVarInd <- c(grep('Opf0', navn), grep('Opf6', navn),
+    #                    grep('R0', navn), grep('R1', navn), grep('R3', navn),
+    #                    grep('RY1', navn), grep('Tss', navn))
+    #
+      tabDataDump <- DataDump[which(DataDump$ReshId == user$org()), ] # , -fjernVarInd]
+    #
+     } #Tar bort PROM/PREM til egen avdeling
 
-    } #Tar bort PROM/PREM til egen avdeling
     txtLog <- paste0('Datadump for NGER: ',
                      'tidsperiode ', input$datovalgReg[1], '_', input$datovalgReg[2])
 
     output$lastNed_dataDump <- downloadHandler(
       filename = function(){'dataDumpNGER.csv'},
       content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, na = '')
-        rapbase::repLogger(session = session, msg = txtLog)
-        })
+        rapbase::repLogger2(user = user, msg = txtLog)
+      })
+
+        # Data til kontroll
+    RegOversikt <- tabDataDump[ , c('FodselsDato', 'OpDato', 'ReshId', 'ShNavn')]
+
+    output$lastNed_dataTilRegKtr <- downloadHandler(
+      filename = function(){'dataTilKtr.csv'},
+      content = function(file, filename){write.csv2(RegOversikt, file, row.names = F, na = '')})
+
+
   })
   #---------Kvalitetsindikatorer------------
   #KvalInd
 
   output$velgReshKval <- renderUI({
+    if (user$role() == 'SC') {
     selectInput(inputId = 'velgReshKval', label='Velg sykehus',
                 selected = 0,
-                choices = sykehusValg)})
+                choices = sykehusValg)
+    } else {
+      NULL
+    }
+  })
   observe({
     output$kvalInd <- renderPlot({
       NGERFigKvalInd(RegData=RegData, preprosess = 0,
@@ -1020,7 +1003,6 @@ server_nger <- function(input, output, session) {
                      enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
                      velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
                      session = session)
-
     tabKvalInd <- lagTabavFig(UtDataFraFig = UtDataKvalInd) #lagTabavFigAndeler
 
     output$tittelKvalInd <- renderUI({
@@ -1148,9 +1130,13 @@ server_nger <- function(input, output, session) {
   })
 
   output$velgSykehusTab <- renderUI({
-    selectInput(inputId = 'velgSykehusTab', label='Velg sykehus',
-                selected = 0,
-                choices = sykehusValg)
+    if (user$role() == 'SC') {
+      selectInput(inputId = 'velgSykehusTab', label='Velg sykehus',
+                  selected = 0,
+                  choices = sykehusValg)
+    } else {
+      NULL
+    }
   })
 
   observe({
@@ -1188,9 +1174,13 @@ server_nger <- function(input, output, session) {
   #---------Fordelinger------------
 
   output$velgSykehusFord <- renderUI({
-    selectInput(inputId = 'velgSykehusFord', label='Velg sykehus',
-                selected = 0,
-                choices = sykehusValg)
+    if (user$role() == 'SC') {
+      selectInput(inputId = 'velgSykehusFord', label='Velg sykehus',
+                  selected = 0,
+                  choices = sykehusValg)
+    } else {
+      NULL
+    }
   })
 
   observe({ #Fordeling
@@ -1272,7 +1262,7 @@ server_nger <- function(input, output, session) {
 
   #--------------Andeler-----------------------------------
   output$andelerGrVar <- renderPlot({
-    NGERFigAndelerGrVar(
+    p <- NGERFigAndelerGrVar(
       RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
       datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
       minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
@@ -1281,6 +1271,7 @@ server_nger <- function(input, output, session) {
       velgDiag = as.numeric(input$velgDiagAndel),
       AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
       session=session)
+      print(p)
   }, height = 800, width=700 #height = function() {session$clientData$output_andelerGrVarFig_width} #})
   )
 
@@ -1289,7 +1280,8 @@ server_nger <- function(input, output, session) {
       paste0('FigAndelSh_', input$valgtVarAndel, Sys.time(), '.', input$bildeformatAndel)
     },
     content = function(file){
-      NGERFigAndelerGrVar(
+      format <- shiny::req(input$bildeformatAndel)
+      p <- NGERFigAndelerGrVar(
         RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
         datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
         minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
@@ -1297,8 +1289,27 @@ server_nger <- function(input, output, session) {
         behNivaa = as.numeric(input$behNivaaAndel),
         velgDiag = as.numeric(input$velgDiagAndel),
         AlvorlighetKompl = as.numeric(input$alvorlighetKomplAndel),
-        session=session,
-        outfile = file)
+        session=session)
+      device <- switch(
+        format,
+        pdf = "pdf",
+        png = "png",
+        jpg = "jpeg",
+        bmp = "bmp",
+        tif = "tiff",
+        svg = "svg",
+        stop("Ukjent filformat")
+      )
+      ggplot2::ggsave(
+        filename = file,
+        plot = p,
+        device = format,
+        width = 7,
+        height = 8,
+        units = "in",
+        dpi = 300,
+        limitsize = FALSE
+      )
     })
 
 
@@ -1377,7 +1388,8 @@ server_nger <- function(input, output, session) {
 
     #AndelGrVar
     AndelerShus <-
-      NGERFigAndelerGrVar(
+      #NGERFigAndelerGrVar(
+      NGERAndelerGrVarBeregn(
         RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndel,
         datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
         minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
@@ -1607,6 +1619,70 @@ server_nger <- function(input, output, session) {
     user = user
   )
   #-----------Registeradministrasjon-----------
+  observeEvent(user$role(), {
+    if (user$role() == "SC") {
+      message("Adding Registeradministrasjon tab for user with role ", user$role())
+      shiny::insertTab(
+        inputId = "hovedark",
+        tab = tabPanel(p("Registeradministrasjon",
+                    title='Registeradministrasjonens side for registreringer og resultater'),
+                  value = "Registeradministrasjon",
+                  h3('Siden er bare synlig for SC-bruker', align = 'center'),
+                  #uiOutput(user$role'),
+
+                  tabsetPanel(
+                    tabPanel(
+                      h4("Utsending av rapporter"),
+                      sidebarPanel(
+                        rapbase::autoReportOrgInput("NGERutsending"),
+                        rapbase::autoReportInput("NGERutsending"),
+                        br(),
+                        br(),
+
+                        # Kommenter ut når skal i prod:
+                        br(),
+                        br(),
+                        shiny::actionButton(inputId = "run_autoreport",
+                                            label = "Kjør autorapporter"),
+                        shiny::dateInput(inputId = "rapportdato",
+                                        label = "Kjør rapporter med dato:",
+                                        value = Sys.Date(),
+                                        min = Sys.Date(),
+                                        max = Sys.Date() + 366
+                        ),
+                        shiny::checkboxInput(inputId = "dryRun", label = "Send e-post")
+                      ),
+                      mainPanel(
+                        rapbase::autoReportUI("NGERutsending"),
+                        # Kommenter ut når skal i prod:
+                        br(),
+                        br(),
+                        p(em("System message:")),
+                        verbatimTextOutput("sysMessage"),
+                        p(em("Function message:")),
+                        verbatimTextOutput("funMessage")
+                      )
+                    ), #Utsending-tab
+                    tabPanel(
+                      h4("Eksport av krypterte data"),
+                      sidebarPanel(
+                        rapbase::exportUCInput("ngerExport")
+                      ),
+                      mainPanel(
+                        rapbase::exportGuideUI("ngerExportGuide")
+                        )
+                    ) #Eksport-tab
+                  ) #tabsetPanel
+          ),
+          target = "Abonnement",
+          position = "before"
+      )
+      } else {
+        message("Removing Registeradministrasjon tab for user with role ", user$role())
+        shiny::removeTab(inputId = "hovedark", target = "Registeradministrasjon")
+      }
+  })
+
 
   ## liste med metadata for rapport
   reports <- list(

@@ -1,6 +1,6 @@
 #' Fil som inneholder funksjoner for å lage tabeller, i første rekke tellinger av personer
 
-#' RegData må inneholde InnDato og Aar.
+#' RegData må inneholde OpDato og Aar.
 #' -tabAntOpphSh12mnd: Antall opphold per måned og enhet siste 12 måneder fram til datoTil.
 #' -tabAntOpphSh5Aar:Antall opphold per år og enhet siste 5 år (inkl. inneværende år) fram til datoTil.
 #' Antall opphold siste X (antMnd) mnd
@@ -16,12 +16,12 @@ tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0,
   gyldigResh <- reshID!=0 & !is.na(match(reshID, RegData$ReshId))
   if (gyldigResh) {RegData <- RegData[which(RegData$ReshId==reshID), ]}
       datoFra <- lubridate::floor_date(as.Date(datoTil)- months(antMnd, abbreviate = T), unit='month')
-      aggVar <-  c('ShNavn', 'InnDato')
+      aggVar <-  c('ShNavn', 'OpDato')
       Utvalg <- NGERUtvalgEnh(RegData=RegData, OpMetode = OpMetode, velgDiag=velgDiag)
       RegData <- Utvalg$RegData
-      RegDataDum <- RegData[RegData$InnDato <= as.Date(datoTil, tz='UTC')
-                              & RegData$InnDato > as.Date(datoFra, tz='UTC'), aggVar]
-      RegDataDum$Maaned1 <- lubridate::floor_date(RegDataDum$InnDato, 'month')
+      RegDataDum <- RegData[RegData$OpDato <= as.Date(datoTil, tz='UTC')
+                              & RegData$OpDato > as.Date(datoFra, tz='UTC'), aggVar]
+      RegDataDum$Maaned1 <- lubridate::floor_date(RegDataDum$OpDato, 'month')
       tabAvdMnd1 <- table(RegDataDum[ , c('ShNavn', 'Maaned1')])
       colnames(tabAvdMnd1) <- format(lubridate::ymd(colnames(tabAvdMnd1)), '%b %y') #month(lubridate::ymd(colnames(tabAvdMnd1)), label = T)
       if (reshID==0){
@@ -30,23 +30,22 @@ tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0,
       #return(tabAvdMnd1)
 	return(list(tabAntAvd=tabAvdMnd1, utvalgTxt = Utvalg$utvalgTxt))
 }
-#tabAntOpphShMnd(RegData, datoTil=Sys.Date(), antMnd=3)
 
 
-#' Antall opphold siste 5 år
+#' Antall opphold per år
 #' @export
-tabAntOpphSh5Aar <- function(RegData, datoTil=Sys.Date(),
+tabAntOpphShAar <- function(RegData, # datoTil=Sys.Date(),
                              OpMetode=99, velgDiag=0){
-      AarNaa <- as.numeric(format.Date(datoTil, "%Y"))
+      #AarNaa <- as.numeric(format.Date(datoTil, "%Y"))
 
       Utvalg <- NGERUtvalgEnh(RegData=RegData, OpMetode = OpMetode, velgDiag=velgDiag)
       RegData <- Utvalg$RegData
-      tabAvdAarN <- addmargins(table(RegData[which(RegData$Aar %in% (AarNaa-4):AarNaa), c('ShNavn','Aar')]))
+     # tabAvdAarN <- addmargins(table(RegData[which(RegData$Aar %in% (AarNaa-4):AarNaa), c('ShNavn','Aar')]))
+      tabAvdAarN <- addmargins(table(RegData[, c('ShNavn','Aar')]))
       rownames(tabAvdAarN)[dim(tabAvdAarN)[1] ]<- 'TOTALT, alle enheter:'
-      colnames(tabAvdAarN)[dim(tabAvdAarN)[2] ]<- 'Siste 5 år'
+      colnames(tabAvdAarN)[dim(tabAvdAarN)[2] ]<- 'Siste år'
       tabAvdAarN <- xtable::xtable(tabAvdAarN)
       return(list(tabAntAvd=tabAvdAarN, utvalgTxt = Utvalg$utvalgTxt))
-      #return(tabAvdAarN)
 }
 
 
@@ -61,7 +60,7 @@ tabAntSkjemaGml <- function(skjemaoversikt, datoFra = '2019-01-01', datoTil=Sys.
   skjemanavn <- c('Operasjon','Laparoskopi','Hysteroskopi', 'Oppfølging', 'RAND36', 'TSS2', 'RAND36, 1år')
 
 
-  indDato <- which(as.Date(skjemaoversikt$InnDato) >= datoFra & as.Date(skjemaoversikt$InnDato) <= datoTil)
+  indDato <- which(as.Date(skjemaoversikt$OpDato) >= datoFra & as.Date(skjemaoversikt$OpDato) <= datoTil)
   indSkjemastatus <- which(skjemaoversikt$SkjemaStatus==skjemastatus)
   skjemaoversikt <- skjemaoversikt[intersect(indDato, indSkjemastatus),]
 
@@ -79,13 +78,13 @@ tabAntSkjema <- function(RegData, datoFra = '2019-01-01', datoTil=Sys.Date()){
   #Operasjon	Laparoskopi,	Hysteroskopi - bare besvarte skjema,	Oppfølging, RAND36, ,TSS2
   #  RAND-tabellen inneholder bare besvarte skjema, så her kan jeg telle ut fra «Metode» = 1,2 el 3.
 #  TSS2 har ingen egen metode-variabel. Teller alle som har fått beregnet en Tss2Score.
-#  For oppfølging en måned etter: Opf0metode = 1 | Opfmetode=2 | (Opf0metode=3 & Opf0BesvarteProm =1)
+#  For oppfølging en måned etter: Opf0metode = 1 | Opfmetode=2 | (Opf0metode=3 &  Opf0UtfViaEprom=1)
 
-  indDato <- which(as.Date(RegData$InnDato) >= datoFra & as.Date(RegData$InnDato) <= datoTil)
+  indDato <- which(as.Date(RegData$OpDato) >= datoFra & as.Date(RegData$OpDato) <= datoTil)
   RegData <- RegData[indDato, ]
   RegData$ShNavn <- as.factor(RegData$ShNavn)
 
-  indOpf0 <- with(RegData, which(Opf0metode == 1 | Opf0metode==2 | (Opf0metode==3 & Opf0BesvarteProm == 1)))
+  indOpf0 <- with(RegData, which(Opf0metode == 1 | Opf0metode==2 | (Opf0metode==3 & Opf0UtfViaEprom == 1)))
   tab <- cbind(
     'Operasjon' = table(RegData$ShNavn),
     'Laparoskopi' = table(RegData$ShNavn[RegData$LapStatus==1]),
@@ -135,7 +134,7 @@ lagTabavFig <- function(UtDataFraFig, figurtype='andeler'){ #lagTabavFigAndeler
     if (medSml==1) {
       colnames(tab) <-  c(kolnavn, paste0(smltxt, c(', Antall', ', Andel (%)')))}
     }
-
+# print(UtDataFraFig$grtxt)
   rownames(tab) <- UtDataFraFig$grtxt
   return(tab)
 }

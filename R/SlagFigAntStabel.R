@@ -68,8 +68,8 @@ mndtxt <- c('jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','d
 startmnd <- DagensDato$mon+1
 mndRekkef <- c(startmnd:12, min(1,(startmnd-1)):(startmnd-1))	#Må ta høyde for startmnd=1
 grtxt <- mndtxt[mndRekkef]
-RegData$InnDato <- as.POSIXlt(RegData$InnDato)
-RegData$Mnd <- factor(RegData$InnDato$mon, levels= 0:11, labels = mndtxt)
+RegData$OpDato <- as.POSIXlt(RegData$OpDato)
+RegData$Mnd <- factor(RegData$OpDato$mon, levels= 0:11, labels = mndtxt)
 AntHoved <- table(RegData$Mnd)[mndRekkef]
 indOppf <- which(RegData$OppfolgUtf==1) 						#Levende med oppfølging
 AntOppf <- table(RegData$Mnd[indOppf])[mndRekkef]
@@ -80,10 +80,10 @@ AntDod <- table(RegData$Mnd[indDod])[mndRekkef]
 
 AntHODmnd <- cbind(AntOppf, AntDod, AntHoved-(AntOppf+AntDod))
 
-#RegData$MndAar <- paste(RegData$Mnd,RegData$InnDato$year-100,sep='')
+#RegData$MndAar <- paste(RegData$Mnd,RegData$OpDato$year-100,sep='')
 #table(RegData$MndAar)
 
-#axis(1, RegData$InnDato, format(RegData$InnDato, "%m %y"), cex.axis = .7)
+#axis(1, RegData$OpDato, format(RegData$OpDato, "%m %y"), cex.axis = .7)
 #library(date)
 #hist(dat.geo$Date_of_Onset[(dat.geo$suburb=="x")], "weeks",
 # format = "%d %b %y", freq=T, col=rgb(0,0,0,1), axes=F, main="")

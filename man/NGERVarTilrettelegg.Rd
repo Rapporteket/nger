@@ -18,14 +18,16 @@ NGERVarTilrettelegg(
 \item{valgtVar}{Hvilken variabel som skal visualiseres}
 
 \item{OpMetode}{1: Laparoskopi
-2: Hysteroskopi
-3: Begge # 21.okt. 2022: Fjernes som eget valg. Blir med i både laparoskopi og hysteroskopi
-4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
-5: LCC11 (laparoskopisk subtotal hysterektomi)
-6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
-7: Robotassisert inngrep
-8: Kolpopeksiene
-9: Hysterectomier (alle)}
+ 2: Hysteroskopi
+ 3: Begge # 21.okt. 2022: Fjernes som eget valg. Blir med i både laparoskopi og hysteroskopi
+ 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
+ 5: LCC11 (laparoskopisk subtotal hysterektomi)
+ 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
+ 7: Lap m/robot
+ 8: Kolpopeksiene
+ 9: Hysterectomier (alle)
+10: Lap u/robot
+11: Laparoskopi med vaginal tilgang}
 
 \item{ind}{indekser fra enhetsUtvalg. Benyttes normalt ikke her, men trengs for
 valgtVar Diagnoser, DiagnoseGr, Prosedyrer og ProsedyreGr}

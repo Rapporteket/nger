@@ -11,16 +11,25 @@ mappingEgneNavn <- function(tabell, tabType) {
     rapbase::loadRegData( "data",
                           query = "SELECT FIELD_NAME, REGISTRATION_TYPE, USER_SUGGESTION #, USER_DATE
                            FROM friendly_vars")
-  rydd <- which(friendlyVarTab$USER_SUGGESTION == 'VERBOTEN')
-  if (length(rydd)>0) {
-    friendlyVarTab <- friendlyVarTab[-which(friendlyVarTab$USER_SUGGESTION == 'VERBOTEN'), ]}
 
   indTabType <- which(friendlyVarTab$REGISTRATION_TYPE %in% tabType)
-   navnFr <- friendlyVarTab$FIELD_NAME[indTabType]
-   kuttTabPrefiks <- if (tabType %in% c( 'RAND36_0', 'RAND36_1', 'RAND36_3')) {
-     'RAND36_'} else {paste0(tabType, '_')}
-   navn <- gsub(kuttTabPrefiks, "", navnFr)
-   names(navn) <- friendlyVarTab$USER_SUGGESTION[indTabType]
+  if (!length(indTabType)==0) {
+    friendlyVarTabType <- friendlyVarTab[indTabType,]
+    kuttTabPrefiks <- if (tabType %in% c( 'RAND36_0', 'RAND36_1', 'RAND36_3')) {
+      'RAND36_'} else {paste0(tabType, '_')}
+  }
+
+  rydd <- which(friendlyVarTabType$USER_SUGGESTION  %in% c('VERBOTEN', 'NEINNICHTS'))
+  if (length(rydd)>0) {
+    fjernvar <- gsub(kuttTabPrefiks, "", friendlyVarTabType$FIELD_NAME[rydd])
+    indFjern <- which(names(tabell) %in% fjernvar)
+    if (length(indFjern) > 0) {
+      tabell <- tabell[ , -indFjern]}
+    friendlyVarTabType <- friendlyVarTabType[-rydd, ]
+  }
+
+   navn <- gsub(kuttTabPrefiks, "", friendlyVarTabType$FIELD_NAME)
+   names(navn) <- friendlyVarTabType$USER_SUGGESTION # [indTabType]
   tabellEgne <- dplyr::rename(tabell, dplyr::any_of(navn)) #all_of(navn
   return(tabellEgne)
   }
@@ -32,7 +41,6 @@ mappingEgneNavn <- function(tabell, tabType) {
 #' Hent datatabell fra ngers database
 #'
 #' @param tabellnavn Navn på tabell som skal lastes inn.
-#'                     centreattribute.ATTRIBUTEVALUE as SykehusNavn
 #' @param egneVarNavn 0 - Qreg-navn benyttes.
 #'                    1 - selvvalgte navn fra Friendlyvar benyttes
 #'
@@ -40,28 +48,36 @@ mappingEgneNavn <- function(tabell, tabType) {
 
 hentDataTabell <- function(tabellnavn = "operation",
                            qVar = '*',
+                           datoFra = '2011-01-01',
+                           datoTil = Sys.Date(),
                            egneVarNavn = 1) { #  status = 1
 
   query <- paste0("SELECT ", qVar, " FROM ", tabellnavn)
+
+  if (tabellnavn == 'operation'){
+    query <- paste0(query,
+                    ' WHERE OP_DATE >= \'', datoFra,
+                    '\' AND OP_DATE <= \'', datoTil, '\' ')
+  }
   tabell <- rapbase::loadRegData(registryName = "data",
                                  query = query)
 
-  # if ("STATUS" %in% names(tabell)) {
-  #   tabell <- tabell[tabell$STATUS == status, ]
-  # }
+  if (tabellnavn == 'rand36') {
+    #Har oppdatert navnene i variabelregisteret, så skal ikke trenge suffiks
+    RAND36_0 <- mappingEgneNavn(tabell[tabell$YEAR == 0, ], 'RAND36_0')
+    RAND36_1 <- mappingEgneNavn(tabell[tabell$YEAR == 1, ], 'RAND36_1')
+    RAND36_3 <- mappingEgneNavn(tabell[tabell$YEAR == 3, ], 'RAND36_3')
+    tabell <- merge(RAND36_0, RAND36_1, by='ForlopsID',
+                    all.x = TRUE, suffixes = c('', '1aar') ) |>
+      merge(RAND36_3, by='ForlopsID', all.x = TRUE, suffixes = c('', '3aar'))
+    tabell <- tabell[ ,-grep('Aar', names(tabell))]
+    egneVarNavn <- 0
+      }
 
   if (egneVarNavn == 1) {
     tabType <- toupper(tabellnavn)
     tabell <- mappingEgneNavn(tabell, tabType)
   }
-
-  if (tabellnavn == 'rand36') {
-    RAND36_0 <- mappingEgneNavn(tabell[tabell$YEAR == 0, ], 'RAND36_0')
-    RAND36_1 <- mappingEgneNavn(tabell[tabell$YEAR == 1, ], 'RAND36_1')
-    RAND36_3 <- mappingEgneNavn(tabell[tabell$YEAR == 3, ], 'RAND36_3')
-    tabell <- merge(RAND36_0, RAND36_1, by='ForlopsID', all.x = TRUE) |>
-      merge(RAND36_3, by='ForlopsID', all.x = TRUE)
-    }
 
   return(tabell)
 }
@@ -77,119 +93,118 @@ hentDataTabell <- function(tabellnavn = "operation",
 #' @export
 
 
-NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
-                           medPROM=1, gml=1, alleVar=1, ...) {
+NGERRegDataSQL <- function(datoFra = '2011-01-01', datoTil = Sys.Date(),
+                           medPROM=1, gml=0, ...) {
 # Få til å fungere med ny sammenkobling av alle data
-  # legg på valg av variabler
-  # legg på datofiltrering
+  # Bare ferdigstilte (STATUS=1) registreringer overføres LapSkjema, HysSkjema, OpSkjema
 
   if (gml==0) {
     # Raskest å hente alle og så filtrere på dato eller filtrere på dato til slutt?
 
-    #mce Trenger nok ganske få av disse variablene
     # mce_patient_data # eneste som inneholder kobling mellom mceid og pasientid
+    qmce <- paste0('MCEID, CENTREID, PATIENT_ID')
 
-   # qmce <-
     mceSkjema <- hentDataTabell(tabellnavn = "mce",
-                               qVar = '*',
+                               qVar = qmce,
                                egneVarNavn = 0)
     #Operasjon
-    OpSkjema <-  hentDataTabell(tabellnavn = "operation",
-                                qVar = '*',
-                                egneVarNavn = 1)
-    # OpSkjema <- OpSkjema[ ,-which(names(OpSkjema) %in%
-    #                                 intersect(names(OpSkjema), names(mceSkjema)))]
+    qOp <- "MCEID, CENTREID AS ReshId,
+    HEIGHT, WEIGHT,  MCETYPE,
+       BMI, PARITIES, EARLIER_VAGINAL,
+       VAG_REVISIO, VAG_HYSTEROSCOPY, VAG_CONISATION, VAG_DESCENS,
+       VAG_TVT, VAG_HYSTERECTOMY, EARLIER_LAPAROSCOPY, LAPARASCOPY_COUNT,
+       EARLIER_LAPAROTOMY, LAPAROTOMI_COUNT, SECTIO_COUNT, BLOOD_THINNERS,
+       OP_DATE, OPTYPE, COMPLICATION, MAIN_OPERATION,
+       COMPLICATION_TYPE, OPCAT, OPCAT_OUTSIDE_DAYTIME,
+       CARE_LEVEL, OP_INDICATION1, OP_INDICATION2, OP_INDICATION3,
+       ANESTHESIA_NONE, ANESTHESIA_LOCAL, ANESTHESIA_GENERAL, ANESTHESIA_SPINAL_EDA,
+       ANESTHESIA_SEDATION, ASA, OPTIME_COUNT, ANTIBIOTIC_PROPHYLAXIS, SURVIVED,
+       STATUS, FIRST_TIME_CLOSED"
+    # TSCREATED, COMPLICATION_COMMENT, TSUPDATED,
 
+        OpSkjema <-  hentDataTabell(tabellnavn = "operation",
+                                datoFra = datoFra,
+                                datoTil = datoTil,
+                                qVar = qOp,
+                                egneVarNavn = 1)
+    names(OpSkjema)[names(OpSkjema) == "OpForstLukket"] <- 'OpFerdigstilt'
 
     #Laparoskopi
     LapSkjema <-  hentDataTabell(tabellnavn = "laparoscopy",
                                         qVar = '*',
                                         egneVarNavn = 1)
-    # LapSkjema <- LapSkjema[ ,-which(names(LapSkjema) %in%
-    #                                 intersect(names(LapSkjema), names(mceSkjema)))]
 
     #Hysteroskopi
     HysSkjema <-  hentDataTabell(tabellnavn = "hysteroscopy",
                                  qVar = '*',
                                  egneVarNavn = 1)
-    # HysSkjema <- HysSkjema[ ,-which(names(HysSkjema) %in%
-    #                         intersect(names(HysSkjema), names(mceSkjema)))]
-
 
     #Pasientskjema:
-    qPas <- if (alleVar == 1) {'*'} else {
-     paste0('ID, # AS PasientID,
+    qPas <- 'ID AS PasientID,
               BIRTH_DATE,
-              REGISTERED_DATE,
               NATIVE_LANGUAGE,
               NORWEGIAN,
-              COUNTY,
-              REGIONAL_HEALTH_AUTHORITY AS RHF, -- fjern?
-              TOWN,
-              MUNICIPALITY_NUMBER,
-              MUNICIPALITY_NAME,
+              REGIONAL_HEALTH_AUTHORITY AS RHF,
               EDUCATION,
               DECEASED,
               DECEASED_DATE,
-              REAPER_DATE,
-              MARITAL_STATUS,
-              OWNING_CENTRE,
-              TSUPDATED,
-              TSCREATED')
-   }
+              MARITAL_STATUS'
 
    PasSkjema <- hentDataTabell(tabellnavn = "patient",
                                                  qVar = qPas,
                                                  egneVarNavn = 1)
-   # PasSkjema <- PasSkjema[ ,-which(names(PasSkjema) %in%
-   #                          intersect(names(PasSkjema), names(mceSkjema)))]
-
    #Sykehusnavn
    EnhetsNavn <- hentDataTabell(tabellnavn = "centreattribute",
                                 qVar = 'ID,
                                 ATTRIBUTEVALUE as ShNavn',
                                              egneVarNavn = 0)
+   RegData <-
+     merge(mceSkjema,
+           PasSkjema, by.x = "PATIENT_ID", by.y = "PasientID",
+           suffixes = c("", "_pas")) |>
+     merge(OpSkjema,
+           suffixes = c("", "_op"), by = "MCEID", all.x = F) |>
+     merge(LapSkjema, by = "MCEID", all.x=TRUE, suffixes = c("", "_lap")) |>
+     merge(HysSkjema,
+           by = "MCEID", all.x = TRUE, suffixes = c("", "_hys")) |>
+     merge(EnhetsNavn,
+           by.x = "CENTREID", by.y = 'ID', all.x = TRUE)
 
 
+if (medPROM == 1) {
     #Oppfølgigsskjema:
-    #Ikke filtrert på ferdigstilt
-    # qOppf0 <- paste0('select * FROM followup
-    #                 INNER JOIN operation on followup.MCEID = operation.MCEID')
-                    # WHERE operation.STATUS = 1 AND
-                    # operation.OP_DATE >= \'', datoFra, '\' AND operation.OP_DATE <= \'', datoTil, '\'')
-
     Oppf0Skjema <- hentDataTabell(tabellnavn = "followup",
                                               qVar = '*',
                                               egneVarNavn = 1)
+   Oppf0Skjema <- Oppf0Skjema |> dplyr::rename(Opf0metode = FOLLOWUP_TYPE)
+   # followup.PROM_ANSWERED AS Opf0BesvarteProm, -> Opf0Utf ->Opf0UtfViaEprom
 
-    Oppf6Skjema <- hentDataTabell(tabellnavn = "followup6",
+   Oppf6Skjema <- hentDataTabell(tabellnavn = "followup6",
                                   qVar = '*',
                                   egneVarNavn = 1)
-    #Trenger ikke denne? For å avgjøre om svart?
+
+   #Trenger ikke denne? For å avgjøre om svart?
+    qProm <- "CENTREID, DISTRIBUTION_RULE, EXPIRY_DATE,
+    FORM_ORDER_STATUS_ERROR_CODE, MCEID, NOTIFICATION_CHANNEL, REGISTRATION_TYPE,
+    REMINDER_DATE, STATUS, TSRECEIVED, TSSENDT, TSUPDATED"
+
     PromSkjema <- hentDataTabell(tabellnavn = "proms",
-                                  qVar = '*',
+                                  qVar = qProm,
                                   egneVarNavn = 0)
+
     RANDskjema <- hentDataTabell(tabellnavn = "rand36",
-                                  qVar = '*') #Henter alltid egne variabelnavn
+                                  qVar = '*') #Benytter alltid egne variabelnavn
 
     TSS2Skjema <- hentDataTabell(tabellnavn = "tss2",
                                  qVar = '*',
                                  egneVarNavn = 1)
-#    prem - tom, proms, rand36, tss2
-# type: RAND36_0     RAND36_1 RAND36_3         TSS2
 
-        # SAMMENSTILL ALLE SKJEMA:
-    RegData <-
-      merge(mceSkjema, # centre, by.x = "CENTREID", by.y = "ID", suffixes = c("", "Shus"), all.y = TRUE) |>
-            PasSkjema, by.x = "PATIENT_ID", by.y = "PasientID",
-            suffixes = c("", "_pas")) |>
-      merge(LapSkjema, by = "MCEID", all.x=TRUE, suffixes = c("", "_lap")) |>
-      merge(HysSkjema,
-            by = "MCEID", all.x = TRUE, suffixes = c("", "_hys")) |>
-      merge(OpSkjema,
-            suffixes = c("", "_op"), by = "MCEID", all.x = TRUE) |>
-      merge(EnhetsNavn,
-            by.x = "CENTREID", by.y = 'ID', all.x = TRUE) |>
+    PREMskjema <- hentDataTabell(tabellnavn = "prem",
+                                 qVar = '*',
+                                 egneVarNavn = 1)
+
+        # SAMMENSTILL SKJEMA:
+    RegData <- RegData |>
       merge(Oppf0Skjema,
             by = "MCEID",all.x = TRUE, suffixes = c("", "_oppf0")) |>
       merge(Oppf6Skjema,
@@ -198,14 +213,16 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
           by.x = "MCEID", by.y = 'ForlopsID', all.x = TRUE,
           suffixes = c("", "_rand"))  |>
       merge(TSS2Skjema,
-            by = "MCEID", all.x = TRUE, suffixes = c("", "_tss2"))
+            by = "MCEID", all.x = TRUE, suffixes = c("", "_tss2")) |>
+      merge(PREMskjema,
+            by = "MCEID", all.x = TRUE, suffixes = c("", "_prem"))
+}
   }
 
   if (gml==1){
     Oppf0skjema <- followupsnum(datoFra = datoFra, datoTil = datoTil)
     AlleVarNum <- AlleVarNum(datoFra = datoFra, datoTil = datoTil)
     RegData <- dplyr::left_join(AlleVarNum, Oppf0skjema, by="ForlopsID")
-  }
 
   if (medPROM==1) {
     RAND36 <-  rand36report() # -> fas ut og la følge samme mønster som andre tab
@@ -231,6 +248,18 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
 
     RegData <- dplyr::left_join(RegData, RAND36w, by="ForlopsID")
   }
+  }
+
+  #Fjern var
+ RegData <- RegData[ ,-c(grep('CENTREID', names(RegData)),
+                         grep('COMMENT', names(RegData)),
+                         grep('CREATED', names(RegData)),
+                         grep('ForstLukket', names(RegData)),
+                         grep('FORM_COMPLETED_VIA_PROM', names(RegData)),
+                         grep('CLOSED', names(RegData)),
+                         grep('UPDATED', names(RegData)),
+                         grep('_SPECIFY', names(RegData)))]
+
 
   return(invisible(RegData))
 }

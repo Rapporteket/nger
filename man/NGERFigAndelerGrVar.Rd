@@ -41,14 +41,16 @@ IKKE tatt høyde for sammenlikning mot "resten".}
 \item{maxald}{Alder, til og med (Standardverdi: 130)}
 
 \item{OpMetode}{1: Laparoskopi
-2: Hysteroskopi
-3: Begge # 21.okt. 2022: Fjernes som eget valg. Blir med i både laparoskopi og hysteroskopi
-4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
-5: LCC11 (laparoskopisk subtotal hysterektomi)
-6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
-7: Robotassisert inngrep
-8: Kolpopeksiene
-9: Hysterectomier (alle)}
+ 2: Hysteroskopi
+ 3: Begge # 21.okt. 2022: Fjernes som eget valg. Blir med i både laparoskopi og hysteroskopi
+ 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
+ 5: LCC11 (laparoskopisk subtotal hysterektomi)
+ 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
+ 7: Lap m/robot
+ 8: Kolpopeksiene
+ 9: Hysterectomier (alle)
+10: Lap u/robot
+11: Laparoskopi med vaginal tilgang}
 
 \item{AlvorlighetKompl}{Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
 Angis som en vektor av tall som tekst, f.eks. c('1','2')
@@ -66,9 +68,14 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 til systemets standard utdataenhet (som regel skjerm))}
 
 \item{velgDiag}{0: Alle
-1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
+1: Godartede ovarialcyster
 2: Endometriose, livmorvegg (N80.0)
-3: Endometriose, unntatt livmorvegg.}
+3: Endometriose utenom livmorvegg.
+4: Onkologi
+5: Generell gynekologi
+6: Gravide
+7: Komplikasjoner
+8: Infertilitet}
 
 \item{preprosess}{Preprosesser data
 0: Nei (Standard)
@@ -87,29 +94,4 @@ Variable funksjonen benytter: Alder (beregnes), Opf0Komplikasjoner, Opf0Reoperas
  Opf0KomplInfeksjon, Opf0KomplOrganUtdanning, KomplPostopAlvor
  HysKomplikasjoner, LapKomplikasjoner, OpMetode, OpAntibProfylakse, OpASA, OpBMI, Opf0Status.
  Det benyttes også andre variable til utvalg osv.
-
-Argumentet \emph{valgtVar} har følgende valgmuligheter:
-   \itemize{
-	\item Alder: Andel pasienter over 70 år.
-	\item KomplIntra: Komplikasjoner under operasjon (intraoperativt)
-	\item KomplPostop: Postoperative komplikasjoner
-	\item OpAntibProfylakse: Fått antibiotikaprofylakse
-	\item OpASA: ASA-grad > II
-	\item OpBMI: Pasienter med fedme (BMI>30)
-	\item KomplPostopAlvor: Alvorlige komplikasjoner (grad 3 og 4)
-	\item Opf0KomplBlodning: Postop. komplikasjon: Blødning
-	\item Opf0KomplUtstyr: Postop. komplikasjon: Problemer med ustyr
-	\item Opf0KomplInfeksjon: Postop. komplikasjon: Infeksjon
-	\item Opf0KomplOrgan: Postop. komplikasjon: Organskade
-	\item Opf0Reoperasjon: Reoperasjon som følge av komplikasjon
-	\item Opf0Status: Fått postoperativ oppfølging
-   \item RegForsinkelse: Mer enn XX (1mnd?) fra operasjon til ferdigstilt registrering
-   \item Tss2Mott: Møtet med gynekologisk avdeling var mindre godt
-   \item Tss2Behandling: Behandlingens opplegg og innhold passet ikke pasienten
-   \item Tss2Lytte: Pasientens behandlere lyttet- og forsto ikke det som ble tatt opp
-   \item Tss2Behandlere: Pasienten hadde ikke tillit til sine behandlere
-   \item Tss2Enighet: Pasient og behandlere ikke enige om målsetn. for behandlinga
-   \item Tss2Generelt: Negativ eller svært negativ oppfatning om gyn. avd.
-	\item Utdanning: Pasienter med høyere utdanning
-   }
 }

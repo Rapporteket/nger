@@ -20,8 +20,6 @@
 
 NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype='andeler'){
   #grVar='',
-
-
   "%i%" <- intersect
 
   #----------- Figurparametre ------------------------------
@@ -37,16 +35,183 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
   KImaal <- NA
   variable <- 'Ingen'
   tittel <- 'Mangler tittel' #I andelGrVar og GjsnGrVar genereres tittel i beregningsfunksjonen
+  RegData$Variabel <- 0
 
   #-------------------------------------
-  RegData$Variabel <- 0
+  # Definisjon av komplikasjonsvariaber. Variablene leveres av HN-IKT
+  # Opf0Reoperasjon = Opf0ReopLaparoskopi + Opf0ReopHysteroskopi + Opf0ReopLaparotomi	 + Opf0ReopVaginal + ..Annet
+  # Opf0KomplBlodning =	Opf0BlodningAbdom	Opf0BlodningVaginal	Opf0BlodningIntraabdominal
+  # Opf0KomplOrgan =	Opf0OrganTarm	Opf0OrganBlare	Opf0OrganUreter	Opf0OrganKar	Opf0OrganAnnen
+
 
   TSS0var <- c('Tss2Mott',	'Tss2Behandling',	'Tss2Lytte',	'Tss2Behandlere',	'Tss2Enighet',	'Tss2Generelt')
   Rand0var <- c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',	'R0ScoreEmo',
                 'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')
   if (valgtVar %in% c(TSS0var, Rand0var)) {
-   RegData <- RegData[RegData$InnDato >= '2016-01-01', ]}
+   RegData <- RegData[RegData$OpDato >= '2016-01-01', ]}
 
+  #--------------- PREM-skjema -------------------------------
+  # Innført for operasjoner f.o.m. 1.jan 2026
+
+  if ( substr(valgtVar, 1, 4) == 'PREM') { #andeler, andelGrVar, andelTid
+
+    RegData <- RegData[which(RegData$PREMUtfylt == 1), ]
+    #RegData$Variabel <- RegData[,valgtVar]
+    if (figurtype %in% c('andelGrVar', 'andelTid')) {
+      RegData <- dplyr::filter(RegData, Variabel %in% 0:4 )
+      sortAvtagende <- TRUE
+      OKverdi <- if (valgtVar %in% c('PREMVente', 'PREMFeil')) {0:1} else {3:4}
+      RegData$Variabel[which(RegData[ ,valgtVar] %in% OKverdi)] <- 1
+    }
+
+    tittel <- switch(valgtVar,
+                     PREMSnakke = "Snakket behandlerne til deg slik at du forsto dem?",
+                     PREMDyktig = "Har du tillit til behandlernes faglige dyktighet?",
+                     PREMTillit = "Har du tillit til det øvrige personalets faglige dyktighet?",
+                     PREMDiagn = "Fikk du tilstrekkelig informasjon om din diagnose / dine plager?",
+                     PREMOpr = "Ble du informert om mulige plager i tiden etter operasjonen",
+                     PREMDialog = "Synes du dine behandlere la til rette for god dialog?",
+                     PREMForsto = "Synes du dine behandlere forstod det du tok opp?",
+                     PREMInvolvert = "Var du involvert i avgjørelser som angikk din behandling?",
+                     PREMOrg = "Var avdelingens arbeid godt organisert?",
+                     PREMTilfreds = "Fikk du tilfredsstillende hjelp og behandling på avd.?",
+                     PREMVente = "Måtte du vente for å få tilbud ved gynekologisk avdeling?",
+                     PREMFeil = "Mener du at du på noen måte ble feilbehandlet?",
+                     PREMUtbytte = "Utbytte av behandlingen på gynekologisk avdeling"
+                     )
+
+    grtxt <- c('Ikke i det hele tatt',
+               'I liten grad',
+               'I noen grad',
+               'I stor grad',
+               'I svært stor grad',
+               'Ikke aktuelt')
+
+    if (valgtVar == 'PREMUtbytte'){
+      grtxt <- c('Ikke noe utbytte',
+                 'Lite utbytte',
+                 'En del utbytte',
+                 'Stort utbytte',
+                 'Svært stort utbytte',
+                 'Ikke aktuelt')}
+    RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = c(0:4, 9), labels = grtxt)
+
+  }
+
+
+#------------------- 6-månederskontroll',
+  # Har du etter din operasjon vært behandlet i spesialisthelsetjenesten/ på sykehus for komplikasjon?
+  #   Opf6mKomplikasjoner
+  # Fig. Tilsv. Postoperative komplikasjoner (opf0) Både fordelingsfigur og andelsfig
+  # COMPLICATIONS_RUPTUR	COMPLICATIONS_REOP	COMPLICATIONS_INFECTION
+
+  if (valgtVar=='Opf6mKomplikasjoner') { #andelGrVar, andelTid
+    # Andel postoperative komplikasjoner
+    RegData <- RegData[which(RegData$Opf6mKomplikasjoner %in% 0:1), ]
+    RegData$Variabel[RegData$Opf6mKomplikasjoner==1] <- 1
+    varTxt <- 'komplikasjoner'
+    tittel <- 'Komplikasjoner, 6 mnd. etter'
+  }
+
+  if (valgtVar=='Opf6mKomplikasjonerType') { #fordeling,
+    #Postoperative komplikasjoner. Bare registreringer hvor Opf0Komplikasjoner er 0 el. 1
+    tittel <- 'Postoperative komplikasjoner, 6 mnd. etter'
+    RegData <- RegData[which(RegData$Opf6mKomplikasjoner %in% 0:1), ]
+    grtxt <- c('Vag.ruptur', 'Reoperasjon','Infeksjon')
+    variable <- c('Opf6mVagRupt', 'Opf6mReoperasjon', 'Opf6mKomplInfeksjon')
+    xAkseTxt <- 'Andel operasjoner (%)'
+    ind1 <- which(RegData[ ,variable] == 1, arr.ind=T) #Ja i alle variable
+    RegData[ ,variable] <- 0
+    RegData[ ,variable][ind1] <- 1
+    flerevar <- 1
+  }
+
+  if (valgtVar=='Opf6mVagRupt') {   #AndelSh/Tid
+    RegData <- RegData[which(RegData$Opf6mUtfylt == 1), ] #evt. Opf6mKomplikasjoner %in% 0:1
+    RegData$Variabel[RegData$Opf6mVagRupt==1] <- 1
+    tittel <- 'Har du blitt behandlet for vaginaltoppsruptur?'
+    varTxt <- 'rupturer'
+    sortAvtagende <- FALSE
+  }
+
+
+  if (valgtVar=='Opf6mReoperasjon') {   #AndelSh/Tid
+    RegData <- RegData[which(RegData$Opf6mKomplikasjoner %in% 0:1), ] # evt. Opf6mUtfylt == 1), ]
+    RegData$Variabel[RegData$Opf6mReoperasjon==1] <- 1
+    tittel <- 'Har du blitt operert på nytt?'
+    varTxt <- 'reoperasjoner'
+    sortAvtagende <- FALSE
+  }
+
+  if (valgtVar=='Opf6mKomplInfeksjon') {   #AndelSh/Tid
+    RegData <- RegData[which(RegData$Opf6mKomplikasjoner %in% 0:1), ] # evt. Opf6mUtfylt == 1), ]
+    RegData$Variabel[RegData$Opf6mKomplInfeksjon==1] <- 1
+    tittel <- 'Antibiotikabehandlet infeksjon etter operasjonen?'
+    varTxt <- 'infeksjoner'
+    sortAvtagende <- FALSE
+  }
+
+
+  if (valgtVar=='Opf6mAlvorlighetsGrad') { #fordeling,
+    tittel <- 'Alvorlighet av komplikasjoner, 6mnd etter'
+    RegData <- RegData[which(RegData$Opf6mKomplikasjoner == 1), ]
+    grtxt <- c('Lite alvorlig', 'Middels alvorlig', 'Alvorlig', 'Dødelig')
+    RegData$VariabelGr <- factor(RegData$Opf6mAlvorlighetsGrad, levels=1:4, labels = grtxt)
+    xAkseTxt <- 'Andel operasjoner (%)'
+  }
+
+  if (valgtVar == 'Opf6mEttervirkninger'){ #fordeling
+    tittel <- 'Ettervirkninger innen 6 mnd'
+    RegData <- RegData[which(RegData$Opf6mBaktVaginose %in% 0:1), ]
+    grtxt <- c('Vaginose', 'Sopp', 'Utflod', 'Kløe',
+               'Svie', 'Tørrhet')
+    variable <- c('Opf6mBaktVaginose', 'Opf6mSoppinf','Opf6mUtflod', 'Opf6mKloe',
+                  'Opf6mSvie', 'Opf6mTorrhet')
+    xAkseTxt <- 'Andel operasjoner (%)'
+    ind1 <- which(RegData[ ,variable] == 1, arr.ind=T) #Ja i alle variable
+    RegData[ ,variable] <- 0
+    RegData[ ,variable][ind1] <- 1
+    flerevar <- 1
+  }
+
+  if (valgtVar == 'Opf6mDagerSyk') {   #Gjsn
+    tittel <- 'sykemeldingsdager totalt' #, Slå sammen undervekt, fedme 2 og 3.
+    RegData <- RegData[which(RegData$Opf6mDagerSyk>0), ]
+    xAkseTxt <- 'dager'
+    RegData$Variabel <- RegData$Opf6mDagerSyk
+    sortAvtagende <- FALSE
+  }
+  if (valgtVar=='Opf6mSykemeldt') { #fordeling,
+    tittel <- 'Lengde av sykemelding'
+    RegData <- RegData[which(RegData$Opf6mSykemeldt >=0), ]
+    gr <- 0:3
+    grtxt <- c('Ingen', '1-2u', '3-4u', '5+ u')
+    RegData$VariabelGr <- factor(RegData$Opf6mSykemeldt, levels=gr, labels = grtxt)
+    xAkseTxt <- 'Andel operasjoner (%)'
+  }
+
+
+
+if (valgtVar=='Opf6mPoliklinisk') { #AndelSh/Tid,
+  RegData <- RegData[which(RegData$Opf6mPoliklinisk %in% 0:1), ] # evt. Opf6mUtfylt == 1), ]
+  RegData$Variabel[RegData$Opf6mPoliklinisk==1] <- 1
+  tittel <- 'Komplikasjon beh. poliklinisk'
+  varTxt <- 'kompl. pol.'
+  sortAvtagende <- FALSE
+}
+if (valgtVar=='Opf6mInnlagt') { #AndelSh/Tid,
+  RegData <- RegData[which(RegData$Opf6mInnlagt %in% 0:1), ] # evt. Opf6mUtfylt == 1), ]
+  RegData$Variabel[which(RegData$Opf6mInnlagt==1)] <- 1
+  tittel <- 'Komplikasjon beh. med innleggelse'
+  varTxt <- 'kompl. innl.'
+  sortAvtagende <- FALSE
+}
+
+
+which(RegData$Opf6mPoliklinisk==1 & RegData$Opf6mInnlagt==1)
+table(RegData$Opf6mInnlagt)
+
+  #-----------------------------------------------------------------------
 
   if (valgtVar=='Alder') {	#Andeler, , #andelGrVar, GjsnGrVar, GjsnTid
     RegData <- RegData[which(RegData$Alder>=0), ]    #Tar bort alder<0
@@ -132,6 +297,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
 	varTxt <- 'komplikasjoner'
     tittel <- 'Komplikasjoner, postoperativt'
   }
+
   if (valgtVar=='Opf0AlvorlighetsGrad') {   #fordeling
     #Postoperative komplikasjoner
     #Kode 1-Lite alvorlig, 2-Middels alvorlig, 3-Alvorlig, 4-Dødelig
@@ -155,10 +321,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
     grtxt <- c('Ingen kompl.', 'Lite alvorlig', 'Middels alvorlig', 'Alvorlig', 'Dødelig')
     koder <- 1:4
     retn <- 'H'
-     #if (figurtype %in% c('andelGrVar', 'andelTid')) { #Bare denne type fig
-      #Andel av postoperative komplikasjoner som var moderate 2 eller alvorlige (3 og 4)
-    #Ha med denne?  RegData <- RegData[which(RegData$Opf0Komplikasjoner %in% 0:1), ]
-      RegData$Variabel[which(RegData$Opf0AlvorlighetsGrad %in% 2:4)] <- 1
+    RegData$Variabel[which(RegData$Opf0AlvorlighetsGrad %in% 2:4)] <- 1
 	  varTxt <- 'komplikasjoner grad 2-4'
       tittel <- 'Postop. komplikasjon, moderat/alvorlig'
       sortAvtagende <- F
@@ -394,12 +557,12 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
     tittel <- 'Oppfølgingsmetode for PROM-skjema'
     gr <- c(1,2,3,9)
     grtxt <- c('post', 'telefon', 'ePROM', 'Ikke besvart')
-    RegData$Opf0metode[RegData$Opf0metode==3 & RegData$Opf0BesvarteProm==0] <- 9
+    RegData$Opf0metode[RegData$Opf0metode==3 & RegData$Opf0UtfViaEprom ==0] <- 9
     RegData[RegData$Opf0metode %in% c(1:3,9), ]
     RegData$VariabelGr <- factor(RegData[ ,valgtVar], levels = gr)
   }
 
-  #Opf0BesvarteProm angir om skjemaet er besvart eller utløpt via ePROM og vil være null for skjema som er manuelt inntastet.
+  # Opf0UtfViaEprom angir om skjemaet er besvart eller utløpt via ePROM og vil være null for skjema som er manuelt inntastet.
   #Opf0Status angir om oppfølgingsskjemaet er opprettet, kladd eller ferdigstilt.
   #Siden Opf0Status er en avkrysningsboks kan den kun settes til true (1) og false (0) på skjemaene i registerapplikasjonen og
   #disse lagres som binære tallverdier i databasen. I tillegg settes Status variabler til -1 når skjema opprettes.
@@ -412,8 +575,8 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
     #Kode: tomme, -1,0,1 8.feb.2022 -1 og 0 har "forsvunnet". Nå bare 1 og tomme
     #Tar ut hendelser siste 8 uker:
     datoTil <- as.Date(Sys.Date() - 8*7)  #min(as.POSIXlt(datoTil), as.POSIXlt(Sys.Date() - 8*7))
-    RegData <- RegData[which(as.Date(RegData$InnDato) <= datoTil),]
-    RegData$Variabel[(RegData$Opf0metode %in% 1:2) | (RegData$Opf0metode==3 & RegData$Opf0BesvarteProm==1)] <- 1
+    RegData <- RegData[which(as.Date(RegData$OpDato) <= datoTil),]
+    RegData$Variabel[(RegData$Opf0metode %in% 1:2) | (RegData$Opf0metode==3 & RegData$Opf0UtfViaEprom==1)] <- 1
     #RegData$Variabel[RegData$Opf0metode %in% 1:3 ] <- 1 # Må fjerne de som ikke har svart på PROM
   #RegData$Variabel[RegData$Opf0Status==1] <- 1 Her vil vi også få med de som har oppfølging ikke mulig. Uansett er denne variabelen feil (7.feb.2022
     varTxt <- 'svar på postoperativ oppfølging'
@@ -446,8 +609,8 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
   }
   if (valgtVar == 'RegForsinkelse') {  #Andeler, GjsnGrVar
     #Leveringsdato vil oppdateres ved reåpning og kan derfor ikke brukes. mars19: Toril mener den er pålitelig nok.
-    #17.nov-23: Endrer til OpForstLukket
-    RegData$Diff <- as.numeric(as.Date(RegData$OpForstLukket) - as.Date(RegData$InnDato)) #difftime(RegData$InnDato, RegData$Leveringsdato) #
+    #17.nov-23: Endrer til OpForstLukket som navnes om til OpFerdigstilt
+    RegData$Diff <- as.numeric(as.Date(RegData$OpFerdigstilt) - as.Date(RegData$OpDato)) #difftime(RegData$OpDato, RegData$Leveringsdato) #
     RegData <- RegData[which(RegData$Diff > -1), ]
     tittel <- switch(figurtype,
                      andeler='Tid fra operasjon til ferdigstilt registrering',
@@ -462,7 +625,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
     gr <- c(0,1,7,14,30,90,365,5000) #gr <- c(seq(0, 90, 10), 1000)
     RegData$VariabelGr <- cut(RegData$Diff, breaks = gr, include.lowest = TRUE, right = TRUE)
     grtxt <- c('<= 1', '(1-7]', '(7-14]', '(14-30]', '(30-90]', '(90-365]', '>365')
-    #grtxt <- c(levels(RegData$VariabelGr)[1:(length(gr)-2)], '>90')
+    sortAvtagende <- FALSE
     cexgr <- 0.9
   }
 
@@ -680,7 +843,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData$VariabelGr <- factor(RegData$Tss2Generelt, levels=koder, labels = grtxt) #levels=c(nivaa,9)
     if (figurtype %in% c('andelGrVar', 'andelTid')) {
       RegData$Variabel[which(RegData$Tss2Generelt %in% 3:4)] <- 1
-      KvalIndGrenser <- c(0, 80, 90, 100)
+      # KvalIndGrenser <- c(0, 80, 90, 100) #2026: Ikke lenger kvalitetsindikator
       sortAvtagende <- TRUE
       }
     if (figurtype == 'gjsnGrVar') {
@@ -734,8 +897,19 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
   #Vi sender tilbake alle variable som indikatorvariable, dvs. med 0,1,NA
   #(Alternativt kan vi gjøre beregninga her og sende tilbake teller og nevner for den sammensatte variabelen)
 
-  if (valgtVar %in% c('Diagnoser', 'DiagnoseGr')) { #Tilfelle hvor man heller endrer format på variablene...?
-    #Gammel kommentar?: PER NÅ FEIL. SAMME DIAGNOSE KAN VÆRE FØRT OPP FLERE GANGER FOR SAMME PASIENT.
+
+#FIGURER SATT SAMMEN AV FLERE VARIABLE, ULIKT TOTALUTVALG
+if (valgtVar %in% c('Diagnoser', 'DiagnoseGr', 'KomplPostopType', 'KomplAlvorPostopType',
+                    'HysKomplikasjoner', 'LapKomplikasjoner',
+                    'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr',
+                    'LapKomplIntra', 'LapTeknikk', 'Prosedyrer',
+                    'ProsedyreGr', 'ProsViktigLap', 'ProsViktigHys')){
+  flerevar <- 1
+  retn <- 'H'}
+
+#c('Diagnoser', 'DiagnoseGr', 'Prosedyrer', 'ProsedyreGr','ProsViktigLap', 'ProsViktigHys'))
+
+if (valgtVar %in% c('Diagnoser', 'DiagnoseGr')) { #Tilfelle hvor man heller endrer format på variablene...?
     #Tar unique for hver rad. Antar dette er for å ta høyde for at sm. diag oppf. flere ganger.
     tittel <- 'Hyppigst forekommende diagnoser'
     diagLap <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3')
@@ -743,7 +917,6 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     var <- c(diagLap, diagHys)
     ant <- 20
     cexgr <- 1-0.005*ant
-    #RegData <- NGERPreprosess(NGERRegDataSQL())
     if (valgtVar=='DiagnoseGr') {
       for (k in var) {
         RegData$var <- RegData[,k]
@@ -784,40 +957,28 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     if (sum(ind_na) > 0) {
       AlleDiag <- AlleDiag[-which(ind_na)] }
 
-  # if (valgtVar=='DiagnoseGr') {
-  #   #Slår sammen til grupper:
-  #   # Sterk, ofte/uregelm. menstruasjon  N92.X
-  #     AlleDiag[grep('N92',AlleDiag)] <- 'UregMens' #'Sterk, ofte, uregelm. menstr.'
-  #   # Leiomyom i uterus D25.X
-  #     AlleDiag[grep('D25',AlleDiag)] <- 'Leiomyom' #'Leiomyom i uterus'
-  #   # Cyste/tumor i ovarium (D27, N83.0, N83.1, N83.2
-  #     AlleDiag[union(grep('D27',AlleDiag),
-  #                    AlleDiag %in% c('N830', 'N831', 'N832'))] <- 'Cyste'  #'Cyste,tumor i ovarium'
-  #   # Dysmenore (N94.4, N95.5, N94.6)
-  #     AlleDiag[AlleDiag %in% c('N944', 'N955', 'N946')] <- 'Dysmenore'
-  #   # Endometriose N80.X
-  #     AlleDiag[grep('N80',AlleDiag)] <- 'Endometriose'
-  #   # Infertilitet  N97.X	:
-  #     AlleDiag[grep('N97',AlleDiag)] <- 'Infertilitet'
-  #   # Svangerskap u livmor  O00.X
-  #     AlleDiag[grep('O00',AlleDiag)] <- 'SvangerUL' #'Svangerskap u livmor'
-  #   # Adheranser i buk/bekken  N73.6, N99.4
-  #     AlleDiag[AlleDiag %in% c('N736', 'N994')] <- 'Adheranser' #'Adheranser i buk,bekken'
-  #   # Polypp i kjønnsorganer  N84.X
-  #     AlleDiag[grep('N84',AlleDiag)] <- 'Polypp' #'Polypp i kjønnsorganer'
-  #   #	Dysplasi i livmorhals N87.X
-  #     AlleDiag[grep('N87',AlleDiag)] <- 'Dysplasi' #'Dysplasi i livmorhals'
-#}
     AlleDiagSort <- sort(table(AlleDiag[which(AlleDiag != '')]), decreasing = TRUE)
-    variable <- names(AlleDiagSort)[1:min(length(AlleDiagSort), ant)]	#Alle diagnoser som skal være med. Kan benyttes til å lage indeks...
-    grtxt <- dplyr::recode(variable,
-                    'UregMens' = 'Sterk/ofte/uregelm. menstr.',
-                    'Leiomyom'= 'Leiomyom i uterus',
-                    'Cyste' = 'Cyste/tumor i ovarium',
-                    'SvangerUL' = 'Svangerskap u/livmor',
-                    'Adheranser' = 'Adheranser i buk/bekken',
-                    'Polypp' = 'Polypp i kjønnsorganer',
-                    'Dysplasi' = 'Dysplasi i livmorhals'
+    variable <- names(AlleDiagSort)[1:min(length(AlleDiagSort), ant)]
+    #Alle diagnoser som skal være med. Kan benyttes til å lage indeks...
+
+    # df_recoded <- df %>%
+    #   dplyr::mutate(
+    #     category = case_when(
+    #       category == "apple"  ~ "fruit_a",
+    #       category == "orange" ~ "fruit_o",
+    #       TRUE ~ category   # beholder original verdi
+    #     )
+    #   )
+
+
+    grtxt <- dplyr::replace_values(variable,  #recode
+                    'UregMens' ~ 'Sterk/ofte/uregelm. menstr.',
+                    'Leiomyom' ~ 'Leiomyom i uterus',
+                    'Cyste' ~ 'Cyste/tumor i ovarium',
+                    'SvangerUL' ~ 'Svangerskap u/livmor',
+                    'Adheranser' ~ 'Adheranser i buk/bekken',
+                    'Polypp' ~ 'Polypp i kjønnsorganer',
+                    'Dysplasi' ~ 'Dysplasi i livmorhals'
                     )
     nymatr <- as.data.frame(matrix(0,dim(RegData)[1],ant))
     names(nymatr) <- variable
@@ -852,7 +1013,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     variable <- names(AlleProsSort)[1:min(length(AlleProsSort), ant)]
     grtxt <- variable
     if (valgtVar == 'ProsedyreGr') {
-      grtxt <- dplyr::recode(variable, 'laphyst' = 'Lapar. hysterektomi')}
+      grtxt <- dplyr::replace_values(variable, 'laphyst' ~ 'Lapar. hysterektomi')} #recode
     nymatr <- as.data.frame(matrix(0,dim(RegData)[1], ant))
     names(nymatr) <- variable
     for (k in variable) {
@@ -914,15 +1075,6 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData <- data.frame(RegData,nymatr)
   }
 
-  #FIGURER SATT SAMMEN AV FLERE VARIABLE, ULIKT TOTALUTVALG
-  if (valgtVar %in% c('Diagnoser', 'DiagnoseGr', 'KomplPostopType', 'KomplAlvorPostopType',
-                      'HysKomplikasjoner', 'LapKomplikasjoner',
-                      'KomplPostUtd', 'KomplReopUtd', 'LapEkstrautstyr',
-                      'LapKomplIntra', 'LapTeknikk', 'Prosedyrer', 'ProsedyreGr',
-                      'ProsViktigLap', 'ProsViktigHys')){
-    flerevar <- 1
-    retn <- 'H'}
-
 
   if (valgtVar=='HysKomplikasjoner') {
     #Hysteroskopi intrapoerative komplikasjoner:
@@ -943,7 +1095,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
   if (valgtVar=='HysSkadeaarsakIntra') {
     #Hysteroskopi intrapoerative komplikasjoner:
     # Innført 14.nov 2023
-    RegData <- RegData[which(as.Date(RegData$OpForstLukket) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
+    RegData <- RegData[which(as.Date(RegData$OpFerdigstilt) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
     flerevar <- 1
     variable <- c('HysSkadeaarsakStenose', 'HysSkadeaarsakAd', 'HysSkadeaarsakTeknUtst',
                   'HysSkadeaarsakAnatomi', 'HysSkadeaarsakAnnet')
@@ -1095,7 +1247,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData <- RegData[RegData$LapKomplikasjoner %in% 0:1, ]	#
   }
   if (valgtVar== 'LapSkadeIntra') { #
-    RegData <- RegData[which(as.Date(RegData$OpForstLukket) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
+    RegData <- RegData[which(as.Date(RegData$OpFerdigstilt) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
     flerevar <- 1
     variable <- c('LapSkadeTilgang', 'LapSkadeUthent', 'LapSkadeDissek',
                   'LapSkadeForsegl', 'LapSkadeAnnet')
@@ -1105,7 +1257,7 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
   }
 
   if (valgtVar=='LapSkadeaarsakIntra') {
-    RegData <- RegData[which(as.Date(RegData$OpForstLukket) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
+    RegData <- RegData[which(as.Date(RegData$OpFerdigstilt) > as.Date('2023-11-13')), ] # "SJEKK ForstLukket
     flerevar <- 1
     variable <- c('LapSkadeaarsakTeknUtst', 'LapSkadeaarsakAdher', 'LapSkadeaarsakTidlKir',
                   'LapSkadeaarsakAnnet')
@@ -1157,7 +1309,19 @@ if (valgtVar == 'Tss2Enighet') {   #Andeler, #andelGrVar
     RegData[ ,variable[4:7]][ind1tilg] <- 1
   }
 
-    if (valgtVar == 'Opf0KomplInfeksjon') {   #Andeler, andelGrVar, andelTid
+if (valgtVar=='Opf0hvor') {
+  flerevar <- 1
+  variable <- c('Opf0FastlegeVakt',	#Fastlege/legevakt
+                'Opf0PolAkutt',	#På sykehus poliklinikk/akuttmottak
+                'Opf0Innlagt'	#Innlagt på sykehus
+  )
+  grtxt <- c('Lege/-vakt', 'Pol/akutt', 'Innlagt')
+  tittel <- 'Hvor fikk du behandling?'
+  #RegData <- RegData[which(RegData$Opf0Komplikasjoner %in% 0:1), ]
+  xAkseTxt <- 'Andel operasjoner (%)'
+}
+
+if (valgtVar == 'Opf0KomplInfeksjon') {   #Andeler, andelGrVar, andelTid
     retn <- 'H'
     flerevar <- 1
     #Opf0metode in 1:2 #9 angir "ikke mulig"

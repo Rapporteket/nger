@@ -194,7 +194,7 @@ Neget <- length(indEget)
 Norsk Gynekologisk Endoskopiregister startet elektronisk registrering i 2013. Tabell \ref{tab:RegistrenrendeAvd}
 viser antall registreringer siste 5 år.
 Denne samlerapporten er hovedsakelig basert på registreringer som er lagret og ferdigstilt i NGER for operasjoner
-utført i perioden \Sexpr{min(RegData$InnDato)} til \Sexpr{max(RegData$InnDato)}.
+utført i perioden \Sexpr{min(RegData$OpDato)} til \Sexpr{max(RegData$OpDato)}.
 
 
 
@@ -205,7 +205,7 @@ dum <- NGERFigAndelTid(RegData=RegData, preprosess=0, datoFra=datoFra, valgtVar=
                        reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='StatusOppf0Tid.pdf',
                        tidsenhet = tidsenhet)
 
-tabAvdN <- tabAntOpphSh5Aar(RegDataHele, datoTil=datoTil)$tabAntAvd
+tabAvdN <- tabAntOpphShAar(RegDataHele, datoTil=datoTil)$tabAntAvd
 
 print(xtable::xtable(tabAvdN, digits=0, align=c('l', rep('r', max(c(1,ncol(tabAvdN)), na.rm=T))),
                      caption='Antall registrerte operasjoner siste 5 år.',

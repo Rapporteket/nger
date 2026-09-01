@@ -50,14 +50,16 @@ IKKE tatt høyde for sammenlikning mot "resten".}
 \item{maxald}{Alder, til og med (Standardverdi: 130)}
 
 \item{OpMetode}{1: Laparoskopi
-2: Hysteroskopi
-3: Begge # 21.okt. 2022: Fjernes som eget valg. Blir med i både laparoskopi og hysteroskopi
-4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
-5: LCC11 (laparoskopisk subtotal hysterektomi)
-6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
-7: Robotassisert inngrep
-8: Kolpopeksiene
-9: Hysterectomier (alle)}
+ 2: Hysteroskopi
+ 3: Begge # 21.okt. 2022: Fjernes som eget valg. Blir med i både laparoskopi og hysteroskopi
+ 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
+ 5: LCC11 (laparoskopisk subtotal hysterektomi)
+ 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
+ 7: Lap m/robot
+ 8: Kolpopeksiene
+ 9: Hysterectomier (alle)
+10: Lap u/robot
+11: Laparoskopi med vaginal tilgang}
 
 \item{AlvorlighetKompl}{Alvorlighetsgrad for postoperative komplikasjoner (Flervalg)
 Angis som en vektor av tall som tekst, f.eks. c('1','2')
@@ -77,9 +79,14 @@ Angis som en vektor av tall som tekst, f.eks. c('1','2')
 1: Ja}
 
 \item{velgDiag}{0: Alle
-1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
+1: Godartede ovarialcyster
 2: Endometriose, livmorvegg (N80.0)
-3: Endometriose, unntatt livmorvegg.}
+3: Endometriose utenom livmorvegg.
+4: Onkologi
+5: Generell gynekologi
+6: Gravide
+7: Komplikasjoner
+8: Infertilitet}
 
 \item{outfile}{Navn på fil figuren skrives til. Standard: '' (Figur skrives
 til systemets standard utdataenhet (som regel skjerm))}

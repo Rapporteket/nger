@@ -11,13 +11,20 @@
 #'                 4: LCD01 eller LCD04 (total laparoskopisk hysterektomi)
 #'                 5: LCC11 (laparoskopisk subtotal hysterektomi)
 #'                 6: LCD11 (laparoskopisk assistert vaginal hysterektomi)
-#'                 7: Robotassisert inngrep
+#'                 7: Lap m/robot
 #'                 8: Kolpopeksiene
 #'                 9: Hysterectomier (alle)
+#'                10: Lap u/robot
+#'                11: Laparoskopi med vaginal tilgang
 #' @param velgDiag 0: Alle
-#'                 1: Ovarialcyster (N83.0, N83.1, N83.2 og D27)
+#'                 1: Godartede ovarialcyster
 #'                 2: Endometriose, livmorvegg (N80.0)
-#'                 3: Endometriose, unntatt livmorvegg.
+#'                 3: Endometriose utenom livmorvegg.
+#'                 4: Onkologi
+#'                 5: Generell gynekologi
+#'                 6: Gravide
+#'                 7: Komplikasjoner
+#'                 8: Infertilitet
 #' @param Hastegrad Hastegrad av operasjon - fjernes jan-25
 #'                1: Elektiv
 #'                2: Akutt
@@ -43,10 +50,9 @@
 #'
 #' @export
 #'
-NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', fargepalett='BlaaOff',
+NGERUtvalgEnh <- function(RegData, datoFra='2011-01-01', datoTil='3000-12-31', fargepalett='BlaaOff',
                           minald=0, maxald=110, OpMetode=0, AlvorlighetKompl=0, #dagkir=9, # Hastegrad=0,
-                          behNivaa = 0,
-                          enhetsUtvalg=0, velgAvd=0, velgDiag=0, reshID=0)
+                          behNivaa = 0, enhetsUtvalg=0, velgAvd=0, velgDiag=0, reshID=0)
 {
   # Definer intersect-operator
   "%i%" <- intersect
@@ -77,14 +83,15 @@ NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', f
   #Utvalg på alder:
   indAld <- which(RegData$Alder >= minald & RegData$Alder <= maxald)
   #Utvalg på dato:
-  indDato <- which(as.Date(RegData$InnDato) >= datoFra & as.Date(RegData$InnDato) <= datoTil)  #as.Date(datoFra)
+  indDato <- which(as.Date(RegData$OpDato) >= datoFra & as.Date(RegData$OpDato) <= datoTil)  #as.Date(datoFra)
   #Operasjonstype:
-  indMCE <- if (OpMetode %in% c(1:3)){which(RegData$OpMetode %in% c(OpMetode,3))
-    } else {indMCE <- 1:Ninn}
-  if (OpMetode %in% c(4:9)) {
+  indOpMet <- if (OpMetode %in% c(1:3)){which(RegData$OpMetode %in% c(OpMetode,3))
+    } else {indOpMet <- 1:Ninn}
+  if (OpMetode %in% c(4:11)) {
       ProsLap <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3', 'LapProsedyre4')
-      hysterektomikoder <- c('LCD00', 'LCD01','LCD04','LCD11', 'LCC11', 'LCD97')
-      indMCE <- switch(as.character(OpMetode),
+      hysterektomikoder <- c('LCC10', 'LCC11', 'LCC20', 'LCD00', 'LCD01', 'LCD04',
+                             'LCD10','LCD11', 'LCD31', 'LCD30', 'LCD40', 'LCD96', 'LCD97')
+      indOpMet <- switch(as.character(OpMetode),
               '4' = unique(c(which(RegData[,ProsLap] == 'LCD01', arr.ind = TRUE)[,1],
                                          which(RegData[,ProsLap] == 'LCD04', arr.ind = TRUE)[,1])), #LCD01 + LCD04: total laparoskopisk hysterektomi
               '5' = which(RegData[,ProsLap] == 'LCC11', arr.ind = TRUE)[,1], #LCC11: laparoskopisk subtotal hysterektomi)
@@ -95,10 +102,22 @@ NGERUtvalgEnh <- function(RegData, datoFra='2016-01-01', datoTil='3000-12-31', f
               '9' = unique(c(which(RegData$LapProsedyre1 %in% hysterektomikoder),
                            which(RegData$LapProsedyre2 %in% hysterektomikoder),
                            which(RegData$LapProsedyre3 %in% hysterektomikoder),
-                           which(RegData$LapProsedyre4 %in% hysterektomikoder)))
-      )
-  }
+                           which(RegData$LapProsedyre4 %in% hysterektomikoder))),
+              '10' = which(RegData$LapRobotKirurgi == 0),
+              '11' = intersect(which(RegData[,ProsLap] == 'LCD97', arr.ind = TRUE)[,1],
+                               which(RegData$LapTilgang == 3))
+              )
+      }
 
+    opMetodeTxt <- c('Laparoskopi', 'Hysteroskopi', 'Begge',
+                     'Tot. lap. hysterektomi (LCD01/LCD04)', #4
+                     'Lap. subtotal hysterektomi (LCC11)',  #5
+                     'Lap. ass. vag. hysterektomi (LCD11)', #6
+                     'Lap.inngr m/robotass.', #7
+                     'Kolpopeksiene', #8
+                     'Hysterektomier', #9
+                     'Lap.inngr u/robotass.',  #10
+                     'Lap., vag. tilg.') #11
 
 if (velgDiag !=0) {
   indDiag <- NULL
@@ -145,47 +164,23 @@ if (velgDiag !=0) {
       which(RegData$Opf0Status == 1)} else {indAlvor <- 1:Ninn}
 
   # OpBehNivaa      #1-Poliklinisk, 2-Dagkirurgi, 3-Inneliggende
-    # tittel <-  'Behandlingsnivå'
   if (behNivaa %in% 1:3) {
     indBehNivaa <- which(RegData$OpBehNivaa == behNivaa)
   } else {indBehNivaa <- 1:Ninn}
 
-  #Hastegrad  1:3 'Elektiv', 'Akutt', 'Ø-hjelp'
-  # indHastegrad <- if (Hastegrad[1] %in% 1:3) {which(RegData$OpKategori %in% as.numeric(Hastegrad))
-  #                 } else {indHastegrad <- 1:Ninn}
-  #Dagkirurgi 0-nei, 1-ja
-  # indDagkir <- if (dagkir %in% 0:1) {
-  #   if (dagkir==0) {which(RegData$OpBehNivaa != 2)}
-  #     if (dagkir==1) {which(RegData$OpBehNivaa == 2)}
-  #   #indDagkir <- if (dagkir %in% 0:1) {which(RegData$OpDagkirurgi == as.numeric(dagkir))
-  # } else {indDagkir <- 1:Ninn}
-
 
   #utvalg:
-  indMed <- indAld %i% indDato %i% indMCE %i% indAlvor %i% indDiag  %i% indBehNivaa
-  # %i% indHastegrad %i% indDagkir
-
+  indMed <- indAld %i% indDato %i% indOpMet %i% indAlvor %i% indDiag  %i% indBehNivaa
   RegData <- RegData[indMed,]
-
   N <- dim(RegData)[1]
 
-
-  utvalgTxt <- c(paste0('Operasjonsdato: ', if (N>0) {min(RegData$InnDato, na.rm=T)} else {datoFra},
-                       ' til ', if (N>0) {max(RegData$InnDato, na.rm=T)} else {datoTil}),
+  utvalgTxt <- c(paste0('Operasjonsdato: ', if (N>0) {min(RegData$OpDato, na.rm=T)} else {datoFra},
+                       ' til ', if (N>0) {max(RegData$OpDato, na.rm=T)} else {datoTil}),
                  if ((minald>0) | (maxald<110))
                     {paste0('Pasienter fra ', if (N>0) {min(RegData$Alder, na.rm=T)} else {minald},
                         ' til ', if (N>0) {max(RegData$Alder, na.rm=T)} else {maxald}, ' år')},
-                 if (OpMetode %in% c(1:9)){paste0('Operasjonstype: ',
-                                                c('Laparoskopi', 'Hysteroskopi', 'Begge',
-                                                  'Tot. lap. hysterektomi (LCD01/LCD04)',
-                                                  'Lap. subtotal hysterektomi (LCC11)',
-                                                  'Lap. ass. vag. hysterektomi (LCD11)',
-                                                  'Robotassisert inngrep',
-                                                  'Kolpopeksiene',
-                                                  'Hysterektomier')[OpMetode])},
-                 # if (Hastegrad[1] %in% 1:3){
-                 #   paste0('Hastegrad: ',
-                 #          paste0(c('Elektiv', 'Akutt', 'Ø-hjelp')[as.numeric(Hastegrad)], collapse=','))},
+                 if (OpMetode %in% c(1:10)){paste0('Operasjonstype: ',
+                                                  opMetodeTxt[OpMetode])},
                  if (behNivaa %in% 1:3){paste0('Behandlingsnivå: ',
                                                c('Poliklinisk', 'Dagkirurgi', 'Innlagt')[as.numeric(behNivaa)])},
                  if (AlvorlighetKompl[1] %in% 1:4){
