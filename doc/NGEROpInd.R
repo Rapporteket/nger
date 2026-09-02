@@ -3,7 +3,7 @@
 #' Denne funksjonen lager en figur over de 20 vanligste operasjonsindikatorene.
 #' I tellingen slås variablene OpInd1, OpInd2 og OpInd3 sammen.
 #'
-#' @inheritParams NGERFigAndeler
+#' @inheritParams NGERFigFordeling
 #' @inheritParams NGERUtvalgEnh
 #'
 #' @return Tabell med de 20 vanligste operasjonsindikatorene

@@ -42,55 +42,55 @@ variabler <- c('OpBMI', 'HysGjforingsGrad','HysKomplikasjoner',
 
 for (valgtVar in variabler) {
 	outfile <- paste0(valgtVar, '_ford.pdf')
-	NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar, outfile=outfile)
+	NGERFigFordeling(RegData=NGERData1aar, preprosess=0, valgtVar=valgtVar, outfile=outfile)
 }
-#NGERFigAndeler(RegData=RegData, preprosess=0, valgtVar='KomplAlvorligPostopType')
+#NGERFigFordeling(RegData=RegData, preprosess=0, valgtVar='KomplAlvorligPostopType')
 
-NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Diagnoser', OpMetode = 1,
+NGERFigFordeling(RegData=NGERData1aar, preprosess=0, valgtVar='Diagnoser', OpMetode = 1,
                outfile='Diagnoser_fordLap.pdf')
-NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Diagnoser', OpMetode = 2,
+NGERFigFordeling(RegData=NGERData1aar, preprosess=0, valgtVar='Diagnoser', OpMetode = 2,
                outfile='Diagnoser_fordHys.pdf')
 
-NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Prosedyrer', OpMetode = 1,
+NGERFigFordeling(RegData=NGERData1aar, preprosess=0, valgtVar='Prosedyrer', OpMetode = 1,
                outfile='Prosedyrer_fordLap.pdf')
-NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Prosedyrer', OpMetode = 2,
+NGERFigFordeling(RegData=NGERData1aar, preprosess=0, valgtVar='Prosedyrer', OpMetode = 2,
                outfile='Prosedyrer_fordHys.pdf')
 
-NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='LapIntraabdominell', OpMetode = 4,
+NGERFigFordeling(RegData=NGERData1aar, preprosess=0, valgtVar='LapIntraabdominell', OpMetode = 4,
                outfile='LapIntraabdominell_fordTotLapHys.pdf')
 
-NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Opf0AlvorlighetsGrad', OpMetode = 1,
+NGERFigFordeling(RegData=NGERData1aar, preprosess=0, valgtVar='Opf0AlvorlighetsGrad', OpMetode = 1,
                outfile='Opf0AlvorlighetsGrad_fordLap.pdf')
-NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Opf0AlvorlighetsGrad', OpMetode = 2,
+NGERFigFordeling(RegData=NGERData1aar, preprosess=0, valgtVar='Opf0AlvorlighetsGrad', OpMetode = 2,
                outfile='Opf0AlvorlighetsGrad_fordHys.pdf')
-NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Opf0AlvorlighetsGrad', OpMetode = 4,
+NGERFigFordeling(RegData=NGERData1aar, preprosess=0, valgtVar='Opf0AlvorlighetsGrad', OpMetode = 4,
                outfile='Opf0AlvorlighetsGrad_fordTotLapHys.pdf')
 
 # Postoperative komplikasjoner Laparoskopi, fordeling: *--lite alvorlige, *--moderat/ alvorlig
-NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='KomplPostopType',
+NGERFigFordeling(RegData=NGERData1aar, preprosess=0, valgtVar='KomplPostopType',
                OpMetode = 1, AlvorlighetKompl = 1, outfile='KomplPostopType_fordLapAlv1.pdf')
-NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='KomplPostopType',
+NGERFigFordeling(RegData=NGERData1aar, preprosess=0, valgtVar='KomplPostopType',
                OpMetode = 1, AlvorlighetKompl = 2:4, outfile='KomplPostopType_fordLapAlv234.pdf')
 
 # Postoperative komplikasjoner Hysteroskopi, fordeling: *--lite alvorlige, *--moderat/ alvorlig
-NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='KomplPostopType',
+NGERFigFordeling(RegData=NGERData1aar, preprosess=0, valgtVar='KomplPostopType',
                OpMetode = 2, AlvorlighetKompl = 1, outfile='KomplPostopType_fordHysAlv1.pdf')
-NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='KomplPostopType',
+NGERFigFordeling(RegData=NGERData1aar, preprosess=0, valgtVar='KomplPostopType',
                OpMetode = 2, AlvorlighetKompl = 2:4, outfile='KomplPostopType_fordHysAlv234.pdf')
 
-NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='KomplPostopType', OpMetode = 4,
+NGERFigFordeling(RegData=NGERData1aar, preprosess=0, valgtVar='KomplPostopType', OpMetode = 4,
                outfile='KomplPostopType_fordTotLapHys.pdf')
 #Postop, alvorlige og middels alvorlige komplikasjoner:
-NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='KomplAlvorPostopType', OpMetode = 4,
+NGERFigFordeling(RegData=NGERData1aar, preprosess=0, valgtVar='KomplAlvorPostopType', OpMetode = 4,
                outfile='KomplAlvorPostopType_fordTotLapHys.pdf')
 
 #Fordelingsfigurer: alder  og BMI på Laparoskopi, og på Hysteroskopi og på TLH (total laparoskopisk hysrektomi).
 
-NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Alder', OpMetode = 1,
+NGERFigFordeling(RegData=NGERData1aar, preprosess=0, valgtVar='Alder', OpMetode = 1,
                outfile='Alder_fordLap.pdf')
-NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Alder', OpMetode = 2,
+NGERFigFordeling(RegData=NGERData1aar, preprosess=0, valgtVar='Alder', OpMetode = 2,
                outfile='Alder_fordHys.pdf')
-NGERFigAndeler(RegData=NGERData1aar, preprosess=0, valgtVar='Alder', OpMetode = 4,
+NGERFigFordeling(RegData=NGERData1aar, preprosess=0, valgtVar='Alder', OpMetode = 4,
                outfile='Alder_fordTLH.pdf')
 
 

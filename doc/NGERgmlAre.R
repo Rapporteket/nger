@@ -1,7 +1,7 @@
 #' Gamle tabeller fra Are
 #' Provide dataframe for tab vi NGER
 #' Provides NGER data for tab vi from staging
-#' @inheritParams NGERFigAndeler
+#' @inheritParams NGERFigFordeling
 #'
 #' @return RegData data frame
 #' @export
@@ -43,7 +43,7 @@ WHERE
 #'
 #' Provides NGER data for tab xxi from staging
 #'
-#' @inheritParams NGERFigAndeler
+#' @inheritParams NGERFigFordeling
 #'
 #' @return RegData data frame
 #' @export
@@ -124,7 +124,7 @@ WHERE
 #'
 #' Yes, generate tab VI
 #'
-#' @inheritParams NGERFigAndeler
+#' @inheritParams NGERFigFordeling
 #' @return list $tabVI data frame of table data
 #' @export
 
@@ -177,7 +177,7 @@ NGERtabVI <- function(RegData) {
 #'
 #' Yes, generate tab XXI
 #'
-#' @inheritParams NGERFigAndeler
+#' @inheritParams NGERFigFordeling
 #' @return list $tabXXI data frame of table data
 #' @return list $personsWithMultipleCompl number of persons
 #' @export

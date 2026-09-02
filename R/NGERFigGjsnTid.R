@@ -8,7 +8,7 @@
 #'     \item alder: Pasientens alders
 #'    }
 #'
-#' @inheritParams NGERFigAndeler
+#' @inheritParams NGERFigFordeling
 #' @inheritParams NGERVarTilrettelegg
 #' @param valgtMaal
 #'        'gjsn': gir middelverdi (standard)

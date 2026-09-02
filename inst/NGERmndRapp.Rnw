@@ -46,11 +46,18 @@ nger::NGERFigKvalInd(RegData=NGERData, preprosess=0, reshID=reshID,
                      enhetsUtvalg = 1,
                      outfile='KvalIndPros.pdf')
 
-variable <- c('KomplIntra', 'KomplPostop', 'Opf0Status')
-for (valgtVar in variable) {
+variabler <- c('KomplIntra', 'KomplPostop', 'Opf0Status')
+for (valgtVar in variabler) {
 	outfile <- paste0(valgtVar, '_Alle', tidsenhet, '.pdf')
-	nger::NGERFigAndelerGrVar(RegData=NGERData, valgtVar=valgtVar, preprosess=0,
-	                          outfile=outfile, reshID=reshID)
+	p <- nger::NGERFigAndelerGrVar(RegData=NGERData, valgtVar=valgtVar, preprosess=0,
+	                          reshID=reshID) #outfile=outfile,
+	ggplot2::ggsave(
+        filename = outfile,
+        plot = p,
+        width = 7*2.54,
+        height = 8*2.54,
+        units = "cm" # ,limitsize = FALSE
+      )
 }
 
 variabler <- c('Opf0KomplBlodning', 'Opf0KomplUtstyr', 'Opf0KomplInfeksjon', 'Opf0KomplOrgan', 'Opf0Reoperasjon',

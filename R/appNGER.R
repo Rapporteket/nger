@@ -204,8 +204,8 @@ ui_nger <- function() {
     ), #tab Registreringsoversikter
 
 
-    #-----Kvalitetsindikatorer------------
-    tabPanel(p("Prosessindikatorer, TSS og RAND", title = 'Prosessindikatorer, RAND36'),
+    #-----Resultatind, TSS og RAND ------------
+    tabPanel(p("Resultatindikatorer, TSS og RAND", title = 'Resultatindikatorer, RAND36'),
              h3('Registerets kvalitetsindikatorer og RAND', align='center'),
              sidebarPanel(width=3,
                           h3('Utvalg'),
@@ -213,7 +213,7 @@ ui_nger <- function() {
                           conditionalPanel(condition = "input.kvalIndark == 'Figur' || input.kvalIndark == 'Tabell' ",
                                            selectInput(
                                              inputId = "valgtVarKval", label="Velg variabel",
-                                             choices = c('Prosessindikatorer' = 'kvalInd',
+                                             choices = c('Resultatindikatorer' = 'kvalInd',
                                                       #   "PREM: Fikk du tilfredsstillende hjelp og beh. på avd.?" = 'PREMTilfreds'
                                                          'TSS2, oppfølging' = 'TSS0'
                                                          ,'RAND36, v/operasjon' = 'RAND0',
@@ -389,7 +389,7 @@ ui_nger <- function() {
                       'Komplikasjoner, postoperativt' = 'KomplPostopType',
                       'Komplikasjoner, postop. alvorlig/middels' = 'KomplAlvorPostopType',
                       'Laparoskopisk utstyr benyttet' = 'LapEkstrautstyr',
-                      'Laparoskopiske intraop. komplikasjoner' = 'LapKomplIntra',
+                      'Laparoskopiske intraop. komplikasjoner (kval.ind)' = 'LapKomplIntra',
                       'Laparoskopisk skadeårsak' = 'LapSkadeIntra',
                       'Laparoskopi: Medvirkende årsak til komplikasjon' = 'LapSkadeaarsakIntra',
                       'Laparoskopisk etablering av pneumoperitoneum' = 'LapTeknikk',
@@ -414,7 +414,7 @@ ui_nger <- function() {
                        "PREM: Fikk du tilfredsstillende hjelp og behandling på avd.?" = 'PREMTilfreds',
                        "PREM: Måtte du vente for å få tilbud ved gynekologisk avdeling?" = 'PREMVente',
                        "PREM: Mener du at du på noen måte ble feilbehandlet?" = 'PREMFeil',
-                       "PREM: Utbytte av behandlingen på gynekologisk avdeling = 'PREMUtbytte",
+                       "PREM: Utbytte av behandlingen på gynekologisk avdeling" = 'PREMUtbytte',
                       'Primæroperasjon eller reoperasjon' = 'OpType',
                       'Prosedyrer, hyppigste' = 'Prosedyrer',
                       'Prosegrupper, hyppigste' = 'ProsedyreGr',
@@ -517,9 +517,12 @@ ui_nger <- function() {
                              'Behandl, dagkir' = 'OpBehNivaa',
                              'Behandl, poliklinisk' = 'Poliklin',
                              'Fedme (BMI>30)' = 'OpBMI',
-                             'Komplikasjoner under operasjon' = 'KomplIntra',
+                             # 'Komplikasjoner under operasjon' = 'KomplIntra',
                              'Konvertert til laparotomi' = 'LapKonvertert',
                              'Konvertert til laparotomi, ikke forventet' = 'LapKonvertertUventet',
+                             'Kval.ind: Intraop. komplikasjoner (velg lap/hys)' = 'KomplIntra',
+                             'Kval.ind: Postop. komplikasjon, grad 2-4, (velg lap/hys)' = 'KomplPostopAlvor', #: moderate/alvorlige
+                             'Kval.ind: Fikk du tilfredsstillende hjelp og behandling på avd.?' = 'PREMTilfreds',
                              # 'Lokalbedøvelse' = 'OpAnestesi', fjernet nov23
                              'Operasjonstid (minutter)' = 'OpTid',
                              'Oppf. 6 mnd.: Vaginalruptur' = 'Opf6mVagRupt',
@@ -541,7 +544,7 @@ ui_nger <- function() {
                              "PREM: Fikk du tilfredsstillende hjelp og behandling på avd.?" = 'PREMTilfreds',
                              "PREM: Måtte du vente for å få tilbud ved gynekologisk avdeling?" = 'PREMVente',
                              "PREM: Mener du at du på noen måte ble feilbehandlet?" = 'PREMFeil',
-                             "PREM: Utbytte av behandlingen på gynekologisk avdeling = 'PREMUtbytte",
+                             "PREM: Utbytte av behandlingen på gyn. avd." = 'PREMUtbytte',
                              'Postop. komplikasjon: Alle' = 'KomplPostop',
                              'Postop. komplikasjon: moderate/alvorlige (grad 2-4)' = 'KomplPostopAlvor',
                              'Postop. komplikasjon: Blødning' = 'Opf0KomplBlodning',
@@ -1185,7 +1188,7 @@ server_nger <- function(input, output, session) {
 
   observe({ #Fordeling
     output$fordelinger <- renderPlot({
-      NGERFigAndeler(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
+      NGERFigFordeling(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
                      datoFra=input$datovalg[1], datoTil=input$datovalg[2],
                      reshID = user$org(),
                      minald=as.numeric(input$alder[1]),
@@ -1205,7 +1208,7 @@ server_nger <- function(input, output, session) {
         paste0('FigFord_', input$valgtVar, Sys.time(), '.', input$bildeformatFord)
       },
       content = function(file){
-        NGERFigAndeler(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
+        NGERFigFordeling(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
                        datoFra=input$datovalg[1], datoTil=input$datovalg[2],
                        reshID = user$org(),
                        minald=as.numeric(input$alder[1]),
@@ -1223,7 +1226,7 @@ server_nger <- function(input, output, session) {
 
     #RegData må hentes ut fra valgtVar
     UtDataFord <-
-      NGERFigAndeler(RegData=RegData, preprosess = 0, valgtVar=input$valgtVar,
+      NGERFigFordeling(RegData=RegData, preprosess = 0, valgtVar=input$valgtVar,
                      datoFra=input$datovalg[1], datoTil=input$datovalg[2],
                      reshID = user$org(),
                      minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),

@@ -7,7 +7,7 @@
 #' @param RegData data
 #' @param personIDvar Variabelen som angir pasientidentifikasjon
 #' @param datoTil sluttdato. Brukes i tabellene AntOpph per 12 mnd og Belegg
-# @inheritParams NGERFigAndeler
+# @inheritParams NGERFigFordeling
 #' @return Div tabeller
 #' @export
 tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0,
@@ -90,7 +90,9 @@ tabAntSkjema <- function(RegData, datoFra = '2019-01-01', datoTil=Sys.Date()){
     'Laparoskopi' = table(RegData$ShNavn[RegData$LapStatus==1]),
     'Hysteroskopi' = table(RegData$ShNavn[RegData$HysStatus==1]),
     'Oppfølging' = table(RegData$ShNavn[indOpf0]),
-    'TSS2' = table(RegData$ShNavn[which(RegData$Tss2Score >=0)]),
+    'Oppf. 6mnd' = table(RegData$ShNavn[RegData$Opf6mUtfylt==1]),
+    'PREM' = table(RegData$ShNavn[RegData$PREMUtfylt==1]),
+    # 'TSS2' = table(RegData$ShNavn[which(RegData$Tss2Score >=0)]),
     'RAND36' = table(RegData$ShNavn[which(RegData$R0Metode %in% 1:3)]),
     "RAND36-1år" = table(RegData$ShNavn[which(RegData$R1Metode %in% 1:3)]),
     "RAND36-3år" = table(RegData$ShNavn[which(RegData$R3Metode %in% 1:3)])

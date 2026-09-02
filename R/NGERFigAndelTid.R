@@ -21,7 +21,7 @@
 #'		\item Opf0Status: Pasienter som har fått postoperativ oppfølging
 #'    }
 
-#' @inheritParams NGERFigAndeler
+#' @inheritParams NGERFigFordeling
 #' @inheritParams NGERUtvalgEnh
 #' @param tidsenhet Oppløsning på tidsaksen. Verdier: Aar (standard), Halvaar, Kvartal, Mnd
 #' @return Figur som viser andel av valgt variabel, utvikling over tid.

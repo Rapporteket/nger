@@ -5,7 +5,7 @@
 #'
 #' Detajer: Her bør man liste opp hvilke variable funksjonen benytter...
 #'
-#' @inheritParams NGERFigAndeler
+#' @inheritParams NGERFigFordeling
 #' @param valgtVar Hvilken variabel som skal visualiseres
 #'
 #' @return Søylediagram som fordeling av valgt variabel, ved operasjon, samt 1 og 3 år etter.

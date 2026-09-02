@@ -8,7 +8,7 @@
 #'  HysKomplikasjoner, LapKomplikasjoner, OpMetode, OpAntibProfylakse, OpASA, OpBMI, Opf0Status.
 #'  Det benyttes også andre variable til utvalg osv.
 #'
-#' @inheritParams NGERFigAndeler
+#' @inheritParams NGERFigFordeling
 #' @inheritParams NGERUtvalgEnh
 #' @export
 NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
@@ -23,12 +23,13 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
   FigDataParam <- NGERAndelerGrVarBeregn(RegData=RegData, valgtVar=valgtVar,
                                          datoFra=datoFra, datoTil=datoTil,
                                          velgAvd=velgAvd, minald=minald, maxald=maxald,
-                                         OpMetode=99, Hastegrad='',
-                                         AlvorlighetKompl='', behNivaa = 0,
+                                         OpMetode=OpMetode, Hastegrad='',
+                                         AlvorlighetKompl='', behNivaa = behNivaa,
                                          Ngrense=Ngrense, reshID=reshID,
                                          outfile=outfile,
                                          velgDiag=velgDiag,
                                          preprosess=0)
+
   PlotAndelerGrVar(RegData,
                    hovedgrTxt = FigDataParam$hovedgrTxt,
                    grVar = FigDataParam$grVar,
@@ -82,8 +83,8 @@ NGERAndelerGrVarBeregn <- function(RegData=0, valgtVar='Alder',
   grVar <- 'ShNavn'
 
   NGERUtvalg <- NGERUtvalgEnh(RegData=RegData,
-                              datoFra=datoFra, datoTil=datoTil, OpMetode=OpMetode
-                              ,minald=minald, maxald=maxald,
+                              datoFra=datoFra, datoTil=datoTil, OpMetode=OpMetode,
+                              minald=minald, maxald=maxald,
                               AlvorlighetKompl=AlvorlighetKompl, behNivaa = behNivaa,
                               velgAvd=velgAvd, velgDiag=velgDiag)
   RegData <- NGERUtvalg$RegData
@@ -140,6 +141,7 @@ NGERAndelerGrVarBeregn <- function(RegData=0, valgtVar='Alder',
                        hovedgrTxt = NGERUtvalg$hovedgrTxt,
                        grVar = grVar,
                        KvalIndGrenser = NGERVarSpes$KvalIndGrenser,
+                       #bestKvalInd = NGERVarSpes$bestKvalInd,
                        tittel = tittel,
                        utvalgTxt = utvalgTxt,
                        Ngrense = Ngrense,
@@ -186,7 +188,6 @@ NGERAndelerGrVarBeregn <- function(RegData=0, valgtVar='Alder',
 #' @param subtitleSize subtitleSize
 #' @param legendSize legendSize
 #' @param axisTextSize axisTextSize
-#' @param bestKvalInd bestKvalInd
 #' @param  nTicks nTicks
 #' @param fargepalett fargepalett
 #' @param outfile filtype ut
@@ -211,7 +212,8 @@ PlotAndelerGrVar <- function(RegData,
                             subtitleSize = 15,
                             legendSize = 12,
                             axisTextSize = 10,
-                            bestKvalInd = 'lav', # 'høy' for omvendt rekkfølge på indikatorfarger
+                            sortAvtagende = TRUE,
+                            #bestKvalInd = 'lav', # 'høy' for omvendt rekkfølge på indikatorfarger
                             nTicks = 5,
                             fargepalett = 'BlaaOff',
                             #grtxt = '',
@@ -233,8 +235,8 @@ PlotAndelerGrVar <- function(RegData,
       annotate("text", x = 0, y = -0.2, label = paste(utvalgTxt, collapse = "\n"),
               size = 3.5, color = farger[1])
 
-
-  } else if (max(Ngr, na.rm = TRUE) < Ngrense) {
+  } else {
+    if (max(Ngr, na.rm = TRUE) < Ngrense) {
 
     tekst <- paste0("Færre enn ", Ngrense, " registreringer ved hvert av sykehusene")
 
@@ -299,9 +301,9 @@ PlotAndelerGrVar <- function(RegData,
 
   # 5) Kvalitetsindikator: Bakgrunnsbånd basert på kvalitetsgrenser
   visKvalIndGrenser <- any(KvalIndGrenser > 0, na.rm = TRUE)
-  kvalIndFarger <- c("#3baa34", "#fd9c00", "#e30713") # Grønn, gul, rød
-  if (bestKvalInd == 'høy') {
-    kvalIndFarger <- rev(kvalIndFarger) # Rød, gul, grønn
+  kvalIndFarger <- c( "#e30713","#fd9c00","#3baa34") # Rød, gul, grønn
+  if (sortAvtagende == FALSE) #(bestKvalInd == 'høy') {
+    kvalIndFarger <- rev(kvalIndFarger)
   }
 
   if (visKvalIndGrenser) {

@@ -33,7 +33,7 @@
 #'		\item Utdanning: Pasienter med høyere utdanning
 #'    }
 #'
-#' @inheritParams NGERFigAndeler
+#' @inheritParams NGERFigFordeling
 #' @inheritParams NGERUtvalgEnh
 #' @export
 
