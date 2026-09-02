@@ -136,7 +136,7 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
     #               Ønsker å heller benytte RegData$Variabel[RegData$Opf0Metode %in% 1:2] <- 1
 
     #postop.kompl. lap og - hys
-    tittel <- 'Kvalitetsindikatorer, prosessmål'
+    tittel <- 'Resultatindikatorer' # 'Kvalitetsindikatorer, prosessmål'
     grNavn <- c(# Bort: 'Postop. komplikasjon: \n Reoperasjon',
                 'Postop. komp., middels/alvorlig, \n laparoskopi', #NY
                 'Postop. komp., middels/alvorlig, \n hysteroskopi', #NY
@@ -215,11 +215,8 @@ NGERFigKvalInd <- function(RegData, reshID=0, velgAvd=0, datoFra='2013-01-01', d
                        #KImaal <- NIRVarSpes$KImaal,
                        grtxt2=grtxt2,
                        grtxt=grtxt,
-                       #grTypeTxt=grTypeTxt,
                        tittel=tittel,
                        retn='H',
-                       #subtxt=subtxt,
-                       #yAkseTxt=yAkseTxt,
                        utvalgTxt=utvalgTxt,
                        fargepalett=NGERUtvalg$fargepalett,
                        medSml=medSml,

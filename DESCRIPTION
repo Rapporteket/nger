@@ -1,7 +1,7 @@
 Package: nger
 Type: Package
 Title: Resultatrapporter for NGER
-Version: 4.2.6
+Version: 4.2.7
 Date: 2026-09-02
 Authors@R: c(person("Olsen", "Lena", email = "Lena.Ringstad.Olsen@unn.no",
     role = c("cre", "aut")))
