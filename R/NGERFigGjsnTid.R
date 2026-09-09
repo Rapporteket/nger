@@ -90,7 +90,8 @@ NGERFigGjsnTid <- function(RegData, valgtVar='alder', datoFra='2011-01-01', dato
     #Resultat for hovedgruppe
     N <- tapply(RegData[ind$Hoved ,'Variabel'], RegData[ind$Hoved, 'TidsEnhet'], length)
     if (valgtMaal=='med') {
-      MedIQR <- plot(RegData$TidsEnhet[ind$Hoved],RegData$Variabel[ind$Hoved],  notch=TRUE, plot=FALSE)
+      MedIQR <- boxplot(RegData$Variabel[ind$Hoved] ~ RegData$TidsEnhet[ind$Hoved], notch=TRUE, plot=FALSE)
+                # plot(RegData$TidsEnhet[ind$Hoved],RegData$Variabel[ind$Hoved],  notch=TRUE, plot=FALSE)
       Midt <- as.numeric(MedIQR$stats[3, ])	#as.numeric(MedIQR$stats[3, sortInd])
       Konf <- MedIQR$conf
       #Hvis vil bruke vanlige konf.int:
@@ -119,7 +120,10 @@ NGERFigGjsnTid <- function(RegData, valgtVar='alder', datoFra='2011-01-01', dato
     if (medSml ==  1) {
       Nrest <- tapply(RegData[ind$Rest ,'Variabel'], RegData[ind$Rest, 'TidsEnhet'], length)
       if (valgtMaal=='med') {
-        MedIQRrest <- plot(RegData$TidsEnhet[ind$Rest],RegData$Variabel[ind$Rest],  notch=TRUE, plot=FALSE)
+        MedIQRrest <-
+          boxplot(RegData$Variabel[ind$Rest] ~ RegData$TidsEnhet[ind$Rest],
+                  notch=TRUE, plot=FALSE)
+          #plot(RegData$TidsEnhet[ind$Rest],RegData$Variabel[ind$Rest],  notch=TRUE, plot=FALSE)
         MidtRest <- as.numeric(MedIQRrest$stats[3, ])
         KonfRest <- MedIQRrest$conf
       } else {
@@ -139,8 +143,9 @@ NGERFigGjsnTid <- function(RegData, valgtVar='alder', datoFra='2011-01-01', dato
   if (valgtMaal=='med') {maaltxt <- 'Median ' } else {maaltxt <- 'Gjennomsnitt '}
 
   ResData <- round(rbind(Midt, Konf, MidtRest, KonfRest), 1)
-  rownames(ResData) <- c(maaltxt, 'KImin', 'KImaks',
+  radnavn <- c(maaltxt, 'KImin', 'KImaks',
                          paste0(maaltxt, 'Resten'), 'KImin, Resten', 'KImaks, Resten')[1:(3*(medSml+1))]
+  rownames(ResData) <- radnavn
 
   FigDataParam <- list(AggVerdier=ResData,
                        N=N,
@@ -174,7 +179,7 @@ if (lagFigur==1) {
     farger <- FigTypUt$farger
     fargeHovedRes <- farger[1]
     fargeRestRes <- farger[4]
-    #
+
     plot(tidNum,Midt, xlim= c(xmin, xmax), ylim=c(ymin, ymax), type='n', frame.plot=FALSE, #ylim=c(ymin-0.05*ymax, ymax),
          #cex=0.8, cex.lab=0.9, cex.axis=0.9,
          ylab=c(ytxt,'med 95% konfidensintervall'),
