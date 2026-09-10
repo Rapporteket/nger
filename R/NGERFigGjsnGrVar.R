@@ -9,14 +9,6 @@
 #' @inheritParams NGERUtvalgEnh
 #' @param valgtMaal 'med' = median. Alt annet gir gjennomsnitt
 #'
-#' Argumentet \emph{valgtVar} har følgende valgmuligheter:
-#'    \itemize{
-#'     \item Alder: Liggetid
-#'     \item RAND36 - alle dimensjoner
-#'     \item Registreringsforsinkelse
-#'     \item TSS2
-#'    }
-#'
 #' @return Søylediagram med gjennomsnitt/median av valgt variabel for hvert sykehus
 #'
 #' @export
@@ -49,7 +41,6 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
                               minald = minald, maxald = maxald,
                               OpMetode = OpMetode, AlvorlighetKompl=AlvorlighetKompl,
                               velgAvd=velgAvd, velgDiag=velgDiag, behNivaa = behNivaa) #Hastegrad=Hastegrad,
-  smltxt <- NGERUtvalg$smltxt
   utvalgTxt <- NGERUtvalg$utvalgTxt
   hovedgrTxt <- NGERUtvalg$hovedgrTxt
   RegData <- NGERUtvalg$RegData
@@ -62,81 +53,90 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
 
   if(dim(RegData)[1]>0) {Ngr <- table(RegData[ ,grVar])}	else {Ngr <- 0}
   sjekkNgr <- max(Ngr, na.rm = T) < Ngrense
+  N <- dim(RegData)[1]
 
   t1 <- switch(valgtMaal,
                med = 'Median ',
                gjsn = 'Gjennomsnittlig ')
 
-  tittel <- paste0(t1, NGERVarSpes$tittel) #NGERVarSpes$tittel #
-
-  Ngrtxt <- paste0(' (', as.character(Ngr),')')
-  indGrUt <- which(Ngr < Ngrense)
-  if (length(indGrUt)==0) { indGrUt <- 0}
-  Ngrtxt[indGrUt] <- paste0(' (<', Ngrense,')')
-  N <- dim(RegData)[1]
-
-  KIHele <- c(0,0)
-  KIned <- c(0,0)
-  KIhele <- c(0,0)
-
-
-  dummy0 <- NA #-0.0001
-  #Kommer ut ferdig sortert!
-  if (valgtMaal=='med') {
-    MedIQR <- plot(RegData[ ,grVar], RegData$Variabel, notch=TRUE, plot=FALSE)
-    MedIQR$stats[ ,indGrUt] <- dummy0
-    MedIQR$conf[ ,indGrUt] <- dummy0
-    sortInd <- order( MedIQR$stats[3,], decreasing=NGERVarSpes$sortAvtagende, na.last = FALSE)
-    Midt <- as.numeric(MedIQR$stats[3, sortInd])
-    KIned <- MedIQR$conf[1, sortInd]
-    KIopp <- MedIQR$conf[2, sortInd]
-    MedIQRHele <-  boxplot.stats(RegData$Variabel, do.conf = TRUE)
-    MidtHele <- as.numeric(MedIQRHele$stats[3])	#median(RegData$Variabel)
-    KIHele <- MedIQRHele$conf
-    xAkseTxt <- paste0('Median ',NGERVarSpes$xAkseTxt)
-    #Hvis vil bruke vanlige konf.int:
-    #j <- ceiling(N/2 - 1.96*sqrt(N/4))
-    #k <- ceiling(N/2 + 1.96*sqrt(N/4))
-    #KIHele <- sort(RegData$Variabel)[c(j,k)]
-    #The notches (if requested) extend to +/-1.58 IQR/sqrt(n). (Chambers et al. (1983, p. 62), given in McGill et al. (1978, p. 16).)
-    #They are based on asymptotic normality of the median and roughly equal sample sizes for the two medians being compared,
-    #and are said to be rather insensitive to the underlying distributions of the samples. The idea appears to be to give
-    #roughly a 95% confidence interval for the difference in two medians.
-  }
-
-  if (valgtMaal=='gjsn') {	#Gjennomsnitt er standard, men må velges.
-    Gjsn <- tapply(RegData$Variabel, RegData[ ,grVar], mean, na.rm=T)
-    SE <- tapply(RegData$Variabel, RegData[ ,grVar], sd, na.rm=T)/sqrt(Ngr)
-    MidtHele <- mean(RegData$Variabel, na.rm=T)	#mean(RegData$Variabel)
-    KIHele <- MidtHele + sd(RegData$Variabel, na.rm = T)/sqrt(N)*c(-2,2)
-    Gjsn[indGrUt] <- dummy0
-    SE[indGrUt] <- 0
-    sortInd <- order(Gjsn, decreasing=NGERVarSpes$sortAvtagende, na.last = FALSE)
-    Midt <- Gjsn[sortInd] #as.numeric(Gjsn[sortInd])
-    KIned <- Gjsn[sortInd] - 2*SE[sortInd]
-    KIopp <- Gjsn[sortInd] + 2*SE[sortInd]
-    xAkseTxt <- paste0('Gjennomsnittlig ', NGERVarSpes$xAkseTxt)
-  }
-
-
-  GrNavnSort <- paste0(names(Ngr)[sortInd], Ngrtxt[sortInd])
-  soyletxt <- sprintf(paste0('%.1f'), Midt)
-  indUT <- which(is.na(Midt))  #Rydd slik at bare benytter indGrUt
-  soyletxt[indUT] <- ''
-  KIned[indUT] <- NA
-  KIopp[indUT] <- NA
-
-  AggVerdier <- list(Hoved=Midt, Rest=NULL, KIned=KIned, KIopp=KIopp, KIHele=KIHele)
-  Ngr <- list(Hoved=Ngr[sortInd], Rest=NULL)
-
+  tittel <- paste0(t1, NGERVarSpes$tittel)
   SentralmaalTxt <- switch(valgtMaal,
                            gjsn='Gjennomsnitt',
                            med='Median')
+
+  MidtHele <- NA
+  Midt <- NA
+  KImaal <- NGERVarSpes$KImaal
+  #KIned <- NA
+  KIHele <- c(0,0)
+  KIned <- c(0,0)
+  KIopp <- NA
+  dummy0 <- NA #-0.0001
+
+  soyletxt <- NA
+  grtxt <- ''
+  GrNavnSort <- NA
+
+  if (!(dim(RegData)[1] < 3 | sjekkNgr)) {
+
+    Ngrtxt <- paste0(' (', as.character(Ngr),')')
+    indGrUt <- which(Ngr < Ngrense)
+    if (length(indGrUt)==0) { indGrUt <- 0}
+    Ngrtxt[indGrUt] <- paste0(' (<', Ngrense,')')
+
+    #Kommer ut ferdig sortert!
+    if (valgtMaal=='med') {
+      #MedIQR <- boxplot(RegData[ ,grVar], RegData$Variabel, notch=TRUE, plot=FALSE)
+      MedIQR <- boxplot(RegData$Variabel ~ RegData[ ,grVar], notch=TRUE, plot=FALSE)
+      MedIQR$stats[ ,indGrUt] <- dummy0
+      MedIQR$conf[ ,indGrUt] <- dummy0
+      sortInd <- order( MedIQR$stats[3,], decreasing=NGERVarSpes$sortAvtagende, na.last = FALSE)
+      Midt <- as.numeric(MedIQR$stats[3, sortInd])
+      KIned <- MedIQR$conf[1, sortInd]
+      KIopp <- MedIQR$conf[2, sortInd]
+      MedIQRHele <-  boxplot.stats(RegData$Variabel, do.conf = TRUE)
+      MidtHele <- as.numeric(MedIQRHele$stats[3])	#median(RegData$Variabel)
+      KIHele <- MedIQRHele$conf
+      xAkseTxt <- paste0('Median ',NGERVarSpes$xAkseTxt)
+      #Hvis vil bruke vanlige konf.int:
+      #j <- ceiling(N/2 - 1.96*sqrt(N/4))
+      #k <- ceiling(N/2 + 1.96*sqrt(N/4))
+      #KIHele <- sort(RegData$Variabel)[c(j,k)]
+      #The notches (if requested) extend to +/-1.58 IQR/sqrt(n). (Chambers et al. (1983, p. 62), given in McGill et al. (1978, p. 16).)
+      #They are based on asymptotic normality of the median and roughly equal sample sizes for the two medians being compared,
+      #and are said to be rather insensitive to the underlying distributions of the samples. The idea appears to be to give
+      #roughly a 95% confidence interval for the difference in two medians.
+    }
+
+    if (valgtMaal=='gjsn') {	#Gjennomsnitt er standard, men må velges.
+      Gjsn <- tapply(RegData$Variabel, RegData[ ,grVar], mean, na.rm=T)
+      SE <- tapply(RegData$Variabel, RegData[ ,grVar], sd, na.rm=T)/sqrt(Ngr)
+      MidtHele <- mean(RegData$Variabel, na.rm=T)	#mean(RegData$Variabel)
+      KIHele <- MidtHele + sd(RegData$Variabel, na.rm = T)/sqrt(N)*c(-2,2)
+      Gjsn[indGrUt] <- dummy0
+      SE[indGrUt] <- 0
+      sortInd <- order(Gjsn, decreasing=NGERVarSpes$sortAvtagende, na.last = FALSE)
+      Midt <- Gjsn[sortInd] #as.numeric(Gjsn[sortInd])
+      KIned <- Gjsn[sortInd] - 2*SE[sortInd]
+      KIopp <- Gjsn[sortInd] + 2*SE[sortInd]
+      xAkseTxt <- paste0('Gjennomsnittlig ', NGERVarSpes$xAkseTxt)
+    }
+
+    Ngr <- Ngr[sortInd]
+    GrNavnSort <- paste0(names(Ngr), Ngrtxt[sortInd])
+    soyletxt <- sprintf(paste0('%.1f'), Midt)
+    indUT <- which(is.na(Midt))  #Rydd slik at bare benytter indGrUt
+    soyletxt[indUT] <- ''
+    KIned[indUT] <- NA
+    KIopp[indUT] <- NA
+  }
+  AggVerdier=list(Hoved=Midt, Rest=NULL,
+                  KIned=KIned, KIopp=KIopp, KIHele=KIHele)
   #Se NGERFigSoyler for forklaring av innhold i lista GjsnGrVarData
-  GjsnGrVarData <- list(AggVerdier=AggVerdier, #Endres til Soyleverdi? Evt. AggVerdier
+  GjsnGrVarData <- list(AggVerdier=AggVerdier,
                         AggTot=MidtHele, #Til AggVerdiTot?
                         N=list(Hoved=N),
-                        Ngr=Ngr,
+                        Ngr=list(Hoved=Ngr, Rest=NULL),
                         grtxt2='',
                         medKI=medKI,
                         KImaal = NGERVarSpes$KImaal,
@@ -144,19 +144,15 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
                         grtxt=GrNavnSort,
                         valgtMaal=valgtMaal,
                         SentralmaalTxt=SentralmaalTxt,
-                        tittel=tittel,    #NGERVarSpes$tittel,
-                        #yAkseTxt=yAkseTxt,
+                        tittel=tittel,
                         retn='H',
                         xAkseTxt=NGERVarSpes$xAkseTxt,
-                        grTypeTxt=NGERUtvalg$grTypeTxt,
                         utvalgTxt=NGERUtvalg$utvalgTxt,
-                        fargepalett=NGERUtvalg$fargepalett,
-                        medSml=NGERUtvalg$medSml,
-                        smltxt=NGERUtvalg$smltxt)
+                        fargepalett=NGERUtvalg$fargepalett)
+                        # smltxt=NGERUtvalg$smltxt)
 
 
   #FigDataParam skal inn som enkeltparametre i funksjonskallet
-  #lagFig <- 1
   if (lagFig == 1) {
     cexgr <- 1-ifelse(length(soyletxt)>20, 0.25*length(soyletxt)/60, 0)
     AggTot <- MidtHele
@@ -166,7 +162,7 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
     #Hvis for få observasjoner..
 
     if (dim(RegData)[1] < 10 | sjekkNgr)
-      #|(grVar=='' & length(enhetsUtvalg %in% c(1,3)))
+      # |(grVar=='' & length(enhetsUtvalg %in% c(1,3)))
     {
       #-----------Figur---------------------------------------
       FigTypUt <-rapFigurer::figtype(outfile)  #FigTypUt <- rapFigurer::figtype(outfile)
@@ -195,14 +191,13 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
       farger <- FigTypUt$farger
       fargeHoved <- ifelse(grVar %in% c('ShNavn'), farger[4], farger[1])
       fargeRest <- farger[3]
-      #graa <- c('#4D4D4D','#737373','#A6A6A6','#DADADA')  #Mørk til lys          																# Fire graatoner
       antGr <- length(GrNavnSort)
       lwdRest <- 3	#tykkelse på linja som repr. landet
       cexleg <- 0.9	#Størrelse på legendtekst
 
 
       #Definerer disse i beregningsfunksjonen?
-      xmax <- max(c(AggVerdier$Hoved, AggVerdier$Rest), na.rm=T)*1.2
+      xmax <- max(c(AggVerdier$Hoved), na.rm=T)*1.2 #, AggVerdier$Rest
       if (valgtVar %in% c('R0ScorePhys',	'R0ScoreRoleLmtPhy',	'R0ScoreRoleLmtEmo',	'R0ScoreEnergy',
                          'R0ScoreEmo', 'R0ScoreSosial',	'R0ScorePain',	'R0ScoreGeneral')) {
         xmax <- min(xmax, 100)}
@@ -212,7 +207,7 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
       #Må def. pos først for å få strek for hele gruppa bak søylene
       ### reverserer for å slippe å gjøre det på konf.int
       pos <- rev(barplot(rev(as.numeric(AggVerdier$Hoved)), horiz=T, xlim=c(0,xmax), ylim=c(ymin, ymax), #, plot=FALSE)
-                         xlab=xAkseTxt, border=NA, col=fargeHoved)) #xlab=NGERVarSpes$xAkseTxt
+                         xlab=xAkseTxt, border=NA, col=fargeHoved))
       indOK <- which(AggVerdier$Hoved>=0)
       posOK <- pos[indOK]
       posOver <- max(pos)+0.35*log(max(pos))
@@ -249,8 +244,7 @@ NGERFigGjsnGrVar <- function(RegData, datoFra='2013-01-01', datoTil='3000-12-31'
                 c(minpos, maxpos, maxpos, minpos))
       }
 
-      #GrNavnSort <- rev(GrNavnSort)
-      grTypeTxt <- smltxt
+      #grTypeTxt <- smltxt
       mtext(at=posOver, paste0('(N)' ), side=2, las=1, cex=cexgr, adj=1, line=0.25)
       #Linje for hele landet/utvalget:
       lines(x=rep(AggTot, 2), y=c(minpos, maxpos), col=farger[1], lwd=2.5) #y=c(0, max(pos)+0.55),
