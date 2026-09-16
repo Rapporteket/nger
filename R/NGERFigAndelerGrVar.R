@@ -112,7 +112,7 @@ NGERAndelerGrVarBeregn <- function(RegData=0, valgtVar='Alder',
   if (length(indGrUt) > 0) {
     AndelerGr[indGrUt] <- dummy0
   }
-print(NGERVarSpes$sortAvtagende)
+
   # Sorter synkende ( NA havner sist)
   sortInd <- order(AndelerGr, decreasing = NGERVarSpes$sortAvtagende,
                    na.last = TRUE)
@@ -142,8 +142,6 @@ print(NGERVarSpes$sortAvtagende)
                        hovedgrTxt = NGERUtvalg$hovedgrTxt,
                        grVar = grVar,
                        KvalIndGrenser = NGERVarSpes$KvalIndGrenser,
-                       #bestKvalInd = NGERVarSpes$bestKvalInd,
-
                        tittel = tittel,
                        utvalgTxt = utvalgTxt,
                        Ngrense = Ngrense,
@@ -156,19 +154,6 @@ print(NGERVarSpes$sortAvtagende)
                        #outfile = outfile,
                        fargepalett = NGERUtvalg$fargepalett
                        )
-
-  # PlotAndelerGrVar(RegData,
-  #                  #Variabel = RegData$Variabel,
-  #                  hovedgrTxt = NGERUtvalg$hovedgrTxt,
-  #                  grVar = grVar,
-  #                  KvalIndGrenser = NGERVarSpes$KvalIndGrenser,
-  #                  tittel = tittel,
-  #                  utvalgTxt = utvalgTxt,
-  #                  Ngrense = Ngrense,
-  #                  AggVerdier = AggVerdier,
-  #                  fargepalett = NGERUtvalg$fargepalett,
-  #                  outfile = outfile)
-
 
   return(invisible(FigDataParam))
   }
@@ -199,7 +184,6 @@ print(NGERVarSpes$sortAvtagende)
 #' @export
 #'
 PlotAndelerGrVar <- function(RegData,
-                            # Variabel,
                             AggVerdier,
                             Ngr,
                             N,
@@ -216,10 +200,8 @@ PlotAndelerGrVar <- function(RegData,
                             legendSize = 12,
                             axisTextSize = 10,
                             sortAvtagende = TRUE,
-                            #bestKvalInd = 'lav', # 'høy' for omvendt rekkfølge på indikatorfarger
                             nTicks = 5,
                             fargepalett = 'BlaaOff',
-                            #grtxt = '',
                             outfile='') {
   library(ggplot2)
 
@@ -277,7 +259,9 @@ PlotAndelerGrVar <- function(RegData,
 
       # ---- Sorter alle "(N)" ----
       rest <- ggDataFrame[ggDataFrame$gruppeNavn != "(N)", ]
-      rest <- rest[order(-ifelse(is.na(rest$andelProsent), -Inf, rest$andelProsent)), ]
+      rest <- rest[order(rest$andelProsent, decreasing = !sortAvtagende, na.last = TRUE), ]
+      # rest[order(-ifelse(is.na(rest$andelProsent), -Inf, rest$andelProsent),
+      #            decreasing = sortAvtagende, na.last = TRUE), ]
 
       # Legg "(N)" sist i datasettet for å sikre at det plottes sist (øverst etter coord_flip)
       ggDataFrame <- rbind(rest, ggDataFrame[ggDataFrame$gruppeNavn == "(N)", ])

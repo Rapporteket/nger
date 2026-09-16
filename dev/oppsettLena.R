@@ -31,7 +31,7 @@ RegData <- NGERPreprosess(RegData = RegDataRaa)
 KomplPostopAlvor
 KomplIntra
 PREMTilfreds
-NGERFigAndelerGrVar(RegData=RegData, valgtVar='PREMTilfreds', preprosess=0, OpMetode = 2,
+NGERFigAndelerGrVar(RegData=RegData, valgtVar='KomplPostopAlvor', preprosess=0, OpMetode = 2,
                     outfile = '')
 print(p)
 knitr::knit2pdf('../inst/NGERmndRapp.Rnw')
