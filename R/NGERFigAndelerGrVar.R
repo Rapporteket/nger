@@ -39,6 +39,7 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
                    KvalIndGrenser = FigDataParam$KvalIndGrenser,
                    tittel = FigDataParam$tittel,
                    utvalgTxt = FigDataParam$utvalgTxt,
+                   sortAvtagende = FigDataParam$sortAvtagende,
                    Ngrense = FigDataParam$Ngrense,
                    AggVerdier = FigDataParam$AggVerdier,
                    Ngr = FigDataParam$Ngr,
@@ -141,7 +142,6 @@ NGERAndelerGrVarBeregn <- function(RegData=0, valgtVar='Alder',
                        hovedgrTxt = NGERUtvalg$hovedgrTxt,
                        grVar = grVar,
                        KvalIndGrenser = NGERVarSpes$KvalIndGrenser,
-                       #bestKvalInd = NGERVarSpes$bestKvalInd,
                        tittel = tittel,
                        utvalgTxt = utvalgTxt,
                        Ngrense = Ngrense,
@@ -150,22 +150,10 @@ NGERAndelerGrVarBeregn <- function(RegData=0, valgtVar='Alder',
                        N=N,
                        Ngr=Ngr[sortInd],
                        GrNavnSort=GrNavnSort,
+                       sortAvtagende = NGERVarSpes$sortAvtagende,
                        #outfile = outfile,
                        fargepalett = NGERUtvalg$fargepalett
                        )
-
-  # PlotAndelerGrVar(RegData,
-  #                  #Variabel = RegData$Variabel,
-  #                  hovedgrTxt = NGERUtvalg$hovedgrTxt,
-  #                  grVar = grVar,
-  #                  KvalIndGrenser = NGERVarSpes$KvalIndGrenser,
-  #                  tittel = tittel,
-  #                  utvalgTxt = utvalgTxt,
-  #                  Ngrense = Ngrense,
-  #                  AggVerdier = AggVerdier,
-  #                  fargepalett = NGERUtvalg$fargepalett,
-  #                  outfile = outfile)
-
 
   return(invisible(FigDataParam))
   }
@@ -196,7 +184,6 @@ NGERAndelerGrVarBeregn <- function(RegData=0, valgtVar='Alder',
 #' @export
 #'
 PlotAndelerGrVar <- function(RegData,
-                            # Variabel,
                             AggVerdier,
                             Ngr,
                             N,
@@ -213,10 +200,8 @@ PlotAndelerGrVar <- function(RegData,
                             legendSize = 12,
                             axisTextSize = 10,
                             sortAvtagende = TRUE,
-                            #bestKvalInd = 'lav', # 'høy' for omvendt rekkfølge på indikatorfarger
                             nTicks = 5,
                             fargepalett = 'BlaaOff',
-                            #grtxt = '',
                             outfile='') {
   library(ggplot2)
 
@@ -248,63 +233,66 @@ PlotAndelerGrVar <- function(RegData,
               size = 3.5)
 
 
-  } else {
-  # 1) AndelerPlot (NA → 0 kun for plotting, ggplot fjerner NA verdier)
-  andeler <- as.numeric(AggVerdier$Hoved)
-  andelerPlot <- replace(andeler, is.na(andeler), 0)
+    } else {
+      # 1) AndelerPlot (NA → 0 kun for plotting, ggplot fjerner NA verdier)
+      andeler <- as.numeric(AggVerdier$Hoved)
+      andelerPlot <- replace(andeler, is.na(andeler), 0)
 
-  # 2) Datasett til ggplot
-  ggDataFrame <- data.frame(
-    andelProsent = andeler,      # ekte verdi (kan være NA)
-    andelerPlot  = andelerPlot,  # brukt til stolpehøyde
-    gruppeNavn   = as.character(GrNavnSort),
-    andelTekst   = as.character(andeltxt)
-  )
+      # 2) Datasett til ggplot
+      ggDataFrame <- data.frame(
+        andelProsent = andeler,      # ekte verdi (kan være NA)
+        andelerPlot  = andelerPlot,  # brukt til stolpehøyde
+        gruppeNavn   = as.character(GrNavnSort),
+        andelTekst   = as.character(andeltxt)
+      )
 
-  # Litt triksing for å sikre at "(N)" alltid kommer sist (øverst i plottet etter coord_flip)
-  ggDataFrame <- rbind(
-    ggDataFrame,
-    data.frame(
-      andelProsent = NA,
-      andelerPlot  = 0,
-      gruppeNavn   = "(N)",
-      andelTekst   = ""
-    )
-  )
+      # Litt triksing for å sikre at "(N)" alltid kommer sist (øverst i plottet etter coord_flip)
+      ggDataFrame <- rbind(
+        ggDataFrame,
+        data.frame(
+          andelProsent = NA,
+          andelerPlot  = 0,
+          gruppeNavn   = "(N)",
+          andelTekst   = ""
+        )
+      )
 
-  # ---- Sorter alle "(N)" ----
-  rest <- ggDataFrame[ggDataFrame$gruppeNavn != "(N)", ]
-  rest <- rest[order(-ifelse(is.na(rest$andelProsent), -Inf, rest$andelProsent)), ]
+      # ---- Sorter alle "(N)" ----
+      rest <- ggDataFrame[ggDataFrame$gruppeNavn != "(N)", ]
+      rest <- rest[order(rest$andelProsent, decreasing = !sortAvtagende, na.last = TRUE), ]
+      # rest[order(-ifelse(is.na(rest$andelProsent), -Inf, rest$andelProsent),
+      #            decreasing = sortAvtagende, na.last = TRUE), ]
 
-  # Legg "(N)" sist i datasettet for å sikre at det plottes sist (øverst etter coord_flip)
-  ggDataFrame <- rbind(rest, ggDataFrame[ggDataFrame$gruppeNavn == "(N)", ])
+      # Legg "(N)" sist i datasettet for å sikre at det plottes sist (øverst etter coord_flip)
+      ggDataFrame <- rbind(rest, ggDataFrame[ggDataFrame$gruppeNavn == "(N)", ])
 
-  # ---- Lås rekkefølge ----
-  ggDataFrame$gruppeNavn <- factor(
-    ggDataFrame$gruppeNavn,
-    levels = ggDataFrame$gruppeNavn
-  )
-  nLevels <- length(levels(ggDataFrame$gruppeNavn))
+      # ---- Lås rekkefølge ----
+      ggDataFrame$gruppeNavn <- factor(
+        ggDataFrame$gruppeNavn,
+        levels = ggDataFrame$gruppeNavn
+      )
+      nLevels <- length(levels(ggDataFrame$gruppeNavn))
 
-  # 3) Gjennomsnittslinje
-  gjennomsnittY <- AggVerdier$Tot[1]
+      # 3) Gjennomsnittslinje
+      gjennomsnittY <- AggVerdier$Tot[1]
 
-  gjennomsnittEtikett <- paste0(
-    hovedgrTxt[1], " (",
-    sprintf("%.1f", gjennomsnittY), "%), N=", N
-  )
+      gjennomsnittEtikett <- paste0(
+        hovedgrTxt[1], " (",
+        sprintf("%.1f", gjennomsnittY), "%), N=", N
+      )
 
-  # 4) Dynamisk øvre grense på prosentaksen
-  maksAndel <- max(ggDataFrame$andelProsent, na.rm = TRUE)*1.15
-  prettyVals <- pretty(c(0, maksAndel), n = nTicks) # Funksjon som finner "pent" fordelte verdier for aksen
-  ovreGrense <- max(prettyVals, gjennomsnittY*1.15, na.rm = TRUE) # Sørg for at både maks andel og gjennomsnittslinje får plass
+      # 4) Dynamisk øvre grense på prosentaksen
+      maksAndel <- max(ggDataFrame$andelProsent, na.rm = TRUE)*1.15
+      prettyVals <- pretty(c(0, maksAndel), n = nTicks) # Funksjon som finner "pent" fordelte verdier for aksen
+      ovreGrense <- max(prettyVals, gjennomsnittY*1.15, na.rm = TRUE) # Sørg for at både maks andel og gjennomsnittslinje får plass
 
-  # 5) Kvalitetsindikator: Bakgrunnsbånd basert på kvalitetsgrenser
-  visKvalIndGrenser <- any(KvalIndGrenser > 0, na.rm = TRUE)
-  kvalIndFarger <- c( "#e30713","#fd9c00","#3baa34") # Rød, gul, grønn
-  if (sortAvtagende == FALSE) #(bestKvalInd == 'høy') {
-    kvalIndFarger <- rev(kvalIndFarger)
-  }
+      # 5) Kvalitetsindikator: Bakgrunnsbånd basert på kvalitetsgrenser
+      visKvalIndGrenser <- any(KvalIndGrenser > 0, na.rm = TRUE)
+      kvalIndFarger <- c("#e30713","#fd9c00","#3baa34")
+      if (sortAvtagende == FALSE) {
+        kvalIndFarger <- rev(kvalIndFarger)
+      }
+    }
 
   if (visKvalIndGrenser) {
 

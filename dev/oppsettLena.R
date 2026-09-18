@@ -28,13 +28,11 @@ source("dev/sysSetenv.R")
 RegDataRaa <- nger::NGERRegDataSQL(datoFra = '2026-01-01', datoTil = '2026-12-31' ,medPROM = 1)
 RegData <- NGERPreprosess(RegData = RegDataRaa)
 
-NGERFigGjsnGrVar(RegData, valgtVar = 'R0ScorePhys', valgtMaal = 'gjsn')
-NGERFigGjsnTid(RegData, valgtVar = 'R0ScorePhys', valgtMaal = 'gjsn', tidsenhet = 'Mnd',
-               enhetsUtvalg = 1, reshID = 108833)
-
-NGERFigAndelerGrVar(RegData=RegData, valgtVar='PREMTilfreds', preprosess=0,
-                    OpMetode = 2,
-                    reshID=reshID, outfile = '')
+KomplPostopAlvor
+KomplIntra
+PREMTilfreds
+NGERFigAndelerGrVar(RegData=RegData, valgtVar='KomplPostopAlvor', preprosess=0, OpMetode = 2,
+                    outfile = '')
 print(p)
 knitr::knit2pdf('../inst/NGERmndRapp.Rnw')
 

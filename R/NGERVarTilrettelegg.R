@@ -98,7 +98,6 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
 
     if (valgtVar == 'PREMTilfreds'){
       KvalIndGrenser <- c(0, 80, 90, 100)
-      bestKvalInd <- 'hoy'
     }
 
   }
@@ -116,6 +115,7 @@ NGERVarTilrettelegg  <- function(RegData, valgtVar, OpMetode=0, ind=0, figurtype
     RegData$Variabel[RegData$Opf6mKomplikasjoner==1] <- 1
     varTxt <- 'komplikasjoner'
     tittel <- 'Komplikasjoner, 6 mnd. etter'
+    sortAvtagende <- FALSE
   }
 
   if (valgtVar=='Opf6mKomplikasjonerType') { #fordeling,
@@ -213,10 +213,7 @@ if (valgtVar=='Opf6mInnlagt') { #AndelSh/Tid,
 }
 
 
-which(RegData$Opf6mPoliklinisk==1 & RegData$Opf6mInnlagt==1)
-table(RegData$Opf6mInnlagt)
-
-  #-----------------------------------------------------------------------
+#-----------------------------------------------------------------------
 
   if (valgtVar=='Alder') {	#Fordeling, , #andelGrVar, GjsnGrVar, GjsnTid
     RegData <- RegData[which(RegData$Alder>=0), ]    #Tar bort alder<0
@@ -291,7 +288,7 @@ table(RegData$Opf6mInnlagt)
                      '2' = which(RegData$HysKomplikasjoner==1))
     RegData$Variabel[indVar] <- 1
     if (OpMetode %in% 1:2) {KvalIndGrenser <- c(0,2,4,100)}
-    sortAvtagende <- F
+    sortAvtagende <- FALSE
   }
 
   if (valgtVar=='KomplPostop') { #andelGrVar, andelTid
@@ -329,7 +326,7 @@ table(RegData$Opf6mInnlagt)
     RegData$Variabel[which(RegData$Opf0AlvorlighetsGrad %in% 2:4)] <- 1
 	  varTxt <- 'komplikasjoner grad 2-4'
       tittel <- 'Postop. komplikasjon, moderat/alvorlig'
-      sortAvtagende <- F
+      sortAvtagende <- FALSE
       if (OpMetode==1) {KvalIndGrenser <- c(0, 2.5, 5, 100)} #Laparoskopi
       if (OpMetode==2) {KvalIndGrenser <- c(0, 0.3, 0.6, 100)} #Hysteroskopi
     #}
@@ -386,8 +383,8 @@ table(RegData$Opf6mInnlagt)
     RegData <- RegData[intersect(which(RegData$LapKonvertert %in% 0:1), which(RegData$LapStatus == 1)), ] #RegData$LapKonvertert %in% 0:1
     RegData$Variabel[RegData$Konverteringsstatus ==2] <- 1
     varTxt <- 'ikke forventede'
-    tittel <- 'Uventet konvertering, laparoskopi til laparotomi
-    '
+    tittel <- 'Uventet konvertering, laparoskopi til laparotomi'
+    sortAvtagende <- FALSE
   }
 
   if (valgtVar == 'LapNumHjelpeinnstikk') {   #Fordeling
@@ -555,6 +552,7 @@ table(RegData$Opf6mInnlagt)
     tittel <- 'BMI'
     xAkseTxt <- ' BMI'
     RegData$Variabel <- RegData$OpBMI}
+    sortAvtagende <- FALSE
   }
 
   if (valgtVar == 'Opf0metode') {   #Fordeling, andelGrVar - fjernet
