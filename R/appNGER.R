@@ -767,7 +767,9 @@ server_nger <- function(input, output, session) {
     #----------Hente data ----------
 
     datoFraLasteData <- paste0(as.numeric(format(Sys.Date(), "%Y"))-5, '-01-01')
-    RegDataAlle <- NGERRegDataSQL(datoFra = datoFraLasteData, medPROM=1, gml=0)
+    shiny::withProgress(message = "Laster data", value = 0, {
+      RegDataAlle <- NGERRegDataSQL(datoFra = datoFraLasteData, medPROM=1, gml=0)
+    })
     errorCondition(dim(RegDataAlle)[1]==0, 'ingen data')
 
     RegData <- NGERPreprosess(RegDataAlle)
@@ -865,13 +867,12 @@ server_nger <- function(input, output, session) {
 
   # Hente oversikt over hvilke registrereinger som er gjort (opdato og fødselsdato)
   output$velgReshReg <- renderUI({
+    shiny::req(user$role())
     if (user$role() == 'SC') {
       selectInput(inputId = 'velgReshReg', label='Velg sykehus',
                   selected = 0,
                   choices = sykehusValg)
-    } else {
-      NULL
-    }
+    } else {NULL}
   })
 
 
@@ -884,10 +885,11 @@ server_nger <- function(input, output, session) {
   #   RegDataAlle <- NGERPreprosess(RegData = RegDataAlle)
   # })
 
-    # DataDump1 <- NGERPreprosess(NGERRegDataSQL(datoFra = input$datovalgReg[1],
-    #                            datoTil = input$datovalgReg[2]))
     observe({
-      req(input$ark == 'Last ned egne data')
+      shiny::req(input$ark == 'Last ned egne data',
+          user$role(),
+          input$velgReshReg)
+
       RegDataAlle <-  if (user$role() =='SC') {
         NGERPreprosess(RegData = NGERRegDataSQL(
                                     datoFra = input$datovalgReg[1],
@@ -905,8 +907,8 @@ server_nger <- function(input, output, session) {
       DataDump <- DataDump[indIntraKompl, ]}
 
     if (user$role() =='SC') {
-      valgtResh <- ifelse(is.null(input$velgReshReg),
-                          0, as.numeric(input$velgReshReg))
+      valgtResh <- ifelse(user$role()=='SC', input$velgReshReg, user$org())
+      #ifelse(is.null(input$velgReshReg), 0, as.numeric(input$velgReshReg))
       ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
       } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
       tabDataDump <- DataDump[ind,]
@@ -942,6 +944,7 @@ server_nger <- function(input, output, session) {
   #KvalInd
 
   output$velgReshKval <- renderUI({
+    shiny::req(user$role())
     if (user$role() == 'SC') {
     selectInput(inputId = 'velgReshKval', label='Velg sykehus',
                 selected = 0,
@@ -950,13 +953,13 @@ server_nger <- function(input, output, session) {
       NULL
     }
   })
-  observe({
     output$kvalInd <- renderPlot({
+      shiny::req(user$role(),input$velgReshKval, input$enhetsUtvalg)
       NGERFigKvalInd(RegData=RegData, preprosess = 0,
                      valgtVar=input$valgtVarKval,
                      datoFra=input$datovalgKval[1],
                      datoTil=input$datovalgKval[2],
-                     reshID = user$org(),
+                     reshID = ifelse(user$role()=='SC', input$velgReshKval, user$org()),
                      minald=as.numeric(input$alderKval[1]),
                      maxald=as.numeric(input$alderKval[2]),
                      OpMetode = as.numeric(input$opMetodeKval),
@@ -964,7 +967,7 @@ server_nger <- function(input, output, session) {
                      velgDiag = as.numeric(input$velgDiagKval),
                      AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
                      enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
-                     velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
+                     #velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
                      session = session)
     }, height=800, width=800)
 
@@ -973,11 +976,12 @@ server_nger <- function(input, output, session) {
         paste0('FigKval_',input$valgtVarKval, Sys.time(), '.', input$bildeformatKval)
       },
       content = function(file){
+        shiny::req(input$velgReshKval, input$enhetsUtvalg)
         NGERFigKvalInd(RegData=RegData, preprosess = 0,
                        valgtVar=input$valgtVarKval,
                        datoFra=input$datovalgKval[1],
                        datoTil=input$datovalgKval[2],
-                       reshID = user$org(),
+                       reshID = ifelse(user$role()=='SC', input$velgReshKval, user$org()),
                        minald=as.numeric(input$alderKval[1]),
                        maxald=as.numeric(input$alderKval[2]),
                        OpMetode = as.numeric(input$opMetodeKval),
@@ -985,18 +989,19 @@ server_nger <- function(input, output, session) {
                        velgDiag = as.numeric(input$velgDiagKval),
                        AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
                        enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
-                       velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
+                       #velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
                        session = session,
                        outfile = file)
       })
 
-
+    observe({
+      shiny::req(user$role(), input$velgReshKval, input$enhetsUtvalg)
     UtDataKvalInd <-
       NGERFigKvalInd(RegData=RegData, preprosess = 0,
                      valgtVar=input$valgtVarKval,
                      datoFra=input$datovalgKval[1],
                      datoTil=input$datovalgKval[2],
-                     reshID = user$org(),
+                     reshID = ifelse(user$role()=='SC', input$velgReshKval, user$org()),
                      minald=as.numeric(input$alderKval[1]),
                      maxald=as.numeric(input$alderKval[2]),
                      OpMetode = as.numeric(input$opMetodeKval),
@@ -1004,7 +1009,7 @@ server_nger <- function(input, output, session) {
                      velgDiag = as.numeric(input$velgDiagKval),
                      AlvorlighetKompl = as.numeric(input$alvorlighetKomplKval),
                      enhetsUtvalg=as.numeric(input$enhetsUtvalgKval),
-                     velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
+                     #velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
                      session = session)
     tabKvalInd <- lagTabavFig(UtDataFraFig = UtDataKvalInd) #lagTabavFigAndeler
 
@@ -1068,13 +1073,14 @@ server_nger <- function(input, output, session) {
 
   #RAND, alle dim
   output$kvalRANDdim <- renderPlot({
+    shiny::req(user$role(), input$velgReshKval, input$enhetsUtvalgKvalRAND)
     NGERFigPrePost(RegData=RegData, preprosess = 0,
                    valgtVar='AlleRANDdim',
                    datoFra=input$datovalgKval[1],
                    datoTil=input$datovalgKval[2],
                    enhetsUtvalg=as.numeric(input$enhetsUtvalgKvalRAND),
-                   reshID = user$org(),
-                   velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
+                   reshID = ifelse(user$role()=='SC', input$velgReshKval, user$org()),
+                   #velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
                    minald=as.numeric(input$alderKval[1]),
                    maxald=as.numeric(input$alderKval[2]),
                    OpMetode = as.numeric(input$opMetodeKval),
@@ -1089,13 +1095,14 @@ server_nger <- function(input, output, session) {
       paste0('FigRANDdim_', Sys.time(), '.', input$bildeformatKval)
     },
     content = function(file){
+      shiny::req(user$role(), input$velgReshKval, input$enhetsUtvalgKvalRAND)
       NGERFigPrePost(RegData=RegData, preprosess = 0,
                      valgtVar='AlleRANDdim',
                      datoFra=input$datovalgKval[1],
                      datoTil=input$datovalgKval[2],
                      enhetsUtvalg=as.numeric(input$enhetsUtvalgKvalRAND),
-                     reshID = user$org(),
-                     velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
+                     reshID = ifelse(user$role()=='SC', input$velgReshKval, user$org()),
+                     #velgAvd=ifelse(is.null(input$velgReshKval), 0, input$velgReshKval),
                      minald=as.numeric(input$alderKval[1]),
                      maxald=as.numeric(input$alderKval[2]),
                      OpMetode = as.numeric(input$opMetodeKval),
@@ -1143,11 +1150,12 @@ server_nger <- function(input, output, session) {
   })
 
   observe({
+    shiny::req(user$role(), input$velgSykehusTab, input$enhetsUtvalgTab)
     tabNokkelHys <- tabNokkelHys(RegData = RegData,
                                  datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2],
-                                 reshID = user$org(),
-                                 velgAvd = ifelse(is.null(input$velgSykehusTab),
-                                                  user$org(), as.numeric(input$velgSykehusTab)),
+                                 reshID = ifelse(user$role()=='SC', input$velgSykehusTab, user$org()), #user$org(),
+                                 # velgAvd = ifelse(is.null(input$velgSykehusTab),
+                                 #                  user$org(), as.numeric(input$velgSykehusTab)),
                                  enhetsUtvalg = input$enhetsUtvalgTab)
     output$tabNokkelHys <- renderTable(tabNokkelHys, rownames = T, align = 'r', #c('l', 'r', 'r', 'r', 'r', 'r'),
                                        spacing="xs")
@@ -1156,13 +1164,13 @@ server_nger <- function(input, output, session) {
       filename = function(){paste0('tabNokkelHys.csv')},
       content = function(file, filename){write.csv2(tabNokkelHys, file, row.names = T, na = '')})
 
-  })
-
-  observe({
+  # })
+  #
+  # observe({
     tabNokkelLap <- tabNokkelLap(RegData = RegData,
                                  datoFra = input$datovalgTab[1], datoTil = input$datovalgTab[2],
-                                 reshID = user$org(),
-                                 velgAvd=ifelse(is.null(input$velgSykehusTab), user$org(), as.numeric(input$velgSykehusTab)),
+                                 reshID = ifelse(user$role()=='SC', input$velgSykehusTab, user$org()), #user$org(),
+                                 #velgAvd=ifelse(is.null(input$velgSykehusTab), user$org(), as.numeric(input$velgSykehusTab)),
                                  enhetsUtvalg = input$enhetsUtvalgTab)
     output$tabNokkelLap <- renderTable(tabNokkelLap, rownames = T, align = 'r',
                                        spacing="xs")
@@ -1177,20 +1185,23 @@ server_nger <- function(input, output, session) {
   #---------Fordelinger------------
 
   output$velgSykehusFord <- renderUI({
+    shiny::req(user$role())
     if (user$role() == 'SC') {
       selectInput(inputId = 'velgSykehusFord', label='Velg sykehus',
                   selected = 0,
                   choices = sykehusValg)
-    } else {
-      NULL
-    }
+    } else {NULL}
   })
 
-  observe({ #Fordeling
     output$fordelinger <- renderPlot({
+      shiny::req(input$enhetsUtvalg) #, user$role(), user$org()
+      print(user$role())
+      print(input$velgSykehusFord)
+      print(input$enhetsUtvalg)
+      print(user$org())
       NGERFigFordeling(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
                      datoFra=input$datovalg[1], datoTil=input$datovalg[2],
-                     reshID = user$org(),
+                     reshID = ifelse(user$role()=='SC', input$velgSykehusFord, user$org()), #user$org(),
                      minald=as.numeric(input$alder[1]),
                      maxald=as.numeric(input$alder[2]),
                      OpMetode = as.numeric(input$opMetode),
@@ -1198,7 +1209,7 @@ server_nger <- function(input, output, session) {
                      velgDiag = as.numeric(input$velgDiag),
                      AlvorlighetKompl = as.numeric(input$alvorlighetKompl),
                      enhetsUtvalg=as.numeric(input$enhetsUtvalg),
-                     velgAvd=ifelse(is.null(input$velgSykehusFord), 0, input$velgSykehusFord),
+                     #velgAvd=ifelse(is.null(input$velgSykehusFord), 0, input$velgSykehusFord),
                      session = session)
     }, height=800, width=800 #height = function() {session$clientData$output_fordelinger_width}
     )
@@ -1208,9 +1219,10 @@ server_nger <- function(input, output, session) {
         paste0('FigFord_', input$valgtVar, Sys.time(), '.', input$bildeformatFord)
       },
       content = function(file){
+        shiny::req(input$velgSykehusFord, input$enhetsUtvalg, user$org())
         NGERFigFordeling(RegData=RegData, valgtVar=input$valgtVar, preprosess = 0,
                        datoFra=input$datovalg[1], datoTil=input$datovalg[2],
-                       reshID = user$org(),
+                       reshID = ifelse(user$role()=='SC', input$velgSykehusFord, user$org()),
                        minald=as.numeric(input$alder[1]),
                        maxald=as.numeric(input$alder[2]),
                        OpMetode = as.numeric(input$opMetode),
@@ -1218,24 +1230,25 @@ server_nger <- function(input, output, session) {
                        velgDiag = as.numeric(input$velgDiag),
                        AlvorlighetKompl = as.numeric(input$alvorlighetKompl),
                        enhetsUtvalg=as.numeric(input$enhetsUtvalg),
-                       velgAvd=ifelse(is.null(input$velgSykehusFord), 0, input$velgSykehusFord),
+                       #velgAvd=ifelse(is.null(input$velgSykehusFord), 0, input$velgSykehusFord),
                        session = session,
                        outfile = file)
       })
 
 
-    #RegData må hentes ut fra valgtVar
-    UtDataFord <-
-      NGERFigFordeling(RegData=RegData, preprosess = 0, valgtVar=input$valgtVar,
+    observe({ #Fordeling
+      shiny::req(input$velgSykehusFord, input$enhetsUtvalg)
+        UtDataFord <-
+          NGERFigFordeling(RegData=RegData, preprosess = 0, valgtVar=input$valgtVar,
                      datoFra=input$datovalg[1], datoTil=input$datovalg[2],
-                     reshID = user$org(),
+                     reshID = ifelse(user$role()=='SC', input$velgSykehusFord, user$org()),
                      minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
                      OpMetode = as.numeric(input$opMetode),
                      behNivaa = as.numeric(input$behNivaa),
                      velgDiag = as.numeric(input$velgDiag),
                      AlvorlighetKompl = as.numeric(input$alvorlighetKompl),
                      enhetsUtvalg=as.numeric(input$enhetsUtvalg),
-                     velgAvd=ifelse(is.null(input$velgSykehusFord), 0, input$velgSykehusFord),
+                     #velgAvd=ifelse(is.null(input$velgSykehusFord), 0, input$velgSykehusFord),
                      session = session)
     tabFord <- lagTabavFig(UtDataFraFig = UtDataFord) #lagTabavFigAndeler
     output$tittelFord <- renderUI({

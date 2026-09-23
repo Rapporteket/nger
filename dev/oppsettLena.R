@@ -16,21 +16,18 @@ library(nger)
 source("dev/sysSetenv.R")
 nger::kjor_NGERapp(browser = TRUE)
 
-Oppf6Skjema <- hentDataTabell(tabellnavn = "followup6",
-                              qVar = '*',
-                              egneVarNavn = 1)
-
 shiny::shinyApp(
   ui = nger::ui_ngerOK,
   server = nger::server_ngerOK)
 
 source("dev/sysSetenv.R")
+tictoc::tic()
 RegDataRaa <- nger::NGERRegDataSQL(datoFra = '2026-01-01', datoTil = '2026-12-31' ,medPROM = 1)
+tictoc::toc() # 10.46 sec
 RegData <- NGERPreprosess(RegData = RegDataRaa)
 
-KomplPostopAlvor
-KomplIntra
-PREMTilfreds
+shiny::incProgress(0.2, detail = "Laster data")
+
 NGERFigAndelerGrVar(RegData=RegData, valgtVar='KomplPostopAlvor', preprosess=0, OpMetode = 2,
                     outfile = '')
 print(p)

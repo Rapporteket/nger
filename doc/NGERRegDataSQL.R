@@ -5,12 +5,15 @@
 #'
 #' @export
 
-mappingEgneNavn <- function(tabell, tabType) {
+mappingEgneNavn <- function(tabell, tabType, dbconn) {
 
-  friendlyVarTab  <-
-    rapbase::loadRegData( "data",
-                          query = "SELECT FIELD_NAME, REGISTRATION_TYPE, USER_SUGGESTION #, USER_DATE
-                           FROM friendly_vars")
+  query <- "SELECT FIELD_NAME, REGISTRATION_TYPE, USER_SUGGESTION
+                           FROM friendly_vars"
+  friendlyVarTab  <- DBI::dbGetQuery(conn = dbconn,
+                                     statement = query)
+    # rapbase::loadRegData( "data",
+    #                       query = "SELECT FIELD_NAME, REGISTRATION_TYPE, USER_SUGGESTION #, USER_DATE
+    #                        FROM friendly_vars")
   rydd <- which(friendlyVarTab$USER_SUGGESTION == 'VERBOTEN')
   if (length(rydd)>0) {
     friendlyVarTab <- friendlyVarTab[-which(friendlyVarTab$USER_SUGGESTION == 'VERBOTEN'), ]}
@@ -24,6 +27,12 @@ mappingEgneNavn <- function(tabell, tabType) {
   tabellEgne <- dplyr::rename(tabell, dplyr::any_of(navn)) #all_of(navn
   return(tabellEgne)
   }
+
+
+
+
+
+
 
 
 # LEGG INN FJERNING AV VARIABLER SOM GJENTAS I FLERE TABELLER. f.EKS. ReshId (CENTREID)
@@ -40,11 +49,13 @@ mappingEgneNavn <- function(tabell, tabType) {
 
 hentDataTabell <- function(tabellnavn = "operation",
                            qVar = '*',
+                           dbconn,  # = 'dbconn',
                            egneVarNavn = 1) { #  status = 1
 
   query <- paste0("SELECT ", qVar, " FROM ", tabellnavn)
-  tabell <- rapbase::loadRegData(registryName = "data",
-                                 query = query)
+  tabell <- DBI::dbGetQuery(conn = dbconn,
+                            statement = query)
+          # rapbase::loadRegData(registryName = "data", query = query)
 
   # if ("STATUS" %in% names(tabell)) {
   #   tabell <- tabell[tabell$STATUS == status, ]
@@ -52,19 +63,24 @@ hentDataTabell <- function(tabellnavn = "operation",
 
   if (egneVarNavn == 1) {
     tabType <- toupper(tabellnavn)
-    tabell <- mappingEgneNavn(tabell, tabType)
+    tabell <- mappingEgneNavn(tabell, tabType, dbconn)
   }
 
   if (tabellnavn == 'rand36') {
-    RAND36_0 <- mappingEgneNavn(tabell[tabell$YEAR == 0, ], 'RAND36_0')
-    RAND36_1 <- mappingEgneNavn(tabell[tabell$YEAR == 1, ], 'RAND36_1')
-    RAND36_3 <- mappingEgneNavn(tabell[tabell$YEAR == 3, ], 'RAND36_3')
+    RAND36_0 <- mappingEgneNavn(tabell[tabell$YEAR == 0, ], 'RAND36_0', dbconn)
+    RAND36_1 <- mappingEgneNavn(tabell[tabell$YEAR == 1, ], 'RAND36_1', dbconn)
+    RAND36_3 <- mappingEgneNavn(tabell[tabell$YEAR == 3, ], 'RAND36_3', dbconn)
     tabell <- merge(RAND36_0, RAND36_1, by='ForlopsID', all.x = TRUE) |>
       merge(RAND36_3, by='ForlopsID', all.x = TRUE)
     }
 
   return(tabell)
 }
+
+
+
+
+
 
 #' Henter NGER-data
 #'
@@ -78,12 +94,15 @@ hentDataTabell <- function(tabellnavn = "operation",
 
 
 NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
-                           medPROM=1, gml=1, alleVar=1, ...) {
+                           medPROM=1, alleVar=1, ...) { #gml=0,
 # Få til å fungere med ny sammenkobling av alle data
   # legg på valg av variabler
   # legg på datofiltrering
 
-  if (gml==0) {
+  #shiny::incProgress(0.2, detail = "Laster data")
+  dbList <- rapbase::rapOpenDbConnection("nger", "mysql")
+
+#  if (gml==0) {
     # Raskest å hente alle og så filtrere på dato eller filtrere på dato til slutt?
 
     #mce Trenger nok ganske få av disse variablene
@@ -92,11 +111,13 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
    # qmce <-
     mceSkjema <- hentDataTabell(tabellnavn = "mce",
                                qVar = '*',
-                               egneVarNavn = 0)
+                               egneVarNavn = 0,
+                               dbconn = dbList$con)
     #Operasjon
     OpSkjema <-  hentDataTabell(tabellnavn = "operation",
                                 qVar = '*',
-                                egneVarNavn = 1)
+                                egneVarNavn = 1,
+                                dbconn = dbList$con)
     # OpSkjema <- OpSkjema[ ,-which(names(OpSkjema) %in%
     #                                 intersect(names(OpSkjema), names(mceSkjema)))]
 
@@ -104,14 +125,16 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
     #Laparoskopi
     LapSkjema <-  hentDataTabell(tabellnavn = "laparoscopy",
                                         qVar = '*',
-                                        egneVarNavn = 1)
+                                        egneVarNavn = 1,
+                                 dbconn = dbList$con)
     # LapSkjema <- LapSkjema[ ,-which(names(LapSkjema) %in%
     #                                 intersect(names(LapSkjema), names(mceSkjema)))]
 
     #Hysteroskopi
     HysSkjema <-  hentDataTabell(tabellnavn = "hysteroscopy",
                                  qVar = '*',
-                                 egneVarNavn = 1)
+                                 egneVarNavn = 1,
+                                 dbconn = dbList$con)
     # HysSkjema <- HysSkjema[ ,-which(names(HysSkjema) %in%
     #                         intersect(names(HysSkjema), names(mceSkjema)))]
 
@@ -140,7 +163,8 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
 
    PasSkjema <- hentDataTabell(tabellnavn = "patient",
                                                  qVar = qPas,
-                                                 egneVarNavn = 1)
+                                                 egneVarNavn = 1,
+                               dbconn = dbList$con)
    # PasSkjema <- PasSkjema[ ,-which(names(PasSkjema) %in%
    #                          intersect(names(PasSkjema), names(mceSkjema)))]
 
@@ -148,7 +172,8 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
    EnhetsNavn <- hentDataTabell(tabellnavn = "centreattribute",
                                 qVar = 'ID,
                                 ATTRIBUTEVALUE as ShNavn',
-                                             egneVarNavn = 0)
+                                             egneVarNavn = 0,
+                                dbconn = dbList$con)
 
 
     #Oppfølgigsskjema:
@@ -160,21 +185,26 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
 
     Oppf0Skjema <- hentDataTabell(tabellnavn = "followup",
                                               qVar = '*',
-                                              egneVarNavn = 1)
+                                              egneVarNavn = 1,
+                                  dbconn = dbList$con)
 
     Oppf6Skjema <- hentDataTabell(tabellnavn = "followup6",
                                   qVar = '*',
-                                  egneVarNavn = 1)
+                                  egneVarNavn = 1,
+                                  dbconn = dbList$con)
     #Trenger ikke denne? For å avgjøre om svart?
     PromSkjema <- hentDataTabell(tabellnavn = "proms",
                                   qVar = '*',
-                                  egneVarNavn = 0)
+                                  egneVarNavn = 0,
+                                 dbconn = dbList$con)
     RANDskjema <- hentDataTabell(tabellnavn = "rand36",
-                                  qVar = '*') #Henter alltid egne variabelnavn
+                                  qVar = '*',
+                                 dbconn = dbList$con) #Henter alltid egne variabelnavn
 
     TSS2Skjema <- hentDataTabell(tabellnavn = "tss2",
                                  qVar = '*',
-                                 egneVarNavn = 1)
+                                 egneVarNavn = 1,
+                                 dbconn = dbList$con)
 #    prem - tom, proms, rand36, tss2
 # type: RAND36_0     RAND36_1 RAND36_3         TSS2
 
@@ -199,13 +229,13 @@ NGERRegDataSQL <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
           suffixes = c("", "_rand"))  |>
       merge(TSS2Skjema,
             by = "MCEID", all.x = TRUE, suffixes = c("", "_tss2"))
-  }
+ # }
 
-  if (gml==1){
-    Oppf0skjema <- followupsnum(datoFra = datoFra, datoTil = datoTil)
-    AlleVarNum <- AlleVarNum(datoFra = datoFra, datoTil = datoTil)
-    RegData <- dplyr::left_join(AlleVarNum, Oppf0skjema, by="ForlopsID")
-  }
+  # if (gml==1){
+  #   Oppf0skjema <- followupsnum(datoFra = datoFra, datoTil = datoTil)
+  #   AlleVarNum <- AlleVarNum(datoFra = datoFra, datoTil = datoTil)
+  #   RegData <- dplyr::left_join(AlleVarNum, Oppf0skjema, by="ForlopsID")
+  # }
 
   if (medPROM==1) {
     RAND36 <-  rand36report() # -> fas ut og la følge samme mønster som andre tab
