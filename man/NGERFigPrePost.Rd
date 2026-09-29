@@ -42,9 +42,6 @@ NGERFigPrePost(
 \item{reshID}{Parameter følger fra innlogging helseregister.no og angir
 hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 
-\item{velgAvd}{Velge hvilke avdelinger som skal vises i figurer med avdelingsvise resultater.
-IKKE tatt høyde for sammenlikning mot "resten".}
-
 \item{minald}{Alder, fra og med (Standardverdi: 0)}
 
 \item{maxald}{Alder, til og med (Standardverdi: 130)}

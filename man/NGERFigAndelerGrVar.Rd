@@ -9,7 +9,6 @@ NGERFigAndelerGrVar(
   valgtVar = "Alder",
   datoFra = "2013-01-01",
   datoTil = "3000-12-31",
-  velgAvd = 0,
   minald = 0,
   maxald = 130,
   OpMetode = 99,
@@ -32,9 +31,6 @@ NGERFigAndelerGrVar(
 \item{datoFra}{Tidligste dato i utvalget (vises alltid i figuren).}
 
 \item{datoTil}{Seneste dato i utvalget (vises alltid i figuren).}
-
-\item{velgAvd}{Velge hvilke avdelinger som skal vises i figurer med avdelingsvise resultater.
-IKKE tatt høyde for sammenlikning mot "resten".}
 
 \item{minald}{Alder, fra og med (Standardverdi: 0)}
 
