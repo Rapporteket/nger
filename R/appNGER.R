@@ -872,7 +872,7 @@ server_nger <- function(input, output, session) {
   output$velgReshReg <- renderUI({
     shiny::req(user$role())
     if (user$role() == 'SC') {
-      selectInput(inputId = 'velgReshReg', label='Velg sykehus',
+      selectInput(inputId = 'velgReshReg', label='Velg egen enhet',
                   selected = 0,
                   choices = sykehusValg)
     } else {NULL}
@@ -937,7 +937,7 @@ server_nger <- function(input, output, session) {
   output$velgReshKval <- renderUI({
     shiny::req(user$role())
     if (user$role() == 'SC') {
-    selectInput(inputId = 'velgReshKval', label='Velg sykehus',
+    selectInput(inputId = 'velgReshKval', label='Velg egen enhet',
                 selected = 0,
                 choices = sykehusValg)
     } else {NULL}
@@ -1135,7 +1135,7 @@ server_nger <- function(input, output, session) {
 
   output$velgSykehusTab <- renderUI({
     if (user$role() == 'SC') {
-      selectInput(inputId = 'velgSykehusTab', label='Velg sykehus',
+      selectInput(inputId = 'velgSykehusTab', label='Velg egen enhet',
                   selected = 0,
                   choices = sykehusValg)
     } else {NULL}
@@ -1163,16 +1163,6 @@ server_nger <- function(input, output, session) {
                                        spacing="xs")
 
 
-      output$undertittelReg <- renderUI({
-        t1 <- 'Tabellen viser operasjoner '
-        tagList(
-          br(),
-          h4(HTML(switch(input$tidsenhetReg,
-                         Mnd = paste0(t1, 'siste 12 måneder før ', input$sluttDatoReg, '<br />'),
-                         Aar = paste0(t1, 'siste år ', '<br />'))),
-             HTML(paste0(tabAntOpphShMndAar$utvalgTxt[-1], '<br />'))
-          ))
-      })
     output$lastNed_tabNokkelHys <-  downloadHandler(
       filename = function(){paste0('tabNokkelHys.csv')},
       content = function(file, filename){write.csv2(tabNokkelHys, file, row.names = T, na = '')})
@@ -1200,7 +1190,7 @@ server_nger <- function(input, output, session) {
   output$velgSykehusFord <- renderUI({
     shiny::req(user$role())
     if (user$role() == 'SC') {
-      selectInput(inputId = 'velgSykehusFord', label='Velg sykehus',
+      selectInput(inputId = 'velgSykehusFord', label='Velg egen enhet',
                   selected = 0,
                   choices = sykehusValg)
     } else {NULL}
