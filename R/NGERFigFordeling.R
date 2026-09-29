@@ -23,10 +23,12 @@
 #'
 #' @export
 #'
-NGERFigFordeling  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil=Sys.Date(), minald=0, maxald=130,
-                            outfile='', reshID=0, enhetsUtvalg=0, OpMetode=99, AlvorlighetKompl='', #Hastegrad='',
-                            behNivaa = 0,
-                            velgAvd=0, velgDiag=0, hentData=0, preprosess=1,...)
+NGERFigFordeling  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil=Sys.Date(),
+                              hentData=0, preprosess=1,
+                              outfile='', reshID=0, enhetsUtvalg=0,
+                              minald=0, maxald=130, OpMetode=99, AlvorlighetKompl='',
+                            behNivaa = 0, velgDiag=0, ...)
+                            #velgAvd=0, #Hastegrad='',
 {
 
   ## Hvis spørring skjer fra R på server. ######################
@@ -52,16 +54,14 @@ NGERFigFordeling  <- function(RegData=0, valgtVar, datoFra='2013-01-01', datoTil
     NGERVarSpes <- NGERVarTilrettelegg(RegData, valgtVar=valgtVar, OpMetode = OpMetode, figurtype='andeler')
     RegData <- NGERVarSpes$RegData
   }
-  # valgtVar <- 'LapEkstrautstyr' #'Opf0hvor'
   ###Gjør utvalg (NGERUtvalg)
   ###Kjører denne etter variabeldefinisjon for at utvalgTxt skal bli riktig
-  #if (enhetsUtvalg=0) {reshID <- 0}
   NGERUtvalg <- NGERUtvalgEnh(RegData = RegData, minald = minald, maxald = maxald,
                               datoFra = datoFra, datoTil = datoTil,
                               OpMetode = OpMetode, AlvorlighetKompl=AlvorlighetKompl,
                            velgDiag=velgDiag, behNivaa = behNivaa,
-                           enhetsUtvalg = enhetsUtvalg, #Hastegrad=Hastegrad,
-                           velgAvd = velgAvd, reshID=reshID )
+                           enhetsUtvalg = enhetsUtvalg, reshID=reshID)
+                        #Hastegrad=Hastegrad, velgAvd = velgAvd,
   RegData <- NGERUtvalg$RegData
   utvalgTxt <- NGERUtvalg$utvalgTxt
   ind <- NGERUtvalg$ind

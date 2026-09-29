@@ -13,8 +13,7 @@
 #' @export
 NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
                                 datoFra='2013-01-01', datoTil='3000-12-31',
-                                velgAvd=0, minald=0, maxald=130,
-                                OpMetode=99, # Hastegrad='',
+                               minald=0, maxald=130, OpMetode=99, # Hastegrad='', velgAvd=0,
                                 AlvorlighetKompl='', behNivaa = 0,
                                 Ngrense=10, reshID=0, outfile='',
                                 velgDiag=0, preprosess=1, hentData=0, ...
@@ -22,8 +21,9 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
 
   FigDataParam <- NGERAndelerGrVarBeregn(RegData=RegData, valgtVar=valgtVar,
                                          datoFra=datoFra, datoTil=datoTil,
-                                         velgAvd=velgAvd, minald=minald, maxald=maxald,
-                                         OpMetode=OpMetode, Hastegrad='',
+                                         minald=minald, maxald=maxald,
+                                         OpMetode=OpMetode,
+                                         # Hastegrad='', velgAvd=velgAvd,
                                          AlvorlighetKompl='', behNivaa = behNivaa,
                                          Ngrense=Ngrense, reshID=reshID,
                                          outfile=outfile,
@@ -53,8 +53,8 @@ NGERFigAndelerGrVar <- function(RegData=0, valgtVar='Alder',
 #NGERFigAndelerGrVar
 NGERAndelerGrVarBeregn <- function(RegData=0, valgtVar='Alder',
                                 datoFra='2013-01-01', datoTil='3000-12-31',
-                                velgAvd=0, minald=0, maxald=130,
-                                OpMetode=99, # Hastegrad='',
+                                minald=0, maxald=130,
+                                OpMetode=99, # Hastegrad='', velgAvd=0,
                                 AlvorlighetKompl='', behNivaa = 0,
                                 Ngrense=10, reshID=0, outfile='',
                                 velgDiag=0, preprosess=1, hentData=0, ...
@@ -87,7 +87,7 @@ NGERAndelerGrVarBeregn <- function(RegData=0, valgtVar='Alder',
                               datoFra=datoFra, datoTil=datoTil, OpMetode=OpMetode,
                               minald=minald, maxald=maxald,
                               AlvorlighetKompl=AlvorlighetKompl, behNivaa = behNivaa,
-                              velgAvd=velgAvd, velgDiag=velgDiag)
+                              velgDiag=velgDiag) #velgAvd=velgAvd,
   RegData <- NGERUtvalg$RegData
   utvalgTxt <- NGERUtvalg$utvalgTxt
   dummy0 <- NA  # -0.001

@@ -9,18 +9,17 @@ NGERFigFordeling(
   valgtVar,
   datoFra = "2013-01-01",
   datoTil = Sys.Date(),
-  minald = 0,
-  maxald = 130,
+  hentData = 0,
+  preprosess = 1,
   outfile = "",
   reshID = 0,
   enhetsUtvalg = 0,
+  minald = 0,
+  maxald = 130,
   OpMetode = 99,
   AlvorlighetKompl = "",
   behNivaa = 0,
-  velgAvd = 0,
   velgDiag = 0,
-  hentData = 0,
-  preprosess = 1,
   ...
 )
 }
@@ -33,9 +32,13 @@ NGERFigFordeling(
 
 \item{datoTil}{Seneste dato i utvalget (vises alltid i figuren).}
 
-\item{minald}{Alder, fra og med (Standardverdi: 0)}
+\item{hentData}{Gjør spørring mot database
+0: Nei, RegData gis som input til funksjonen (Standard)
+1: Ja}
 
-\item{maxald}{Alder, til og med (Standardverdi: 130)}
+\item{preprosess}{Preprosesser data
+0: Nei (Standard)
+1: Ja}
 
 \item{outfile}{Navn på fil figuren skrives til. Standard: '' (Figur skrives
 til systemets standard utdataenhet (som regel skjerm))}
@@ -47,6 +50,10 @@ hvilken enhet i spesialisthelsetjenesten brukeren tilhører}
 0: Hele landet
 1: Egen enhet mot resten av landet (Standard)
 2: Egen enhet}
+
+\item{minald}{Alder, fra og med (Standardverdi: 0)}
+
+\item{maxald}{Alder, til og med (Standardverdi: 130)}
 
 \item{OpMetode}{1: Laparoskopi
  2: Hysteroskopi
@@ -69,9 +76,6 @@ Angis som en vektor av tall som tekst, f.eks. c('1','2')
 
 \item{behNivaa}{Behandlingsvivå: 1-Poliklinisk, 2-Dagkirurgi, 3-Inneliggende}
 
-\item{velgAvd}{Velge hvilke avdelinger som skal vises i figurer med avdelingsvise resultater.
-IKKE tatt høyde for sammenlikning mot "resten".}
-
 \item{velgDiag}{0: Alle
 1: Godartede ovarialcyster
 2: Endometriose, livmorvegg (N80.0)
@@ -81,14 +85,6 @@ IKKE tatt høyde for sammenlikning mot "resten".}
 6: Gravide
 7: Komplikasjoner
 8: Infertilitet}
-
-\item{hentData}{Gjør spørring mot database
-0: Nei, RegData gis som input til funksjonen (Standard)
-1: Ja}
-
-\item{preprosess}{Preprosesser data
-0: Nei (Standard)
-1: Ja}
 }
 \value{
 En figur med søylediagram (fordeling) av ønsket variabel

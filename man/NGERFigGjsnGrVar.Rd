@@ -59,15 +59,7 @@ Angis som en vektor av tall som tekst, f.eks. c('1','2')
 3: Alvorlig
 4: Dødelig}
 
-\item{valgtMaal}{'med' = median. Alt annet gir gjennomsnitt
-
-Argumentet \emph{valgtVar} har følgende valgmuligheter:
-   \itemize{
-    \item Alder: Liggetid
-    \item RAND36 - alle dimensjoner
-    \item Registreringsforsinkelse
-    \item TSS2
-   }}
+\item{valgtMaal}{'med' = median. Alt annet gir gjennomsnitt}
 
 \item{hentData}{Gjør spørring mot database
 0: Nei, RegData gis som input til funksjonen (Standard)
