@@ -882,36 +882,39 @@ server_nger <- function(input, output, session) {
   # --------Egen datadump, (NB: LU uten PROM)---------
 
 
-    observe({
-      shiny::req(input$ark == 'Last ned egne data',
-          user$role(),
-          input$velgReshReg)
+  observe({
+    shiny::req(input$ark == 'Last ned egne data',
+               user$role())
+
+    shiny::withProgress(message = "Laster data til datadump", value = 0, {
 
       RegDataAlle <-  if (user$role() =='SC') {
         NGERPreprosess(RegData = NGERRegDataSQL(
-                                    datoFra = input$datovalgReg[1],
-                                    datoTil = input$datovalgReg[2]))}
-      else {NGERPreprosess(RegData = NGERRegDataSQL(medPROM = 0,
-                                    datoFra = input$datovalgReg[1],
-                                    datoTil = input$datovalgReg[2]))}
-    DataDump <- NGERUtvalgEnh(RegData = RegDataAlle,
-                              OpMetode = as.numeric(input$opMetodeRegDump),
-                              velgDiag = as.numeric(input$diagnoseRegDump),
-                              AlvorlighetKompl = as.numeric(input$alvorlighetKomplDump))$RegData
+          datoFra = input$datovalgReg[1],
+          datoTil = input$datovalgReg[2]))} else {
+            NGERPreprosess(RegData = NGERRegDataSQL(medPROM = 0,
+                                                    datoFra = input$datovalgReg[1],
+                                                    datoTil = input$datovalgReg[2]))}
+
+      DataDump <- NGERUtvalgEnh(RegData = RegDataAlle,
+                                OpMetode = as.numeric(input$opMetodeRegDump),
+                                velgDiag = as.numeric(input$diagnoseRegDump),
+                                AlvorlighetKompl = as.numeric(input$alvorlighetKomplDump))$RegData
+    })
 
     if (input$IntraKomplDump == TRUE) {
       indIntraKompl <- which((DataDump$LapKomplikasjoner==1) | (DataDump$HysKomplikasjoner==1))
       DataDump <- DataDump[indIntraKompl, ]}
 
     if (user$role() =='SC') {
+      shiny::req( input$velgReshReg)
       valgtResh <- ifelse(user$role()=='SC', input$velgReshReg, user$org())
-      #ifelse(is.null(input$velgReshReg), 0, as.numeric(input$velgReshReg))
-      ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
-      } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
+      ind <- if (valgtResh == 0) { 1:dim(DataDump)[1] } else {
+        which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
       tabDataDump <- DataDump[ind,]
     }  else {
       tabDataDump <- DataDump[which(DataDump$ReshId == user$org()), ] # , -fjernVarInd]
-     } #Tar bort PROM/PREM til egen avdeling
+    } #Tar bort PROM/PREM til egen avdeling
 
     txtLog <- paste0('Datadump for NGER: ',
                      'tidsperiode ', input$datovalgReg[1], '_', input$datovalgReg[2])
@@ -922,7 +925,7 @@ server_nger <- function(input, output, session) {
         rapbase::repLogger2(user = user, msg = txtLog)
       })
 
-        # Data til kontroll
+    # Data til kontroll
     RegOversikt <- tabDataDump[ , c('FodselsDato', 'OpDato', 'ReshId', 'ShNavn')]
 
     output$lastNed_dataTilRegKtr <- downloadHandler(
