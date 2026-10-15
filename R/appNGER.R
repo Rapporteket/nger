@@ -886,17 +886,21 @@ server_nger <- function(input, output, session) {
     shiny::req(input$ark == 'Last ned egne data',
                user$role())
 
-    RegDataAlle <-  if (user$role() =='SC') {
-      NGERPreprosess(RegData = NGERRegDataSQL(
-        datoFra = input$datovalgReg[1],
-        datoTil = input$datovalgReg[2]))} else {
-     NGERPreprosess(RegData = NGERRegDataSQL(medPROM = 0,
-                                                  datoFra = input$datovalgReg[1],
-                                                  datoTil = input$datovalgReg[2]))}
-    DataDump <- NGERUtvalgEnh(RegData = RegDataAlle,
-                              OpMetode = as.numeric(input$opMetodeRegDump),
-                              velgDiag = as.numeric(input$diagnoseRegDump),
-                              AlvorlighetKompl = as.numeric(input$alvorlighetKomplDump))$RegData
+    shiny::withProgress(message = "Laster data til datadump", value = 0, {
+
+      RegDataAlle <-  if (user$role() =='SC') {
+        NGERPreprosess(RegData = NGERRegDataSQL(
+          datoFra = input$datovalgReg[1],
+          datoTil = input$datovalgReg[2]))} else {
+            NGERPreprosess(RegData = NGERRegDataSQL(medPROM = 0,
+                                                    datoFra = input$datovalgReg[1],
+                                                    datoTil = input$datovalgReg[2]))}
+
+      DataDump <- NGERUtvalgEnh(RegData = RegDataAlle,
+                                OpMetode = as.numeric(input$opMetodeRegDump),
+                                velgDiag = as.numeric(input$diagnoseRegDump),
+                                AlvorlighetKompl = as.numeric(input$alvorlighetKomplDump))$RegData
+    })
 
     if (input$IntraKomplDump == TRUE) {
       indIntraKompl <- which((DataDump$LapKomplikasjoner==1) | (DataDump$HysKomplikasjoner==1))
