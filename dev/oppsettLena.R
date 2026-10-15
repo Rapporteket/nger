@@ -25,7 +25,7 @@ tictoc::tic()
 RegDataRaa <- nger::NGERRegDataSQL(datoFra = '2026-01-01', datoTil = '2026-12-31' ,medPROM = 1)
 tictoc::toc() # 10.46 sec
 RegData <- NGERPreprosess(RegData = RegDataRaa)
-
+table(RegData$ShNavn)
 shiny::incProgress(0.2, detail = "Laster data")
 
 NGERFigAndelerGrVar(RegData=RegData, valgtVar='KomplPostopAlvor', preprosess=0, OpMetode = 2,
